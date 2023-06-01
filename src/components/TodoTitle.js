@@ -2,11 +2,15 @@ import React from "react";
 import { Link } from "react-router-dom";
 import styled, { keyframes } from "styled-components";
 
-const TodoTitle = () => {
+const TodoTitle = ({ state }) => {
   return (
     <>
       <Title>
-        할 일 목록 리스트 <span>n</span> 개
+        할 일 목록 리스트{" "}
+        <span style={{ color: "red", background: "yellowgreen" }}>
+          {state.length}
+        </span>{" "}
+        개
       </Title>
       <Link to="/login">
         <Login>로그인</Login>

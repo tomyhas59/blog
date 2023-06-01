@@ -1,6 +1,30 @@
 import styled from "styled-components";
 import useInput from "../hooks/useInput";
 
+const TodoForm = ({ addList, id }) => {
+  const [text, onChangeText, setText] = useInput();
+
+  const onAddList = () => {
+    addList(id + 1, text);
+    setText("");
+  };
+
+  const Enter = (e) => {
+    if (e.key === "Enter") {
+      onAddList();
+    }
+  };
+
+  return (
+    <div>
+      <Input type="text" value={text} onChange={onChangeText} onKeyUp={Enter} />
+      <Button onClick={onAddList}>추가</Button>
+    </div>
+  );
+};
+
+export default TodoForm;
+
 const Input = styled.input`
   border-radius: 5px;
   width: 500px;
@@ -16,15 +40,3 @@ export const Button = styled.button`
   height: 40px;
   cursor: pointer;
 `;
-
-const TodoForm = () => {
-  const [text, onChangeText, setText] = useInput();
-  return (
-    <div>
-      <Input type="text" value={text} onChange={onChangeText} />
-      <Button onClick={""}>추가</Button>
-    </div>
-  );
-};
-
-export default TodoForm;
