@@ -1,9 +1,10 @@
 import styled from "styled-components";
 import useInput from "../hooks/useInput";
+import { useRef } from "react";
 
 const TodoForm = ({ addList, id }) => {
   const [text, onChangeText, setText] = useInput();
-
+  const textInput = useRef(null);
   const onAddList = () => {
     addList(id + 1, text);
     setText("");
@@ -15,10 +16,22 @@ const TodoForm = ({ addList, id }) => {
     }
   };
 
+  const onResetList = () => {
+    setText("");
+    textInput.current.focus();
+  };
   return (
     <div>
-      <Input type="text" value={text} onChange={onChangeText} onKeyUp={Enter} />
+      <Input
+        placeholder="할 일을 입력하시오"
+        type="text"
+        value={text}
+        onChange={onChangeText}
+        onKeyUp={Enter}
+        ref={textInput}
+      />
       <Button onClick={onAddList}>추가</Button>
+      <Button onClick={onResetList}>초기화</Button>
     </div>
   );
 };
