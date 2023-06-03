@@ -1,25 +1,40 @@
 import styled from "styled-components";
 import useInput from "../hooks/useInput";
-import { useRef } from "react";
+import { useCallback, useRef } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { ADD_LIST } from "../reducer/todo";
 
-const TodoForm = ({ addList, id }) => {
+const TodoForm = () => {
   const [text, onChangeText, setText] = useInput();
   const textInput = useRef(null);
-  const onAddList = () => {
-    addList(id + 1, text);
+  const dispatch = useDispatch();
+  const state = useSelector((state) => state.todo);
+
+  const onAddList = useCallback(() => {
+    dispatch({
+      type: ADD_LIST,
+      data: {
+        id: state[state.length - 1].id + 1,
+        data: text,
+      },
+    });
     setText("");
-  };
+  }, [state, text, dispatch, setText]);
 
-  const Enter = (e) => {
-    if (e.key === "Enter") {
-      onAddList();
-    }
-  };
+  const Enter = useCallback(
+    (e) => {
+      if (e.key === "Enter") {
+        onAddList();
+      }
+    },
+    [onAddList]
+  );
 
-  const onResetList = () => {
+  const onResetList = useCallback(() => {
     setText("");
     textInput.current.focus();
-  };
+  }, [setText, textInput]);
+
   return (
     <div>
       <Input

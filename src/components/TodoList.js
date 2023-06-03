@@ -1,10 +1,16 @@
-import React from "react";
+import React, { useCallback } from "react";
 import { Button } from "./TodoForm";
 import styled from "styled-components";
-const TodoList = ({ state, removeList }) => {
-  const onRemoveList = () => {
-    removeList(state.id);
-  };
+import { useDispatch } from "react-redux";
+import { REMOVE_LIST } from "../reducer/todo";
+const TodoList = ({ state }) => {
+  const dispatch = useDispatch();
+  const onRemoveList = useCallback(() => {
+    dispatch({
+      type: REMOVE_LIST,
+      id: state.id,
+    });
+  }, [state.id, dispatch]);
 
   return (
     <div>

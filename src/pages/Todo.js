@@ -1,22 +1,12 @@
-import React, { useState } from "react";
+import React from "react";
 import TodoForm from "../components/TodoForm";
 import TodoTitle from "../components/TodoTitle";
 import TodoList from "../components/TodoList";
 import styled, { createGlobalStyle } from "styled-components";
+import { useSelector } from "react-redux";
+
 const Todo = () => {
-  const [state, setState] = useState([
-    { id: 1, data: "리액트 공부하기" },
-    { id: 2, data: "밥 먹기" },
-  ]);
-
-  const addList = (id, data) => {
-    setState([...state, { id: id, data: data }]);
-  };
-
-  const removeList = (id) => {
-    const removeData = state.filter((item) => item.id !== id);
-    setState(removeData);
-  };
+  const state = useSelector((state) => state.todo);
 
   return (
     <>
@@ -24,12 +14,9 @@ const Todo = () => {
       <Wrapper>
         <div>
           <TodoTitle state={state} />
-          <TodoForm
-            addList={addList}
-            id={state.length > 0 && state[state.length - 1].id}
-          />
+          <TodoForm />
           {state.map((v) => (
-            <TodoList key={v.id} removeList={removeList} state={v} />
+            <TodoList key={v.id} state={v} />
           ))}
         </div>
       </Wrapper>

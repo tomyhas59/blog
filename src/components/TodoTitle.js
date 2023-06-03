@@ -9,7 +9,7 @@ const TodoTitle = ({ state }) => {
         할 일 목록 리스트{" "}
         <span style={{ color: "red", background: "yellowgreen" }}>
           {state.length}
-        </span>{" "}
+        </span>
         개
       </Title>
       <Link to="/login">
