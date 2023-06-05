@@ -26,13 +26,9 @@ function Login() {
             onChange={onChangePassword}
             placeholder="PASSWORD를 입력해 주세요"
           />
-          <Button>Enter</Button>
-          <Home to="/" style={{ background: "yellowgreen" }}>
-            홈으로
-          </Home>
-          <Signup to="/sign" style={{ background: "blue" }}>
-            회원가입
-          </Signup>
+          <Button>로그인</Button>
+          <Home to="/">홈으로</Home>
+          <Signup to="/sign">회원가입</Signup>
         </Form>
       </Wrapper>
     </>
@@ -127,7 +123,7 @@ const Home = styled(Link)`
   color: rgb(253, 249, 243);
   font-weight: 600;
   text-transform: uppercase;
-  background: #f03d4e;
+  background: #33cc33;
   border: none;
   border-radius: 3px;
   outline: 0;
@@ -136,7 +132,7 @@ const Home = styled(Link)`
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.1);
   transition: all 0.3s ease-out;
   :hover {
-    background: rgb(200, 50, 70);
+    background: #2f831e;
     animation: ${jump} 0.2s ease-out forwards;
   }
 `;
@@ -149,7 +145,7 @@ const Signup = styled(Link)`
   color: rgb(253, 249, 243);
   font-weight: 600;
   text-transform: uppercase;
-  background: #f03d4e;
+  background: #0000cc;
   border: none;
   border-radius: 3px;
   outline: 0;
@@ -158,7 +154,7 @@ const Signup = styled(Link)`
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.1);
   transition: all 0.3s ease-out;
   :hover {
-    background: rgb(200, 50, 70);
+    background: #0e0863;
     animation: ${jump} 0.2s ease-out forwards;
   }
 `;
