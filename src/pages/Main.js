@@ -1,10 +1,17 @@
-import React from 'react';
+import React from "react";
 
 const Main = () => {
   return (
-    <div>
-      
-    </div>
+    <>
+      <div>메인페이지</div>
+      <div>메인페이지</div>
+      <div>메인페이지</div>
+      <div>메인페이지</div>
+      <div>메인페이지</div>
+      <div>메인페이지</div>
+      <div>메인페이지</div>
+      <div>메인페이지</div>
+    </>
   );
 };
 

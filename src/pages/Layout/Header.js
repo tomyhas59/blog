@@ -5,7 +5,7 @@ const Header = () => {
   return (
     <HeaderWrapper>
       <HeaderLogo>
-        <Link to="/main">Y BLOG</Link>
+        <Link to="/">Y BLOG</Link>
       </HeaderLogo>
       <HeaderList>
         <li>
@@ -27,7 +27,7 @@ export const HeaderWrapper = styled.header`
   padding: 1rem;
   display: flex;
   justify-content: space-between;
-  position: fixed;
+
   top: 0;
   z-index: 1000;
   background-color: ${(props) => props.theme.subColor};

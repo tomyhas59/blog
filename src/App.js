@@ -15,7 +15,7 @@ function App() {
     //리액트에서 자체 지원
     //npm start => development
     //npm build => production
-  });
+  }, []);
 
   return (
     <BrowserRouter>
