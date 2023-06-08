@@ -15,5 +15,5 @@ const AppLayout = ({ children }) => {
 export default AppLayout;
 
 const Middle = styled.div`
-
+  text-align: center;
 `;

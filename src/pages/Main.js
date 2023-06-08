@@ -1,16 +1,14 @@
 import React from "react";
+import PostForm from "../components/PostForm";
+
+import Post from "../components/Post";
 
 const Main = () => {
   return (
     <>
-      <div>메인페이지</div>
-      <div>메인페이지</div>
-      <div>메인페이지</div>
-      <div>메인페이지</div>
-      <div>메인페이지</div>
-      <div>메인페이지</div>
-      <div>메인페이지</div>
-      <div>메인페이지</div>
+      <PostForm />
+      <br />
+      <Post />
     </>
   );
 };

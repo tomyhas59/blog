@@ -3,8 +3,6 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Login from "./pages/Login";
 import Signup from "./pages/Sign";
 import { useEffect } from "react";
-import Blog from "./pages/Blog";
-import Chat from "./pages/Chat";
 import Main from "./pages/Main";
 import AppLayout from "./pages/Layout/AppLayout";
 import GlobalStyle from "./style/global";
@@ -25,8 +23,6 @@ function App() {
           <Route path="/" element={<Main />} />
           <Route path="/login" element={<Login />} />
           <Route path="/sign" element={<Signup />} />
-          <Route path="/blog/userid=:id" element={<Blog />} />
-          <Route path="/chat" element={<Chat />} />
         </Routes>
       </AppLayout>
     </BrowserRouter>

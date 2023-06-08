@@ -40,9 +40,9 @@ export default Footer;
 export const FooterWrapper = styled.footer`
   width: 100%;
   height: 140px;
-  position: fixed;
   bottom: 0;
   z-index: 1000;
+  position: fixed;
   background-color: ${(props) => props.theme.subColor};
 `;
 
