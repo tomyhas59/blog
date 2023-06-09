@@ -6,7 +6,7 @@ const initialState = [
 export const ADD_LIST = "ADD_LIST";
 export const REMOVE_LIST = "REMOVE_LIST";
 
-const Todo = (state = initialState, action) => {
+const todo = (state = initialState, action) => {
   switch (action.type) {
     case ADD_LIST:
       return [...state, { id: action.data.id, data: action.data.data }];
@@ -17,4 +17,4 @@ const Todo = (state = initialState, action) => {
       return state;
   }
 };
-export default Todo;
+export default todo;

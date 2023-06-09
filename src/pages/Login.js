@@ -1,160 +1,85 @@
-import React from "react";
-import styled, { keyframes, createGlobalStyle } from "styled-components";
+import React, { useCallback } from "react";
+import styled from "styled-components";
 import useInput from "../hooks/useInput";
-import { Link } from "react-router-dom";
 
 function Login() {
-  const [login, onChangeLogin] = useInput();
-  const [password, onChangePassword] = useInput();
+  const [email, emailOnChange] = useInput("");
+  const [password, PasswordOnChange] = useInput("");
 
+  const handleSubmit = useCallback(
+    (e) => {
+      e.preventDefault();
+      console.log(email);
+      console.log(password);
+      // Handle login logic here
+    },
+    [email, password]
+  );
   return (
-    <>
-      <GlobalStyle />
-      <Wrapper>
-        <Form onSubmit={""}>
+    <LoginContainer>
+      <form onSubmit={handleSubmit}>
+        <InputGroup>
+          <Label>이메일:</Label>
           <Input
-            type="email"
-            name="email"
-            value={login}
-            onChange={onChangeLogin}
-            placeholder="ID를 입력해 주세요"
+            type="text"
+            value={email}
+            onChange={emailOnChange}
+            placeholder="이메일을 입력해주세요"
           />
+        </InputGroup>
+        <InputGroup>
+          <Label>비밀번호:</Label>
           <Input
             type="password"
-            name="password"
             value={password}
-            onChange={onChangePassword}
-            placeholder="PASSWORD를 입력해 주세요"
+            onChange={PasswordOnChange}
+            placeholder="비밀번호를 입력해주세요"
           />
-          <Button>로그인</Button>
-          <Home to="/">홈으로</Home>
-          <Signup to="/sign">회원가입</Signup>
-        </Form>
-      </Wrapper>
-    </>
+        </InputGroup>
+        <Button type="submit">로그인</Button>
+      </form>
+    </LoginContainer>
   );
 }
 export default Login;
 
-const jump = keyframes`
-  from{
-    transform: translateY(0)
-  }
-  to{
-    transform: translateY(-3px)
-  }
-`;
-
-const GlobalStyle = createGlobalStyle`
-  * {
-    padding: 0;
-    margin: 0;
-    box-sizing: border-box;
-    background: #FDF9F3;
-  }
-
-  body, html, #root {
-    height: 100%;
-    font-family: -apple-system, Ubuntu , BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;;
-  }
-`;
-
-const Wrapper = styled.section`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100%;
-  width: 100%;
-`;
-
-const Form = styled.form`
+const LoginContainer = styled.div`
+  max-width: 400px;
   margin: 0 auto;
-  width: 100%;
-  max-width: 414px;
-  padding: 1.3rem;
-  display: flex;
-  flex-direction: column;
-  position: relative;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: #f8f8f8;
+`;
+
+const InputGroup = styled.div`
+  margin-bottom: 10px;
+`;
+
+const Label = styled.label`
+  display: block;
+  margin-bottom: 5px;
 `;
 
 const Input = styled.input`
-  max-width: 100%;
-  padding: 11px 13px;
-  background: #f9f9fa;
-  color: #f03d4e;
-  margin-bottom: 0.9rem;
+  width: 100%;
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid #ccc;
   border-radius: 4px;
-  outline: 0;
-  border: 1px solid rgba(245, 245, 245, 0.7);
-  font-size: 14px;
-  transition: all 0.3s ease-out;
-  box-shadow: 0 0 3px rgba(0, 0, 0, 0.1), 0 1px 1px rgba(0, 0, 0, 0.1);
-  :focus,
-  :hover {
-    box-shadow: 0 0 3px rgba(0, 0, 0, 0.15), 0 1px 5px rgba(0, 0, 0, 0.1);
-  }
 `;
 
 const Button = styled.button`
-  max-width: 100%;
-  padding: 11px 13px;
-  color: rgb(253, 249, 243);
-  font-weight: 600;
-  text-transform: uppercase;
-  background: #f03d4e;
+  width: 100%;
+  padding: 10px;
+  font-size: 16px;
+  background-color: #4caf50;
+  color: white;
   border: none;
-  border-radius: 3px;
-  outline: 0;
+  border-radius: 4px;
   cursor: pointer;
-  margin-top: 0.6rem;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.1);
-  transition: all 0.3s ease-out;
-  :hover {
-    background: rgb(200, 50, 70);
-    animation: ${jump} 0.2s ease-out forwards;
-  }
-`;
 
-const Home = styled(Link)`
-  text-align: center;
-  text-decoration: none;
-  max-width: 100%;
-  padding: 11px 13px;
-  color: rgb(253, 249, 243);
-  font-weight: 600;
-  text-transform: uppercase;
-  background: #33cc33;
-  border: none;
-  border-radius: 3px;
-  outline: 0;
-  cursor: pointer;
-  margin-top: 0.6rem;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.1);
-  transition: all 0.3s ease-out;
-  :hover {
-    background: #2f831e;
-    animation: ${jump} 0.2s ease-out forwards;
-  }
-`;
-
-const Signup = styled(Link)`
-  text-align: center;
-  text-decoration: none;
-  max-width: 100%;
-  padding: 11px 13px;
-  color: rgb(253, 249, 243);
-  font-weight: 600;
-  text-transform: uppercase;
-  background: #0000cc;
-  border: none;
-  border-radius: 3px;
-  outline: 0;
-  cursor: pointer;
-  margin-top: 0.6rem;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.1);
-  transition: all 0.3s ease-out;
-  :hover {
-    background: #0e0863;
-    animation: ${jump} 0.2s ease-out forwards;
+  &:hover {
+    background-color: #45a049;
   }
 `;

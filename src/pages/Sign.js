@@ -1,92 +1,110 @@
-import React, { useState } from "react";
-import { useCallback } from "react";
+import React, { useCallback, useState } from "react";
+import styled from "styled-components";
 import useInput from "../hooks/useInput";
-import { SIGN_UP } from "../reducer/user";
-import { useDispatch } from "react-redux";
-import { Link } from "react-router-dom";
 
-const Signup = () => {
-  const dispatch = useDispatch();
+const Registration = () => {
+  const [name, NameOnChange] = useInput("");
+  const [email, EmailOnChange] = useInput("");
+  const [password, PasswordOnChange] = useInput("");
+  const [passwordConfirm, setpasswordConfirm] = useState("");
+  const [passwordError, setpasswordError] = useState(false);
 
-  const [email, onChangeEmail] = useInput();
-  const [password, onChangePassword] = useInput();
-  const [nickname, onChangenickname] = useInput();
-
-  const [term, setTerm] = useState();
-  const [termError, setTermError] = useState(false);
-  const onChangeTerm = useCallback((e) => {
-    setTerm(e.target.checked);
-    setTermError(false);
-  }, []);
-
-  const [passwordCheck, setPasswordCheck] = useState();
-  const [passwordError, setPasswordError] = useState(false);
-  const onChangePasswordCheck = useCallback(
+  const PasswordConfirmOnChange = useCallback(
     (e) => {
-      setPasswordCheck(e.target.value);
-      setPasswordError(e.target.value !== password);
+      setpasswordConfirm(e.target.value);
+      setpasswordError(e.target.value !== password);
     },
-    [password]
+    [password, setpasswordConfirm]
   );
 
-  const onSubmitSignup = useCallback(() => {
-    if (password !== passwordCheck) {
-      return setPasswordError(true);
-    }
-    if (!term) {
-      return setTermError(true);
-    }
-    dispatch({
-      type: SIGN_UP,
-      data: { email, password, nickname },
-    });
-  }, [dispatch, email, nickname, password, passwordCheck, term]);
+  const handleSubmit = useCallback(
+    (e) => {
+      if (password !== passwordConfirm) {
+        return setpasswordError(true);
+      } else {
+        console.log("회원가입 성공");
+      }
+      e.preventDefault();
+      // Handle registration logic here
+    },
+    [password, passwordConfirm]
+  );
 
   return (
-    <div>
-      <form onFinish={onSubmitSignup}>
-        <div>
-          <label>이메일</label>
-          <br />
-          <input value={email} onChange={onChangeEmail} type="email" />
-        </div>
-        <div>
-          <label>닉네임</label>
-          <br />
-          <input value={nickname} onChange={onChangenickname} />
-        </div>
-        <div>
-          <label>비밀번호</label>
-          <br />
-          <input type="password" value={password} onChange={onChangePassword} />
-        </div>
-        <div>
-          <label>비밀번호 체크</label>
-          <br />
-          <input
+    <RegistrationContainer>
+      <form onSubmit={handleSubmit}>
+        <FormGroup>
+          <Label>Email:</Label>
+          <Input type="email" value={email} onChange={EmailOnChange} />
+        </FormGroup>
+        <FormGroup>
+          <Label>닉네임:</Label>
+          <Input type="text" value={name} onChange={NameOnChange} />
+        </FormGroup>
+        <FormGroup>
+          <Label>비밀번호:</Label>
+          <Input type="password" value={password} onChange={PasswordOnChange} />
+        </FormGroup>
+        <FormGroup>
+          <Label>비밀번호 확인:</Label>
+          <Input
             type="password"
-            value={passwordCheck}
-            onChange={onChangePasswordCheck}
+            value={passwordConfirm}
+            onChange={PasswordConfirmOnChange}
           />
-          {passwordError && <div>비밀번호가 일치하지 않습니다.</div>}
-        </div>
-        <div>
-          <input type="checkbox" onChange={onChangeTerm} checked={term} />
-          <span>동의합니까?</span>
-          {termError && <div>약관에 동의하셔야 합니다</div>}
-        </div>
-        <div>
-          <button type="primary" htmlType="submit">
-            회원가입
-          </button>
-          <Link to="/" style={{ background: "yellowgreen" }}>
-            <button>홈으로</button>
-          </Link>
-        </div>
+        </FormGroup>
+        {passwordError && (
+          <CheckMessage>비밀번호가 일치하지 않습니다</CheckMessage>
+        )}
+        <Button type="submit">회원가입</Button>
       </form>
-    </div>
+    </RegistrationContainer>
   );
 };
 
-export default Signup;
+export default Registration;
 
+const RegistrationContainer = styled.div`
+  max-width: 400px;
+  margin: 0 auto;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: #f8f8f8;
+`;
+
+const FormGroup = styled.div`
+  margin-bottom: 10px;
+`;
+
+const Label = styled.label`
+  display: block;
+  margin-bottom: 5px;
+`;
+
+const Input = styled.input`
+  width: 100%;
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+`;
+
+const Button = styled.button`
+  width: 100%;
+  padding: 10px;
+  font-size: 16px;
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+
+  &:hover {
+    background-color: #45a049;
+  }
+`;
+
+const CheckMessage = styled.div`
+  color: red;
+`;

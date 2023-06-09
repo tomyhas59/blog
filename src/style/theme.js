@@ -1,4 +1,4 @@
 export const theme = {
-  mainColor: "green",
+  mainColor: "#4caf50",
   subColor: "yellowgreen",
 };

@@ -6,14 +6,10 @@ const AppLayout = ({ children }) => {
   return (
     <div>
       <Header />
-      <Middle>{children}</Middle>
+      {children}
       <Footer />
     </div>
   );
 };
 
 export default AppLayout;
-
-const Middle = styled.div`
-  text-align: center;
-`;

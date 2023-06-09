@@ -1,52 +1,70 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
-const CommentForm = () => {
+
+const CommentForm = ({ onSubmit }) => {
+  const [author, setAuthor] = useState("");
+  const [content, setContent] = useState("");
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    onSubmit({ author, content });
+    setAuthor("");
+    setContent("");
+  };
+
   return (
-    <CommentFormCSS>
-      <CommentHeader>
-        <CommentBody>
-          <input type="text" value={"comment"} onChange={"onChangeComment"} />
-          <button onClick={"AddComment"}>등록</button>
-        </CommentBody>
-      </CommentHeader>
-    </CommentFormCSS>
+    <FormWrapper>
+      <Form onSubmit={handleSubmit}>
+        <InputName
+          type="text"
+          placeholder="Your Name"
+          value={author}
+          onChange={(e) => setAuthor(e.target.value)}
+        />
+        <InputComment
+          type="text"
+          placeholder="Your Comment"
+          value={content}
+          onChange={(e) => setContent(e.target.value)}
+        />
+        <Button type="submit">등록</Button>
+      </Form>
+    </FormWrapper>
   );
 };
 
 export default CommentForm;
 
-export const CommentFormCSS = styled.div`
-  overflow: hidden;
-  width: 100%;
-  margin-top: 2rem;
+const FormWrapper = styled.div`
+  width: 80%;
+  border: 1px solid;
+  border-color: silver;
+  border-radius: 5px;
+  margin: 10px auto;
+  padding: 20px;
 `;
 
-export const CommentHeader = styled.div`
-  display: flex;
-  justify-content: space-between;
-  margin: 5px;
-  font-size: 13px;
+const Form = styled.form`
+  // CSS styles for the form
+`;
+
+const InputName = styled.input`
+  width: 20%;
+`;
+
+const InputComment = styled.input`
+  width: 70%;
+`;
+
+const Button = styled.span`
+  width: 80%;
+  background-color: ${(props) => props.theme.mainColor};
+  margin: 2px;
+  color: #fff;
+  padding: 6px;
+  border-radius: 6px;
   cursor: pointer;
-`;
-
-export const CommentBody = styled.div`
-  width: 100%;
-  margin: 15px 3px;
-
-  & input {
-    width: 650px;
-  }
-
-  & button {
-    width: 105px;
-    height: 31px;
-    text-align: center;
-    font-weight: bold;
-    background-color: ${(props) => props.theme.mainColor};
-    border-radius: 6px;
-    color: #fff;
-    :hover {
-      opacity: 0.7;
-    }
+  :hover {
+    opacity: 0.7;
   }
 `;
