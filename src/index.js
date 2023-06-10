@@ -6,13 +6,12 @@ import reportWebVitals from "./reportWebVitals";
 import { ThemeProvider } from "styled-components";
 import { theme } from "./style/theme";
 //리덕스 설정
-import { createStore } from "redux";
 import { Provider } from "react-redux";
-import rootReducer from "./reducer";
+import configureStore from "./store/store";
 //-------------------------------------------------------
 //dev-tools 미들웨어 적용
-import { composeWithDevTools } from "redux-devtools-extension";
-const store = createStore(rootReducer, composeWithDevTools());
+
+const store = configureStore();
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
