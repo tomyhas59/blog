@@ -1,5 +1,8 @@
 export const initialState = {
   posts: [],
+  isLoading: false,
+  isDone: false,
+  isError: null,
 };
 
 export const REGISTER_POST = "REGISTER_POST";

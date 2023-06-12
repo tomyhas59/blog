@@ -1,19 +1,25 @@
 import React, { useCallback } from "react";
 import styled from "styled-components";
 import useInput from "../hooks/useInput";
-
+import { useDispatch } from "react-redux";
+import { LOG_IN_REQUEST } from "../reducer/user";
 function Login() {
   const [email, emailOnChange] = useInput("");
   const [password, PasswordOnChange] = useInput("");
+  const dispatch = useDispatch();
 
   const handleSubmit = useCallback(
     (e) => {
       e.preventDefault();
       console.log(email);
       console.log(password);
-      // Handle login logic here
+      dispatch({
+        type: LOG_IN_REQUEST,
+        data: { email: email, password: password },
+      });
+      
     },
-    [email, password]
+    [dispatch, email, password]
   );
   return (
     <LoginContainer>

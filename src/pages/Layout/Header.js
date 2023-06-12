@@ -4,17 +4,19 @@ import { Link } from "react-router-dom";
 const Header = () => {
   return (
     <HeaderWrapper>
-      <HeaderLogo>
-        <Link to="/">Y BLOG</Link>
-      </HeaderLogo>
-      <HeaderList>
-        <li>
-          <Link to="/sign">회원가입</Link>
-        </li>
-        <li>
-          <Link to="/login">로그인</Link>
-        </li>
-      </HeaderList>
+      <HeaderWidth>
+        <HeaderLogo>
+          <Link to="/">Y BLOG</Link>
+        </HeaderLogo>
+        <HeaderList>
+          <li>
+            <Link to="/sign">회원가입</Link>
+          </li>
+          <li>
+            <Link to="/login">로그인</Link>
+          </li>
+        </HeaderList>
+      </HeaderWidth>
     </HeaderWrapper>
   );
 };
@@ -31,6 +33,11 @@ export const HeaderWrapper = styled.header`
   top: 0;
   z-index: 1000;
   background-color: ${(props) => props.theme.subColor};
+`;
+
+export const HeaderWidth = styled.div`
+  width: 70%;
+  margin: 0 auto;
 `;
 
 export const HeaderLogo = styled.div`

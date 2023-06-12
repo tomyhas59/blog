@@ -1,9 +1,9 @@
 import { combineReducers } from "redux";
-import todo from "./todo";
 import post from "./post";
+import user from "./user";
 const rootReducer = combineReducers({
-  todo,
   post,
+  user,
 });
 
 export default rootReducer;
