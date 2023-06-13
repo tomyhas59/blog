@@ -1,26 +1,55 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useEffect } from "react";
 import styled from "styled-components";
 import useInput from "../hooks/useInput";
-import { useDispatch } from "react-redux";
 import { LOG_IN_REQUEST } from "../reducer/user";
+import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+
 function Login() {
+  const dispatch = useDispatch();
+  const navigator = useNavigate();
+
   const [email, emailOnChange] = useInput("");
   const [password, PasswordOnChange] = useInput("");
-  const dispatch = useDispatch();
+
+  const { me, logInError } = useSelector((state) => state.user);
+
+  useEffect(() => {
+    if (logInError) {
+      alert(logInError);
+    }
+  }, [logInError]);
+
+  useEffect(() => {
+    if (me) {
+      navigator("/");
+    }
+  }, [me, navigator]);
 
   const handleSubmit = useCallback(
     (e) => {
       e.preventDefault();
-      console.log(email);
-      console.log(password);
       dispatch({
         type: LOG_IN_REQUEST,
         data: { email: email, password: password },
       });
-      
     },
     [dispatch, email, password]
   );
+
+  const LoginEnter = useCallback(
+    (e) => {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        dispatch({
+          type: LOG_IN_REQUEST,
+          data: { email: email, password: password },
+        });
+      }
+    },
+    [dispatch, email, password]
+  );
+
   return (
     <LoginContainer>
       <form onSubmit={handleSubmit}>
@@ -40,6 +69,7 @@ function Login() {
             value={password}
             onChange={PasswordOnChange}
             placeholder="비밀번호를 입력해주세요"
+            onKeyUp={LoginEnter}
           />
         </InputGroup>
         <Button type="submit">로그인</Button>

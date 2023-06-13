@@ -1,13 +1,19 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import styled from "styled-components";
 import useInput from "../hooks/useInput";
-
+import { useDispatch, useSelector } from "react-redux";
+import { SIGN_UP_REQUEST } from "../reducer/user";
+import { useNavigate } from "react-router-dom";
 const Registration = () => {
-  const [name, NameOnChange] = useInput("");
-  const [email, EmailOnChange] = useInput("");
-  const [password, PasswordOnChange] = useInput("");
+  const [nickname, nickNameOnChange] = useInput("");
+  const [email, emailOnChange] = useInput("");
+  const [password, passwordOnChange] = useInput("");
   const [passwordConfirm, setpasswordConfirm] = useState("");
   const [passwordError, setpasswordError] = useState(false);
+  const dipatch = useDispatch();
+  const navigator = useNavigate();
+
+  const { signUpDone, signUpError } = useSelector((state) => state.user);
 
   const PasswordConfirmOnChange = useCallback(
     (e) => {
@@ -16,18 +22,31 @@ const Registration = () => {
     },
     [password, setpasswordConfirm]
   );
+  useEffect(() => {
+    if (signUpError) {
+      alert(signUpError);
+    }
+  }, [signUpError]);
+
+  useEffect(() => {
+    if (signUpDone) {
+      alert("회원가입이 완료되었습니다");
+      navigator("/");
+    }
+  }, [signUpDone, navigator]);
 
   const handleSubmit = useCallback(
     (e) => {
+      e.preventDefault();
       if (password !== passwordConfirm) {
         return setpasswordError(true);
-      } else {
-        console.log("회원가입 성공");
       }
-      e.preventDefault();
-      // Handle registration logic here
+      dipatch({
+        type: SIGN_UP_REQUEST,
+        data: { email, password, nickname },
+      });
     },
-    [password, passwordConfirm]
+    [dipatch, email, nickname, password, passwordConfirm]
   );
 
   return (
@@ -35,15 +54,15 @@ const Registration = () => {
       <form onSubmit={handleSubmit}>
         <FormGroup>
           <Label>Email:</Label>
-          <Input type="email" value={email} onChange={EmailOnChange} />
+          <Input type="email" value={email} onChange={emailOnChange} />
         </FormGroup>
         <FormGroup>
           <Label>닉네임:</Label>
-          <Input type="text" value={name} onChange={NameOnChange} />
+          <Input type="text" value={nickname} onChange={nickNameOnChange} />
         </FormGroup>
         <FormGroup>
           <Label>비밀번호:</Label>
-          <Input type="password" value={password} onChange={PasswordOnChange} />
+          <Input type="password" value={password} onChange={passwordOnChange} />
         </FormGroup>
         <FormGroup>
           <Label>비밀번호 확인:</Label>
