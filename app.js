@@ -10,8 +10,8 @@ const db = require("./models");
 const passportConfig = require("./passport");
 const session = require("express-session");
 const passport = require("passport");
-const cookieParser = require("cookie-parser");
-const morgan = require("morgan");
+const cookieParser = require("cookie-parser");//middleware
+const morgan = require("morgan");//middleware
 const path = require("path");
 
 dotenv.config();
@@ -55,3 +55,5 @@ app.use("/hashtag", hashtagRouter);
 app.listen(3075, () => {
   console.log("서버 실행중");
 });
+
+

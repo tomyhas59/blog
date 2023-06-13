@@ -27,7 +27,7 @@ const upload = multer({
   }),
   limits: { fileSize: 28 * 1024 * 1024 }, //20MB
 });
-
+//--------------------------------------------------------
 router.post("/", isLoggedIn, upload.none(), async (req, res, next) => {
   try {
     const hashtags = req.body.content.match(/#[^\s#]+/g);
