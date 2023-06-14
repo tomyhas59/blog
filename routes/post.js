@@ -5,7 +5,7 @@ const router = express.Router();
 const { isLoggedIn, isNotLoggedIn } = require("./middlewares");
 const path = require("path");
 const fs = require("fs");
-
+//-----------------------------------------------------
 try {
   fs.accessSync("uploads");
 } catch (error) {
@@ -16,17 +16,35 @@ try {
 const upload = multer({
   storage: multer.diskStorage({
     destination(req, file, done) {
-      done(null, "uploads"); //저장 폴더
+      done(
+        null, //err가 있을 때 로직
+        "uploads" //성공 시 저장 폴더
+      );
     },
     filename(req, file, done) {
-      //우자.png
-      const ext = path.extname(file.originalname); //확장자 추출 (.png)
-      const basename = path.basename(file.originalname, ext); // 우자
+      //파일명.png
+      const ext = path.extname(file.originalname); //확장자 이름만 변수 지정, (.png)가 바로
+      const basename = path.basename(file.originalname, ext); // 확장자를 제외한 파일명
       done(null, basename + "_" + new Date().getTime() + ext); //우자1243.png
     }, //덮어씌우는 거 방지
   }),
   limits: { fileSize: 28 * 1024 * 1024 }, //20MB
 });
+//------------------------------------------------------
+router.post(
+  "/upload",
+  upload.single("image"), //single = 하나만, none= 텍스트
+  (req, res) => {
+    console.log(req.file);
+    try {
+      fs.readdirSync("uploads");
+    } catch (error) {
+      fs.mkdirSync("uploads/");
+    }
+    upload.single("image");
+  }
+);
+
 //--------------------------------------------------------
 router.post("/", isLoggedIn, upload.none(), async (req, res, next) => {
   try {
@@ -165,28 +183,8 @@ router.delete("/:postId", isLoggedIn, async (req, res, next) => {
   }
 });
 
-router.post(
-  "/images",
-  isLoggedIn,
-  upload.array("image"), //single = 하나만, none= 텍스트
-  async (req, res, next) => {
-    console.log(req.files);
-    res.json(req.files.map((v) => v.filename));
-    try {
-      await Post.destroy({
-        where: {
-          id: req.params.postId,
-          UserId: req.user.id,
-        },
-      });
+//------------------------------------------------------
 
-      res.status(200).json({ PostId: parseInt(req.params.postId, 10) });
-    } catch (error) {
-      console.error(error);
-      next(error);
-    }
-  }
-);
 router.get("/:postId", async (req, res, next) => {
   try {
     //GET / post /1
