@@ -18,7 +18,7 @@ const upload = multer({
     destination(req, file, done) {
       done(
         null, //err가 있을 때 로직
-        "uploads" //성공 시 저장 폴더
+        "uploads/" //성공 시 저장 폴더
       );
     },
     filename(req, file, done) {
@@ -35,13 +35,7 @@ router.post(
   "/upload",
   upload.single("image"), //single = 하나만, none= 텍스트
   (req, res) => {
-    console.log(req.file);
-    try {
-      fs.readdirSync("uploads");
-    } catch (error) {
-      fs.mkdirSync("uploads/");
-    }
-    upload.single("image");
+    res.send("업로드 완료");
   }
 );
 
