@@ -1,6 +1,5 @@
 const Sequelize = require("sequelize");
 const comment = require("./comment");
-const hashtag = require("./hashtag");
 const image = require("./image");
 const post = require("./post");
 const user = require("./user");
@@ -19,7 +18,6 @@ db.User = user;
 db.Post = post;
 db.Image = image;
 db.Comment = comment;
-db.Hashtag = hashtag;
 
 Object.keys(db).forEach((modelName) => {
   db[modelName].init(sequelize);

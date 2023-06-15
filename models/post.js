@@ -18,7 +18,6 @@ module.exports = class Post extends Model {
   }
   static associate(db) {
     db.Post.belongsTo(db.User); //테이블에 UserId 컬럼 생김
-    db.Post.belongsToMany(db.Hashtag, { through: "postHashtag" }); // 다 대 다 관계
     db.Post.hasMany(db.Comment); //post.addComments 이런식으로 제공
     db.Post.hasMany(db.Image);
     db.Post.belongsToMany(db.User, { through: "Like", as: "Likers" });

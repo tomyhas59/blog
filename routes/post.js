@@ -32,10 +32,32 @@ const upload = multer({
 });
 //------------------------------------------------------
 router.post(
-  "/upload",
+  "/upload", //<form>에서 저장할 action 주소
   upload.single("image"), //single = 하나만, none= 텍스트
   (req, res) => {
-    res.send("업로드 완료");
+    console.log(req.file);
+    const data = {
+      state: "success",
+      data: {
+        src: `/uploads/${req.file.filename}`,
+      },
+    };
+    res.status(200).json(data);
+  }
+);
+//------------------------------------------------------
+router.post(
+  "/uploads", //<form>에서 저장할 action 주소
+  upload.fields([{ name: "image" }, { name: "image1" }]), //single = 하나만, none= 텍스트
+  (req, res) => {
+    console.log(req.files);
+    const data = {
+      state: "success",
+      data: {
+        src: `/uploads/${req.files.image}`,
+      },
+    };
+    res.status(200).json(data);
   }
 );
 
