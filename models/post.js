@@ -1,11 +1,10 @@
-const DataTypes = require("sequelize");
-const { Model } = DataTypes;
+const Sequelize = require("sequelize");
 
-module.exports = class Post extends Model {
+module.exports = class Post extends Sequelize.Model {
   static init(sequelize) {
     return super.init(
       {
-        content: { type: DataTypes.TEXT, allowNull: false }, //RetweetId
+        content: { type: Sequelize.TEXT, allowNull: false }, //RetweetId
       },
       {
         modelName: "Post",
@@ -17,12 +16,6 @@ module.exports = class Post extends Model {
     );
   }
   static associate(db) {
-    db.Post.belongsTo(db.User); //테이블에 UserId 컬럼 생김
-    db.Post.hasMany(db.Comment); //post.addComments 이런식으로 제공
-    db.Post.hasMany(db.Image);
-    db.Post.belongsToMany(db.User, { through: "Like", as: "Likers" });
-    db.Post.belongsTo(db.Post, { as: "Retweet" }); //RetweetId 컬럼 생성
-
-    //db.Post.hasOne(db.PostInfo) 일 대 일 관계
+  
   }
 };

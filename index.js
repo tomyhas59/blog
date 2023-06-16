@@ -1,11 +1,22 @@
-const postRouter = require("./routes/post");
-const postsRouter = require("./routes/posts");
+const postRouter = require("./routes/post");;
 const userRouter = require("./routes/user");
 const express = require("express");
 const app = express();
 const morgan = require("morgan");
 app.set("port", 3075);
 const path = require("path");
+//------------------------------------------------------------
+const db = require("./models");
+const dotenv = require("dotenv");
+
+dotenv.config();
+db.sequelize
+  .sync()
+  .then(() => {
+    console.log("db 연결 성공");
+  })
+  .catch(console.error);
+//------------------------------------------------------------
 
 app.use(
   morgan("dev"), //로그를 찍어줌 ,종류 dev(개발용), combined(배포용), common, short, tiny
@@ -19,7 +30,6 @@ app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 app.use("/", express.static(path.join(__dirname, "public")));
 
 app.use("/post", postRouter);
-app.use("/posts", postsRouter);
 app.use("/user", userRouter);
 
 app.listen(app.get("port"), () => {

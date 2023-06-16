@@ -1,116 +1,16 @@
 const express = require("express");
-const { User, Post, Comment, Image } = require("../models");
-const bcrypt = require("bcrypt");
-const passport = require("passport");
+const { User, Post } = require("../models");
 const { Op } = require("sequelize");
 const router = express.Router();
 const { isLoggedIn, isNotLoggedIn } = require("./middlewares");
+const UserService = require("../service/user");
 
-router.get("/", async (req, res, next) => {
-  console.log(req.headers); //headers 안에 쿠키 있음
-  try {
-    if (req.user) {
-      const fullUserWithoutPassword = await User.findOne({
-        where: { id: req.user.id },
-        //attributes : ["id", "nickname", "email"], <- 이것만 가져오겠다
-        attributes: {
-          exclude: ["password"],
-        },
-        include: [
-          {
-            model: Post,
-            attributes: ["id"],
-          },
-          {
-            model: User,
-            as: "Followings",
-            attributes: ["id"],
-          },
-          {
-            model: User,
-            as: "Followers",
-            attributes: ["id"],
-          },
-        ],
-      });
-      res.status(200).json(fullUserWithoutPassword);
-    } else {
-      res.status(200).json(null);
-    }
-  } catch (error) {
-    console.error(error);
-    next(error);
-  }
-});
+router.post("/signup", isNotLoggedIn, UserService.signUp);
+router.get("/", UserService.main);
+router.post("/login", UserService.logIn);
+router.post("/logout", isLoggedIn, UserService.logOut);
 
-router.post("/login", (req, res, next) => {
-  passport.authenticate("local", (err, user, info) => {
-    if (err) {
-      console.log(err);
-      return next(err);
-    }
-    if (info) {
-      return res.status(401).send(info.error);
-    }
-    return req.login(user, async (loginErr) => {
-      if (loginErr) {
-        console.error(loginErr);
-        return next(loginErr);
-      }
-      const fullUserWithoutPassword = await User.findOne({
-        where: { id: user.id },
-        //["id", "nickname", "email"], <- 이것만 가져오겠다
-        attributes: {
-          exclude: ["password"],
-        },
-        include: [
-          {
-            model: Post,
-          },
-          {
-            model: User,
-            as: "Followings",
-          },
-          {
-            model: User,
-            as: "Followers",
-          },
-        ],
-      });
-
-      return res.status(200).json(fullUserWithoutPassword);
-    });
-  })(req, res, next);
-});
-router.post("/", isNotLoggedIn, async (req, res, next) => {
-  try {
-    const exUser = await User.findOne({
-      where: {
-        email: req.body.email,
-      },
-    });
-    if (exUser) {
-      return res.status(403).send("이미 사용 중인 아이디입니다.");
-    }
-    const hashedPassword = await bcrypt.hash(req.body.password, 10);
-    await User.create({
-      email: req.body.email,
-      nickname: req.body.nickname,
-      password: hashedPassword,
-    });
-    // res.setHeader("Access-Control-Allow-Origin", "http://localhost:3000");
-    res.status(200).send("ok"); //200 성공, 201 잘 생성됨
-  } catch (error) {
-    console.error(error);
-    next(error); //status 500임
-  }
-});
-
-router.post("/logout", isLoggedIn, (req, res) => {
-  req.logout();
-  req.session.destroy();
-  res.send("ok");
-});
+//----------------------------------------------------------------------
 
 router.patch("/nickname", isLoggedIn, async (req, res, next) => {
   try {
@@ -126,6 +26,7 @@ router.patch("/nickname", isLoggedIn, async (req, res, next) => {
     next(error);
   }
 });
+//----------------------------------------------------------------------
 
 router.get("/followers", isLoggedIn, async (req, res, next) => {
   //GET/user/followers
@@ -147,6 +48,8 @@ router.get("/followers", isLoggedIn, async (req, res, next) => {
     next(error);
   }
 });
+//----------------------------------------------------------------------
+
 router.get("/followings", isLoggedIn, async (req, res, next) => {
   try {
     const user = await User.findOne({
@@ -166,6 +69,7 @@ router.get("/followings", isLoggedIn, async (req, res, next) => {
     next(error);
   }
 });
+//----------------------------------------------------------------------
 
 router.patch("/:userId/follow", isLoggedIn, async (req, res, next) => {
   try {
@@ -182,6 +86,7 @@ router.patch("/:userId/follow", isLoggedIn, async (req, res, next) => {
     next(error);
   }
 });
+//----------------------------------------------------------------------
 
 router.delete("/:userId/follow", isLoggedIn, async (req, res, next) => {
   try {
@@ -199,6 +104,7 @@ router.delete("/:userId/follow", isLoggedIn, async (req, res, next) => {
     next(error);
   }
 });
+//----------------------------------------------------------------------
 
 router.delete("/follwer/:userId", isLoggedIn, async (req, res, next) => {
   try {
@@ -216,6 +122,7 @@ router.delete("/follwer/:userId", isLoggedIn, async (req, res, next) => {
     next(error);
   }
 });
+//----------------------------------------------------------------------
 
 router.get("/:userId/posts", async (req, res, next) => {
   // = GET /user/1/posts
@@ -271,6 +178,7 @@ router.get("/:userId/posts", async (req, res, next) => {
     next(error);
   }
 });
+//----------------------------------------------------------------------
 
 router.get("/:userId", async (req, res, next) => {
   try {
