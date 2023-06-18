@@ -28,6 +28,17 @@ module.exports = class User extends Sequelize.Model {
     );
   }
   static associate(db) {
- 
+    db.User.hasMany(db.Post), { as: "Posts" };
+    db.User.belongsToMany(db.Post, { through: "Like", as: "Liked" }); //중간 테이블 이름
+    db.User.belongsToMany(db.User, {
+      through: "Follow", //중간 테이블 이름
+      as: "Followers", //테이블 별칭
+      foreignKey: "FollowingsId", //column 이름
+    });
+    db.User.belongsToMany(db.User, {
+      through: "Follow", //중간 테이블 이름
+      as: "Followings", //테이블 별칭
+      foreignKey: "FollowersId", //column 이름
+    });
   }
 };

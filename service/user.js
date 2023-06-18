@@ -29,43 +29,31 @@ module.exports = class UserService {
   //----------------------------------------------------------------------
 
   static async logIn(req, res, next) {
-    passport.authenticate("local", (err, user, info) => {
+    passport.authenticate("local" /*인증 로직*/, (err, user, message) => {
       if (err) {
         console.log(err);
         return next(err);
       }
-      if (info) {
-        return res.status(401).send(info.error);
+      if (message) {
+        return res.status(401).send(message);
       }
+
+      /*login 실행 함수 , passport에서 주입*/
       return req.login(user, async (loginErr) => {
         if (loginErr) {
           console.error(loginErr);
           return next(loginErr);
         }
-        const fullUserWithoutPassword = await User.findOne({
+        const fullUser = await User.findOne({
           where: { id: user.id },
           //["id", "nickname", "email"], <- 이것만 가져오겠다
           attributes: {
             exclude: ["password"],
           },
-          include: [
-            {
-              model: Post,
-            },
-            {
-              model: User,
-              as: "Followings",
-            },
-            {
-              model: User,
-              as: "Followers",
-            },
-          ],
         });
-
-        return res.status(200).json(fullUserWithoutPassword);
+        return res.status(200).json(fullUser);
       });
-    })(req, res, next);
+    })(req, res, next); //이걸 써줘야 passport로 전달됨
   }
   //----------------------------------------------------------------------
 

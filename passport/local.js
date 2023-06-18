@@ -1,10 +1,14 @@
 const passport = require("passport");
 const { User } = require("../models");
 const bcrypt = require("bcrypt");
-const { Strategy: LocalStrategy } = require("passport-local");
+const passportLocal = require("passport-local");
+
+const LocalStrategy = passportLocal.Strategy;
+
 const passportConfig = {
   usernameField: "email", //req.body.email 과 같음
   passwordField: "password",
+  //밑에 async (email, password)와 같음
 };
 
 const passportVerify = async (email, password, done) => {
@@ -16,7 +20,7 @@ const passportVerify = async (email, password, done) => {
       });
     }
 
-    const result = await bcrypt.compare(password, user.password);
+    const result = await bcrypt.compare(password, user.password); //password와 user.password 값 비교
     if (result) {
       return done(null, user); //두번째 인자가 성공or실패, 성공하면 정보 넘겨줌
     }
