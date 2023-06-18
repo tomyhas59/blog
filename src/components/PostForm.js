@@ -1,43 +1,25 @@
-import React, { useState } from "react";
+import React from "react";
 import styled from "styled-components";
 import useInput from "../hooks/useInput";
 import { useDispatch } from "react-redux";
-import { REGISTER_POST } from "../reducer/post";
+import { ADD_POST_REQUEST } from "../reducer/post";
 
 const PostForm = () => {
-  const [title, titleOnChane] = useInput("");
   const [content, contentOnChane] = useInput("");
   const dispatch = useDispatch();
-
-  const [newPost, setNewPost] = useState({
-    id: "",
-    title: "",
-    content: "",
-  });
 
   const handleRegisterPost = (e) => {
     e.preventDefault();
     dispatch({
-      type: REGISTER_POST,
-      payload: newPost,
-    });
-    setNewPost({
-      id: "",
-      title: "",
-      content: "",
+      type: ADD_POST_REQUEST,
+      data: content,
     });
   };
 
   return (
-    <FormContainer>
+    <FormWrapper>
       <Title>글쓰기</Title>
       <Form onSubmit={handleRegisterPost}>
-        <Input
-          type="text"
-          placeholder="Title"
-          value={title}
-          onChange={titleOnChane}
-        />
         <TextArea
           placeholder="Content"
           value={content}
@@ -45,29 +27,37 @@ const PostForm = () => {
         ></TextArea>
         <Button type="submit">등록</Button>
       </Form>
-    </FormContainer>
+      <Form
+        action="http://localhost:3075/post/uploads" //저장할 주소
+        method="post"
+        encType="multipart/form-data"
+      >
+        <Input type="file" name="image"></Input>
+        <Input type="file" name="image1"></Input>
+        <Button type="submit">등록</Button>
+      </Form>
+    </FormWrapper>
   );
 };
 
 export default PostForm;
 
-const FormContainer = styled.div`
+const FormWrapper = styled.div`
   max-width: 800px;
-  margin: 0 auto;
+  border: 1px solid;
+  border-color: silver;
+  border-radius: 5px;
+  margin: 10px auto;
   padding: 20px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
 `;
-
 const Title = styled.h2`
   text-align: center;
   margin-bottom: 20px;
 `;
 
 const Form = styled.form`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  width: 100%;
+  text-align: center;
 `;
 
 const Input = styled.input`

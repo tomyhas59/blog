@@ -1,48 +1,183 @@
-import { takeEvery, put, all, fork } from "redux-saga/effects";
-import { DELETE_POST, MODIFY_POST, REGISTER_POST } from "../reducer/post";
+import axios from "axios";
+import { fork, takeLatest, put, all, call } from "redux-saga/effects";
+import {
+  ADD_COMMENT_FAILURE,
+  ADD_COMMENT_REQUEST,
+  ADD_COMMENT_SUCCESS,
+  ADD_POST_FAILURE,
+  ADD_POST_REQUEST,
+  ADD_POST_SUCCESS,
+  ALL_POSTS_FAILURE,
+  ALL_POSTS_REQUEST,
+  ALL_POSTS_SUCCESS,
+  REMOVE_COMMENT_FAILURE,
+  REMOVE_COMMENT_REQUEST,
+  REMOVE_COMMENT_SUCCESS,
+  REMOVE_POST_FAILURE,
+  REMOVE_POST_REQUEST,
+  REMOVE_POST_SUCCESS,
+  UPDATE_POST_FAILURE,
+  UPDATE_POST_REQUEST,
+  UPDATE_POST_SUCCESS,
+} from "../reducer/post";
+//-----------------------------------------------------
 
-// Redux actions
-const registerPostSuccess = (post) => ({
-  type: "REGISTER_POST_SUCCESS",
-  payload: post,
-});
-
-const modifyPostSuccess = (post) => ({
-  type: "MODIFY_POST_SUCCESS",
-  payload: post,
-});
-
-const deletePostSuccess = (postId) => ({
-  type: "DELETE_POST_SUCCESS",
-  payload: postId,
-});
-
-// Redux-saga worker functions
-function* registerPost(action) {
-  // 실제로 서버에 데이터를 등록하는 비동기 작업 수행
-  // 예시에서는 단순히 액션을 발행하는 역할을 수행합니다.
-  yield put(registerPostSuccess(action.payload));
+function allPostsApi() {
+  return axios.get("/post");
 }
 
-function* modifyPost(action) {
-  // 실제로 서버에서 데이터를 수정하는 비동기 작업 수행
-  // 예시에서는 단순히 액션을 발행하는 역할을 수행합니다.
-  yield put(modifyPostSuccess(action.payload));
+function* loadPosts(action) {
+  try {
+    const result = yield call(allPostsApi);
+    yield put({
+      type: ALL_POSTS_SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    console.log(err);
+    yield put({
+      type: ALL_POSTS_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+function* watchLoadPosts() {
+  yield takeLatest(ALL_POSTS_REQUEST, loadPosts);
 }
 
-function* deletePost(action) {
-  // 실제로 서버에서 데이터를 삭제하는 비동기 작업 수행
-  // 예시에서는 단순히 액션을 발행하는 역할을 수행합니다.
-  yield put(deletePostSuccess(action.payload));
+//-----------------------------------------------------
+
+function addPostApi(data) {
+  return axios.post("/post", { content: data });
 }
 
-// Redux-saga watcher function
-export function* watchPostActions() {
-  yield takeEvery(REGISTER_POST, registerPost);
-  yield takeEvery(MODIFY_POST, modifyPost);
-  yield takeEvery(DELETE_POST, deletePost);
+function* addPost(action) {
+  try {
+    const result = yield call(addPostApi, action.data);
+    yield put({
+      type: ADD_POST_SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    console.log(err);
+    yield put({
+      type: ADD_POST_FAILURE,
+      error: err.response.data,
+    });
+  }
 }
+function* watchAddPost() {
+  yield takeLatest(ADD_POST_REQUEST, addPost);
+}
+
+//-----------------------------------------------------
+
+function removePostApi(data) {
+  return axios.delete(`/post/${data.id}`);
+}
+
+function* removePost(action) {
+  try {
+    const result = yield call(removePostApi, action.data);
+    yield put({
+      type: REMOVE_POST_SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    console.log(err);
+    yield put({
+      type: REMOVE_POST_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+function* watchRemovePost() {
+  yield takeLatest(REMOVE_POST_REQUEST, removePost);
+}
+
+//-----------------------------------------------------
+
+function updateApi(data) {
+  return axios.patch(`/post/${data.postId}`, data);
+}
+
+function* updatePost(action) {
+  try {
+    const result = yield call(updateApi, action.data);
+    yield put({
+      type: UPDATE_POST_SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    console.log(err);
+    yield put({
+      type: UPDATE_POST_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+function* watchUpdatePost() {
+  yield takeLatest(UPDATE_POST_REQUEST, updatePost);
+}
+
+//-----------------------------------------------------
+
+function addCommentApi(data) {
+  return axios.post(`/post/${data.postId}/comment`, data);
+}
+
+function* addCommnet(action) {
+  try {
+    const result = yield call(addCommentApi, action.data);
+    yield put({
+      type: ADD_COMMENT_SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    console.log(err);
+    yield put({
+      type: ADD_COMMENT_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+function* watchAddComment() {
+  yield takeLatest(ADD_COMMENT_REQUEST, addCommnet);
+}
+
+//-----------------------------------------------------
+
+function removeCommentApi(data) {
+  return axios.delete(`/post/${data.postId}/${data.commentId}`);
+}
+
+function* removeComment(action) {
+  try {
+    const result = yield call(removeCommentApi, action.data);
+    yield put({
+      type: REMOVE_COMMENT_SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    console.log(err);
+    yield put({
+      type: REMOVE_COMMENT_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+function* watchRemoveCommet() {
+  yield takeLatest(REMOVE_COMMENT_REQUEST, removeComment);
+}
+//-----------------------------------------------------
 
 export default function* postSaga() {
-  yield all([fork(watchPostActions)]);
+  yield all([
+    fork(watchLoadPosts),
+    fork(watchAddPost),
+    fork(watchRemovePost),
+    fork(watchUpdatePost),
+    fork(watchAddComment),
+    fork(watchRemoveCommet),
+  ]);
 }

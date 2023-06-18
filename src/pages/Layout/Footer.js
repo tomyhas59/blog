@@ -42,7 +42,7 @@ export const FooterWrapper = styled.footer`
   height: 140px;
   bottom: 0;
   z-index: 1000;
-  position: relative;
+  position: fixed;
   background-color: ${(props) => props.theme.subColor};
 `;
 

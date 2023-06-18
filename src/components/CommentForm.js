@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 
+
+
 const CommentForm = ({ onSubmit }) => {
   const [author, setAuthor] = useState("");
   const [content, setContent] = useState("");
@@ -13,30 +15,29 @@ const CommentForm = ({ onSubmit }) => {
   };
 
   return (
-    <FormWrapper>
+    <CommentWrapper>
       <Form onSubmit={handleSubmit}>
         <InputName
           type="text"
-          placeholder="Your Name"
+          placeholder="Name"
           value={author}
           onChange={(e) => setAuthor(e.target.value)}
         />
         <InputComment
           type="text"
-          placeholder="Your Comment"
+          placeholder="Comment"
           value={content}
           onChange={(e) => setContent(e.target.value)}
         />
         <Button type="submit">등록</Button>
       </Form>
-    </FormWrapper>
+    </CommentWrapper>
   );
 };
 
 export default CommentForm;
 
-const FormWrapper = styled.div`
-  width: 80%;
+const CommentWrapper = styled.div`
   border: 1px solid;
   border-color: silver;
   border-radius: 5px;
@@ -45,11 +46,12 @@ const FormWrapper = styled.div`
 `;
 
 const Form = styled.form`
-  // CSS styles for the form
+  width: 100%;
+  text-align: center;
 `;
 
 const InputName = styled.input`
-  width: 20%;
+  width: 15%;
 `;
 
 const InputComment = styled.input`
@@ -57,7 +59,7 @@ const InputComment = styled.input`
 `;
 
 const Button = styled.span`
-  width: 80%;
+  width: 15%;
   background-color: ${(props) => props.theme.mainColor};
   margin: 2px;
   color: #fff;

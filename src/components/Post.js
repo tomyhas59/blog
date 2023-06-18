@@ -3,10 +3,13 @@ import CommentForm from "./CommentForm";
 import Comment from "./Comment";
 import styled from "styled-components";
 import { useDispatch, useSelector } from "react-redux";
-import { DELETE_POST, MODIFY_POST } from "../reducer/post";
-const Post = () => {
+import {
+  REMOVE_COMMENT_REQUEST,
+  UPDATE_COMMENT_REQUEST,
+} from "../reducer/post";
+const Post = ({ post, title, content }) => {
   const dispatch = useDispatch();
-  const posts = useSelector((state) => state.post.posts);
+  const allposts = useSelector((state) => state.post.allposts);
 
   const [editPost, setEditPost] = useState(false);
   const onEditPostHandler = useCallback(() => {
@@ -18,81 +21,79 @@ const Post = () => {
     setaddComment((prev) => !prev);
   }, []);
 
-  const handleModifyPost = (postId, title, content) => {
+  const handleModifyPost = () => {
     dispatch({
-      type: MODIFY_POST,
-      payload: {
-        id: postId,
-        title,
-        content,
+      type: UPDATE_COMMENT_REQUEST,
+      data: {
+        postId: post.id,
+        title: title,
+        content: content,
       },
     });
   };
 
-  const handleDeletePost = (postId) => {
+  const handleDeletePost = useCallback(() => {
     dispatch({
-      type: DELETE_POST,
-      payload: postId,
+      type: REMOVE_COMMENT_REQUEST,
+      data: post.id ,
     });
-  };
+  }, [dispatch]);
 
   return (
-    <All>
-      <Wrapper>
-        <CommentFlex>
-          <div>
-            <Span>name</Span>
-            <Span>date</Span>
-          </div>
-        </CommentFlex>
-
-        <PostWrapper>
-          {editPost ? (
-            <>
-              <Text cols="80" row="5" />
-              <div>
-                <Button onClick={handleModifyPost}>수정</Button>
-                <Button onClick={onEditPostHandler}>취소</Button>
-                <Button onClick={handleDeletePost}>삭제</Button>
-              </div>
-            </>
-          ) : (
-            posts.map((post) => (
-              <ContentWrapper onClick={onEditPostHandler}>
-                <div>{post.title}</div>
-                <div>{post.contnet}</div>
-              </ContentWrapper>
-            ))
-          )}
-        </PostWrapper>
-
-        <br />
+    <FormWrapper>
+      <CommentFlex>
         <div>
-          <CommentFlex>
-            <Span>댓글 1개</Span>
-            <Info onClick={onAddCommentHandler}>댓글 달기</Info>
-          </CommentFlex>
-          {addComment ? (
-            <div>
-              <CommentForm />
-              <Comment />
-            </div>
-          ) : null}
+          <Span>name</Span>
+          <Span>date</Span>
         </div>
-      </Wrapper>
-    </All>
+      </CommentFlex>
+
+      <PostWrapper>
+        {editPost ? (
+          <>
+            <Text cols="80" row="5" />
+            <div>
+              <Button onClick={handleModifyPost}>수정</Button>
+              <Button onClick={onEditPostHandler}>취소</Button>
+              <Button onClick={handleDeletePost}>삭제</Button>
+            </div>
+          </>
+        ) : (
+          allposts.map((post) => (
+            <ContentWrapper onClick={onEditPostHandler}>
+              <div>{post.title}</div>
+              <div>{post.contnet}</div>
+            </ContentWrapper>
+          ))
+        )}
+      </PostWrapper>
+
+      <br />
+      <CommentContainer>
+        <CommentFlex>
+          <Span>댓글 1개</Span>
+          <Info onClick={onAddCommentHandler}>댓글 달기</Info>
+        </CommentFlex>
+        {addComment ? (
+          <div>
+            <CommentForm />
+            <Comment />
+          </div>
+        ) : null}
+      </CommentContainer>
+    </FormWrapper>
   );
 };
 
 export default Post;
 
-const Wrapper = styled.div`
-  width: 800px;
+const FormWrapper = styled.div`
+  max-width: 800px;
   border: 1px solid;
   border-color: silver;
   border-radius: 5px;
-  margin: 0 auto;
-  padding: 5px;
+  margin: 10px auto;
+  padding: 20px;
 `;
 
 const PostWrapper = styled.div`
@@ -103,10 +104,6 @@ const PostWrapper = styled.div`
   margin: 10px auto;
   padding: 20px;
 `;
-const All = styled.div`
-  width: 100%;
-`;
-
 const Text = styled.textarea`
   width: 80%;
 `;
@@ -141,7 +138,7 @@ const CommentFlex = styled.div`
 `;
 
 const ContentWrapper = styled.div`
-  width: 80%;
+  width: 100%;
   border: 1px solid;
   border-color: silver;
   height: 70px;
@@ -155,4 +152,12 @@ const Span = styled.span`
   margin: 2px;
   color: ${(props) => props.theme.mainColor};
   padding: 6px;
+`;
+
+const CommentContainer = styled.div`
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
 `;

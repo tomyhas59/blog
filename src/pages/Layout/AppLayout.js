@@ -6,7 +6,7 @@ const AppLayout = ({ children }) => {
   return (
     <div>
       <Header />
-      {children}
+      <div style={{ height: "1080px" }}>{children}</div>
       <Footer />
     </div>
   );
