@@ -3,7 +3,7 @@ const router = express.Router();
 const { isLoggedIn, isNotLoggedIn } = require("./middlewares");
 const PostService = require("../service/post");
 
-router.post("/", isLoggedIn, PostService.create);
+router.post("/", PostService.create);
 router.put("/", isLoggedIn, PostService.update);
 router.get("/all", PostService.readAll);
 router.get("/:postId", PostService.read);

@@ -21,6 +21,6 @@ module.exports = class Post extends Sequelize.Model {
     );
   }
   static associate(db) {
-    db.Post.belongsTo(db.User, { foreignKey: "userIdx" }/*컬럼명 */);
+    db.Post.belongsTo(db.User, { foreignKey: "userIdx" } /*컬럼명 */);
   }
 };

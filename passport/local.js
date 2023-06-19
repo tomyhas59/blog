@@ -1,8 +1,7 @@
 const passport = require("passport");
-const { User } = require("../models");
+const User = require("../models/user");
 const bcrypt = require("bcrypt");
 const passportLocal = require("passport-local");
-
 const LocalStrategy = passportLocal.Strategy;
 
 const passportConfig = {
@@ -29,9 +28,9 @@ const passportVerify = async (email, password, done) => {
       message: "failure",
       error: "비밀번호가 올바르지 않습니다",
     });
-  } catch (error) {
-    console.log(error);
-    return done(error);
+  } catch (err) {
+    console.log(err);
+    return done(err);
   }
 };
 

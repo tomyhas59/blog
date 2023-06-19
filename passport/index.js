@@ -1,6 +1,6 @@
 const passport = require("passport");
 const local = require("./local");
-const { User } = require("../models");
+const User = require("../models/user");
 
 module.exports = () => {
   //세션 생성

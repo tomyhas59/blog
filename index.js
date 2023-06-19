@@ -22,6 +22,8 @@ db.sequelize
   })
   .catch(console.error);
 
+passportConfig();
+
 app.use(
   morgan("dev"), //로그를 찍어줌 ,종류 dev(개발용), combined(배포용), common, short, tiny
   express.json(), //json req.body 데이터 읽는 것 허용
@@ -29,10 +31,6 @@ app.use(
   // extended: false (nodeJS에 내장된 qureystring 모듈로 해석)
   // extended: true (추가로 설치하여 외부 해석툴 qs로 해석)
 );
-//passport--------------------------------------
-app.use(passport.initialize());
-app.use(passport.session());
-passportConfig();
 
 //session------------------------------------
 app.use(
@@ -47,6 +45,9 @@ app.use(
     },
   })
 );
+//passport----위치는 session 아래로----------------------------------
+app.use(passport.initialize());
+app.use(passport.session());
 
 //---------jwt token----------------------------
 app.use(cookieParser());
