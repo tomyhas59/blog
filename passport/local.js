@@ -16,6 +16,7 @@ const passportVerify = async (email, password, done) => {
     const user = await User.findOne({ where: { email } });
     if (!user) {
       return done(null, false, {
+        message: "failure",
         error: "가입된 이메일이 없습니다",
       });
     }
@@ -25,6 +26,7 @@ const passportVerify = async (email, password, done) => {
       return done(null, user); //두번째 인자가 성공or실패, 성공하면 정보 넘겨줌
     }
     return done(null, false, {
+      message: "failure",
       error: "비밀번호가 올바르지 않습니다",
     });
   } catch (error) {

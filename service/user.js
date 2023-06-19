@@ -16,10 +16,8 @@ module.exports = class UserService {
       const hashedPassword = await bcrypt.hash(req.body.password, 10); //패스워드 단방향 암호화
       await User.create({
         email: req.body.email,
-        nickname: req.body.nickname,
         password: hashedPassword,
       });
-      // res.setHeader("Access-Control-Allow-Origin", "http://localhost:3000");
       res.status(200).send("ok"); //200 성공, 201 잘 생성됨
     } catch (err) {
       console.error(err);
@@ -38,11 +36,11 @@ module.exports = class UserService {
         return res.status(401).send(message);
       }
 
-      /*login 실행 함수 , passport에서 주입*/
+      /*login 실행 함수 , passport에서 가져옴*/
       return req.login(user, async (loginErr) => {
         if (loginErr) {
-          console.error(loginErr);
-          return next(loginErr);
+          console.error(err);
+          return next(err);
         }
         const fullUser = await User.findOne({
           where: { id: user.id },
