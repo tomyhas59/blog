@@ -27,13 +27,22 @@ module.exports = class PostService {
 
   static async update(req, res, next) {
     try {
+      const postId = req.params.postId;
       await Post.update(
         {
           content: req.body.content,
         },
-        { where: { id: req.user.id } }
+        {
+          where: {
+            id: postId,
+            userIdx: req.user.id,
+          },
+        }
       );
-      res.status(200).json({ content: req.body.content });
+      res.status(200).json({
+        postId: postId,
+        content: req.body.content,
+      });
     } catch (err) {
       console.log(err);
       next(err);
@@ -71,7 +80,7 @@ module.exports = class PostService {
         include: [
           {
             model: User,
-            attributes: ["id", "nickname"],
+            attributes: ["id", "email"],
           },
         ],
       });
@@ -85,14 +94,15 @@ module.exports = class PostService {
 
   static async delete(req, res, next) {
     try {
+      const postId = req.params.postId;
       await Post.destroy({
         where: {
-          id: req.params.postId,
+          id: postId,
           UserId: req.user.id,
         },
       });
 
-      res.status(200).json({ PostId: parseInt(req.params.postId, 10) });
+      res.status(200).json({ PostId: parseInt(postId, 10) });
     } catch (error) {
       console.error(error);
       next(error);

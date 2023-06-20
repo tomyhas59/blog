@@ -4,6 +4,7 @@ const express = require("express");
 const app = express();
 const morgan = require("morgan");
 app.set("port", 3075);
+const cors = require("cors");
 const path = require("path");
 const session = require("express-session");
 const cookieParser = require("cookie-parser"); //middleware
@@ -23,6 +24,13 @@ db.sequelize
   .catch(console.error);
 
 passportConfig();
+//프론트와 백엔드의 도메인 일치시키기---------------
+app.use(
+  cors({
+    origin: "http://localhost:3000",
+    credentials: true, //쿠키 보내는 코드
+  })
+);
 
 app.use(
   morgan("dev"), //로그를 찍어줌 ,종류 dev(개발용), combined(배포용), common, short, tiny

@@ -3,10 +3,10 @@ const router = express.Router();
 const { isLoggedIn, isNotLoggedIn } = require("./middlewares");
 const PostService = require("../service/post");
 
-router.post("/", PostService.create);
-router.put("/", isLoggedIn, PostService.update);
 router.get("/all", PostService.readAll);
 router.get("/:postId", PostService.read);
+router.post("/", PostService.create);
+router.put("/:postId", isLoggedIn, PostService.update);
 router.delete("/:postId", isLoggedIn, PostService.delete);
 
 module.exports = router;

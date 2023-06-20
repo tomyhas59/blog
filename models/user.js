@@ -11,6 +11,11 @@ module.exports = class User extends Sequelize.Model {
           unique: true, //고유한 값
           comment: "이메일",
         },
+        nickname: {
+          type: Sequelize.STRING(100),
+          allowNull: false, //필수인지 아닌지 false면 필수
+          comment: "닉네임",
+        },
         password: {
           type: Sequelize.STRING(100),
           allowNull: false, //필수인지 아닌지 false면 필수

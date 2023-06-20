@@ -10,12 +10,22 @@ module.exports = class UserService {
           email: req.body.email,
         },
       });
+      const exNickname = await User.findOne({
+        where: {
+          nickname: req.body.nickname,
+        },
+      });
       if (exUser) {
         return res.status(403).send("이미 사용 중인 이메일입니다.");
       }
+      if (exNickname) {
+        return res.status(403).send("이미 사용 중인 닉네임입니다.");
+      }
+
       const hashedPassword = await bcrypt.hash(req.body.password, 10); //패스워드 단방향 암호화
       await User.create({
         email: req.body.email,
+        nickname: req.body.nickname,
         password: hashedPassword,
       });
       res.status(200).send("ok"); //200 성공, 201 잘 생성됨
@@ -70,16 +80,6 @@ module.exports = class UserService {
               model: Post,
               attributes: ["id"],
             },
-            {
-              model: User,
-              as: "Followings",
-              attributes: ["id"],
-            },
-            {
-              model: User,
-              as: "Followers",
-              attributes: ["id"],
-            },
           ],
         });
         res.status(200).json(fullUserWithoutPassword);
@@ -97,5 +97,8 @@ module.exports = class UserService {
     req.logout();
     req.session.destroy();
     res.send("ok");
+  }
+  catch(err) {
+    next(err);
   }
 };
