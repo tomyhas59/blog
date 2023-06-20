@@ -20,13 +20,7 @@ function Login() {
     }
   }, [logInError]);
 
-  useEffect(() => {
-    if (me) {
-      navigator("/");
-    }
-  }, [me, navigator]);
-
-  const handleSubmit = useCallback(
+  const handleLogin = useCallback(
     (e) => {
       e.preventDefault();
       dispatch({
@@ -50,9 +44,14 @@ function Login() {
     [dispatch, email, password]
   );
 
+  useEffect(() => {
+    if (me) {
+      navigator("/");
+    }
+  }, [me, navigator]);
   return (
     <LoginContainer>
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleLogin}>
         <InputGroup>
           <Label>이메일:</Label>
           <Input

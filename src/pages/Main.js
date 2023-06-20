@@ -15,6 +15,7 @@ const Main = () => {
         window.scrollY + document.documentElement.clientHeight >
         document.documentElement.scrollHeight - 300
       ) {
+        console.log("스크롤 끝에 도달했습니다!");
       }
     }
     window.addEventListener("scroll", onScroll);
@@ -24,11 +25,11 @@ const Main = () => {
   }, []);
 
   return (
-    <>
+    <div>
       <PostForm />
       <br />
       <Post />
-    </>
+    </div>
   );
 };
 

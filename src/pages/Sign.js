@@ -4,16 +4,17 @@ import useInput from "../hooks/useInput";
 import { useDispatch, useSelector } from "react-redux";
 import { SIGN_UP_REQUEST } from "../reducer/user";
 import { useNavigate } from "react-router-dom";
+
 const Registration = () => {
   const [nickname, nickNameOnChange] = useInput("");
   const [email, emailOnChange] = useInput("");
   const [password, passwordOnChange] = useInput("");
   const [passwordConfirm, setpasswordConfirm] = useState("");
   const [passwordError, setpasswordError] = useState(false);
-  const dipatch = useDispatch();
+  const dispatch = useDispatch();
   const navigator = useNavigate();
 
-  const { signUpDone, signUpError } = useSelector((state) => state.user);
+  const { signUpDone } = useSelector((state) => state.user);
 
   const PasswordConfirmOnChange = useCallback(
     (e) => {
@@ -22,16 +23,11 @@ const Registration = () => {
     },
     [password, setpasswordConfirm]
   );
-  useEffect(() => {
-    if (signUpError) {
-      alert(signUpError);
-    }
-  }, [signUpError]);
 
   useEffect(() => {
     if (signUpDone) {
       alert("회원가입이 완료되었습니다");
-      navigator("/");
+      navigator("/login");
     }
   }, [signUpDone, navigator]);
 
@@ -41,12 +37,12 @@ const Registration = () => {
       if (password !== passwordConfirm) {
         return setpasswordError(true);
       }
-      dipatch({
+      dispatch({
         type: SIGN_UP_REQUEST,
-        data: { email, password, nickname },
+        data: { email, nickname, password },
       });
     },
-    [dipatch, email, nickname, password, passwordConfirm]
+    [dispatch, email, nickname, password, passwordConfirm]
   );
 
   return (

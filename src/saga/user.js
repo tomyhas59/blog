@@ -11,58 +11,6 @@ import {
 } from "../reducer/user";
 import { put, fork, all, call, takeLatest } from "redux-saga/effects";
 import axios from "axios";
-import { dummyUser } from "../util/data";
-//--------------------------------------------------------
-function logInAPI(data) {
-  return axios.post("/user/login", data);
-}
-
-function* logIn(action) {
-  try {
-    // const result = yield call(logInAPI, action.data);
-    //call: 함수를 실행시킴(함수: 로그인 로직(백엔드 주소를 실행시키는 함수명), 인수:(로그인 데이터(id, pw)))
-    yield put({
-      //put은 dipatch
-      type: LOG_IN_SUCCESS,
-      data: dummyUser(action.data),
-    });
-  } catch (err) {
-    console.error(err);
-    yield put({
-      type: LOG_IN_FAILURE,
-      error: err.response.data,
-    });
-  }
-}
-
-function* watchLogin() {
-  yield takeLatest(LOG_IN_REQUEST, logIn);
-}
-//--------------------------------------------------------
-function logOutAPI(data) {
-  return axios.post("/user/logout", data);
-}
-
-function* logOut() {
-  try {
-    // const result = yield call(logOutAPI, action.data);
-    //call: 함수를 실행시킴(함수: 로그인 로직(백엔드 주소를 실행시키는 함수명), 인수:(로그인 데이터(id, pw)))
-    yield put({
-      //put은 dipatch
-      type: LOG_OUT_SUCCESS,
-    });
-  } catch (err) {
-    console.error(err);
-    yield put({
-      type: LOG_OUT_FAILURE,
-      error: err.response.data,
-    });
-  }
-}
-
-function* watchLogOut() {
-  yield takeLatest(LOG_OUT_REQUEST, logOut);
-}
 
 //----------------------------------------------------
 function signUpAPI(data) {
@@ -71,7 +19,8 @@ function signUpAPI(data) {
 
 function* signUp(action) {
   try {
-    // const result = yield call(signUpAPI, action.data);
+    const result = yield call(signUpAPI, action.data);
+    console.log(result);
     //call: 함수를 실행시킴(함수: 로그인 로직(백엔드 주소를 실행시키는 함수명), 인수:(로그인 데이터(id, pw)))
     yield put({
       //put은 dipatch
@@ -88,6 +37,58 @@ function* signUp(action) {
 
 function* watchSignUp() {
   yield takeLatest(SIGN_UP_REQUEST, signUp);
+}
+
+//--------------------------------------------------------
+function logInAPI(data) {
+  return axios.post("/user/login", data);
+}
+
+function* logIn(action) {
+  try {
+    const result = yield call(logInAPI, action.data);
+    //call: 함수를 실행시킴(함수: 로그인 로직(백엔드 주소를 실행시키는 함수명), 인수:(로그인 데이터(id, pw)))
+    yield put({
+      //put은 dipatch
+      type: LOG_IN_SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    console.error(err);
+    yield put({
+      type: LOG_IN_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+
+function* watchLogin() {
+  yield takeLatest(LOG_IN_REQUEST, logIn);
+}
+//--------------------------------------------------------
+function logOutAPI() {
+  return axios.post("/user/logout");
+}
+
+function* logOut() {
+  try {
+    yield call(logOutAPI);
+    //call: 함수를 실행시킴(함수: 로그인 로직(백엔드 주소를 실행시키는 함수명), 인수:(로그인 데이터(id, pw)))
+    yield put({
+      //put은 dipatch
+      type: LOG_OUT_SUCCESS,
+    });
+  } catch (err) {
+    console.error(err);
+    yield put({
+      type: LOG_OUT_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+
+function* watchLogOut() {
+  yield takeLatest(LOG_OUT_REQUEST, logOut);
 }
 
 export default function* userSaga() {
