@@ -2,6 +2,7 @@ import React from "react";
 import PostForm from "../components/PostForm";
 import { useEffect } from "react";
 import Post from "../components/Post";
+import Drag from "./Drag";
 
 const Main = () => {
   useEffect(() => {
@@ -28,6 +29,7 @@ const Main = () => {
     <div>
       <PostForm />
       <br />
+      <Drag />
       <Post />
     </div>
   );

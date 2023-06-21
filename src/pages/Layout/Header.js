@@ -5,11 +5,46 @@ import { useDispatch, useSelector } from "react-redux";
 import { useCallback, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { LOG_OUT_REQUEST } from "../../reducer/user";
-
+import { useState } from "react";
 const Header = () => {
   const dispatch = useDispatch();
   const navigator = useNavigate();
   const { isLoggedIn, logOutDone } = useSelector((state) => state.user);
+
+  const [buttonPosition, setButtonPosition] = useState(0);
+  const [isMovingRight, setIsMovingRight] = useState(true);
+
+  useEffect(() => {
+    const container = document.getElementById("container");
+    const containerWidth = container.offsetWidth;
+    const buttonWidth = 100;
+    const maxButtonX = containerWidth - buttonWidth * 3;
+    const speed = 1; // 이동 속도 (조절 가능)
+
+    const intervalId = setInterval(() => {
+      setButtonPosition((prevPosition) => {
+        let newPosition;
+        if (isMovingRight) {
+          newPosition = prevPosition + speed;
+          if (newPosition >= maxButtonX) {
+            newPosition = maxButtonX;
+            setIsMovingRight(false);
+          }
+        } else {
+          newPosition = prevPosition - speed;
+          if (newPosition <= 0) {
+            newPosition = 0;
+            setIsMovingRight(true);
+          }
+        }
+        return newPosition;
+      });
+    }, 10);
+
+    return () => {
+      clearInterval(intervalId);
+    };
+  }, [isMovingRight]);
 
   useEffect(() => {
     if (logOutDone) {
@@ -28,8 +63,8 @@ const Header = () => {
 
   return (
     <HeaderWrapper>
-      <HeaderWidth>
-        <HeaderLogo>
+      <HeaderWidth id="container">
+        <HeaderLogo style={{ left: `${buttonPosition}` + "px" }}>
           <Link to="/">Y BLOG</Link>
         </HeaderLogo>
         <HeaderList>
@@ -76,24 +111,25 @@ export const HeaderWrapper = styled.header`
   padding: 1rem;
   display: flex;
   justify-content: space-between;
-
   top: 0;
   z-index: 1000;
   background-color: ${(props) => props.theme.subColor};
 `;
 
 export const HeaderWidth = styled.div`
-  width: 70%;
+  width: 700px;
   margin: 0 auto;
+  position: relative;
 `;
 
 export const HeaderLogo = styled.div`
-  float: left;
   margin-left: 3rem;
   font-weight: bold;
   color: ${(props) => props.theme.mainColor};
   font-size: 1.5rem;
+  position: absolute;
   cursor: pointer;
+  width: 100px;
 `;
 
 export const HeaderList = styled.ul`
