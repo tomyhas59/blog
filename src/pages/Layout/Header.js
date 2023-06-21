@@ -1,5 +1,5 @@
 import React from "react";
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { useCallback, useEffect } from "react";
@@ -18,7 +18,7 @@ const Header = () => {
     const container = document.getElementById("container");
     const containerWidth = container.offsetWidth;
     const buttonWidth = 100;
-    const maxButtonX = containerWidth - buttonWidth * 3;
+    const maxButtonX = containerWidth - buttonWidth;
     const speed = 1; // 이동 속도 (조절 가능)
 
     const intervalId = setInterval(() => {
@@ -122,14 +122,46 @@ export const HeaderWidth = styled.div`
   position: relative;
 `;
 
+const shadowAnimation = keyframes`
+  0% {
+    transform: translateY(0);
+    box-shadow: 0 0 0 rgba(0, 0, 0, 0.6);
+  }
+  50% {
+    transform: translateY(-10px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
+  }
+  100% {
+    transform: translateY(0);
+    box-shadow: 0 0 0 rgba(0, 0, 0, 0.6);
+  }
+`;
+
 export const HeaderLogo = styled.div`
-  margin-left: 3rem;
-  font-weight: bold;
-  color: ${(props) => props.theme.mainColor};
-  font-size: 1.5rem;
   position: absolute;
   cursor: pointer;
-  width: 100px;
+  font-size: 1.5rem;
+  color: #ffffff;
+  background-color: ${(props) => props.theme.mainColor};
+  border: none;
+  border-radius: 8px;
+  box-shadow: 0 0 0 rgba(0, 0, 0, 0.6);
+  transition: all 0.3s ease-in-out;
+  animation: ${shadowAnimation} 2s infinite;
+
+  &:hover {
+    transform: scale(1.05);
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.4);
+  }
+
+  &:active {
+    transform: scale(0.95);
+  }
+
+  @media (max-width: 768px) {
+    font-size: 1.2rem;
+    padding: 10px 20px;
+  }
 `;
 
 export const HeaderList = styled.ul`
