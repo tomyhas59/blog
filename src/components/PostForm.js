@@ -33,7 +33,6 @@ const PostForm = () => {
         encType="multipart/form-data"
       >
         <Input type="file" name="image"></Input>
-        <Input type="file" name="image1"></Input>
         <Button type="submit">등록</Button>
       </Form>
     </FormWrapper>

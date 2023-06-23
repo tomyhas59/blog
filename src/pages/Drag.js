@@ -9,7 +9,7 @@ const Drag = () => {
     const containerWidth = container.offsetWidth;
     const buttonWidth = 100;
     const maxButtonX = containerWidth - buttonWidth;
-    const speed = 1; // 이동 속도 (조절 가능)
+    const speed = 2; // 이동 속도 (조절 가능)
 
     const intervalId = setInterval(() => {
       setButtonPosition((prevPosition) => {
@@ -40,8 +40,8 @@ const Drag = () => {
     <div
       id="container"
       style={{
-        width: "500px",
-        height: "100px",
+        width: "700px",
+        height: "50px",
         position: "relative",
         margin: "0 auto",
       }}
@@ -49,7 +49,6 @@ const Drag = () => {
       <div
         style={{
           width: "100px",
-          height: "100px",
           position: "absolute",
           left: buttonPosition + "px",
         }}

@@ -19,15 +19,15 @@ const Header = () => {
     const containerWidth = container.offsetWidth;
     const buttonWidth = 100;
     const maxButtonX = containerWidth - buttonWidth;
-    const speed = 1; // 이동 속도 (조절 가능)
+    const speed = 2; // 이동 속도 (조절 가능)
 
     const intervalId = setInterval(() => {
       setButtonPosition((prevPosition) => {
         let newPosition;
         if (isMovingRight) {
           newPosition = prevPosition + speed;
-          if (newPosition >= maxButtonX) {
-            newPosition = maxButtonX;
+          if (newPosition >= maxButtonX - buttonPosition * 0.2) {
+            newPosition = maxButtonX - buttonPosition * 0.2;
             setIsMovingRight(false);
           }
         } else {
@@ -44,7 +44,7 @@ const Header = () => {
     return () => {
       clearInterval(intervalId);
     };
-  }, [isMovingRight]);
+  }, [buttonPosition, isMovingRight]);
 
   useEffect(() => {
     if (logOutDone) {
@@ -120,6 +120,7 @@ export const HeaderWidth = styled.div`
   width: 700px;
   margin: 0 auto;
   position: relative;
+
 `;
 
 const shadowAnimation = keyframes`
@@ -146,22 +147,8 @@ export const HeaderLogo = styled.div`
   border: none;
   border-radius: 8px;
   box-shadow: 0 0 0 rgba(0, 0, 0, 0.6);
-  transition: all 0.3s ease-in-out;
   animation: ${shadowAnimation} 2s infinite;
-
-  &:hover {
-    transform: scale(1.05);
-    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.4);
-  }
-
-  &:active {
-    transform: scale(0.95);
-  }
-
-  @media (max-width: 768px) {
-    font-size: 1.2rem;
-    padding: 10px 20px;
-  }
+  border: 1px solid;
 `;
 
 export const HeaderList = styled.ul`
@@ -175,7 +162,7 @@ export const HeaderList = styled.ul`
   align-items: center;
   height: 2.5rem;
   font-size: 0.825rem;
-
+  
   & > li {
     cursor: pointer;
     margin: 5px;

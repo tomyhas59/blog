@@ -3,34 +3,30 @@ import PostForm from "../components/PostForm";
 import { useEffect } from "react";
 import Post from "../components/Post";
 import Drag from "./Drag";
+import { useDispatch, useSelector } from "react-redux";
+import { ALL_POSTS_REQUEST } from "../reducer/post";
 
 const Main = () => {
+  const dispatch = useDispatch();
+  const { allPosts } = useSelector((state) => state.post);
+
   useEffect(() => {
-    function onScroll() {
-      console.log(
-        window.screenY,
-        document.documentElement.clientHeight,
-        document.documentElement.scrollHeight
-      );
-      if (
-        window.scrollY + document.documentElement.clientHeight >
-        document.documentElement.scrollHeight - 300
-      ) {
-        console.log("스크롤 끝에 도달했습니다!");
-      }
-    }
-    window.addEventListener("scroll", onScroll);
-    return () => {
-      window.removeEventListener("scroll", onScroll);
-    };
-  }, []);
+    dispatch({
+      type: ALL_POSTS_REQUEST,
+    });
+  }, [dispatch]);
 
   return (
     <div>
       <PostForm />
       <br />
-      <Drag />
-      <Post />
+      {allPosts.length > 0 &&
+        allPosts.map((post) => (
+          <div>
+            <Post key={post.id} post={post} />
+            <Drag />
+          </div>
+        ))}
     </div>
   );
 };

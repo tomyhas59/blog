@@ -7,18 +7,17 @@ import {
   REMOVE_COMMENT_REQUEST,
   UPDATE_COMMENT_REQUEST,
 } from "../reducer/post";
-const Post = ({ post, title, content }) => {
-  const dispatch = useDispatch();
-  const allposts = useSelector((state) => state.post.allposts);
 
+const Post = ({ post }) => {
+  const dispatch = useDispatch();
   const [editPost, setEditPost] = useState(false);
   const onEditPostHandler = useCallback(() => {
     setEditPost((prev) => !prev);
   }, []);
 
-  const [addComment, setaddComment] = useState(false);
+  const [addComment, setAddComment] = useState(false);
   const onAddCommentHandler = useCallback(() => {
-    setaddComment((prev) => !prev);
+    setAddComment((prev) => !prev);
   }, []);
 
   const handleModifyPost = () => {
@@ -26,49 +25,42 @@ const Post = ({ post, title, content }) => {
       type: UPDATE_COMMENT_REQUEST,
       data: {
         postId: post.id,
-        title: title,
-        content: content,
+        content: post.content,
       },
     });
   };
 
   const handleDeletePost = useCallback(() => {
-    dispatch({
-      type: REMOVE_COMMENT_REQUEST,
-      data: post.id ,
-    });
-  }, [dispatch]);
+    dispatch({});
+  }, []);
 
   return (
     <FormWrapper>
       <CommentFlex>
         <div>
-          <Span>name</Span>
-          <Span>date</Span>
+          <Span>{post.User.nickname}</Span>
+          <Span>날짜</Span>
         </div>
+        <Button onClick={onEditPostHandler}>수정</Button>
       </CommentFlex>
 
       <PostWrapper>
         {editPost ? (
           <>
-            <Text cols="80" row="5" />
-            <div>
+            <Text cols="80" rows="5" />
+            <CommentFlexEnd>
               <Button onClick={handleModifyPost}>수정</Button>
               <Button onClick={onEditPostHandler}>취소</Button>
               <Button onClick={handleDeletePost}>삭제</Button>
-            </div>
+            </CommentFlexEnd>
           </>
         ) : (
-          allposts.map((post) => (
-            <ContentWrapper onClick={onEditPostHandler}>
-              <div>{post.title}</div>
-              <div>{post.contnet}</div>
-            </ContentWrapper>
-          ))
+          <ContentWrapper>
+            <div>{post.content}</div>
+          </ContentWrapper>
         )}
       </PostWrapper>
 
-      <br />
       <CommentContainer>
         <CommentFlex>
           <Span>댓글 1개</Span>
@@ -105,11 +97,11 @@ const PostWrapper = styled.div`
   padding: 20px;
 `;
 const Text = styled.textarea`
-  width: 80%;
+  width: 100%;
 `;
 
 const Button = styled.span`
-  width: 80%;
+  width: 50px;
   background-color: ${(props) => props.theme.mainColor};
   margin: 2px;
   color: #fff;
@@ -137,6 +129,10 @@ const CommentFlex = styled.div`
   justify-content: space-between;
 `;
 
+const CommentFlexEnd = styled.div`
+  display: flex;
+  justify-content: end;
+`;
 const ContentWrapper = styled.div`
   width: 100%;
   border: 1px solid;

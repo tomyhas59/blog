@@ -10,6 +10,9 @@ import {
   ALL_POSTS_FAILURE,
   ALL_POSTS_REQUEST,
   ALL_POSTS_SUCCESS,
+  LOAD_POST_FAILURE,
+  LOAD_POST_REQUEST,
+  LOAD_POST_SUCCESS,
   REMOVE_COMMENT_FAILURE,
   REMOVE_COMMENT_REQUEST,
   REMOVE_COMMENT_SUCCESS,
@@ -23,11 +26,12 @@ import {
 //-----------------------------------------------------
 
 function allPostsApi() {
-  return axios.get("/post");
+  return axios.get("/post/all");
 }
 
-function* loadPosts(action) {
+function* loadPosts() {
   try {
+    console.log("allPost 성공");
     const result = yield call(allPostsApi);
     yield put({
       type: ALL_POSTS_SUCCESS,
@@ -44,7 +48,30 @@ function* loadPosts(action) {
 function* watchLoadPosts() {
   yield takeLatest(ALL_POSTS_REQUEST, loadPosts);
 }
+//-----------------------------------------------------
 
+function loadPostApi() {
+  return axios.get("/post");
+}
+
+function* loadPost() {
+  try {
+    const result = yield call(loadPostApi);
+    yield put({
+      type: LOAD_POST_SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    console.log(err);
+    yield put({
+      type: LOAD_POST_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+function* watchLoadPost() {
+  yield takeLatest(LOAD_POST_REQUEST, loadPost);
+}
 //-----------------------------------------------------
 
 function addPostApi(data) {
@@ -179,5 +206,6 @@ export default function* postSaga() {
     fork(watchUpdatePost),
     fork(watchAddComment),
     fork(watchRemoveCommet),
+    fork(watchLoadPost),
   ]);
 }

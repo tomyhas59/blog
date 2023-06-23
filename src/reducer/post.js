@@ -2,40 +2,48 @@ import { produce } from "immer";
 
 //전역 상태 초기값
 const initialState = {
-  allposts: [],
-  allpostsLoading: false,
-  allpostsDone: false,
-  allpostsError: null,
+  allPosts: [],
+  allPostsLoading: false,
+  allPostsDone: false,
+  allPostsError: null,
 
-  addpostLoading: false,
-  addpostDone: false,
-  addpostError: null,
+  loadPostLoading: false,
+  loadPostDone: false,
+  loadPostError: null,
 
-  removepostLoading: false,
-  removepostDone: false,
-  removepostError: null,
+  addPostLoading: false,
+  addPostDone: false,
+  addPostError: null,
 
-  updatepostLoading: false,
-  updatepostDone: false,
-  updatepostError: null,
+  removePostLoading: false,
+  removePostDone: false,
+  removePostError: null,
 
-  addcommentLoading: false,
-  addcommentDone: false,
-  addcommentError: null,
+  updatePostLoading: false,
+  updatePostDone: false,
+  updatePostError: null,
 
-  removecommentLoading: false,
-  removecommentDone: false,
-  removecommentError: null,
+  addCommentLoading: false,
+  addCommentDone: false,
+  addCommentError: null,
 
-  // updatecommentLoading: false,
-  // updatecommentDone: false,
-  // updatecommentError: null,
+  removeCommentLoading: false,
+  removeCommentDone: false,
+  removeCommentError: null,
+
+  // updateCommentLoading: false,
+  // updateCommentDone: false,
+  // updateCommentError: null,
 };
 
 //action명
 export const ALL_POSTS_REQUEST = "ALL_POSTS_REQUEST";
 export const ALL_POSTS_SUCCESS = "ALL_POSTS_SUCCESS";
 export const ALL_POSTS_FAILURE = "ALL_POSTS_FAILURE";
+
+export const LOAD_POST_REQUEST = "ALL_POSTS_REQUEST";
+export const LOAD_POST_SUCCESS = "ALL_POSTS_SUCCESS";
+export const LOAD_POST_FAILURE = "ALL_POSTS_FAILURE";
 
 export const ADD_POST_REQUEST = "ADD_POST_REQUEST";
 export const ADD_POST_SUCCESS = "ADD_POST_SUCCESS";
@@ -65,116 +73,116 @@ const post = (state = initialState, action) => {
   return produce(state, (draft) => {
     switch (action.type) {
       case ALL_POSTS_REQUEST:
-        draft.allpostsLoading = true;
-        draft.allpostsDone = false;
-        draft.allpostsError = null;
+        draft.allPostsLoading = true;
+        draft.allPostsDone = false;
+        draft.allPostsError = null;
         break;
       case ALL_POSTS_SUCCESS:
-        draft.allpostsLoading = false;
-        draft.allpostsDone = true;
-        draft.allposts = action.data;
+        draft.allPostsLoading = false;
+        draft.allPostsDone = true;
+        draft.allPosts = draft.allPosts.concat(action.data);
         break;
       case ALL_POSTS_FAILURE:
-        draft.allpostsLoading = false;
-        draft.allpostsDone = true;
-        draft.allpostsError = action.error;
+        draft.allPostsLoading = false;
+        draft.allPostsDone = true;
+        draft.allPostsError = action.error;
         break;
       //-----------------------------------------------------
       case ADD_POST_REQUEST:
-        draft.addpostLoading = true;
-        draft.addpostDone = false;
-        draft.addpostError = null;
+        draft.addPostLoading = true;
+        draft.addPostDone = false;
+        draft.addPostError = null;
         break;
       case ADD_POST_SUCCESS:
-        draft.addpostLoading = false;
-        draft.addpostDone = true;
-        draft.allposts.unshift(action.data);
+        draft.addPostLoading = false;
+        draft.addPostDone = true;
+        draft.allPosts.unshift(action.data);
         break;
       case ADD_POST_FAILURE:
-        draft.addpostLoading = false;
-        draft.addpostDone = true;
-        draft.addpostError = action.error;
+        draft.addPostLoading = false;
+        draft.addPostDone = true;
+        draft.addPostError = action.error;
         break;
       //-----------------------------------------------------
 
       case REMOVE_POST_REQUEST:
-        draft.removepostLoading = true;
-        draft.removepostDone = false;
-        draft.removepostError = null;
+        draft.removePostLoading = true;
+        draft.removePostDone = false;
+        draft.removePostError = null;
         break;
       case REMOVE_POST_SUCCESS:
-        draft.removepostLoading = false;
-        draft.removepostDone = true;
-        draft.allposts = draft.allposts.filter(
+        draft.removePostLoading = false;
+        draft.removePostDone = true;
+        draft.allPosts = draft.allPosts.filter(
           (v) => v.id !== action.data.PostId
         );
         break;
       case REMOVE_POST_FAILURE:
-        draft.removepostLoading = false;
-        draft.removepostDone = true;
-        draft.removepostError = action.error;
+        draft.removePostLoading = false;
+        draft.removePostDone = true;
+        draft.removePostError = action.error;
         break;
       //-----------------------------------------------------
 
       case UPDATE_POST_REQUEST:
-        draft.updatepostLoading = true;
-        draft.updatepostDone = false;
-        draft.updatepostError = null;
+        draft.updatePostLoading = true;
+        draft.updatePostDone = false;
+        draft.updatePostError = null;
         break;
       case UPDATE_POST_SUCCESS:
-        draft.updatepostLoading = false;
-        draft.updatepostDone = true;
-        const index = draft.allposts.findIndex(
+        draft.updatePostLoading = false;
+        draft.updatePostDone = true;
+        const index = draft.allPosts.findIndex(
           (v) => v.id === action.data.PostId
         );
-        draft.allposts[index].content = action.data.content;
+        draft.allPosts[index].content = action.data.content;
         break;
       case UPDATE_POST_FAILURE:
-        draft.updatepostLoading = false;
-        draft.updatepostDone = true;
-        draft.updatepostError = action.error;
+        draft.updatePostLoading = false;
+        draft.updatePostDone = true;
+        draft.updatePostError = action.error;
         break;
       //-----------------------------------------------------
 
       case ADD_COMMENT_REQUEST:
-        draft.addcommentLoading = true;
-        draft.addcommentDone = false;
-        draft.addcommentError = null;
+        draft.addCommentLoading = true;
+        draft.addCommentDone = false;
+        draft.addCommentError = null;
         break;
       case ADD_COMMENT_SUCCESS:
-        draft.addcommentLoading = false;
-        draft.addcommentDone = true;
-        const postIndex = draft.allposts.findIndex(
+        draft.addCommentLoading = false;
+        draft.addCommentDone = true;
+        const postIndex = draft.allPosts.findIndex(
           (v) => v.id === action.data.PostId
         );
-        draft.allposts[postIndex].Comments.unshift(action.data);
+        draft.allPosts[postIndex].Comments.unshift(action.data);
         break;
       case ADD_COMMENT_FAILURE:
-        draft.addcommentLoading = false;
-        draft.addcommentDone = true;
-        draft.addcommentError = action.error;
+        draft.addCommentLoading = false;
+        draft.addCommentDone = true;
+        draft.addCommentError = action.error;
         break;
       //-----------------------------------------------------
 
       case REMOVE_COMMENT_REQUEST:
-        draft.removecommentLoading = true;
-        draft.removecommentDone = false;
-        draft.removecommentError = null;
+        draft.removeCommentLoading = true;
+        draft.removeCommentDone = false;
+        draft.removeCommentError = null;
         break;
       case REMOVE_COMMENT_SUCCESS:
-        draft.removecommentLoading = false;
-        draft.removecommentDone = true;
-        const commentsIndex = draft.allposts.findIndex(
+        draft.removeCommentLoading = false;
+        draft.removeCommentDone = true;
+        const commentsIndex = draft.allPosts.findIndex(
           (v) => v.id === action.data.PostId
         );
-        draft.allposts[commentsIndex].Comments = draft.allposts[
+        draft.allPosts[commentsIndex].Comments = draft.allPosts[
           commentsIndex
         ].Comments.filter((v) => v.id !== action.data.CommentId);
         break;
       case REMOVE_COMMENT_FAILURE:
-        draft.removecommentLoading = false;
-        draft.removecommentDone = true;
-        draft.removecommentError = action.error;
+        draft.removeCommentLoading = false;
+        draft.removeCommentDone = true;
+        draft.removeCommentError = action.error;
         break;
       default:
         return;

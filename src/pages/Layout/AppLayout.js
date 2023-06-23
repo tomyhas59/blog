@@ -6,7 +6,7 @@ const AppLayout = ({ children }) => {
   return (
     <div>
       <Header />
-      <div style={{ height: "1080px", marginTop: "50px" }}>{children}</div>
+      <div style={{ marginTop: "50px" }}>{children}</div>
       <Footer />
     </div>
   );
