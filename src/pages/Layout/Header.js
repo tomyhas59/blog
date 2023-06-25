@@ -79,9 +79,16 @@ const Header = () => {
             </>
           )}
           {isLoggedIn && (
-            <li>
-              <Button onClick={handleLogout}>로그아웃</Button>
-            </li>
+            <>
+              <li>
+                <Button onClick={handleLogout}>로그아웃</Button>
+              </li>
+              <li>
+                <Button>
+                  <Link to="/chat">채팅</Link>
+                </Button>
+              </li>
+            </>
           )}
         </HeaderList>
       </HeaderWidth>
@@ -113,6 +120,7 @@ export const HeaderWrapper = styled.header`
   justify-content: space-between;
   top: 0;
   z-index: 1000;
+  position: fixed;
   background-color: ${(props) => props.theme.subColor};
 `;
 
@@ -120,7 +128,6 @@ export const HeaderWidth = styled.div`
   width: 700px;
   margin: 0 auto;
   position: relative;
-
 `;
 
 const shadowAnimation = keyframes`
@@ -162,7 +169,7 @@ export const HeaderList = styled.ul`
   align-items: center;
   height: 2.5rem;
   font-size: 0.825rem;
-  
+
   & > li {
     cursor: pointer;
     margin: 5px;

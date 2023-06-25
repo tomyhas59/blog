@@ -100,7 +100,7 @@ function* watchAddPost() {
 //-----------------------------------------------------
 
 function removePostApi(data) {
-  return axios.delete(`/post/${data.id}`);
+  return axios.delete(`/post/${data}`);
 }
 
 function* removePost(action) {
@@ -125,7 +125,7 @@ function* watchRemovePost() {
 //-----------------------------------------------------
 
 function updateApi(data) {
-  return axios.patch(`/post/${data.postId}`, data);
+  return axios.put(`/post/${data.postId}`, data);
 }
 
 function* updatePost(action) {

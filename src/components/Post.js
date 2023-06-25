@@ -5,34 +5,41 @@ import styled from "styled-components";
 import { useDispatch, useSelector } from "react-redux";
 import {
   REMOVE_COMMENT_REQUEST,
+  REMOVE_POST_REQUEST,
   UPDATE_COMMENT_REQUEST,
 } from "../reducer/post";
-
+import useInput from "../hooks/useInput";
 const Post = ({ post }) => {
   const dispatch = useDispatch();
   const [editPost, setEditPost] = useState(false);
+  const [content, contentOnChane, setContent] = useInput("");
+
   const onEditPostHandler = useCallback(() => {
     setEditPost((prev) => !prev);
-  }, []);
+    setContent("");
+  }, [setContent]);
 
   const [addComment, setAddComment] = useState(false);
   const onAddCommentHandler = useCallback(() => {
     setAddComment((prev) => !prev);
   }, []);
 
-  const handleModifyPost = () => {
+  const handleModifyPost = useCallback(() => {
     dispatch({
       type: UPDATE_COMMENT_REQUEST,
       data: {
         postId: post.id,
-        content: post.content,
+        content: content,
       },
     });
-  };
+  }, [content, dispatch, post.id]);
 
   const handleDeletePost = useCallback(() => {
-    dispatch({});
-  }, []);
+    dispatch({
+      type: REMOVE_POST_REQUEST,
+      data: post.id,
+    });
+  }, [dispatch, post.id]);
 
   return (
     <FormWrapper>
@@ -41,17 +48,24 @@ const Post = ({ post }) => {
           <Span>{post.User.nickname}</Span>
           <Span>날짜</Span>
         </div>
-        <Button onClick={onEditPostHandler}>수정</Button>
+        <div>
+          <Button onClick={onEditPostHandler}>수정</Button>
+          <Button onClick={handleDeletePost}>삭제</Button>
+        </div>
       </CommentFlex>
 
       <PostWrapper>
         {editPost ? (
           <>
-            <Text cols="80" rows="5" />
+            <Text
+              cols="80"
+              rows="5"
+              value={content}
+              onChange={contentOnChane}
+            />
             <CommentFlexEnd>
               <Button onClick={handleModifyPost}>수정</Button>
               <Button onClick={onEditPostHandler}>취소</Button>
-              <Button onClick={handleDeletePost}>삭제</Button>
             </CommentFlexEnd>
           </>
         ) : (
@@ -63,7 +77,7 @@ const Post = ({ post }) => {
 
       <CommentContainer>
         <CommentFlex>
-          <Span>댓글 1개</Span>
+          <Span>{post.length}개</Span>
           <Info onClick={onAddCommentHandler}>댓글 달기</Info>
         </CommentFlex>
         {addComment ? (

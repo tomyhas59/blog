@@ -1,16 +1,19 @@
 import React, { useState } from "react";
+import { useSelector } from "react-redux";
 import styled from "styled-components";
 
 const Chat = () => {
   const [messages, setMessages] = useState([]);
   const [inputValue, setInputValue] = useState("");
 
+  const { me } = useSelector((state) => state.user);
+
   const handleMessageSubmit = (e) => {
     e.preventDefault();
     if (inputValue.trim() !== "") {
       const newMessage = {
         id: new Date().getTime(),
-        sender: "You",
+        sender: me.nickname,
         text: inputValue,
       };
       setMessages([...messages, newMessage]);
@@ -24,7 +27,7 @@ const Chat = () => {
 
   return (
     <ChatContainer>
-      <h2>Chat</h2>
+      <h2>채팅</h2>
       <MessageList>
         {messages.map((message) => (
           <MessageItem key={message.id}>
@@ -36,7 +39,7 @@ const Chat = () => {
       <form onSubmit={handleMessageSubmit}>
         <MessageInput
           type="text"
-          placeholder="Type a message..."
+          placeholder="메시지를 입력해주세요"
           value={inputValue}
           onChange={handleInputChange}
         />

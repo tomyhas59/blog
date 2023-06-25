@@ -1,41 +1,59 @@
-import React from "react";
+import React, { useCallback } from "react";
 import styled from "styled-components";
 import useInput from "../hooks/useInput";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { ADD_POST_REQUEST } from "../reducer/post";
-
+import { useEffect } from "react";
 const PostForm = () => {
-  const [content, contentOnChane] = useInput("");
+  const [content, contentOnChane, setContent] = useInput("");
   const dispatch = useDispatch();
+  const { addPostDone, addPostError } = useSelector((state) => state.post);
+  const { me } = useSelector((state) => state.user);
 
-  const handleRegisterPost = (e) => {
-    e.preventDefault();
-    dispatch({
-      type: ADD_POST_REQUEST,
-      data: content,
-    });
-  };
+  useEffect(() => {
+    if (addPostError) {
+      console.log(addPostError);
+    }
+    if (addPostDone) {
+      setContent("");
+    }
+  }, [addPostDone, addPostError, setContent]);
+
+  const handleRegisterPost = useCallback(
+    (e) => {
+      e.preventDefault();
+      dispatch({
+        type: ADD_POST_REQUEST,
+        data: content,
+      });
+    },
+    [content, dispatch]
+  );
 
   return (
-    <FormWrapper>
-      <Title>글쓰기</Title>
-      <Form onSubmit={handleRegisterPost}>
-        <TextArea
-          placeholder="Content"
-          value={content}
-          onChange={contentOnChane}
-        ></TextArea>
-        <Button type="submit">등록</Button>
-      </Form>
-      <Form
-        action="http://localhost:3075/post/uploads" //저장할 주소
-        method="post"
-        encType="multipart/form-data"
-      >
-        <Input type="file" name="image"></Input>
-        <Button type="submit">등록</Button>
-      </Form>
-    </FormWrapper>
+    <>
+      {me ? (
+        <FormWrapper>
+          <Title>글쓰기</Title>
+          <Form onSubmit={handleRegisterPost}>
+            <TextArea
+              placeholder="Content"
+              value={content}
+              onChange={contentOnChane}
+            ></TextArea>
+            <Button type="submit">등록</Button>
+          </Form>
+          <Form
+            action="http://localhost:3075/post/uploads" //저장할 주소
+            method="post"
+            encType="multipart/form-data"
+          >
+            <Input type="file" name="image"></Input>
+            <Button type="submit">등록</Button>
+          </Form>
+        </FormWrapper>
+      ) : null}
+    </>
   );
 };
 

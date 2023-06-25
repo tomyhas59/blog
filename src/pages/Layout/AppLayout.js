@@ -1,15 +1,29 @@
 import React from "react";
+import styled from "styled-components";
 import Header from "./Header";
 import Footer from "./Footer";
 
 const AppLayout = ({ children }) => {
   return (
-    <div>
+    <LayoutWrapper>
       <Header />
-      <div style={{ marginTop: "50px" }}>{children}</div>
+      <ContentWrapper>{children}</ContentWrapper>
       <Footer />
-    </div>
+    </LayoutWrapper>
   );
 };
+
+const LayoutWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  margin-top: 1rem;
+`;
+
+const ContentWrapper = styled.div`
+  flex-grow: 1;
+  padding-top: 50px;
+  overflow-y: auto;
+`;
 
 export default AppLayout;
