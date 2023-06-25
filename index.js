@@ -14,16 +14,9 @@ const dotenv = require("dotenv");
 const passportConfig = require("./passport");
 const passport = require("passport");
 
-//sequelize-----------------------------------
 dotenv.config();
-db.sequelize
-  .sync()
-  .then(() => {
-    console.log("db 연결 성공");
-  })
-  .catch(console.error);
 
-passportConfig();
+// Middleware-------------------------------
 //프론트와 백엔드의 도메인 일치시키기---------------
 app.use(
   cors({
@@ -31,7 +24,6 @@ app.use(
     credentials: true, //쿠키 보내는 코드
   })
 );
-
 app.use(
   morgan("dev"), //로그를 찍어줌 ,종류 dev(개발용), combined(배포용), common, short, tiny
   express.json(), //json req.body 데이터 읽는 것 허용
@@ -39,6 +31,7 @@ app.use(
   // extended: false (nodeJS에 내장된 qureystring 모듈로 해석)
   // extended: true (추가로 설치하여 외부 해석툴 qs로 해석)
 );
+app.use(cookieParser());
 
 //session------------------------------------
 app.use(
@@ -57,8 +50,18 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 
+//sequelize-----------------------------------
+dotenv.config();
+db.sequelize
+  .sync()
+  .then(() => {
+    console.log("db 연결 성공");
+  })
+  .catch(console.error);
+
+
+
 //---------jwt token----------------------------
-app.use(cookieParser());
 
 app.post("/jwtsetcookie", (req, res, next) => {
   try {
@@ -104,6 +107,8 @@ app.post("/clearcookie", (req, res) => {
 
 app.use("/user", userRouter);
 app.use("/post", postRouter);
+
+passportConfig();
 
 app.listen(app.get("port"), () => {
   console.log(`${app.get("port")}번으로 서버 실행 중`);
