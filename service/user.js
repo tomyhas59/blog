@@ -37,13 +37,13 @@ module.exports = class UserService {
   //----------------------------------------------------------------------
 
   static async logIn(req, res, next) {
-    passport.authenticate("local" /*인증 로직*/, (err, user, message) => {
+    passport.authenticate("local", (err, user, info) => {
       if (err) {
         console.log(err);
         return next(err);
       }
-      if (message) {
-        return res.status(401).send(message);
+      if (!user) {
+        return res.status(401).send(info.message);
       }
 
       /*login 실행 함수 , passport에서 가져옴*/
@@ -54,7 +54,6 @@ module.exports = class UserService {
         }
         const fullUser = await User.findOne({
           where: { id: user.id },
-          //["id", "nickname", "email"], <- 이것만 가져오겠다
           attributes: {
             exclude: ["password"],
           },

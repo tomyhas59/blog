@@ -3,7 +3,6 @@ const userRouter = require("./routes/user");
 const express = require("express");
 const app = express();
 const morgan = require("morgan");
-app.set("port", 3075);
 const cors = require("cors");
 const path = require("path");
 const session = require("express-session");
@@ -14,23 +13,17 @@ const dotenv = require("dotenv");
 const passportConfig = require("./passport");
 const passport = require("passport");
 
-//sequelize-----------------------------------
 dotenv.config();
-db.sequelize
-  .sync()
-  .then(() => {
-    console.log("db 연결 성공");
-  })
-  .catch(console.error);
 
-passportConfig();
+// Middleware-------------------------------
 //프론트와 백엔드의 도메인 일치시키기---------------
 app.use(
   cors({
     origin: "http://localhost:3000",
-    credentials: true, //쿠키 보내는 코드
+    credentials: true, //쿠키 보내는 코드, 프론트의 saga/index에서 axios.defaults.withCredentials = true 해줘야 쿠키 받음
   })
 );
+app.use(cookieParser());
 
 app.use(
   morgan("dev"), //로그를 찍어줌 ,종류 dev(개발용), combined(배포용), common, short, tiny
@@ -57,8 +50,16 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 
+//sequelize-----------------------------------
+dotenv.config();
+db.sequelize
+  .sync()
+  .then(() => {
+    console.log("db 연결 성공");
+  })
+  .catch(console.error);
+
 //---------jwt token----------------------------
-app.use(cookieParser());
 
 app.post("/jwtsetcookie", (req, res, next) => {
   try {
@@ -105,6 +106,8 @@ app.post("/clearcookie", (req, res) => {
 app.use("/user", userRouter);
 app.use("/post", postRouter);
 
-app.listen(app.get("port"), () => {
-  console.log(`${app.get("port")}번으로 서버 실행 중`);
+passportConfig();
+
+app.listen(3075, () => {
+  console.log("서버 실행중");
 });

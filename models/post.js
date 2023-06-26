@@ -7,7 +7,7 @@ module.exports = class Post extends Sequelize.Model {
         content: {
           type: Sequelize.TEXT,
           allowNull: false,
-          comment: "콘텐츠",
+          comment: "포스트",
         },
       },
       {
@@ -22,5 +22,6 @@ module.exports = class Post extends Sequelize.Model {
   }
   static associate(db) {
     db.Post.belongsTo(db.User, { foreignKey: "userIdx" } /*컬럼명 */);
+    db.Post.hasMany(db.Comment); //post.addComments 이런식으로 제공
   }
 };
