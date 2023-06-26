@@ -31,7 +31,6 @@ function allPostsApi() {
 
 function* loadPosts() {
   try {
-    console.log("allPost 성공");
     const result = yield call(allPostsApi);
     yield put({
       type: ALL_POSTS_SUCCESS,

@@ -12,7 +12,7 @@ function Login() {
   const [email, emailOnChange] = useInput("");
   const [password, PasswordOnChange] = useInput("");
 
-  const { me, logInError } = useSelector((state) => state.user);
+  const { logInError } = useSelector((state) => state.user);
 
   useEffect(() => {
     if (logInError) {
@@ -27,8 +27,9 @@ function Login() {
         type: LOG_IN_REQUEST,
         data: { email: email, password: password },
       });
+      navigator("/");
     },
-    [dispatch, email, password]
+    [dispatch, email, navigator, password]
   );
 
   const LoginEnter = useCallback(
@@ -46,12 +47,6 @@ function Login() {
     },
     [dispatch, email, password]
   );
-
-  useEffect(() => {
-    if (me) {
-      navigator("/");
-    }
-  }, [me, navigator]);
   return (
     <LoginContainer>
       <form onSubmit={handleLogin}>

@@ -3,10 +3,6 @@ import { produce } from "immer";
 export const initialState = {
   isLoggedIn: false,
 
-  isLoading: false,
-  isDone: false,
-  isError: null,
-
   logInLoading: false,
   logInDone: false,
   logInError: null,
@@ -47,8 +43,8 @@ const user = (state = initialState, action) => {
       case LOG_IN_SUCCESS:
         draft.logInLoading = false;
         draft.logInDone = true;
-        draft.isLoggedIn = true;
         draft.me = action.data;
+        draft.isLoggedIn = true;
         break;
       case LOG_IN_FAILURE:
         draft.logInLoading = false;
@@ -65,7 +61,6 @@ const user = (state = initialState, action) => {
         draft.logOutDone = true;
         draft.isLoggedIn = false;
         draft.me = null;
-        draft.signUpDone = false;
         break;
       case LOG_OUT_FAILURE:
         draft.logOutLoading = false;
@@ -85,10 +80,11 @@ const user = (state = initialState, action) => {
         draft.signUpLoading = false;
         draft.signUpError = action.err;
         break;
+      //----------------------------------------------
       case "INITIALIZE_STATE":
         return initialState; // 초기 상태로 리셋
       default:
-        return console.log("오류가 났습니다");
+        return;
     }
   });
 };

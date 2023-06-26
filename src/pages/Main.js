@@ -10,11 +10,11 @@ const Main = () => {
   const dispatch = useDispatch();
   const { allPosts } = useSelector((state) => state.post);
 
-  useEffect(() => {
-    dispatch({
-      type: ALL_POSTS_REQUEST,
-    });
-  }, [dispatch]);
+  // useEffect(() => {
+  //   dispatch({
+  //     type: ALL_POSTS_REQUEST,
+  //   });
+  // }, [dispatch]);
 
   return (
     <div>
@@ -22,8 +22,8 @@ const Main = () => {
       <br />
       {allPosts.length > 0 &&
         allPosts.map((post) => (
-          <div>
-            <Post key={post.id} post={post} />
+          <div key={post.id}>
+            <Post post={post} />
             <Drag />
           </div>
         ))}

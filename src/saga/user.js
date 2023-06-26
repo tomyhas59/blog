@@ -9,7 +9,7 @@ import {
   SIGN_UP_REQUEST,
   SIGN_UP_SUCCESS,
 } from "../reducer/user";
-import { put, fork, all, call, takeLatest } from "redux-saga/effects";
+import { put, fork, all, call, takeLatest, takeEvery } from "redux-saga/effects";
 import axios from "axios";
 
 //----------------------------------------------------
@@ -63,7 +63,7 @@ function* logIn(action) {
 }
 
 function* watchLogin() {
-  yield takeLatest(LOG_IN_REQUEST, logIn);
+  yield takeEvery(LOG_IN_REQUEST, logIn);
 }
 //--------------------------------------------------------
 function logOutAPI() {
