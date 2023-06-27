@@ -1,23 +1,26 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import CommentForm from "./CommentForm";
 import Comment from "./Comment";
 import styled from "styled-components";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  REMOVE_COMMENT_REQUEST,
-  REMOVE_POST_REQUEST,
-  UPDATE_COMMENT_REQUEST,
-} from "../reducer/post";
+import { REMOVE_POST_REQUEST, UPDATE_POST_REQUEST } from "../reducer/post";
 import useInput from "../hooks/useInput";
 const Post = ({ post }) => {
   const dispatch = useDispatch();
   const [editPost, setEditPost] = useState(false);
   const [content, contentOnChane, setContent] = useInput("");
-
+  const textRef = useRef(null);
+  const { updatePostDone } = useSelector((state) => state.post);
   const onEditPostHandler = useCallback(() => {
     setEditPost((prev) => !prev);
     setContent("");
   }, [setContent]);
+
+  useEffect(() => {
+    if (editPost) {
+      textRef.current.focus();
+    }
+  }, [editPost]);
 
   const [addComment, setAddComment] = useState(false);
   const onAddCommentHandler = useCallback(() => {
@@ -26,7 +29,7 @@ const Post = ({ post }) => {
 
   const handleModifyPost = useCallback(() => {
     dispatch({
-      type: UPDATE_COMMENT_REQUEST,
+      type: UPDATE_POST_REQUEST,
       data: {
         postId: post.id,
         content: content,
@@ -34,7 +37,14 @@ const Post = ({ post }) => {
     });
   }, [content, dispatch, post.id]);
 
+  useEffect(() => {
+    if (updatePostDone) {
+      setEditPost(false);
+    }
+  }, [updatePostDone]);
+
   const handleDeletePost = useCallback(() => {
+    if (!window.confirm("삭제하시겠습니까?")) return false;
     dispatch({
       type: REMOVE_POST_REQUEST,
       data: post.id,
@@ -62,6 +72,7 @@ const Post = ({ post }) => {
               rows="5"
               value={content}
               onChange={contentOnChane}
+              ref={textRef}
             />
             <CommentFlexEnd>
               <Button onClick={handleModifyPost}>수정</Button>

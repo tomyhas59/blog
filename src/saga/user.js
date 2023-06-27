@@ -9,7 +9,14 @@ import {
   SIGN_UP_REQUEST,
   SIGN_UP_SUCCESS,
 } from "../reducer/user";
-import { put, fork, all, call, takeLatest, takeEvery } from "redux-saga/effects";
+import {
+  put,
+  fork,
+  all,
+  call,
+  takeLatest,
+  takeEvery,
+} from "redux-saga/effects";
 import axios from "axios";
 
 //----------------------------------------------------
@@ -41,7 +48,7 @@ function* watchSignUp() {
 
 //--------------------------------------------------------
 function logInAPI(data) {
-  return axios.post("/user/login", data);
+  return axios.post("/user/login", data, { withCredentials: true });
 }
 
 function* logIn(action) {

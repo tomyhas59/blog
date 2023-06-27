@@ -22,10 +22,12 @@ const PostForm = () => {
   const handleRegisterPost = useCallback(
     (e) => {
       e.preventDefault();
-      dispatch({
-        type: ADD_POST_REQUEST,
-        data: content,
-      });
+      if (content.trim() !== "") {
+        dispatch({
+          type: ADD_POST_REQUEST,
+          data: content,
+        });
+      }
     },
     [content, dispatch]
   );

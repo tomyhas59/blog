@@ -10,11 +10,11 @@ const Main = () => {
   const dispatch = useDispatch();
   const { allPosts } = useSelector((state) => state.post);
 
-  // useEffect(() => {
-  //   dispatch({
-  //     type: ALL_POSTS_REQUEST,
-  //   });
-  // }, [dispatch]);
+  useEffect(() => {
+    dispatch({
+      type: ALL_POSTS_REQUEST,
+    });
+  }, [dispatch]);
 
   return (
     <div>

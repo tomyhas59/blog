@@ -124,7 +124,7 @@ function* watchRemovePost() {
 //-----------------------------------------------------
 
 function updateApi(data) {
-  return axios.put(`/post/${data.postId}`, data);
+  return axios.put(`/post/${data.postId}`, { content: data.content });
 }
 
 function* updatePost(action) {
