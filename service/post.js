@@ -13,7 +13,7 @@ module.exports = class PostService {
         include: [
           {
             model: User,
-            attributes: ["id", "email"],
+            attributes: ["id", "email", "nickname"],
           },
         ],
       });
@@ -40,7 +40,7 @@ module.exports = class PostService {
         }
       );
       res.status(200).json({
-        postId: postId,
+        PostId: parseInt(postId, 10), //PostId로 해도 되고 postId로 해도 작동하는 이유?? 리듀서도 마찬가지
         content: req.body.content,
       });
     } catch (err) {
@@ -56,7 +56,7 @@ module.exports = class PostService {
         // where: { userIdx: req.uer.id },내 것만 가져오기 *로그인 하면 req.user.id 생김
         limit: 10,
         //  offset: 0, //0~10  0에서 limit 만큼 가져와라
-        include: [{ model: User, attributes: ["id", "email"] }],
+        include: [{ model: User, attributes: ["id", "email", "nickname"] }],
         order: [["createdAt", "DESC"]], //DESC 내림차순 ASC 오름차순
       });
       res.status(200).json(posts);
@@ -80,7 +80,7 @@ module.exports = class PostService {
         include: [
           {
             model: User,
-            attributes: ["id", "email"],
+            attributes: ["id", "email", "nickname"],
           },
         ],
       });
@@ -98,7 +98,7 @@ module.exports = class PostService {
       await Post.destroy({
         where: {
           id: postId,
-          UserId: req.user.id,
+          UserIdx: req.user.id,
         },
       });
 

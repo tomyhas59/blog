@@ -4,7 +4,7 @@ const { isLoggedIn, isNotLoggedIn } = require("./middlewares");
 const UserService = require("../service/user");
 
 router.post("/signup", isNotLoggedIn, UserService.signUp);
-router.post("/login", isNotLoggedIn, UserService.logIn);
+router.post("/login", UserService.logIn);
 router.get("/", UserService.main);
 router.post("/logout", isLoggedIn, UserService.logOut);
 
