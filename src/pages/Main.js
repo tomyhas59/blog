@@ -11,22 +11,28 @@ const Main = () => {
   const { allPosts } = useSelector((state) => state.post);
 
   useEffect(() => {
-    dispatch({
-      type: ALL_POSTS_REQUEST,
-    });
-  }, [dispatch]);
+    if (allPosts.length === 0) {
+      //렌더링 중복 방지
+      dispatch({
+        type: ALL_POSTS_REQUEST,
+      });
+    }
+  }, [allPosts.length, dispatch]);
 
   return (
     <div>
       <PostForm />
       <br />
       {allPosts.length > 0 &&
-        allPosts.map((post) => (
-          <div key={post.id}>
-            <Post post={post} />
-            <Drag />
-          </div>
-        ))}
+        allPosts.map((post) => {
+          console.log("Post ID:", post.id);
+          return (
+            <div key={post.id}>
+              <Post post={post} />
+              <Drag />
+            </div>
+          );
+        })}
     </div>
   );
 };

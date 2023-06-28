@@ -1,12 +1,24 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import styled from "styled-components";
+import io from "socket.io-client";
+
+const socket = io("http://localhost:3001"); // 소켓 서버 URL
 
 const Chat = () => {
   const [messages, setMessages] = useState([]);
   const [inputValue, setInputValue] = useState("");
-
   const { me } = useSelector((state) => state.user);
+
+  useEffect(() => {
+    socket.on("receiveMessage", (message) => {
+      setMessages((prevMessages) => [...prevMessages, message]);
+    });
+
+    return () => {
+      socket.off("receiveMessage");
+    };
+  }, []);
 
   const handleMessageSubmit = (e) => {
     e.preventDefault();
@@ -16,7 +28,7 @@ const Chat = () => {
         sender: me.nickname,
         text: inputValue,
       };
-      setMessages([...messages, newMessage]);
+      socket.emit("sendMessage", newMessage);
       setInputValue("");
     }
   };

@@ -5,6 +5,7 @@ import styled from "styled-components";
 import { useDispatch, useSelector } from "react-redux";
 import { REMOVE_POST_REQUEST, UPDATE_POST_REQUEST } from "../reducer/post";
 import useInput from "../hooks/useInput";
+
 const Post = ({ post }) => {
   const dispatch = useDispatch();
   const [editPost, setEditPost] = useState(false);
