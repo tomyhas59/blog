@@ -40,7 +40,7 @@ module.exports = class PostService {
         }
       );
       res.status(200).json({
-        PostId: parseInt(postId, 10), //PostId로 해도 되고 postId로 해도 작동하는 이유?? 리듀서도 마찬가지
+        PostId: parseInt(postId, 10),
         content: req.body.content,
       });
     } catch (err) {

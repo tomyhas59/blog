@@ -5,7 +5,7 @@ const PostService = require("../service/post");
 
 router.get("/all", PostService.readAll);
 router.get("/:postId", PostService.read);
-router.post("/", PostService.create);
+router.post("/", isLoggedIn, PostService.create);
 router.put("/:postId", isLoggedIn, PostService.update);
 router.delete("/:postId", isLoggedIn, PostService.delete);
 
