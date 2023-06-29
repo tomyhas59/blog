@@ -31,9 +31,9 @@ const initialState = {
   removeCommentDone: false,
   removeCommentError: null,
 
-  // updateCommentLoading: false,
-  // updateCommentDone: false,
-  // updateCommentError: null,
+  updateCommentLoading: false,
+  updateCommentDone: false,
+  updateCommentError: null,
 };
 
 //action명

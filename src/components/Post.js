@@ -54,7 +54,7 @@ const Post = ({ post }) => {
 
   return (
     <FormWrapper>
-      <CommentFlex>
+      <BetweenFlex>
         <div>
           <Span>{post.User.nickname}</Span>
           <Span>날짜</Span>
@@ -63,7 +63,7 @@ const Post = ({ post }) => {
           <Button onClick={onEditPostHandler}>수정</Button>
           <Button onClick={handleDeletePost}>삭제</Button>
         </div>
-      </CommentFlex>
+      </BetweenFlex>
 
       <PostWrapper>
         {editPost ? (
@@ -75,10 +75,10 @@ const Post = ({ post }) => {
               onChange={contentOnChane}
               ref={textRef}
             />
-            <CommentFlexEnd>
+            <EndFlex>
               <Button onClick={handleModifyPost}>수정</Button>
               <Button onClick={onEditPostHandler}>취소</Button>
-            </CommentFlexEnd>
+            </EndFlex>
           </>
         ) : (
           <ContentWrapper>
@@ -88,14 +88,14 @@ const Post = ({ post }) => {
       </PostWrapper>
 
       <CommentContainer>
-        <CommentFlex>
+        <BetweenFlex>
           <Span>{post.length}개</Span>
           <Info onClick={onAddCommentHandler}>댓글 달기</Info>
-        </CommentFlex>
+        </BetweenFlex>
+        <Comment />
         {addComment ? (
           <div>
             <CommentForm />
-            <Comment />
           </div>
         ) : null}
       </CommentContainer>
@@ -107,17 +107,15 @@ export default Post;
 
 const FormWrapper = styled.div`
   max-width: 800px;
-  border: 1px solid;
-  border-color: silver;
+  border: 1px solid silver;
   border-radius: 5px;
   margin: 10px auto;
   padding: 20px;
 `;
 
 const PostWrapper = styled.div`
-  width: 80%;
-  border: 1px solid;
-  border-color: silver;
+  width: 100%;
+  border: 1px solid silver;
   border-radius: 5px;
   margin: 10px auto;
   padding: 20px;
@@ -150,19 +148,18 @@ const Info = styled.span`
   cursor: pointer;
 `;
 
-const CommentFlex = styled.div`
+const BetweenFlex = styled.div`
   display: flex;
   justify-content: space-between;
 `;
 
-const CommentFlexEnd = styled.div`
+const EndFlex = styled.div`
   display: flex;
   justify-content: end;
 `;
 const ContentWrapper = styled.div`
   width: 100%;
-  border: 1px solid;
-  border-color: silver;
+  border: 1px solid silver;
   height: 70px;
   border-radius: 5px;
   margin: 0 auto;
@@ -172,14 +169,15 @@ const ContentWrapper = styled.div`
 const Span = styled.span`
   width: 100px;
   margin: 2px;
-  color: ${(props) => props.theme.mainColor};
+  color: #000;
   padding: 6px;
+  font-weight: bold;
 `;
 
 const CommentContainer = styled.div`
-  max-width: 800px;
+  background-color: ${(props) => props.theme.subColor};
   margin: 0 auto;
   padding: 20px;
-  border: 1px solid #ccc;
+  border: 1px solid ${(props) => props.theme.mainColor};
   border-radius: 4px;
 `;

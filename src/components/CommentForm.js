@@ -1,28 +1,18 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 
-
-
 const CommentForm = ({ onSubmit }) => {
-  const [author, setAuthor] = useState("");
   const [content, setContent] = useState("");
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    onSubmit({ author, content });
-    setAuthor("");
+    onSubmit({ content });
     setContent("");
   };
 
   return (
     <CommentWrapper>
       <Form onSubmit={handleSubmit}>
-        <InputName
-          type="text"
-          placeholder="Name"
-          value={author}
-          onChange={(e) => setAuthor(e.target.value)}
-        />
         <InputComment
           type="text"
           placeholder="Comment"
@@ -38,8 +28,8 @@ const CommentForm = ({ onSubmit }) => {
 export default CommentForm;
 
 const CommentWrapper = styled.div`
-  border: 1px solid;
-  border-color: silver;
+  border: 1px solid ${(props) => props.theme.mainColor};
+
   border-radius: 5px;
   margin: 10px auto;
   padding: 20px;
