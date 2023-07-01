@@ -8,6 +8,12 @@ router.get("/:postId", PostService.read);
 router.post("/", isLoggedIn, PostService.create);
 router.put("/:postId", isLoggedIn, PostService.update);
 router.delete("/:postId", isLoggedIn, PostService.delete);
+router.post("/:postId/comment", isLoggedIn, PostService.commentCreate);
+router.delete(
+  "/:postId/comment/:commentId",
+  isLoggedIn,
+  PostService.commentDelete
+);
 
 module.exports = router;
 
