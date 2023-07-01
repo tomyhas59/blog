@@ -61,6 +61,10 @@ export const ADD_COMMENT_REQUEST = "ADD_COMMENT_REQUEST";
 export const ADD_COMMENT_SUCCESS = "ADD_COMMENT_SUCCESS";
 export const ADD_COMMENT_FAILURE = "ADD_COMMENT_FAILURE";
 
+export const LOAD_COMMENTT_REQUEST = "LOAD_COMMENT_REQUEST";
+export const LOAD_COMMENTT_SUCCESS = "LOAD_COMMENT_SUCCESS";
+export const LOAD_COMMENTT_FAILURE = "LOAD_COMMENT_FAILURE";
+
 export const REMOVE_COMMENT_REQUEST = "REMOVE_COMMENT_REQUEST";
 export const REMOVE_COMMENT_SUCCESS = "REMOVE_COMMENT_SUCCESS";
 export const REMOVE_COMMENT_FAILURE = "REMOVE_COMMENT_FAILURE";
@@ -175,9 +179,11 @@ const post = (state = initialState, action) => {
         const commentsIndex = draft.allPosts.findIndex(
           (v) => v.id === action.data.PostId
         );
-        draft.allPosts[commentsIndex].Comments = draft.allPosts[
-          commentsIndex
-        ].Comments.filter((v) => v.id !== action.data.CommentId);
+        if (draft.allPosts.includes(commentsIndex)) {
+          draft.allPosts[commentsIndex].Comments = draft.allPosts[
+            commentsIndex
+          ].Comments.filter((v) => v.id !== action.data.CommentId);
+        }
         break;
       case REMOVE_COMMENT_FAILURE:
         draft.removeCommentLoading = false;

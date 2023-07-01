@@ -124,7 +124,7 @@ function* watchRemovePost() {
 //-----------------------------------------------------
 
 function updateApi(data) {
-  return axios.put(`/post/${data.postId}`, { content: data.content });
+  return axios.put(`/post/${data.postId}`, data);
 }
 
 function* updatePost(action) {
@@ -174,12 +174,12 @@ function* watchAddComment() {
 //-----------------------------------------------------
 
 function removeCommentApi(data) {
-  return axios.delete(`/post/${data.postId}/${data.commentId}`);
+  return axios.delete(`/post/${data.postId}/comment/${data.commentId}`);
 }
-
 function* removeComment(action) {
   try {
     const result = yield call(removeCommentApi, action.data);
+    console.log(result.data);
     yield put({
       type: REMOVE_COMMENT_SUCCESS,
       data: result.data,
@@ -192,7 +192,7 @@ function* removeComment(action) {
     });
   }
 }
-function* watchRemoveCommet() {
+function* watchRemoveComment() {
   yield takeLatest(REMOVE_COMMENT_REQUEST, removeComment);
 }
 //-----------------------------------------------------
@@ -204,7 +204,7 @@ export default function* postSaga() {
     fork(watchRemovePost),
     fork(watchUpdatePost),
     fork(watchAddComment),
-    fork(watchRemoveCommet),
+    fork(watchRemoveComment),
     fork(watchLoadPost),
   ]);
 }

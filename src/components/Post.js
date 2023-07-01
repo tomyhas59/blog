@@ -3,7 +3,11 @@ import CommentForm from "./CommentForm";
 import Comment from "./Comment";
 import styled from "styled-components";
 import { useDispatch, useSelector } from "react-redux";
-import { REMOVE_POST_REQUEST, UPDATE_POST_REQUEST } from "../reducer/post";
+import {
+  LOAD_COMMENTT_REQUEST,
+  REMOVE_POST_REQUEST,
+  UPDATE_POST_REQUEST,
+} from "../reducer/post";
 import useInput from "../hooks/useInput";
 
 const Post = ({ post }) => {
@@ -12,6 +16,8 @@ const Post = ({ post }) => {
   const [content, contentOnChane, setContent] = useInput("");
   const textRef = useRef(null);
   const { updatePostDone } = useSelector((state) => state.post);
+  const id = useSelector((state) => state.user.me?.id);
+
   const onEditPostHandler = useCallback(() => {
     setEditPost((prev) => !prev);
     setContent("");
@@ -44,6 +50,12 @@ const Post = ({ post }) => {
     }
   }, [updatePostDone]);
 
+  useEffect(() => {
+    dispatch({
+      type: LOAD_COMMENTT_REQUEST,
+    });
+  }, [dispatch]);
+
   const handleDeletePost = useCallback(() => {
     if (!window.confirm("삭제하시겠습니까?")) return false;
     dispatch({
@@ -59,10 +71,14 @@ const Post = ({ post }) => {
           <Span>{post.User.nickname}</Span>
           <Span>날짜</Span>
         </div>
-        <div>
-          <Button onClick={onEditPostHandler}>수정</Button>
-          <Button onClick={handleDeletePost}>삭제</Button>
-        </div>
+        {id === post.User.id ? (
+          <div>
+            <Button onClick={onEditPostHandler}>수정</Button>
+            <Button onClick={handleDeletePost}>삭제</Button>
+          </div>
+        ) : (
+          <Button>♥</Button>
+        )}
       </BetweenFlex>
 
       <PostWrapper>
@@ -89,15 +105,15 @@ const Post = ({ post }) => {
 
       <CommentContainer>
         <BetweenFlex>
-          <Span>{post.length}개</Span>
+          <Span>{post.Comments.length}개</Span>
           <Info onClick={onAddCommentHandler}>댓글 달기</Info>
         </BetweenFlex>
-        <Comment />
         {addComment ? (
           <div>
-            <CommentForm />
+            <CommentForm post={post} />
           </div>
         ) : null}
+        <Comment post={post} />
       </CommentContainer>
     </FormWrapper>
   );
@@ -131,6 +147,7 @@ const Button = styled.span`
   color: #fff;
   padding: 6px;
   border-radius: 6px;
+  text-align: center;
   cursor: pointer;
   :hover {
     opacity: 0.7;

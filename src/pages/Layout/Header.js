@@ -5,46 +5,12 @@ import { useDispatch, useSelector } from "react-redux";
 import { useCallback, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { LOG_OUT_REQUEST } from "../../reducer/user";
-import { useState } from "react";
+
 const Header = () => {
   const dispatch = useDispatch();
   const navigator = useNavigate();
   const { isLoggedIn, logOutDone } = useSelector((state) => state.user);
-
-  const [buttonPosition, setButtonPosition] = useState(0);
-  const [isMovingRight, setIsMovingRight] = useState(true);
-
-  useEffect(() => {
-    const container = document.getElementById("container");
-    const containerWidth = container.offsetWidth;
-    const buttonWidth = 100;
-    const maxButtonX = containerWidth - buttonWidth;
-    const speed = 2; // 이동 속도 (조절 가능)
-
-    const intervalId = setInterval(() => {
-      setButtonPosition((prevPosition) => {
-        let newPosition;
-        if (isMovingRight) {
-          newPosition = prevPosition + speed;
-          if (newPosition >= maxButtonX - buttonPosition * 0.2) {
-            newPosition = maxButtonX - buttonPosition * 0.2;
-            setIsMovingRight(false);
-          }
-        } else {
-          newPosition = prevPosition - speed;
-          if (newPosition <= 0) {
-            newPosition = 0;
-            setIsMovingRight(true);
-          }
-        }
-        return newPosition;
-      });
-    }, 10);
-
-    return () => {
-      clearInterval(intervalId);
-    };
-  }, [buttonPosition, isMovingRight]);
+  const { me } = useSelector((state) => state.user);
 
   useEffect(() => {
     if (logOutDone) {
@@ -64,8 +30,8 @@ const Header = () => {
   return (
     <HeaderWrapper>
       <HeaderWidth id="container">
-        <HeaderLogo style={{ left: `${buttonPosition}` + "px" }}>
-          <Link to="/">Y BLOG</Link>
+        <HeaderLogo>
+          <Link to="/">Y BLOG </Link>
         </HeaderLogo>
         <HeaderList>
           {!isLoggedIn && (
@@ -80,6 +46,7 @@ const Header = () => {
           )}
           {isLoggedIn && (
             <>
+              <Nickname>{me.nickname}님 안녕하세요</Nickname>
               <li>
                 <Button onClick={handleLogout}>로그아웃</Button>
               </li>
@@ -97,6 +64,11 @@ const Header = () => {
 };
 
 export default Header;
+
+const Nickname = styled.div`
+  margin-right: 5px;
+  font-size: 30px;
+`;
 
 const Button = styled.button`
   padding: 10px 20px;

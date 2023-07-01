@@ -1,23 +1,41 @@
-import React, { useState } from "react";
+import React, { useEffect, useCallback } from "react";
 import styled from "styled-components";
+import { useDispatch, useSelector } from "react-redux";
+import useInput from "../hooks/useInput";
+import { ADD_COMMENT_REQUEST } from "../reducer/post";
 
-const CommentForm = ({ onSubmit }) => {
-  const [content, setContent] = useState("");
+const CommentForm = ({ post }) => {
+  const { addCommentDone } = useSelector((state) => state.post);
+  const [commentText, onChangeCommentText, setCommentText] = useInput();
+  const dispatch = useDispatch();
+  const id = useSelector((state) => state.user.me?.id);
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    onSubmit({ content });
-    setContent("");
-  };
+  useEffect(() => {
+    if (addCommentDone) {
+      setCommentText("");
+    }
+  }, [addCommentDone, setCommentText]);
+
+  const onSubmitComment = useCallback(
+    (e) => {
+      e.preventDefault();
+      console.log(post.id, commentText);
+      dispatch({
+        type: ADD_COMMENT_REQUEST,
+        data: { content: commentText, postId: post.id, userId: id },
+      });
+    },
+    [commentText, dispatch, id, post.id]
+  );
 
   return (
     <CommentWrapper>
-      <Form onSubmit={handleSubmit}>
+      <Form onSubmit={onSubmitComment}>
         <InputComment
           type="text"
           placeholder="Comment"
-          value={content}
-          onChange={(e) => setContent(e.target.value)}
+          value={commentText}
+          onChange={onChangeCommentText}
         />
         <Button type="submit">등록</Button>
       </Form>
@@ -40,15 +58,11 @@ const Form = styled.form`
   text-align: center;
 `;
 
-const InputName = styled.input`
-  width: 15%;
-`;
-
 const InputComment = styled.input`
   width: 70%;
 `;
 
-const Button = styled.span`
+const Button = styled.button`
   width: 15%;
   background-color: ${(props) => props.theme.mainColor};
   margin: 2px;
