@@ -63,7 +63,6 @@ const InputComment = styled.input`
 `;
 
 const Button = styled.button`
-  width: 15%;
   background-color: ${(props) => props.theme.mainColor};
   margin: 2px;
   color: #fff;

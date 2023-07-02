@@ -3,7 +3,6 @@ import styled from "styled-components";
 import { useDispatch, useSelector } from "react-redux";
 import { REMOVE_COMMENT_REQUEST } from "../reducer/post";
 import moment from "moment";
-import "moment/locale/ko";
 
 const Comment = ({ post }) => {
   const [addComment, setAddComment] = useState([]);
@@ -130,7 +129,6 @@ const InputComment = styled.input`
 `;
 
 const Button = styled.button`
-  width: 15%;
   background-color: ${(props) => props.theme.mainColor};
   margin: 2px;
   color: #fff;

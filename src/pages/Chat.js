@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import styled from "styled-components";
 import io from "socket.io-client";
+import moment from "moment";
 
 const socket = io("http://localhost:3001"); // 소켓 서버 URL
 
@@ -27,6 +28,7 @@ const Chat = () => {
         id: new Date().getTime(),
         sender: me.nickname,
         text: inputValue,
+        time: moment().format("HH:mm"),
       };
       socket.emit("sendMessage", newMessage);
       setInputValue("");
@@ -41,10 +43,12 @@ const Chat = () => {
     <ChatContainer>
       <h2>채팅</h2>
       <MessageList>
-        {messages.map((message) => (
-          <MessageItem key={message.id}>
-            <MessageSender>{message.sender}: </MessageSender>
-            <MessageText>{message.text}</MessageText>
+        {messages.map((v) => (
+          <MessageItem key={v.id}>
+            <MessageSender>
+              {v.sender} ({v.time})
+            </MessageSender>
+            <MessageText>{v.text}</MessageText>
           </MessageItem>
         ))}
       </MessageList>
@@ -84,7 +88,12 @@ const MessageSender = styled.span`
 `;
 
 const MessageText = styled.p`
+  display: inline-block; //inline 속성:문자길이만큼 늘어남
   margin: 5px 0;
+  padding: 5px 10px;
+  background-color: ${(props) => props.theme.mainColor};
+  color: #fff;
+  border-radius: 4px;
 `;
 
 const MessageInput = styled.input`
