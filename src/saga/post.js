@@ -182,7 +182,10 @@ function* removeComment(action) {
     console.log(result.data);
     yield put({
       type: REMOVE_COMMENT_SUCCESS,
-      data: result.data,
+      data: {
+        postId: action.data,
+        comment: result.data,
+      },
     });
   } catch (err) {
     console.log(err);

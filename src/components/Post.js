@@ -3,19 +3,15 @@ import CommentForm from "./CommentForm";
 import Comment from "./Comment";
 import styled from "styled-components";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  LOAD_COMMENTT_REQUEST,
-  REMOVE_POST_REQUEST,
-  UPDATE_POST_REQUEST,
-} from "../reducer/post";
+import { REMOVE_POST_REQUEST, UPDATE_POST_REQUEST } from "../reducer/post";
 import useInput from "../hooks/useInput";
-
+import moment from "moment";
+import "moment/locale/ko";
 const Post = ({ post }) => {
   const dispatch = useDispatch();
   const [editPost, setEditPost] = useState(false);
   const [content, contentOnChane, setContent] = useInput("");
   const textRef = useRef(null);
-  const { updatePostDone } = useSelector((state) => state.post);
   const id = useSelector((state) => state.user.me?.id);
 
   const onEditPostHandler = useCallback(() => {
@@ -44,18 +40,6 @@ const Post = ({ post }) => {
     });
   }, [content, dispatch, post.id]);
 
-  useEffect(() => {
-    if (updatePostDone) {
-      setEditPost(false);
-    }
-  }, [updatePostDone]);
-
-  useEffect(() => {
-    dispatch({
-      type: LOAD_COMMENTT_REQUEST,
-    });
-  }, [dispatch]);
-
   const handleDeletePost = useCallback(() => {
     if (!window.confirm("삭제하시겠습니까?")) return false;
     dispatch({
@@ -63,13 +47,15 @@ const Post = ({ post }) => {
       data: post.id,
     });
   }, [dispatch, post.id]);
+  const createdAtDate = moment(post.createdAt);
+  const formattedDate = createdAtDate.format("l");
 
   return (
     <FormWrapper>
       <BetweenFlex>
         <div>
           <Span>{post.User.nickname}</Span>
-          <Span>날짜</Span>
+          <Span>{formattedDate}</Span>
         </div>
         {id === post.User.id ? (
           <div>

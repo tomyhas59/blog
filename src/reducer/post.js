@@ -179,10 +179,12 @@ const post = (state = initialState, action) => {
         const commentsIndex = draft.allPosts.findIndex(
           (v) => v.id === action.data.PostId
         );
-        if (draft.allPosts.includes(commentsIndex)) {
+        if (commentsIndex !== -1) {
+          // 배열에 요소가 있는지 확인
           draft.allPosts[commentsIndex].Comments = draft.allPosts[
             commentsIndex
           ].Comments.filter((v) => v.id !== action.data.CommentId);
+          console.log(draft.allPosts[commentsIndex].Comments, "완료");
         }
         break;
       case REMOVE_COMMENT_FAILURE:

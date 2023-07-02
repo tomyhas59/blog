@@ -2,8 +2,13 @@ import React, { useCallback, useEffect, useState } from "react";
 import styled from "styled-components";
 import { useDispatch, useSelector } from "react-redux";
 import { REMOVE_COMMENT_REQUEST } from "../reducer/post";
+import moment from "moment";
+import "moment/locale/ko";
+
 const Comment = ({ post }) => {
-  const [addComment, setAddComment] = useState({});
+  const [addComment, setAddComment] = useState([]);
+  const dispatch = useDispatch();
+  const id = useSelector((state) => state.user.me?.id);
 
   //----------------map 안에서 하나만 작동 코드---------------------
   const onAddCommentHandler = useCallback((commentId) => {
@@ -14,42 +19,45 @@ const Comment = ({ post }) => {
   }, []);
 
   const [reComment, setReComment] = useState("");
-  const dispatch = useDispatch();
-  const id = useSelector((state) => state.user.me?.id);
 
-  const handleSubmit = useCallback((e) => {
-    e.preventDefault();
-    setReComment("");
-  }, []);
+  const handleSubmit = useCallback(
+    (e) => {
+      e.preventDefault();
+      setReComment("");
+    },
+    [setReComment]
+  );
 
-  const handleDeleteComment = useCallback(
-    (commentId) /*전달받은 매개변수*/ => {
-      dispatch({
+  const onRemoveComment = useCallback(
+    (commentId) => {
+      return dispatch({
         type: REMOVE_COMMENT_REQUEST,
         data: {
-          postId: post.id,
           commentId,
+          postId: post.id,
         },
       });
     },
     [dispatch, post.id]
   );
 
+  const createdAtDate = moment(post.createdAt);
+  const formattedDate = createdAtDate.format("l");
   return (
     <>
       {post.Comments.map((item) => (
-        <>
+        <div key={item.id}>
           <CommentWrapper key={item.id}>
             <Author>{item.User.nickname}</Author>
             <Content>{item.content}</Content>
-            <Toggle>날짜</Toggle>
+            <Toggle>{formattedDate}</Toggle>
             <Toggle onClick={() => onAddCommentHandler(item.id)}>댓글</Toggle>
             {id === item.User.id ? (
               <>
                 <Toggle>수정</Toggle>
                 <Toggle
                   onClick={() =>
-                    handleDeleteComment(item.id /*매개변수를 위의 함수로 전달*/)
+                    onRemoveComment(item.id /*매개변수를 위의 함수로 전달*/)
                   }
                 >
                   삭제
@@ -73,7 +81,7 @@ const Comment = ({ post }) => {
               <Button type="submit">등록</Button>
             </Form>
           ) : null}
-        </>
+        </div>
       ))}
     </>
   );
@@ -102,7 +110,7 @@ const Content = styled.div`
 
 const Toggle = styled.button`
   font-weight: bold;
-  width: 8%;
+  width: 7%;
 `;
 
 const Not = styled.button`
