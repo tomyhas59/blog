@@ -175,15 +175,23 @@ module.exports = class PostService {
   //----------------------------------------------------------------------
   static async commentDelete(req, res, next) {
     try {
-      const commentId = req.params.commentId;
-      await Comment.destroy({
-        where: {
-          UserId: req.user.id,
-          id: commentId,
-        },
+      const comment = await Comment.findOne({
+        where: { PostId: req.params.postId, UserId: req.user.id },
       });
-
-      res.status(200).json({ CommentId: parseInt(commentId, 10) });
+      await Comment.destroy({
+        where: { id: comment.id },
+        include: [
+          {
+            model: User,
+            attributes: ["id", "nickname"],
+          },
+        ],
+      });
+      res.status(200).json({
+        id: comment.id,
+        PostId: parseInt(req.params.postId, 10),
+        UserId: req.user.id,
+      });
     } catch (error) {
       console.error(error);
       next(error);
