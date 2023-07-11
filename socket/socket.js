@@ -66,7 +66,6 @@
 // });
 
 const http = require("http");
-const socketIO = require("socket.io");
 const express = require("express");
 const cors = require("cors");
 
