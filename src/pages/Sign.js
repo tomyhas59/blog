@@ -28,8 +28,11 @@ const Registration = () => {
     if (signUpDone) {
       alert("회원가입이 완료되었습니다");
       navigator("/login");
+      dispatch({
+        type: "INITIALIZE_STATE",
+      });
     }
-  }, [signUpDone, navigator]);
+  }, [signUpDone, navigator, dispatch]);
 
   const handleSubmit = useCallback(
     (e) => {

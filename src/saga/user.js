@@ -48,7 +48,7 @@ function* watchSignUp() {
 
 //--------------------------------------------------------
 function logInAPI(data) {
-  return axios.post("/user/login", data, { withCredentials: true });
+  return axios.post("/user/login", data);
 }
 
 function* logIn(action) {

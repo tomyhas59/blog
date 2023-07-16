@@ -46,7 +46,7 @@ const Header = () => {
           )}
           {isLoggedIn && (
             <>
-              <Nickname>{me.nickname}님 안녕하세요</Nickname>
+              <Nickname>{me.nickname}님 환영합니다</Nickname>
               <li>
                 <Button onClick={handleLogout}>로그아웃</Button>
               </li>

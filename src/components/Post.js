@@ -38,6 +38,7 @@ const Post = ({ post }) => {
         content: content,
       },
     });
+    setEditPost(false);
   }, [content, dispatch, post.id]);
 
   const handleDeletePost = useCallback(() => {
