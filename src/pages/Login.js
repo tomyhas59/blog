@@ -12,13 +12,16 @@ function Login() {
   const [email, emailOnChange] = useInput("");
   const [password, PasswordOnChange] = useInput("");
 
-  const { logInError } = useSelector((state) => state.user);
+  const { logInDone, logInError } = useSelector((state) => state.user);
 
   useEffect(() => {
     if (logInError) {
       alert(logInError);
     }
-  }, [logInError]);
+    if (logInDone) {
+      navigator("/");
+    }
+  }, [logInDone, logInError, navigator]);
 
   const handleLogin = useCallback(
     (e) => {
@@ -27,9 +30,8 @@ function Login() {
         type: LOG_IN_REQUEST,
         data: { email: email, password: password },
       });
-      navigator("/");
     },
-    [dispatch, email, navigator, password]
+    [dispatch, email, password]
   );
 
   const LoginEnter = useCallback(

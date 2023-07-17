@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { SIGN_UP_REQUEST } from "../reducer/user";
 import { useNavigate } from "react-router-dom";
 
-const Registration = () => {
+const Sign = () => {
   const [nickname, nickNameOnChange] = useInput("");
   const [email, emailOnChange] = useInput("");
   const [password, passwordOnChange] = useInput("");
@@ -80,7 +80,7 @@ const Registration = () => {
   );
 };
 
-export default Registration;
+export default Sign;
 
 const RegistrationContainer = styled.div`
   max-width: 400px;
