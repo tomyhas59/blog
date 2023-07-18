@@ -43,14 +43,14 @@ module.exports = class UserService {
         return next(err);
       }
       if (!user) {
-        return res.status(401).send(info.message);
+        return res.status(401).send(info.messege);
       }
 
       /*login 실행 함수 , passport에서 가져옴*/
       return req.login(user, async (loginErr) => {
         if (loginErr) {
-          console.error(err);
-          return next(err);
+          console.error(loginErr);
+          return next(loginErr);
         }
         const fullUser = await User.findOne({
           where: { id: user.id },

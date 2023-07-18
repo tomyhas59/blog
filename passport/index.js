@@ -14,9 +14,9 @@ module.exports = () => {
     try {
       const user = await User.findOne({ where: { id } });
       done(null, user);
-    } catch (error) {
-      console.log(error);
-      done(error);
+    } catch (err) {
+      console.log(err);
+      done(err);
     }
   });
   local();
