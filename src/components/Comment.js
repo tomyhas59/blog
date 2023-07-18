@@ -11,10 +11,13 @@ const Comment = ({ post }) => {
 
   //----------------map 안에서 하나만 작동 코드---------------------
   const onAddCommentHandler = useCallback((commentId) => {
-    setAddComment((prev) => ({
-      ...prev,
-      [commentId]: !prev[commentId],
-    }));
+    if (!id) {
+      alert("로그인이 필요합니다");
+    } else
+      setAddComment((prev) => ({
+        ...prev,
+        [commentId]: !prev[commentId],
+      }));
   }, []);
 
   const [reComment, setReComment] = useState("");
@@ -64,8 +67,8 @@ const Comment = ({ post }) => {
               </>
             ) : (
               <>
-                <Not>수정</Not>
-                <Not>삭제</Not>
+                <NotLoggedIn>수정</NotLoggedIn>
+                <NotLoggedIn>삭제</NotLoggedIn>
               </>
             )}
           </CommentWrapper>
@@ -112,7 +115,7 @@ const Toggle = styled.button`
   width: 7%;
 `;
 
-const Not = styled.button`
+const NotLoggedIn = styled.button`
   font-weight: bold;
   width: 8%;
   color: gray;

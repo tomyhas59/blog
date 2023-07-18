@@ -184,7 +184,7 @@ function* removeComment(action) {
       type: REMOVE_COMMENT_SUCCESS,
       data: {
         postId: action.data,
-        comment: result.data,
+        commentId: result.data,
       },
     });
   } catch (err) {

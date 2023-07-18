@@ -118,7 +118,7 @@ const post = (state = initialState, action) => {
         draft.removePostLoading = false;
         draft.removePostDone = true;
         draft.allPosts = draft.allPosts.filter(
-          (v) => v.id !== action.data.PostId
+          (v) => v.id !== action.data.PostId //백엔드의 json의 PostId
         );
         break;
       case REMOVE_POST_FAILURE:
@@ -133,14 +133,15 @@ const post = (state = initialState, action) => {
         draft.updatePostDone = false;
         draft.updatePostError = null;
         break;
-      case UPDATE_POST_SUCCESS:
+      case UPDATE_POST_SUCCESS: {
         draft.updatePostLoading = false;
         draft.updatePostDone = true;
-        const index = draft.allPosts.findIndex(
+        const postIndex = draft.allPosts.findIndex(
           (v) => v.id === action.data.PostId
         );
-        draft.allPosts[index].content = action.data.content;
+        draft.allPosts[postIndex].content = action.data.content;
         break;
+      }
       case UPDATE_POST_FAILURE:
         draft.updatePostLoading = false;
         draft.updatePostDone = true;
@@ -153,7 +154,7 @@ const post = (state = initialState, action) => {
         draft.addCommentDone = false;
         draft.addCommentError = null;
         break;
-      case ADD_COMMENT_SUCCESS:
+      case ADD_COMMENT_SUCCESS: {
         draft.addCommentLoading = false;
         draft.addCommentDone = true;
         const postIndex = draft.allPosts.findIndex(
@@ -161,6 +162,7 @@ const post = (state = initialState, action) => {
         );
         draft.allPosts[postIndex].Comments.unshift(action.data);
         break;
+      }
       case ADD_COMMENT_FAILURE:
         draft.addCommentLoading = false;
         draft.addCommentDone = true;
@@ -173,20 +175,17 @@ const post = (state = initialState, action) => {
         draft.removeCommentDone = false;
         draft.removeCommentError = null;
         break;
-      case REMOVE_COMMENT_SUCCESS:
+      case REMOVE_COMMENT_SUCCESS: {
         draft.removeCommentLoading = false;
         draft.removeCommentDone = true;
-        const commentsIndex = draft.allPosts.findIndex(
+        const postIndex = draft.allPosts.findIndex(
           (v) => v.id === action.data.PostId
         );
-        if (commentsIndex !== -1) {
-          // 배열에 요소가 있는지 확인
-          draft.allPosts[commentsIndex].Comments = draft.allPosts[
-            commentsIndex
-          ].Comments.filter((v) => v.id !== action.data.CommentId);
-          console.log(draft.allPosts[commentsIndex].Comments, "완료");
-        }
+        draft.allPosts[postIndex].Comments = draft.allPosts[
+          postIndex
+        ].Comments.filter((v) => v.id !== action.data.CommentId);
         break;
+      }
       case REMOVE_COMMENT_FAILURE:
         draft.removeCommentLoading = false;
         draft.removeCommentDone = true;

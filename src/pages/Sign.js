@@ -37,13 +37,18 @@ const Sign = () => {
   const handleSubmit = useCallback(
     (e) => {
       e.preventDefault();
+      if (!email | !nickname | !password | !passwordConfirm) {
+        alert("빈 칸을 확인하세요");
+      }
       if (password !== passwordConfirm) {
         return setpasswordError(true);
       }
-      dispatch({
-        type: SIGN_UP_REQUEST,
-        data: { email, nickname, password },
-      });
+      if ((email, nickname, password, passwordConfirm)) {
+        dispatch({
+          type: SIGN_UP_REQUEST,
+          data: { email, nickname, password },
+        });
+      }
     },
     [dispatch, email, nickname, password, passwordConfirm]
   );

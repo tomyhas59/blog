@@ -26,10 +26,18 @@ function Login() {
   const handleLogin = useCallback(
     (e) => {
       e.preventDefault();
-      dispatch({
-        type: LOG_IN_REQUEST,
-        data: { email: email, password: password },
-      });
+      if (!email | !password) {
+        alert("빈 칸을 확인하세요");
+      }
+      if ((email, password)) {
+        dispatch({
+          type: LOG_IN_REQUEST,
+          data: {
+            email: email,
+            password: password,
+          },
+        });
+      }
     },
     [dispatch, email, password]
   );
@@ -38,13 +46,18 @@ function Login() {
     (e) => {
       if (e.key === "Enter") {
         e.preventDefault();
-        dispatch({
-          type: LOG_IN_REQUEST,
-          data: {
-            email: email,
-            password: password,
-          },
-        });
+        if (!email | !password) {
+          alert("빈 칸을 확인하세요");
+        }
+        if ((email, password)) {
+          dispatch({
+            type: LOG_IN_REQUEST,
+            data: {
+              email: email,
+              password: password,
+            },
+          });
+        }
       }
     },
     [dispatch, email, password]

@@ -48,7 +48,7 @@ const user = (state = initialState, action) => {
         break;
       case LOG_IN_FAILURE:
         draft.logInLoading = false;
-        draft.logInError = action.error; //saga failure의 put부분 실행
+        draft.logInError = action.error; //saga failure의 put부분의 error 실행
         break;
       //------------------------------------------
       case LOG_OUT_REQUEST:

@@ -13,7 +13,6 @@ const Post = ({ post }) => {
   const [content, contentOnChane, setContent] = useInput("");
   const textRef = useRef(null);
   const id = useSelector((state) => state.user.me?.id);
-
   const onEditPostHandler = useCallback(() => {
     setEditPost((prev) => !prev);
     setContent("");
@@ -27,8 +26,10 @@ const Post = ({ post }) => {
 
   const [addComment, setAddComment] = useState(false);
   const onAddCommentHandler = useCallback(() => {
-    setAddComment((prev) => !prev);
-  }, []);
+    if (!id) {
+      alert("로그인이 필요합니다");
+    } else setAddComment((prev) => !prev);
+  }, [id]);
 
   const handleModifyPost = useCallback(() => {
     dispatch({
