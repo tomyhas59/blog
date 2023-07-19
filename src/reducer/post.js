@@ -191,6 +191,31 @@ const post = (state = initialState, action) => {
         draft.removeCommentDone = true;
         draft.removeCommentError = action.error;
         break;
+      //---------------------------------------------------
+
+      case UPDATE_COMMENT_REQUEST:
+        draft.updateCommentLoading = true;
+        draft.updateCommentDone = false;
+        draft.updateCommentError = null;
+        break;
+      case UPDATE_COMMENT_SUCCESS: {
+        draft.updateCommentLoading = false;
+        draft.updateCommentDone = true;
+        const postIndex = draft.allPosts.findIndex(
+          (v) => v.id === action.data.PostId
+        );
+        const commentIndex = draft.allPosts[postIndex].Comments.findIndex(
+          (V) => V.id === action.data.CommentId
+        );
+        draft.allPosts[postIndex].Comments[commentIndex].content =
+          action.data.content;
+        break;
+      }
+      case UPDATE_COMMENT_FAILURE:
+        draft.updateCommentLoading = false;
+        draft.updateCommentDone = true;
+        draft.updateCommentError = action.error;
+        break;
       default:
         return;
     }

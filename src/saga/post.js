@@ -19,6 +19,9 @@ import {
   REMOVE_POST_FAILURE,
   REMOVE_POST_REQUEST,
   REMOVE_POST_SUCCESS,
+  UPDATE_COMMENT_FAILURE,
+  UPDATE_COMMENT_REQUEST,
+  UPDATE_COMMENT_SUCCESS,
   UPDATE_POST_FAILURE,
   UPDATE_POST_REQUEST,
   UPDATE_POST_SUCCESS,
@@ -200,6 +203,29 @@ function* watchRemoveComment() {
 }
 //-----------------------------------------------------
 
+function updateCommentApi(data) {
+  return axios.put(`/post/${data.postId}/comment/${data.commentId}`, data);
+}
+
+function* updateComment(action) {
+  try {
+    const result = yield call(updateCommentApi, action.data);
+    yield put({
+      type: UPDATE_COMMENT_SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    console.log(err);
+    yield put({
+      type: UPDATE_COMMENT_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+function* watchUpdateComment() {
+  yield takeLatest(UPDATE_COMMENT_REQUEST, updateComment);
+}
+
 export default function* postSaga() {
   yield all([
     fork(watchLoadPosts),
@@ -209,5 +235,6 @@ export default function* postSaga() {
     fork(watchAddComment),
     fork(watchRemoveComment),
     fork(watchLoadPost),
+    fork(watchUpdateComment),
   ]);
 }

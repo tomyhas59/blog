@@ -1,23 +1,62 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import { useDispatch, useSelector } from "react-redux";
-import { REMOVE_COMMENT_REQUEST } from "../reducer/post";
+import {
+  REMOVE_COMMENT_REQUEST,
+  UPDATE_COMMENT_REQUEST,
+} from "../reducer/post";
 import moment from "moment";
+import useInput from "../hooks/useInput";
 
 const Comment = ({ post }) => {
   const [addComment, setAddComment] = useState([]);
   const dispatch = useDispatch();
   const id = useSelector((state) => state.user.me?.id);
 
-  //----------------map 안에서 하나만 작동 코드---------------------
-  const onAddCommentHandler = useCallback((commentId) => {
-    if (!id) {
-      alert("로그인이 필요합니다");
-    } else
-      setAddComment((prev) => ({
+  //------------------댓글 수정--------------------------------
+
+  const [editComment, setEditComment] = useState({});
+  const [content, contentOnChane, setContent] = useInput("");
+  const textRef = useRef(null);
+
+  const onEditCommentHandler = useCallback(
+    (commentId, item) => {
+      setEditComment((prev) => ({
         ...prev,
         [commentId]: !prev[commentId],
       }));
+      setContent(item.content);
+    },
+    [setContent]
+  );
+
+  // useEffect(() => {
+  //   if (editComment) {
+  //     textRef.current.focus();
+  //   }
+  // }, [editComment]);
+
+  const handleModifyComment = useCallback(
+    (commentId) => {
+      dispatch({
+        type: UPDATE_COMMENT_REQUEST,
+        data: {
+          postId: post.id,
+          commentId,
+          content: content,
+        },
+      });
+      setEditComment(false);
+    },
+    [content, dispatch, post.id]
+  );
+
+  //----------------map 안에서 하나만 작동 코드---------------------
+  const onAddCommentHandler = useCallback((commentId) => {
+    setAddComment((prev) => ({
+      ...prev,
+      [commentId]: !prev[commentId],
+    }));
   }, []);
 
   const [reComment, setReComment] = useState("");
@@ -47,44 +86,75 @@ const Comment = ({ post }) => {
   const formattedDate = createdAtDate.format("l");
   return (
     <>
-      {post.Comments.map((item) => (
-        <div key={item.id}>
-          <CommentWrapper key={item.id}>
-            <Author>{item.User.nickname}</Author>
-            <Content>{item.content}</Content>
-            <Toggle>{formattedDate}</Toggle>
-            <Toggle onClick={() => onAddCommentHandler(item.id)}>댓글</Toggle>
-            {id === item.User.id ? (
-              <>
-                <Toggle>수정</Toggle>
-                <Toggle
-                  onClick={() =>
-                    onRemoveComment(item.id /*매개변수를 위의 함수로 전달*/)
-                  }
-                >
-                  삭제
+      {post.Comments.map((item) => {
+        const isEditing = editComment[item.id];
+        return (
+          <div key={item.id}>
+            <CommentWrapper key={item.id}>
+              <Author>{item.User.nickname}</Author>
+              {isEditing ? (
+                <>
+                  <Text
+                    cols="40"
+                    rows="2"
+                    value={content}
+                    onChange={contentOnChane}
+                    ref={textRef}
+                  />
+                  <EndFlex>
+                    <Button onClick={() => handleModifyComment(item.id)}>
+                      수정
+                    </Button>
+                    <Button onClick={() => onEditCommentHandler(item.id)}>
+                      취소
+                    </Button>
+                  </EndFlex>
+                </>
+              ) : (
+                <Content>{item.content}</Content>
+              )}
+              <Toggle>{formattedDate}</Toggle>
+              {id ? (
+                <Toggle onClick={() => onAddCommentHandler(item.id)}>
+                  댓글
                 </Toggle>
-              </>
-            ) : (
-              <>
-                <NotLoggedIn>수정</NotLoggedIn>
-                <NotLoggedIn>삭제</NotLoggedIn>
-              </>
-            )}
-          </CommentWrapper>
-          {addComment[item.id] ? (
-            <Form onSubmit={handleSubmit}>
-              <InputComment
-                type="text"
-                placeholder="Comment"
-                value={reComment}
-                onChange={(e) => setReComment(e.target.value)}
-              />
-              <Button type="submit">등록</Button>
-            </Form>
-          ) : null}
-        </div>
-      ))}
+              ) : (
+                <NotLoggedIn>댓글</NotLoggedIn>
+              )}
+              {id === item.User.id ? (
+                <>
+                  <Toggle onClick={() => onEditCommentHandler(item.id, item)}>
+                    수정
+                  </Toggle>
+                  <Toggle
+                    onClick={() =>
+                      onRemoveComment(item.id /*매개변수를 위의 함수로 전달*/)
+                    }
+                  >
+                    삭제
+                  </Toggle>
+                </>
+              ) : (
+                <>
+                  <NotLoggedIn>수정</NotLoggedIn>
+                  <NotLoggedIn>삭제</NotLoggedIn>
+                </>
+              )}
+            </CommentWrapper>
+            {addComment[item.id] ? (
+              <Form onSubmit={handleSubmit}>
+                <InputComment
+                  type="text"
+                  placeholder="Comment"
+                  value={reComment}
+                  onChange={(e) => setReComment(e.target.value)}
+                />
+                <Button type="submit">등록</Button>
+              </Form>
+            ) : null}
+          </div>
+        );
+      })}
     </>
   );
 };
@@ -141,4 +211,13 @@ const Button = styled.button`
   :hover {
     opacity: 0.7;
   }
+`;
+
+const Text = styled.textarea`
+  width: 46%;
+`;
+
+const EndFlex = styled.div`
+  display: flex;
+  justify-content: end;
 `;

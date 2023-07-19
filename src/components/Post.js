@@ -13,10 +13,11 @@ const Post = ({ post }) => {
   const [content, contentOnChane, setContent] = useInput("");
   const textRef = useRef(null);
   const id = useSelector((state) => state.user.me?.id);
+
   const onEditPostHandler = useCallback(() => {
     setEditPost((prev) => !prev);
-    setContent("");
-  }, [setContent]);
+    setContent(post.content);
+  }, [post.content, setContent]);
 
   useEffect(() => {
     if (editPost) {
@@ -124,9 +125,6 @@ const PostWrapper = styled.div`
   margin: 10px auto;
   padding: 20px;
 `;
-const Text = styled.textarea`
-  width: 100%;
-`;
 
 const Button = styled.span`
   width: 50px;
@@ -156,6 +154,10 @@ const Info = styled.span`
 const BetweenFlex = styled.div`
   display: flex;
   justify-content: space-between;
+`;
+
+const Text = styled.textarea`
+  width: 100%;
 `;
 
 const EndFlex = styled.div`
