@@ -7,6 +7,11 @@ router.get("/all", PostService.readAll);
 router.get("/:postId", PostService.read);
 router.post("/", isLoggedIn, PostService.create);
 router.put("/:postId", isLoggedIn, PostService.update);
+router.put(
+  "/:postId/comment/:commentId",
+  isLoggedIn,
+  PostService.updateComment
+);
 router.delete("/:postId", isLoggedIn, PostService.delete);
 router.post("/:postId/comment", isLoggedIn, PostService.commentCreate);
 router.delete(

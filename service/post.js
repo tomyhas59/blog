@@ -107,7 +107,6 @@ module.exports = class PostService {
           },
           {
             model: Comment,
-
             include: [
               {
                 model: User, //댓글 작성자
@@ -193,6 +192,34 @@ module.exports = class PostService {
     } catch (error) {
       console.error(error);
       next(error);
+    }
+  }
+  //----------------------------------------------------------------------
+
+  static async updateComment(req, res, next) {
+    try {
+      const comment = await Comment.findOne({
+        where: { PostId: req.params.postId },
+      });
+      await Comment.update(
+        {
+          content: req.body.content,
+        },
+        {
+          where: {
+            id: comment.id,
+            UserId: req.user.id,
+          },
+        }
+      );
+      res.status(200).json({
+        PostId: req.params.postId,
+        CommentId: parseInt(comment.id, 10),
+        content: req.body.content,
+      });
+    } catch (err) {
+      console.log(err);
+      next(err);
     }
   }
 };
