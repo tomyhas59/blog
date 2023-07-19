@@ -137,7 +137,7 @@ const post = (state = initialState, action) => {
         draft.updatePostLoading = false;
         draft.updatePostDone = true;
         const postIndex = draft.allPosts.findIndex(
-          (v) => v.id === action.data.PostId
+          (v) => v.id === action.data.PostId //백엔드의 json의 PostId
         );
         draft.allPosts[postIndex].content = action.data.content;
         break;
@@ -158,7 +158,7 @@ const post = (state = initialState, action) => {
         draft.addCommentLoading = false;
         draft.addCommentDone = true;
         const postIndex = draft.allPosts.findIndex(
-          (v) => v.id === action.data.PostId
+          (v) => v.id === action.data.PostId //백엔드의 json의 PostId
         );
         draft.allPosts[postIndex].Comments.unshift(action.data);
         break;
@@ -179,7 +179,7 @@ const post = (state = initialState, action) => {
         draft.removeCommentLoading = false;
         draft.removeCommentDone = true;
         const postIndex = draft.allPosts.findIndex(
-          (v) => v.id === action.data.PostId
+          (v) => v.id === action.data.PostId //백엔드의 json의 PostId
         );
         draft.allPosts[postIndex].Comments = draft.allPosts[
           postIndex
@@ -202,7 +202,7 @@ const post = (state = initialState, action) => {
         draft.updateCommentLoading = false;
         draft.updateCommentDone = true;
         const postIndex = draft.allPosts.findIndex(
-          (v) => v.id === action.data.PostId
+          (v) => v.id === action.data.PostId //백엔드의 json의 PostId
         );
         const commentIndex = draft.allPosts[postIndex].Comments.findIndex(
           (V) => V.id === action.data.CommentId
