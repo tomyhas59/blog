@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import useInput from "../hooks/useInput";
 import { ADD_COMMENT_REQUEST } from "../reducer/post";
 
-const CommentForm = ({ post }) => {
+const CommentForm = ({ post, editCommentRef }) => {
   const { addCommentDone } = useSelector((state) => state.post);
   const [commentText, onChangeCommentText, setCommentText] = useInput();
   const dispatch = useDispatch();
@@ -14,7 +14,10 @@ const CommentForm = ({ post }) => {
     if (addCommentDone) {
       setCommentText("");
     }
-  }, [addCommentDone, setCommentText]);
+    if (editCommentRef) {
+      editCommentRef.current.focus();
+    }
+  }, [addCommentDone, editCommentRef, setCommentText]);
 
   const onSubmitComment = useCallback(
     (e) => {
@@ -36,6 +39,7 @@ const CommentForm = ({ post }) => {
           placeholder="Comment"
           value={commentText}
           onChange={onChangeCommentText}
+          ref={editCommentRef}
         />
         <Button type="submit">등록</Button>
       </Form>

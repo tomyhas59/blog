@@ -205,12 +205,13 @@ const post = (state = initialState, action) => {
           (v) => v.id === action.data.PostId //백엔드의 json의 PostId
         );
         const commentIndex = draft.allPosts[postIndex].Comments.findIndex(
-          (V) => V.id === action.data.CommentId
+          (v) => v.id === action.data.CommentId
         );
         draft.allPosts[postIndex].Comments[commentIndex].content =
-          action.data.content;
+          action.data.content; //post 안의 Comments안에 있는 content를 찾아서 바꾸므로 배열값 넣어줌
         break;
       }
+
       case UPDATE_COMMENT_FAILURE:
         draft.updateCommentLoading = false;
         draft.updateCommentDone = true;

@@ -177,18 +177,15 @@ function* watchAddComment() {
 //-----------------------------------------------------
 
 function removeCommentApi(data) {
-  return axios.delete(`/post/${data.postId}/comment/${data.commentId}`);
+  return axios.delete(`/post/${data.postId}/comment/${data.commentId}`); //component에서 주는 data
 }
 function* removeComment(action) {
   try {
-    const result = yield call(removeCommentApi, action.data);
+    const result = yield call(removeCommentApi, action.data); //서버 json에서 주는 data값이 담김
     console.log(result.data);
     yield put({
       type: REMOVE_COMMENT_SUCCESS,
-      data: {
-        postId: action.data,
-        commentId: result.data,
-      },
+      data: result.data, //여기 바꿨더니 됨
     });
   } catch (err) {
     console.log(err);

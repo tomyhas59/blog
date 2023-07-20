@@ -7,6 +7,7 @@ import {
 } from "../reducer/post";
 import moment from "moment";
 import useInput from "../hooks/useInput";
+import ReCommentForm from "./ReCommentForm";
 
 const Comment = ({ post }) => {
   const [addComment, setAddComment] = useState([]);
@@ -18,23 +19,39 @@ const Comment = ({ post }) => {
   const [editComment, setEditComment] = useState({});
   const [content, contentOnChane, setContent] = useInput("");
   const textRef = useRef(null);
+  // 현재 열려 있는 댓글의 id추적하기 위한 상태 변수
+  const [currentEditingCommentId, setCurrentEditingCommentId] = useState(null);
 
   const onEditCommentHandler = useCallback(
     (commentId, item) => {
+      // 기존 댓글 닫기
+      if (currentEditingCommentId !== null) {
+        setEditComment((prev) => ({
+          ...prev,
+          [currentEditingCommentId]: false,
+        }));
+      }
+      // 현재 열려 있는 댓글의 id 설정
+      setCurrentEditingCommentId(commentId);
+
       setEditComment((prev) => ({
         ...prev,
         [commentId]: !prev[commentId],
       }));
       setContent(item.content);
     },
-    [setContent]
+    [currentEditingCommentId, setContent]
   );
 
-  // useEffect(() => {
-  //   if (editComment) {
-  //     textRef.current.focus();
-  //   }
-  // }, [editComment]);
+  // "취소" 버튼을 누를 때 호출되는 함수
+  const handleCancelEdit = useCallback(() => {
+    setEditComment((prev) => ({
+      ...prev,
+      [currentEditingCommentId]: false,
+    }));
+    setCurrentEditingCommentId(null);
+    setContent(""); // "Text" 영역 초기화
+  }, [currentEditingCommentId, setContent]);
 
   const handleModifyComment = useCallback(
     (commentId) => {
@@ -42,13 +59,23 @@ const Comment = ({ post }) => {
         type: UPDATE_COMMENT_REQUEST,
         data: {
           postId: post.id,
-          commentId,
+          commentId: commentId,
           content: content,
         },
       });
-      setEditComment(false);
+      setEditComment({});
+      setCurrentEditingCommentId(null);
+      setContent(""); // "Text" 영역 초기화
     },
-    [content, dispatch, post.id]
+    [content, dispatch, post.id, setContent]
+  );
+  const Enter = useCallback(
+    (e, commentId) => {
+      if (e.key === "Enter") {
+        handleModifyComment(commentId);
+      }
+    },
+    [handleModifyComment]
   );
 
   //----------------map 안에서 하나만 작동 코드---------------------
@@ -59,22 +86,14 @@ const Comment = ({ post }) => {
     }));
   }, []);
 
-  const [reComment, setReComment] = useState("");
-
-  const handleSubmit = useCallback(
-    (e) => {
-      e.preventDefault();
-      setReComment("");
-    },
-    [setReComment]
-  );
-
+  //--------------------------------------------------------
   const onRemoveComment = useCallback(
     (commentId) => {
-      return dispatch({
+      if (!window.confirm("삭제하시겠습니까?")) return false;
+      dispatch({
         type: REMOVE_COMMENT_REQUEST,
         data: {
-          commentId,
+          commentId: commentId,
           postId: post.id,
         },
       });
@@ -84,6 +103,7 @@ const Comment = ({ post }) => {
 
   const createdAtDate = moment(post.createdAt);
   const formattedDate = createdAtDate.format("l");
+
   return (
     <>
       {post.Comments.map((item) => {
@@ -92,7 +112,7 @@ const Comment = ({ post }) => {
           <div key={item.id}>
             <CommentWrapper key={item.id}>
               <Author>{item.User.nickname}</Author>
-              {isEditing ? (
+              {isEditing && currentEditingCommentId === item.id ? (
                 <>
                   <Text
                     cols="40"
@@ -100,14 +120,13 @@ const Comment = ({ post }) => {
                     value={content}
                     onChange={contentOnChane}
                     ref={textRef}
+                    onKeyUp={(e) => Enter(e, item.id)}
                   />
                   <EndFlex>
                     <Button onClick={() => handleModifyComment(item.id)}>
                       수정
                     </Button>
-                    <Button onClick={() => onEditCommentHandler(item.id)}>
-                      취소
-                    </Button>
+                    <Button onClick={handleCancelEdit}>취소</Button>
                   </EndFlex>
                 </>
               ) : (
@@ -141,17 +160,7 @@ const Comment = ({ post }) => {
                 </>
               )}
             </CommentWrapper>
-            {addComment[item.id] ? (
-              <Form onSubmit={handleSubmit}>
-                <InputComment
-                  type="text"
-                  placeholder="Comment"
-                  value={reComment}
-                  onChange={(e) => setReComment(e.target.value)}
-                />
-                <Button type="submit">등록</Button>
-              </Form>
-            ) : null}
+            {addComment[item.id] ? <ReCommentForm /> : null}
           </div>
         );
       })}
@@ -160,6 +169,7 @@ const Comment = ({ post }) => {
 };
 
 export default Comment;
+
 const CommentWrapper = styled.div`
   border: 1px solid ${(props) => props.theme.mainColor};
   display: flex;
@@ -190,15 +200,6 @@ const NotLoggedIn = styled.button`
   width: 8%;
   color: gray;
   cursor: default;
-`;
-
-const Form = styled.form`
-  width: 100%;
-  text-align: center;
-`;
-
-const InputComment = styled.input`
-  width: 70%;
 `;
 
 const Button = styled.button`

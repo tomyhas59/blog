@@ -11,7 +11,9 @@ const Post = ({ post }) => {
   const dispatch = useDispatch();
   const [editPost, setEditPost] = useState(false);
   const [content, contentOnChane, setContent] = useInput("");
-  const textRef = useRef(null);
+  const editPostRef = useRef(null);
+  const editCommentRef = useRef(null);
+
   const id = useSelector((state) => state.user.me?.id);
 
   const onEditPostHandler = useCallback(() => {
@@ -21,7 +23,7 @@ const Post = ({ post }) => {
 
   useEffect(() => {
     if (editPost) {
-      textRef.current.focus();
+      editPostRef.current.focus();
     }
   }, [editPost]);
 
@@ -50,6 +52,7 @@ const Post = ({ post }) => {
       data: post.id,
     });
   }, [dispatch, post.id]);
+
   const createdAtDate = moment(post.createdAt);
   const formattedDate = createdAtDate.format("l");
 
@@ -78,7 +81,7 @@ const Post = ({ post }) => {
               rows="5"
               value={content}
               onChange={contentOnChane}
-              ref={textRef}
+              ref={editPostRef}
             />
             <EndFlex>
               <Button onClick={handleModifyPost}>수정</Button>
@@ -99,7 +102,7 @@ const Post = ({ post }) => {
         </BetweenFlex>
         {addComment ? (
           <div>
-            <CommentForm post={post} />
+            <CommentForm post={post} editCommentRef={editCommentRef} />
           </div>
         ) : null}
         <Comment post={post} />
