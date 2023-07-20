@@ -134,7 +134,7 @@ module.exports = class PostService {
         },
       });
 
-      res.status(200).json({ PostId: parseInt(postId, 10) }); //reducer의 action.data.PostId
+      res.status(200).json({ PostId: parseInt(postId, 10) }); //saga의 result 응답데이터, reducer의 action.data.PostId
     } catch (error) {
       console.error(error);
       next(error);
@@ -162,6 +162,10 @@ module.exports = class PostService {
             model: User,
             attributes: ["id", "nickname"],
           },
+          {
+            model: Post,
+            attributes: ["id"],
+          },
         ],
       });
       res.status(201).json(fullComment);
@@ -174,20 +178,15 @@ module.exports = class PostService {
   //----------------------------------------------------------------------
   static async commentDelete(req, res, next) {
     try {
-      const comment = await Comment.findOne({
-        where: { PostId: req.params.postId },
-      });
+      const postId = req.params.postId;
+      const commentId = req.params.commentId;
+
       await Comment.destroy({
-        where: { id: comment.id },
-        include: [
-          {
-            model: User,
-            attributes: ["id", "nickname"],
-          },
-        ],
+        where: { id: commentId, UserId: req.user.id },
       });
       res.status(200).json({
-        CommentId: comment.id,
+        PostId: parseInt(postId, 10), //reducer의 action.data. 값
+        CommentId: parseInt(commentId, 10),
       });
     } catch (error) {
       console.error(error);
@@ -198,23 +197,23 @@ module.exports = class PostService {
 
   static async updateComment(req, res, next) {
     try {
-      const comment = await Comment.findOne({
-        where: { PostId: req.params.postId },
-      });
+      const postId = req.params.postId;
+      const commentId = req.params.commentId;
+
       await Comment.update(
         {
           content: req.body.content,
         },
         {
           where: {
-            id: comment.id,
+            id: commentId,
             UserId: req.user.id,
           },
         }
       );
       res.status(200).json({
-        PostId: req.params.postId,
-        CommentId: parseInt(comment.id, 10),
+        PostId: parseInt(postId, 10),
+        CommentId: parseInt(commentId, 10),
         content: req.body.content,
       });
     } catch (err) {

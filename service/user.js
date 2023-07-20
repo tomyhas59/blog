@@ -1,5 +1,7 @@
 const bcrypt = require("bcrypt");
 const User = require("../models/user");
+const Post = require("../models/post");
+const Comment = require("../models/comment");
 const passport = require("passport");
 
 module.exports = class UserService {
@@ -77,6 +79,10 @@ module.exports = class UserService {
           include: [
             {
               model: Post,
+              attributes: ["id"],
+            },
+            {
+              model: Comment,
               attributes: ["id"],
             },
           ],
