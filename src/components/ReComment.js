@@ -1,17 +1,13 @@
-import React, { useCallback, useRef, useState } from "react";
-import styled from "styled-components";
-import { useDispatch, useSelector } from "react-redux";
-import {
-  REMOVE_COMMENT_REQUEST,
-  UPDATE_COMMENT_REQUEST,
-} from "../reducer/post";
-import moment from "moment";
+import React from "react";
+import { useState, useRef, useCallback } from "react";
 import useInput from "../hooks/useInput";
-import ReCommentForm from "./ReCommentForm";
-import ReComment from "./ReComment";
-
-const Comment = ({ post }) => {
-  const [addComment, setAddComment] = useState([]);
+import { useSelector, useDispatch } from "react-redux";
+import {
+  REMOVE_RECOMMENT_REQUEST,
+  UPDATE_RECOMMENT_REQUEST,
+} from "../reducer/post";
+import styled from "styled-components";
+const ReComment = ({ post }) => {
   const dispatch = useDispatch();
   const id = useSelector((state) => state.user.me?.id);
 
@@ -57,7 +53,7 @@ const Comment = ({ post }) => {
   const handleModifyComment = useCallback(
     (commentId) => {
       dispatch({
-        type: UPDATE_COMMENT_REQUEST,
+        type: UPDATE_RECOMMENT_REQUEST,
         data: {
           postId: post.id,
           commentId: commentId,
@@ -79,20 +75,12 @@ const Comment = ({ post }) => {
     [handleModifyComment]
   );
 
-  //----------------map 안에서 하나만 작동 코드---------------------
-  const onAddCommentHandler = useCallback((commentId) => {
-    setAddComment((prev) => ({
-      ...prev,
-      [commentId]: !prev[commentId],
-    }));
-  }, []);
-
   //---댓글 삭제-----------------------------------------------------
   const onRemoveComment = useCallback(
     (commentId) => {
       if (!window.confirm("삭제하시겠습니까?")) return false;
       dispatch({
-        type: REMOVE_COMMENT_REQUEST,
+        type: REMOVE_RECOMMENT_REQUEST,
         data: {
           commentId: commentId,
           postId: post.id,
@@ -101,13 +89,9 @@ const Comment = ({ post }) => {
     },
     [dispatch, post.id]
   );
-
-  const createdAtDate = moment(post.createdAt);
-  const formattedDate = createdAtDate.format("l");
-
   return (
     <>
-      {post.Comments.map((item) => {
+      {post.Comments.ReComment.map((item) => {
         const isEditing = editComment[item.id];
         return (
           <div key={item.id}>
@@ -133,14 +117,7 @@ const Comment = ({ post }) => {
               ) : (
                 <Content>{item.content}</Content>
               )}
-              <Toggle>{formattedDate}</Toggle>
-              {id ? (
-                <Toggle onClick={() => onAddCommentHandler(item.id)}>
-                  댓글
-                </Toggle>
-              ) : (
-                <NotLoggedIn>댓글</NotLoggedIn>
-              )}
+
               {id === item.User.id ? (
                 <>
                   <Toggle onClick={() => onEditCommentHandler(item.id, item)}>
@@ -161,8 +138,6 @@ const Comment = ({ post }) => {
                 </>
               )}
             </CommentWrapper>
-            <ReComment post={post} />
-            {addComment[item.id] ? <ReCommentForm post={post} /> : null}
           </div>
         );
       })}
@@ -170,7 +145,7 @@ const Comment = ({ post }) => {
   );
 };
 
-export default Comment;
+export default ReComment;
 
 const CommentWrapper = styled.div`
   border: 1px solid ${(props) => props.theme.mainColor};

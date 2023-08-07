@@ -34,6 +34,18 @@ const initialState = {
   updateCommentLoading: false,
   updateCommentDone: false,
   updateCommentError: null,
+
+  addReCommentLoading: false,
+  addReCommentDone: false,
+  addReCommentError: null,
+
+  removeReCommentLoading: false,
+  removeReCommentDone: false,
+  removeReCommentError: null,
+
+  updateReCommentLoading: false,
+  updateReCommentDone: false,
+  updateReCommentError: null,
 };
 
 //action명
@@ -61,10 +73,6 @@ export const ADD_COMMENT_REQUEST = "ADD_COMMENT_REQUEST";
 export const ADD_COMMENT_SUCCESS = "ADD_COMMENT_SUCCESS";
 export const ADD_COMMENT_FAILURE = "ADD_COMMENT_FAILURE";
 
-export const LOAD_COMMENTT_REQUEST = "LOAD_COMMENT_REQUEST";
-export const LOAD_COMMENTT_SUCCESS = "LOAD_COMMENT_SUCCESS";
-export const LOAD_COMMENTT_FAILURE = "LOAD_COMMENT_FAILURE";
-
 export const REMOVE_COMMENT_REQUEST = "REMOVE_COMMENT_REQUEST";
 export const REMOVE_COMMENT_SUCCESS = "REMOVE_COMMENT_SUCCESS";
 export const REMOVE_COMMENT_FAILURE = "REMOVE_COMMENT_FAILURE";
@@ -72,6 +80,18 @@ export const REMOVE_COMMENT_FAILURE = "REMOVE_COMMENT_FAILURE";
 export const UPDATE_COMMENT_REQUEST = "UPDATE_COMMENT_REQUEST";
 export const UPDATE_COMMENT_SUCCESS = "UPDATE_COMMENT_SUCCESS";
 export const UPDATE_COMMENT_FAILURE = "UPDATE_COMMENT_FAILURE";
+
+export const ADD_RECOMMENT_REQUEST = "ADD_RECOMMENT_REQUEST";
+export const ADD_RECOMMENT_SUCCESS = "ADD_RECOMMENT_SUCCESS";
+export const ADD_RECOMMENT_FAILURE = "ADD_RECOMMENT_FAILURE";
+
+export const REMOVE_RECOMMENT_REQUEST = "REMOVE_RECOMMENT_REQUEST";
+export const REMOVE_RECOMMENT_SUCCESS = "REMOVE_RECOMMENT_SUCCESS";
+export const REMOVE_RECOMMENT_FAILURE = "REMOVE_RECOMMENT_FAILURE";
+
+export const UPDATE_RECOMMENT_REQUEST = "UPDATE_RECOMMENT_REQUEST";
+export const UPDATE_RECOMMENT_SUCCESS = "UPDATE_RECOMMENT_SUCCESS";
+export const UPDATE_RECOMMENT_FAILURE = "UPDATE_RECOMMENT_FAILURE";
 
 const post = (state = initialState, action) => {
   return produce(state, (draft) => {
@@ -216,6 +236,90 @@ const post = (state = initialState, action) => {
         draft.updateCommentLoading = false;
         draft.updateCommentDone = true;
         draft.updateCommentError = action.error;
+        break;
+      //-----------------------------------------------------
+
+      case ADD_RECOMMENT_REQUEST:
+        draft.addReCommentLoading = true;
+        draft.addReCommentDone = false;
+        draft.addReCommentError = null;
+        break;
+      case ADD_RECOMMENT_SUCCESS: {
+        draft.addReCommentLoading = false;
+        draft.addReCommentDone = true;
+        const postIndex = draft.allPosts.findIndex(
+          (v) => v.id === action.data.PostId //백엔드의 json의 PostId
+        );
+        const commentIndex = draft.allPosts[postIndex].Comments.findIndex(
+          (v) => v.id === action.data.CommentId
+        );
+        draft.allPosts[postIndex].Comments[commentIndex].ReComments.unshift(
+          action.data
+        );
+        break;
+      }
+      case ADD_RECOMMENT_FAILURE:
+        draft.addReCommentLoading = false;
+        draft.addReCommentDone = true;
+        draft.addReCommentError = action.error;
+        break;
+      //-----------------------------------------------------
+
+      case REMOVE_RECOMMENT_REQUEST:
+        draft.removeReCommentLoading = true;
+        draft.removeReCommentDone = false;
+        draft.removeReCommentError = null;
+        break;
+      case REMOVE_RECOMMENT_SUCCESS: {
+        draft.removeReCommentLoading = false;
+        draft.removeReCommentDone = true;
+        const postIndex = draft.allPosts.findIndex(
+          (v) => v.id === action.data.PostId //백엔드의 json의 PostId
+        );
+        const commentIndex = draft.allPosts[postIndex].Comments.findIndex(
+          (v) => v.id === action.data.CommentId
+        );
+        draft.allPosts[postIndex].Comments[commentIndex].ReComments =
+          draft.allPosts[postIndex].Comments[commentIndex].ReComments.filter(
+            (v) => v.id !== action.data.ReCommentId
+          );
+        break;
+      }
+      case REMOVE_RECOMMENT_FAILURE:
+        draft.removeReCommentLoading = false;
+        draft.removeReCommentDone = true;
+        draft.removeReCommentError = action.error;
+        break;
+      //---------------------------------------------------
+
+      case UPDATE_RECOMMENT_REQUEST:
+        draft.updateReCommentLoading = true;
+        draft.updateReCommentDone = false;
+        draft.updateReCommentError = null;
+        break;
+      case UPDATE_RECOMMENT_SUCCESS: {
+        draft.updateReCommentLoading = false;
+        draft.updateReCommentDone = true;
+        const postIndex = draft.allPosts.findIndex(
+          (v) => v.id === action.data.PostId //백엔드의 json의 PostId
+        );
+        const commentIndex = draft.allPosts[postIndex].Comments.findIndex(
+          (v) => v.id === action.data.CommentId
+        );
+        const reCommentIndex = draft.allPosts[postIndex].Comments[
+          commentIndex
+        ].ReComments.findIndex((v) => v.id === action.data.ReCommentId);
+
+        draft.allPosts[postIndex].Comments[commentIndex].ReComments[
+          reCommentIndex
+        ].content = action.data.content; //post 안의 Comments안의 ReComments 안에 있는 content를 찾아서 바꾸므로 배열값 넣어줌
+        break;
+      }
+
+      case UPDATE_RECOMMENT_FAILURE:
+        draft.updateReCommentLoading = false;
+        draft.updateReCommentDone = true;
+        draft.updateReCommentError = action.error;
         break;
       default:
         return;
