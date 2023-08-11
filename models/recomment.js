@@ -21,7 +21,7 @@ module.exports = class ReComment extends Sequelize.Model {
     );
   }
   static associate(db) {
+    db.ReComment.belongsTo(db.User);
     db.ReComment.belongsTo(db.Comment);
   }
 };
-

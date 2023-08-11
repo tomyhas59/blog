@@ -10,7 +10,7 @@ router.put("/:postId", isLoggedIn, PostService.update);
 router.put(
   "/:postId/comment/:commentId",
   isLoggedIn,
-  PostService.updateComment
+  PostService.commentUpdate
 );
 router.delete("/:postId", isLoggedIn, PostService.delete);
 router.post("/:postId/comment", isLoggedIn, PostService.commentCreate);
@@ -18,6 +18,11 @@ router.delete(
   "/:postId/comment/:commentId",
   isLoggedIn,
   PostService.commentDelete
+);
+router.post(
+  "/comment/:commentId/recomment",
+  isLoggedIn,
+  PostService.ReCommentCreate
 );
 
 module.exports = router;

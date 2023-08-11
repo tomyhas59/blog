@@ -1,6 +1,7 @@
 const Post = require("../models/post");
 const User = require("../models/user");
 const Comment = require("../models/comment");
+const ReComment = require("../models/recomment");
 
 module.exports = class PostService {
   static async create(req, res, next) {
@@ -20,6 +21,7 @@ module.exports = class PostService {
           {
             model: Comment,
             include: [
+              { model: ReComment, attributes: ["id", "content"] },
               {
                 model: User, //댓글 작성자
                 attributes: ["id", "nickname"],
@@ -195,7 +197,7 @@ module.exports = class PostService {
   }
   //----------------------------------------------------------------------
 
-  static async updateComment(req, res, next) {
+  static async commentUpdate(req, res, next) {
     try {
       const postId = req.params.postId;
       const commentId = req.params.commentId;
@@ -219,6 +221,33 @@ module.exports = class PostService {
     } catch (err) {
       console.log(err);
       next(err);
+    }
+  }
+  //----------------------------------------------------------------------
+  static async ReCommentCreate(req, res, next) {
+    try {
+      const reComment = await ReComment.create({
+        content: req.body.content,
+        CommentId: parseInt(req.params.commentId, 10),
+        UserId: req.user.id,
+      });
+      const fullReComment = await ReComment.findOne({
+        where: { id: reComment.id },
+        include: [
+          {
+            model: User,
+            attributes: ["id", "nickname"],
+          },
+          {
+            model: Comment,
+            attributes: ["id", "content"],
+          },
+        ],
+      });
+      res.status(201).json(fullReComment);
+    } catch (error) {
+      console.log(error);
+      next(error);
     }
   }
 };
