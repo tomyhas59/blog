@@ -7,6 +7,9 @@ import {
   ADD_POST_FAILURE,
   ADD_POST_REQUEST,
   ADD_POST_SUCCESS,
+  ADD_RECOMMENT_FAILURE,
+  ADD_RECOMMENT_REQUEST,
+  ADD_RECOMMENT_SUCCESS,
   ALL_POSTS_FAILURE,
   ALL_POSTS_REQUEST,
   ALL_POSTS_SUCCESS,
@@ -223,6 +226,30 @@ function* watchUpdateComment() {
   yield takeLatest(UPDATE_COMMENT_REQUEST, updateComment);
 }
 
+//-----------------------------------------------------
+
+function addReCommentApi(data) {
+  return axios.post(`/post/comment/${data.commentId}/recomment`, data);
+}
+
+function* addReCommnet(action) {
+  try {
+    const result = yield call(addReCommentApi, action.data);
+    yield put({
+      type: ADD_RECOMMENT_SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    console.log(err);
+    yield put({
+      type: ADD_RECOMMENT_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+function* watchAddReComment() {
+  yield takeLatest(ADD_RECOMMENT_REQUEST, addReCommnet);
+}
 export default function* postSaga() {
   yield all([
     fork(watchLoadPosts),
@@ -233,5 +260,6 @@ export default function* postSaga() {
     fork(watchRemoveComment),
     fork(watchLoadPost),
     fork(watchUpdateComment),
+    fork(watchAddReComment),
   ]);
 }

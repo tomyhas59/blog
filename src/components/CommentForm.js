@@ -6,29 +6,29 @@ import { ADD_COMMENT_REQUEST } from "../reducer/post";
 
 const CommentForm = ({ post, editCommentRef }) => {
   const { addCommentDone } = useSelector((state) => state.post);
-  const [commentText, onChangeCommentText, setCommentText] = useInput();
+  const [comment, onChangeComment, setComment] = useInput();
   const dispatch = useDispatch();
   const id = useSelector((state) => state.user.me?.id);
 
   useEffect(() => {
     if (addCommentDone) {
-      setCommentText("");
+      setComment("");
     }
     if (editCommentRef) {
       editCommentRef.current.focus();
     }
-  }, [addCommentDone, editCommentRef, setCommentText]);
+  }, [addCommentDone, editCommentRef, setComment]);
 
   const onSubmitComment = useCallback(
     (e) => {
       e.preventDefault();
-      console.log(post.id, commentText);
+      console.log(post.id, comment);
       dispatch({
         type: ADD_COMMENT_REQUEST,
-        data: { content: commentText, postId: post.id, userId: id },
+        data: { content: comment, postId: post.id, userId: id },
       });
     },
-    [commentText, dispatch, id, post.id]
+    [comment, dispatch, id, post.id]
   );
 
   return (
@@ -37,8 +37,8 @@ const CommentForm = ({ post, editCommentRef }) => {
         <InputComment
           type="text"
           placeholder="Comment"
-          value={commentText}
-          onChange={onChangeCommentText}
+          value={comment}
+          onChange={onChangeComment}
           ref={editCommentRef}
         />
         <Button type="submit">등록</Button>

@@ -1,22 +1,33 @@
 import React, { useState, useCallback } from "react";
 import styled from "styled-components";
+import { useDispatch, useSelector } from "react-redux";
+import { ADD_RECOMMENT_REQUEST } from "../reducer/post";
+import useInput from "../hooks/useInput";
 
-const ReCommentForm = () => {
-  const [reComment, setReComment] = useState("");
-  const handleSubmit = useCallback(
+const ReCommentForm = ({ item }) => {
+  const [reComment, onChangeReComment, setReComment] = useInput();
+  const dispatch = useDispatch();
+  const id = useSelector((state) => state.user.me?.id);
+
+  const onSubmitReComment = useCallback(
     (e) => {
       e.preventDefault();
-      setReComment("");
+      console.log(item.id, reComment);
+      dispatch({
+        type: ADD_RECOMMENT_REQUEST,
+        data: { content: reComment, commentId: item.id, userId: id },
+      });
     },
-    [setReComment]
+    [dispatch, id, item.id, reComment]
   );
+
   return (
-    <Form onSubmit={handleSubmit}>
+    <Form onSubmit={onSubmitReComment}>
       <InputComment
         type="text"
-        placeholder="Comment"
+        placeholder="ReComment"
         value={reComment}
-        onChange={(e) => setReComment(e.target.value)}
+        onChange={onChangeReComment}
       />
       <Button type="submit">등록</Button>
     </Form>

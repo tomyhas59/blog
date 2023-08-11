@@ -7,7 +7,7 @@ import {
   UPDATE_RECOMMENT_REQUEST,
 } from "../reducer/post";
 import styled from "styled-components";
-const ReComment = ({ post }) => {
+const ReComment = ({ item }) => {
   const dispatch = useDispatch();
   const id = useSelector((state) => state.user.me?.id);
 
@@ -17,130 +17,83 @@ const ReComment = ({ post }) => {
   const [content, contentOnChane, setContent] = useInput("");
   const textRef = useRef(null);
   // 현재 열려 있는 댓글의 id추적하기 위한 상태 변수
-  const [currentEditingCommentId, setCurrentEditingCommentId] = useState(null);
+  // const [currentEditingCommentId, setCurrentEditingCommentId] = useState(null);
 
-  const onEditCommentHandler = useCallback(
-    (commentId, item) => {
-      // 기존 댓글 닫기
-      if (currentEditingCommentId !== null) {
-        setEditComment((prev) => ({
-          ...prev,
-          [currentEditingCommentId]: false,
-        }));
-      }
-      // 현재 열려 있는 댓글의 id 설정
-      setCurrentEditingCommentId(commentId);
+  // const onEditCommentHandler = useCallback(
+  //   (commentId, item) => {
+  //     // 기존 댓글 닫기
+  //     if (currentEditingCommentId !== null) {
+  //       setEditComment((prev) => ({
+  //         ...prev,
+  //         [currentEditingCommentId]: false,
+  //       }));
+  //     }
+  //     // 현재 열려 있는 댓글의 id 설정
+  //     setCurrentEditingCommentId(commentId);
 
-      setEditComment((prev) => ({
-        ...prev,
-        [commentId]: !prev[commentId],
-      }));
-      setContent(item.content);
-    },
-    [currentEditingCommentId, setContent]
-  );
+  //     setEditComment((prev) => ({
+  //       ...prev,
+  //       [commentId]: !prev[commentId],
+  //     }));
+  //     setContent(item.content);
+  //   },
+  //   [currentEditingCommentId, setContent]
+  // );
 
-  // "취소" 버튼을 누를 때 호출되는 함수
-  const handleCancelEdit = useCallback(() => {
-    setEditComment((prev) => ({
-      ...prev,
-      [currentEditingCommentId]: false,
-    }));
-    setCurrentEditingCommentId(null);
-    setContent(""); // "Text" 영역 초기화
-  }, [currentEditingCommentId, setContent]);
+  // // "취소" 버튼을 누를 때 호출되는 함수
+  // const handleCancelEdit = useCallback(() => {
+  //   setEditComment((prev) => ({
+  //     ...prev,
+  //     [currentEditingCommentId]: false,
+  //   }));
+  //   setCurrentEditingCommentId(null);
+  //   setContent(""); // "Text" 영역 초기화
+  // }, [currentEditingCommentId, setContent]);
 
-  const handleModifyComment = useCallback(
-    (commentId) => {
-      dispatch({
-        type: UPDATE_RECOMMENT_REQUEST,
-        data: {
-          postId: post.id,
-          commentId: commentId,
-          content: content,
-        },
-      });
-      setEditComment({});
-      setCurrentEditingCommentId(null);
-      setContent(""); // "Text" 영역 초기화
-    },
-    [content, dispatch, post.id, setContent]
-  );
-  const Enter = useCallback(
-    (e, commentId) => {
-      if (e.key === "Enter") {
-        handleModifyComment(commentId);
-      }
-    },
-    [handleModifyComment]
-  );
+  // const handleModifyComment = useCallback(
+  //   (commentId) => {
+  //     dispatch({
+  //       type: UPDATE_RECOMMENT_REQUEST,
+  //       data: {
+  //         postId: post.id,
+  //         commentId: commentId,
+  //         content: content,
+  //       },
+  //     });
+  //     setEditComment({});
+  //     setCurrentEditingCommentId(null);
+  //     setContent(""); // "Text" 영역 초기화
+  //   },
+  //   [content, dispatch, post.id, setContent]
+  // );
+  // const Enter = useCallback(
+  //   (e, commentId) => {
+  //     if (e.key === "Enter") {
+  //       handleModifyComment(commentId);
+  //     }
+  //   },
+  //   [handleModifyComment]
+  // );
 
   //---댓글 삭제-----------------------------------------------------
-  const onRemoveComment = useCallback(
-    (commentId) => {
-      if (!window.confirm("삭제하시겠습니까?")) return false;
-      dispatch({
-        type: REMOVE_RECOMMENT_REQUEST,
-        data: {
-          commentId: commentId,
-          postId: post.id,
-        },
-      });
-    },
-    [dispatch, post.id]
-  );
+  // const onRemoveComment = useCallback(
+  //   (commentId) => {
+  //     if (!window.confirm("삭제하시겠습니까?")) return false;
+  //     dispatch({
+  //       type: REMOVE_RECOMMENT_REQUEST,
+  //       data: {
+  //         commentId: commentId,
+  //         postId: post.id,
+  //       },
+  //     });
+  //   },
+  //   [dispatch, post.id]
+  // );
   return (
     <>
-      {post.Comments.ReComment.map((item) => {
-        const isEditing = editComment[item.id];
-        return (
-          <div key={item.id}>
-            <CommentWrapper key={item.id}>
-              <Author>{item.User.nickname}</Author>
-              {isEditing && currentEditingCommentId === item.id ? (
-                <>
-                  <Text
-                    cols="40"
-                    rows="2"
-                    value={content}
-                    onChange={contentOnChane}
-                    ref={textRef}
-                    onKeyUp={(e) => Enter(e, item.id)}
-                  />
-                  <EndFlex>
-                    <Button onClick={() => handleModifyComment(item.id)}>
-                      수정
-                    </Button>
-                    <Button onClick={handleCancelEdit}>취소</Button>
-                  </EndFlex>
-                </>
-              ) : (
-                <Content>{item.content}</Content>
-              )}
-
-              {id === item.User.id ? (
-                <>
-                  <Toggle onClick={() => onEditCommentHandler(item.id, item)}>
-                    수정
-                  </Toggle>
-                  <Toggle
-                    onClick={() =>
-                      onRemoveComment(item.id /*매개변수를 위의 함수로 전달*/)
-                    }
-                  >
-                    삭제
-                  </Toggle>
-                </>
-              ) : (
-                <>
-                  <NotLoggedIn>수정</NotLoggedIn>
-                  <NotLoggedIn>삭제</NotLoggedIn>
-                </>
-              )}
-            </CommentWrapper>
-          </div>
-        );
-      })}
+      {item.ReComments.map((v) => (
+        <div key={v.id}>안녕하세요 {v.content}</div>
+      ))}
     </>
   );
 };
