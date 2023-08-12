@@ -166,9 +166,9 @@ const Comment = ({ post }) => {
               )}
             </CommentWrapper>
             {addComment[comment.id] ? (
-              <ReCommentForm comment={comment} />
+              <ReCommentForm post={post} comment={comment} />
             ) : null}
-            <ReComment comment={comment} />
+            <ReComment post={post} comment={comment} />
           </div>
         );
       })}

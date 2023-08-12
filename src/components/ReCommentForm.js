@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { ADD_RECOMMENT_REQUEST } from "../reducer/post";
 import useInput from "../hooks/useInput";
 
-const ReCommentForm = ({ comment }) => {
+const ReCommentForm = ({ post, comment }) => {
   const [reComment, onChangeReComment, setReComment] = useInput();
   const dispatch = useDispatch();
   const id = useSelector((state) => state.user.me?.id);
@@ -15,10 +15,15 @@ const ReCommentForm = ({ comment }) => {
       console.log(comment.id, reComment);
       dispatch({
         type: ADD_RECOMMENT_REQUEST,
-        data: { content: reComment, commentId: comment.id, userId: id },
+        data: {
+          content: reComment,
+          postId: post.id,
+          commentId: comment.id,
+          userId: id,
+        },
       });
     },
-    [dispatch, id, comment.id, reComment]
+    [comment.id, reComment, dispatch, post.id, id]
   );
 
   return (

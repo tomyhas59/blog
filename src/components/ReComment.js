@@ -7,7 +7,7 @@ import {
   UPDATE_RECOMMENT_REQUEST,
 } from "../reducer/post";
 import styled from "styled-components";
-const ReComment = ({ comment }) => {
+const ReComment = ({ post, comment }) => {
   const dispatch = useDispatch();
   const id = useSelector((state) => state.user.me?.id);
 
@@ -56,6 +56,7 @@ const ReComment = ({ comment }) => {
       dispatch({
         type: UPDATE_RECOMMENT_REQUEST,
         data: {
+          postId: post.id,
           commentId: comment.id,
           reCommentId: reCommentId,
           content: content,
@@ -65,7 +66,7 @@ const ReComment = ({ comment }) => {
       setCurrentEditingReCommentId(null);
       setContent(""); // "Text" 영역 초기화
     },
-    [comment.id, content, dispatch, setContent]
+    [comment.id, content, dispatch, post.id, setContent]
   );
   const Enter = useCallback(
     (e, reCommentId) => {
