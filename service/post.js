@@ -21,7 +21,11 @@ module.exports = class PostService {
           {
             model: Comment,
             include: [
-              { model: ReComment, attributes: ["id", "content"] },
+              {
+                model: ReComment,
+                include: [{ model: User, attributes: ["id", "nickname"] }],
+                attributes: ["id", "content"],
+              },
               {
                 model: User, //댓글 작성자
                 attributes: ["id", "nickname"],
@@ -73,8 +77,12 @@ module.exports = class PostService {
           { model: User, attributes: ["id", "email", "nickname"] },
           {
             model: Comment,
-
             include: [
+              {
+                model: ReComment,
+                include: [{ model: User, attributes: ["id", "nickname"] }],
+                attributes: ["id", "content"],
+              },
               {
                 model: User, //댓글 작성자
                 attributes: ["id", "nickname"],
@@ -110,6 +118,11 @@ module.exports = class PostService {
           {
             model: Comment,
             include: [
+              {
+                model: ReComment,
+                include: [{ model: User, attributes: ["id", "nickname"] }],
+                attributes: ["id", "content"],
+              },
               {
                 model: User, //댓글 작성자
                 attributes: ["id", "nickname"],
@@ -167,6 +180,11 @@ module.exports = class PostService {
           {
             model: Post,
             attributes: ["id"],
+          },
+          {
+            model: ReComment,
+            include: [{ model: User, attributes: ["id", "nickname"] }],
+            attributes: ["id", "content"],
           },
         ],
       });
@@ -226,6 +244,12 @@ module.exports = class PostService {
   //----------------------------------------------------------------------
   static async ReCommentCreate(req, res, next) {
     try {
+      const comment = await Comment.findOne({
+        where: { id: req.params.commentId },
+      });
+      if (!comment) {
+        return res.status(403).send("존재하지 않는 댓글입니다");
+      }
       const reComment = await ReComment.create({
         content: req.body.content,
         CommentId: parseInt(req.params.commentId, 10),
