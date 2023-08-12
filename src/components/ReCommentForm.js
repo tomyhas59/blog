@@ -1,13 +1,25 @@
-import React, { useState, useCallback } from "react";
+import React, { useEffect, useCallback, useRef } from "react";
 import styled from "styled-components";
 import { useDispatch, useSelector } from "react-redux";
 import { ADD_RECOMMENT_REQUEST } from "../reducer/post";
 import useInput from "../hooks/useInput";
 
 const ReCommentForm = ({ post, comment }) => {
+  const { addReCommentDone } = useSelector((state) => state.post);
+  const editReCommentRef = useRef(null);
+
   const [reComment, onChangeReComment, setReComment] = useInput();
   const dispatch = useDispatch();
   const id = useSelector((state) => state.user.me?.id);
+
+  useEffect(() => {
+    if (addReCommentDone) {
+      setReComment("");
+    }
+    if (editReCommentRef) {
+      editReCommentRef.current.focus();
+    }
+  }, [addReCommentDone, editReCommentRef, setReComment]);
 
   const onSubmitReComment = useCallback(
     (e) => {
@@ -33,6 +45,7 @@ const ReCommentForm = ({ post, comment }) => {
         placeholder="ReComment"
         value={reComment}
         onChange={onChangeReComment}
+        ref={editReCommentRef}
       />
       <Button type="submit">등록</Button>
     </Form>

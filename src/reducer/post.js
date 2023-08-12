@@ -180,7 +180,7 @@ const post = (state = initialState, action) => {
         const postIndex = draft.allPosts.findIndex(
           (v) => v.id === action.data.PostId //백엔드의 json의 PostId
         );
-        draft.allPosts[postIndex].Comments.unshift(action.data);
+        draft.allPosts[postIndex].Comments.push(action.data); //unshift 제일 위로 올라옴, push 제일 마지막에 위치
         break;
       }
       case ADD_COMMENT_FAILURE:
@@ -253,7 +253,7 @@ const post = (state = initialState, action) => {
         const commentIndex = draft.allPosts[postIndex].Comments.findIndex(
           (v) => v.id === action.data.CommentId
         );
-        draft.allPosts[postIndex].Comments[commentIndex].ReComments.unshift(
+        draft.allPosts[postIndex].Comments[commentIndex].ReComments.push(
           action.data
         );
         break;

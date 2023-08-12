@@ -102,7 +102,11 @@ const Post = ({ post }) => {
         </BetweenFlex>
         {addComment ? (
           <div>
-            <CommentForm post={post} editCommentRef={editCommentRef} />
+            <CommentForm
+              post={post}
+              editCommentRef={editCommentRef}
+              setEditPost={setEditPost}
+            />
           </div>
         ) : null}
         <Comment post={post} />

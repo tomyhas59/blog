@@ -102,8 +102,6 @@ const ReComment = ({ post, comment }) => {
               {isEditing && currentEditingReCommentId === reComment.id ? (
                 <>
                   <Text
-                    cols="40"
-                    rows="2"
                     value={content}
                     onChange={contentOnChane}
                     ref={textRef}
@@ -139,10 +137,7 @@ const ReComment = ({ post, comment }) => {
                   </Toggle>
                 </>
               ) : (
-                <>
-                  <NotLoggedIn>수정</NotLoggedIn>
-                  <NotLoggedIn>삭제</NotLoggedIn>
-                </>
+                <>{null}</>
               )}
             </CommentWrapper>
           </div>
@@ -158,9 +153,10 @@ const CommentWrapper = styled.div`
   border: 1px solid ${(props) => props.theme.mainColor};
   background-color: #fff;
   display: flex;
-  width: 100%;
+  width: 80%;
   border-radius: 5px;
   padding: 5px;
+  margin: 0 auto;
 `;
 
 const Author = styled.div`
@@ -170,17 +166,11 @@ const Author = styled.div`
 `;
 
 const Content = styled.div`
-  width: 60%;
+  width: 70%;
 `;
 
 const Toggle = styled.button`
   width: 7%;
-`;
-
-const NotLoggedIn = styled.button`
-  width: 8%;
-  color: gray;
-  cursor: default;
 `;
 
 const Button = styled.button`
@@ -195,8 +185,8 @@ const Button = styled.button`
   }
 `;
 
-const Text = styled.textarea`
-  width: 46%;
+const Text = styled.input`
+  width: 56%;
 `;
 
 const EndFlex = styled.div`

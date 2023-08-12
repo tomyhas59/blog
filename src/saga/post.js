@@ -229,7 +229,10 @@ function* watchUpdateComment() {
 //-----------------------------------------------------
 
 function addReCommentApi(data) {
-  return axios.post(`/post/comment/${data.commentId}/recomment`, data);
+  return axios.post(
+    `/post/${data.postId}/comment/${data.commentId}/recomment`,
+    data
+  );
 }
 
 function* addReComment(action) {
