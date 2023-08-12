@@ -232,9 +232,10 @@ function addReCommentApi(data) {
   return axios.post(`/post/comment/${data.commentId}/recomment`, data);
 }
 
-function* addReCommnet(action) {
+function* addReComment(action) {
   try {
     const result = yield call(addReCommentApi, action.data);
+    console.log(result.data); //서버 json에서 주는 data값이 담김
     yield put({
       type: ADD_RECOMMENT_SUCCESS,
       data: result.data,
@@ -248,7 +249,7 @@ function* addReCommnet(action) {
   }
 }
 function* watchAddReComment() {
-  yield takeLatest(ADD_RECOMMENT_REQUEST, addReCommnet);
+  yield takeLatest(ADD_RECOMMENT_REQUEST, addReComment);
 }
 export default function* postSaga() {
   yield all([

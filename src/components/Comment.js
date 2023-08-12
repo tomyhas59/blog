@@ -107,13 +107,13 @@ const Comment = ({ post }) => {
 
   return (
     <>
-      {post.Comments.map((item) => {
-        const isEditing = editComment[item.id];
+      {post.Comments.map((comment) => {
+        const isEditing = editComment[comment.id];
         return (
-          <div key={item.id}>
-            <CommentWrapper key={item.id}>
-              <Author>{item.User.nickname}</Author>
-              {isEditing && currentEditingCommentId === item.id ? (
+          <div key={comment.id}>
+            <CommentWrapper key={comment.id}>
+              <Author>{comment.User.nickname}</Author>
+              {isEditing && currentEditingCommentId === comment.id ? (
                 <>
                   <Text
                     cols="40"
@@ -121,34 +121,38 @@ const Comment = ({ post }) => {
                     value={content}
                     onChange={contentOnChane}
                     ref={textRef}
-                    onKeyUp={(e) => Enter(e, item.id)}
+                    onKeyUp={(e) => Enter(e, comment.id)}
                   />
                   <EndFlex>
-                    <Button onClick={() => handleModifyComment(item.id)}>
+                    <Button onClick={() => handleModifyComment(comment.id)}>
                       수정
                     </Button>
                     <Button onClick={handleCancelEdit}>취소</Button>
                   </EndFlex>
                 </>
               ) : (
-                <Content>{item.content}</Content>
+                <Content>{comment.content}</Content>
               )}
               <Toggle>{formattedDate}</Toggle>
               {id ? (
-                <Toggle onClick={() => onAddCommentHandler(item.id)}>
+                <Toggle onClick={() => onAddCommentHandler(comment.id)}>
                   댓글
                 </Toggle>
               ) : (
                 <NotLoggedIn>댓글</NotLoggedIn>
               )}
-              {id === item.User.id ? (
+              {id === comment.User.id ? (
                 <>
-                  <Toggle onClick={() => onEditCommentHandler(item.id, item)}>
+                  <Toggle
+                    onClick={() => onEditCommentHandler(comment.id, comment)}
+                  >
                     수정
                   </Toggle>
                   <Toggle
                     onClick={() =>
-                      onRemoveComment(item.id /*매개변수를 위의 함수로 전달*/)
+                      onRemoveComment(
+                        comment.id /*매개변수를 위의 함수로 전달*/
+                      )
                     }
                   >
                     삭제
@@ -161,8 +165,10 @@ const Comment = ({ post }) => {
                 </>
               )}
             </CommentWrapper>
-            <ReComment item={item} />
-            {addComment[item.id] ? <ReCommentForm item={item} /> : null}
+            {addComment[comment.id] ? (
+              <ReCommentForm comment={comment} />
+            ) : null}
+            <ReComment comment={comment} />
           </div>
         );
       })}
