@@ -25,6 +25,17 @@ module.exports = {
         onUpdate: "CASCADE",
         onDelete: "CASCADE",
       },
+      PostId: {
+        // 댓글 작성자인 Post와의 관계를 위한 외래 키
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        references: {
+          model: "Posts",
+          key: "id",
+        },
+        onUpdate: "CASCADE",
+        onDelete: "CASCADE",
+      },
       CommentId: {
         type: Sequelize.INTEGER,
         allowNull: false,
