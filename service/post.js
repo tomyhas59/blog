@@ -244,6 +244,12 @@ module.exports = class PostService {
   //----------------------------------------------------------------------
   static async ReCommentCreate(req, res, next) {
     try {
+      const post = await Post.findOne({
+        where: { id: req.params.postId },
+      });
+      if (!post) {
+        return res.status(403).send("존재하지 않는 게시글입니다");
+      }
       const comment = await Comment.findOne({
         where: { id: req.params.commentId },
       });
@@ -251,6 +257,7 @@ module.exports = class PostService {
         return res.status(403).send("존재하지 않는 댓글입니다");
       }
       const reComment = await ReComment.create({
+        PostId: post.id,
         content: req.body.content,
         CommentId: parseInt(req.params.commentId, 10),
         UserId: req.user.id,

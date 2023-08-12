@@ -20,7 +20,7 @@ router.delete(
   PostService.commentDelete
 );
 router.post(
-  "/comment/:commentId/recomment",
+  "/:postId/comment/:commentId/recomment",
   isLoggedIn,
   PostService.ReCommentCreate
 );
