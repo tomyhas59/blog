@@ -7,22 +7,35 @@ router.get("/all", PostService.readAll);
 router.get("/:postId", PostService.read);
 router.post("/", isLoggedIn, PostService.create);
 router.put("/:postId", isLoggedIn, PostService.update);
+router.delete("/:postId", isLoggedIn, PostService.delete);
+//------comment-------------------------------------
+router.post("/:postId/comment", isLoggedIn, PostService.commentCreate);
 router.put(
   "/:postId/comment/:commentId",
   isLoggedIn,
   PostService.commentUpdate
 );
-router.delete("/:postId", isLoggedIn, PostService.delete);
-router.post("/:postId/comment", isLoggedIn, PostService.commentCreate);
 router.delete(
   "/:postId/comment/:commentId",
   isLoggedIn,
   PostService.commentDelete
 );
+//------reComment-------------------------------------
 router.post(
-  "/:postId/comment/:commentId/recomment",
+  "/:postId/comment/:commentId/reComment",
   isLoggedIn,
   PostService.ReCommentCreate
+);
+
+router.put(
+  "/:postId/comment/:commentId/reComment/:reCommentId",
+  isLoggedIn,
+  PostService.reCommentUpdate
+);
+router.delete(
+  "/:postId/comment/:commentId/reComment/:reCommentId",
+  isLoggedIn,
+  PostService.reCommentDelete
 );
 
 module.exports = router;

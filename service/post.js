@@ -281,4 +281,52 @@ module.exports = class PostService {
       next(error);
     }
   }
+  //----------------------------------------------------------------------
+  static async reCommentDelete(req, res, next) {
+    try {
+      const postId = req.params.postId;
+      const commentId = req.params.commentId;
+      const reCommentId = req.params.reCommentId;
+      await ReComment.destroy({
+        where: { id: reCommentId, UserId: req.user.id },
+      });
+      res.status(200).json({
+        PostId: parseInt(postId, 10), //reducer의 action.data. 값
+        CommentId: parseInt(commentId, 10),
+        ReCommentId: parseInt(reCommentId, 10),
+      });
+    } catch (error) {
+      console.error(error);
+      next(error);
+    }
+  }
+  //----------------------------------------------------------------------
+
+  static async reCommentUpdate(req, res, next) {
+    try {
+      const postId = req.params.postId;
+      const commentId = req.params.commentId;
+      const reCommentId = req.params.reCommentId;
+      await ReComment.update(
+        {
+          content: req.body.content,
+        },
+        {
+          where: {
+            id: reCommentId,
+            UserId: req.user.id,
+          },
+        }
+      );
+      res.status(200).json({
+        PostId: parseInt(postId, 10),
+        CommentId: parseInt(commentId, 10),
+        ReCommentId: parseInt(reCommentId, 10),
+        content: req.body.content,
+      });
+    } catch (err) {
+      console.log(err);
+      next(err);
+    }
+  }
 };
