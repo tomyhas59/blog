@@ -84,12 +84,13 @@ const ReComment = ({ post, comment }) => {
       dispatch({
         type: REMOVE_RECOMMENT_REQUEST,
         data: {
+          postId: post.id,
           reCommentId: reCommentId,
           commentId: comment.id,
         },
       });
     },
-    [comment.id, dispatch]
+    [comment.id, dispatch, post.id]
   );
   return (
     <>

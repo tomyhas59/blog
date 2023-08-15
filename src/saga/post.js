@@ -22,12 +22,18 @@ import {
   REMOVE_POST_FAILURE,
   REMOVE_POST_REQUEST,
   REMOVE_POST_SUCCESS,
+  REMOVE_RECOMMENT_FAILURE,
+  REMOVE_RECOMMENT_REQUEST,
+  REMOVE_RECOMMENT_SUCCESS,
   UPDATE_COMMENT_FAILURE,
   UPDATE_COMMENT_REQUEST,
   UPDATE_COMMENT_SUCCESS,
   UPDATE_POST_FAILURE,
   UPDATE_POST_REQUEST,
   UPDATE_POST_SUCCESS,
+  UPDATE_RECOMMENT_FAILURE,
+  UPDATE_RECOMMENT_REQUEST,
+  UPDATE_RECOMMENT_SUCCESS,
 } from "../reducer/post";
 //-----------------------------------------------------
 
@@ -230,7 +236,7 @@ function* watchUpdateComment() {
 
 function addReCommentApi(data) {
   return axios.post(
-    `/post/${data.postId}/comment/${data.commentId}/recomment`,
+    `/post/${data.postId}/comment/${data.commentId}/reComment`,
     data
   );
 }
@@ -254,6 +260,61 @@ function* addReComment(action) {
 function* watchAddReComment() {
   yield takeLatest(ADD_RECOMMENT_REQUEST, addReComment);
 }
+
+//-----------------------------------------------------
+
+function removeReCommentApi(data) {
+  return axios.delete(
+    `/post/${data.postId}/comment/${data.commentId}/reComment/${data.reCommentId}`
+  ); //component에서 주는 data
+}
+function* removeReComment(action) {
+  try {
+    const result = yield call(removeReCommentApi, action.data); //서버 json에서 주는 data값이 담김
+    console.log(result.data);
+    yield put({
+      type: REMOVE_RECOMMENT_SUCCESS,
+      data: result.data, //여기 바꿨더니 됨
+    });
+  } catch (err) {
+    console.log(err);
+    yield put({
+      type: REMOVE_RECOMMENT_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+function* watchRemoveReComment() {
+  yield takeLatest(REMOVE_RECOMMENT_REQUEST, removeReComment);
+}
+//-----------------------------------------------------
+
+function updateReCommentApi(data) {
+  return axios.put(
+    `/post/${data.postId}/comment/${data.commentId}/reComment/${data.reCommentId}`,
+    data
+  );
+}
+
+function* updateReComment(action) {
+  try {
+    const result = yield call(updateReCommentApi, action.data);
+    yield put({
+      type: UPDATE_RECOMMENT_SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    console.log(err);
+    yield put({
+      type: UPDATE_RECOMMENT_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+function* watchUpdateReComment() {
+  yield takeLatest(UPDATE_RECOMMENT_REQUEST, updateReComment);
+}
+
 export default function* postSaga() {
   yield all([
     fork(watchLoadPosts),
@@ -265,5 +326,7 @@ export default function* postSaga() {
     fork(watchLoadPost),
     fork(watchUpdateComment),
     fork(watchAddReComment),
+    fork(watchRemoveReComment),
+    fork(watchUpdateReComment),
   ]);
 }
