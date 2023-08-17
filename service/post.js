@@ -20,10 +20,9 @@ module.exports = class PostService {
           },
           {
             model: User, //좋아요 누른 사람
-            as: "Likers",
+            as: "Likers", //post.Likers.id 이런 식으로 불러옴
             attributes: ["id", "nickname"],
           },
-
           {
             model: Comment,
             include: [
