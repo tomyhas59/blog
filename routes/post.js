@@ -37,7 +37,9 @@ router.delete(
   isLoggedIn,
   PostService.reCommentDelete
 );
-
+//----------like---------------------------------
+router.patch("/:postId/like", isLoggedIn, PostService.postLike);
+router.delete("/:postId/like", isLoggedIn, PostService.postUnLike);
 module.exports = router;
 
 //"https://Localhost:3000/post?idx=3000" => req.qurey.idx = 3000;
