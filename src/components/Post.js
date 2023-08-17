@@ -3,23 +3,49 @@ import CommentForm from "./CommentForm";
 import Comment from "./Comment";
 import styled from "styled-components";
 import { useDispatch, useSelector } from "react-redux";
-import { REMOVE_POST_REQUEST, UPDATE_POST_REQUEST } from "../reducer/post";
+import {
+  LIKE_POST_REQUEST,
+  REMOVE_POST_REQUEST,
+  UPDATE_POST_REQUEST,
+  UNLIKE_POST_REQUEST,
+} from "../reducer/post";
 import useInput from "../hooks/useInput";
 import moment from "moment";
 import "moment/locale/ko";
+
 const Post = ({ post }) => {
   const dispatch = useDispatch();
   const [editPost, setEditPost] = useState(false);
   const [content, contentOnChane, setContent] = useInput("");
   const editPostRef = useRef(null);
   const editCommentRef = useRef(null);
-
   const id = useSelector((state) => state.user.me?.id);
+  const liked = post.Likers.find((v) => v.id === id);
 
   const onEditPostHandler = useCallback(() => {
     setEditPost((prev) => !prev);
     setContent(post.content);
   }, [post.content, setContent]);
+
+  const onLike = useCallback(() => {
+    if (!id) {
+      return alert("로그인이 필요합니다");
+    }
+    return dispatch({
+      type: LIKE_POST_REQUEST,
+      data: post.id,
+    });
+  }, [dispatch, id, post.id]);
+
+  const onUnLike = useCallback(() => {
+    if (!id) {
+      return alert("로그인이 필요합니다");
+    }
+    return dispatch({
+      type: UNLIKE_POST_REQUEST,
+      data: post.id,
+    });
+  }, [dispatch, id, post.id]);
 
   useEffect(() => {
     if (editPost) {
@@ -68,8 +94,10 @@ const Post = ({ post }) => {
             <Button onClick={onEditPostHandler}>수정</Button>
             <Button onClick={handleDeletePost}>삭제</Button>
           </div>
+        ) : liked ? (
+          <Button onClick={onUnLike}>♥</Button>
         ) : (
-          <Button>♥</Button>
+          <Button onClick={onLike}>♡</Button>
         )}
       </BetweenFlex>
 

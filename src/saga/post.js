@@ -13,6 +13,9 @@ import {
   ALL_POSTS_FAILURE,
   ALL_POSTS_REQUEST,
   ALL_POSTS_SUCCESS,
+  LIKE_POST_FAILURE,
+  LIKE_POST_REQUEST,
+  LIKE_POST_SUCCESS,
   LOAD_POST_FAILURE,
   LOAD_POST_REQUEST,
   LOAD_POST_SUCCESS,
@@ -25,6 +28,9 @@ import {
   REMOVE_RECOMMENT_FAILURE,
   REMOVE_RECOMMENT_REQUEST,
   REMOVE_RECOMMENT_SUCCESS,
+  UNLIKE_POST_FAILURE,
+  UNLIKE_POST_REQUEST,
+  UNLIKE_POST_SUCCESS,
   UPDATE_COMMENT_FAILURE,
   UPDATE_COMMENT_REQUEST,
   UPDATE_COMMENT_SUCCESS,
@@ -314,7 +320,60 @@ function* updateReComment(action) {
 function* watchUpdateReComment() {
   yield takeLatest(UPDATE_RECOMMENT_REQUEST, updateReComment);
 }
+//-------------------------------------------------------------
 
+function likePostAPI(data) {
+  return axios.patch(`/post/${data}/like`); //patch 일부분 수정
+}
+
+function* likePost(action) {
+  try {
+    const result = yield call(likePostAPI, action.data);
+    yield put({
+      //put은 dipatch
+      type: LIKE_POST_SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    console.error(err);
+    yield put({
+      type: LIKE_POST_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+
+function* watchLikePost() {
+  yield takeLatest(LIKE_POST_REQUEST, likePost); //마지막 것만
+  //throttle("ADD_POST_REQUEST", addPost,2000) 2초 동안 1번 실행
+}
+//-------------------------------------------------------------
+
+function unLikePostAPI(data) {
+  return axios.delete(`/post/${data}/like`);
+}
+
+function* unLikePost(action) {
+  try {
+    const result = yield call(unLikePostAPI, action.data);
+    yield put({
+      //put은 dipatch
+      type: UNLIKE_POST_SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    console.error(err);
+    yield put({
+      type: UNLIKE_POST_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+
+function* watchUnLikePost() {
+  yield takeLatest(UNLIKE_POST_REQUEST, unLikePost); //마지막 것만
+  //throttle("ADD_POST_REQUEST", addPost,2000) 2초 동안 1번 실행
+}
 export default function* postSaga() {
   yield all([
     fork(watchLoadPosts),
@@ -328,5 +387,7 @@ export default function* postSaga() {
     fork(watchAddReComment),
     fork(watchRemoveReComment),
     fork(watchUpdateReComment),
+    fork(watchLikePost),
+    fork(watchUnLikePost),
   ]);
 }
