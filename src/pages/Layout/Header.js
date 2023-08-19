@@ -128,8 +128,13 @@ export const HeaderLogo = styled.div`
   box-shadow: 0 0 0 rgba(0, 0, 0, 0.6);
   animation: ${shadowAnimation} 2s infinite;
   border: 1px solid;
-`;
+  padding: 5px 10px; /* Add some padding */
+  transition: background-color 0.3s ease; /* Add a smooth transition */
 
+  &:hover {
+    background-color: #ff8c00; /* Change background color on hover */
+  }
+`;
 export const HeaderList = styled.ul`
   display: flex;
   align-content: auto;
@@ -146,11 +151,20 @@ export const HeaderList = styled.ul`
     cursor: pointer;
     margin: 5px;
     font-weight: bold;
+    transition: transform 0.3s ease, color 0.3s ease; /* Add a smooth transition */
+    &:hover {
+      transform: translateY(-2px); /* Lift up on hover */
+      color: #ff8c00; /* Change color on hover */
+    }
   }
 
   & > a > li {
     cursor: pointer;
+    transition: color 0.3s ease; /* Add a smooth transition */
 
+    &:hover {
+      color: #ff8c00; /* Change color on hover */
+    }
     ::after {
       content: "|";
       clear: both;

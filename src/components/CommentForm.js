@@ -51,7 +51,6 @@ export default CommentForm;
 
 const CommentWrapper = styled.div`
   border: 1px solid ${(props) => props.theme.mainColor};
-
   border-radius: 5px;
   margin: 10px auto;
   padding: 20px;

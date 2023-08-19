@@ -14,6 +14,7 @@ import moment from "moment";
 import "moment/locale/ko";
 
 const Post = ({ post }) => {
+  const [addComment, setAddComment] = useState({});
   const dispatch = useDispatch();
   const [editPost, setEditPost] = useState(false);
   const [content, contentOnChane, setContent] = useInput("");
@@ -22,11 +23,12 @@ const Post = ({ post }) => {
   const id = useSelector((state) => state.user.me?.id);
   const liked = post.Likers.find((v) => v.id === id);
 
+  //-----게시글 수정-------------------------
   const onEditPostHandler = useCallback(() => {
     setEditPost((prev) => !prev);
     setContent(post.content);
   }, [post.content, setContent]);
-
+  //---------------------------------------------
   const onLike = useCallback(() => {
     if (!id) {
       return alert("로그인이 필요합니다");
@@ -53,12 +55,22 @@ const Post = ({ post }) => {
     }
   }, [editPost]);
 
-  const [addComment, setAddComment] = useState(false);
-  const onAddCommentHandler = useCallback(() => {
-    if (!id) {
-      alert("로그인이 필요합니다");
-    } else setAddComment((prev) => !prev);
-  }, [id]);
+  const onAddCommentHandler = useCallback(
+    (postId) => {
+      if (!id) {
+        alert("로그인이 필요합니다");
+      } else
+        setAddComment((prev) => ({
+          ...Object.keys(prev).reduce((acc, key) => {
+            //...기존 상태값, acc: 누적 계산값,
+            acc[key] = false; //기존에 열린 폼 닫음
+            return acc;
+          }, {}),
+          [postId]: !prev[postId],
+        }));
+    },
+    [id]
+  );
 
   const handleModifyPost = useCallback(() => {
     dispatch({
@@ -83,63 +95,65 @@ const Post = ({ post }) => {
   const formattedDate = createdAtDate.format("l");
 
   return (
-    <FormWrapper>
-      <BetweenFlex>
-        <div>
-          <Span>{post.User.nickname}</Span>
-          <Span>{formattedDate}</Span>
-        </div>
-        {id === post.User.id ? (
-          <div>
-            <Button onClick={onEditPostHandler}>수정</Button>
-            <Button onClick={handleDeletePost}>삭제</Button>
-          </div>
-        ) : liked ? (
-          <Button onClick={onUnLike}>♥</Button>
-        ) : (
-          <Button onClick={onLike}>♡</Button>
-        )}
-      </BetweenFlex>
-
-      <PostWrapper>
-        {editPost ? (
-          <>
-            <Text
-              cols="80"
-              rows="5"
-              value={content}
-              onChange={contentOnChane}
-              ref={editPostRef}
-            />
-            <EndFlex>
-              <Button onClick={handleModifyPost}>수정</Button>
-              <Button onClick={onEditPostHandler}>취소</Button>
-            </EndFlex>
-          </>
-        ) : (
-          <ContentWrapper>
-            <div>{post.content}</div>
-          </ContentWrapper>
-        )}
-      </PostWrapper>
-
-      <CommentContainer>
+    <>
+      <FormWrapper>
         <BetweenFlex>
-          <Span>{post.Comments.length}개</Span>
-          <Info onClick={onAddCommentHandler}>댓글 달기</Info>
-        </BetweenFlex>
-        {addComment ? (
           <div>
-            <CommentForm
-              post={post}
-              editCommentRef={editCommentRef}
-              setEditPost={setEditPost}
-            />
+            <Span>{post.User.nickname}</Span>
+            <Span>{formattedDate}</Span>
           </div>
-        ) : null}
-        <Comment post={post} />
-      </CommentContainer>
-    </FormWrapper>
+          {id === post.User.id ? (
+            <div>
+              <Button onClick={onEditPostHandler}>수정</Button>
+              <Button onClick={handleDeletePost}>삭제</Button>
+            </div>
+          ) : liked ? (
+            <Button onClick={onUnLike}>♥</Button>
+          ) : (
+            <Button onClick={onLike}>♡</Button>
+          )}
+          <div>좋아요 {post.Likers.length}개</div>
+        </BetweenFlex>
+        <PostWrapper>
+          {editPost ? (
+            <>
+              <Text
+                cols="80"
+                rows="5"
+                value={content}
+                onChange={contentOnChane}
+                ref={editPostRef}
+              />
+              <EndFlex>
+                <Button onClick={handleModifyPost}>수정</Button>
+                <Button onClick={onEditPostHandler}>취소</Button>
+              </EndFlex>
+            </>
+          ) : (
+            <ContentWrapper>
+              <div>{post.content}</div>
+            </ContentWrapper>
+          )}
+        </PostWrapper>
+
+        <CommentContainer>
+          <BetweenFlex>
+            <Span>댓글 {post.Comments.length}개</Span>
+            <Info onClick={() => onAddCommentHandler(post.id)}>댓글 달기</Info>
+          </BetweenFlex>
+          {addComment[post.id] ? (
+            <div>
+              <CommentForm
+                post={post}
+                editCommentRef={editCommentRef}
+                setEditPost={setEditPost}
+              />
+            </div>
+          ) : null}
+          <Comment post={post} />
+        </CommentContainer>
+      </FormWrapper>
+    </>
   );
 };
 
@@ -201,7 +215,7 @@ const EndFlex = styled.div`
 `;
 const ContentWrapper = styled.div`
   width: 100%;
-  border: 1px solid silver;
+
   height: 70px;
   border-radius: 5px;
   margin: 0 auto;
@@ -217,9 +231,7 @@ const Span = styled.span`
 `;
 
 const CommentContainer = styled.div`
-  background-color: ${(props) => props.theme.subColor};
   margin: 0 auto;
   padding: 20px;
-  border: 1px solid ${(props) => props.theme.mainColor};
   border-radius: 4px;
 `;

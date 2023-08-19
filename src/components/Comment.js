@@ -9,9 +9,15 @@ import moment from "moment";
 import useInput from "../hooks/useInput";
 import ReCommentForm from "./ReCommentForm";
 import ReComment from "./ReComment";
-
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faUser,
+  faComment,
+  faPen,
+  faTrash,
+} from "@fortawesome/free-solid-svg-icons";
 const Comment = ({ post }) => {
-  const [addComment, setAddComment] = useState([]);
+  const [addReComment, setAddReComment] = useState({});
   const dispatch = useDispatch();
   const id = useSelector((state) => state.user.me?.id);
 
@@ -20,10 +26,11 @@ const Comment = ({ post }) => {
   const [editComment, setEditComment] = useState({});
   const [content, contentOnChane, setContent] = useInput("");
   const textRef = useRef(null);
+
   // 현재 열려 있는 댓글의 id추적하기 위한 상태 변수
   const [currentEditingCommentId, setCurrentEditingCommentId] = useState(null);
 
-  const onEditCommentHandler = useCallback(
+  const onEditReCommentHandler = useCallback(
     (commentId, item) => {
       // 기존 댓글 닫기
       if (currentEditingCommentId !== null) {
@@ -78,11 +85,16 @@ const Comment = ({ post }) => {
     },
     [handleModifyComment]
   );
+  //-----------------------------------------------------
 
-  //----------------map 안에서 하나만 작동 코드---------------------
-  const onAddCommentHandler = useCallback((commentId) => {
-    setAddComment((prev) => ({
-      ...prev,
+  //----------------map 안에서 하나만 작동 및 폼 중복 방지 코드---------------------
+  const onAddReCommentHandler = useCallback((commentId) => {
+    setAddReComment((prev) => ({
+      ...Object.keys(prev).reduce((acc, key) => {
+        //...기존 상태값, acc: 누적 계산값, key: 현재값
+        acc[key] = false;
+        return acc;
+      }, {}),
       [commentId]: !prev[commentId],
     }));
   }, []);
@@ -102,73 +114,85 @@ const Comment = ({ post }) => {
     [dispatch, post.id]
   );
 
-  const createdAtDate = moment(post.createdAt);
-  const formattedDate = createdAtDate.format("l");
-
   return (
     <>
       {post.Comments.map((comment) => {
         const isEditing = editComment[comment.id];
+        const createdAtDate = moment(comment.createdAt);
+        const formattedDate = createdAtDate.format("l");
         return (
           <div key={comment.id}>
-            <CommentWrapper key={comment.id}>
-              <Author>{comment.User.nickname}</Author>
-              {isEditing && currentEditingCommentId === comment.id ? (
-                <>
-                  <Text
-                    cols="40"
-                    rows="2"
-                    value={content}
-                    onChange={contentOnChane}
-                    ref={textRef}
-                    onKeyUp={(e) => Enter(e, comment.id)}
-                  />
-                  <EndFlex>
-                    <Button onClick={() => handleModifyComment(comment.id)}>
-                      수정
-                    </Button>
-                    <Button onClick={handleCancelEdit}>취소</Button>
-                  </EndFlex>
-                </>
-              ) : (
-                <Content>{comment.content}</Content>
-              )}
-              <Toggle>{formattedDate}</Toggle>
-              {id ? (
-                <Toggle onClick={() => onAddCommentHandler(comment.id)}>
-                  댓글
-                </Toggle>
-              ) : (
-                <NotLoggedIn>댓글</NotLoggedIn>
-              )}
-              {id === comment.User.id ? (
-                <>
-                  <Toggle
-                    onClick={() => onEditCommentHandler(comment.id, comment)}
-                  >
-                    수정
+            <FullCommentWrapper>
+              <CommentWrapper key={comment.id}>
+                <Author>
+                  <FontAwesomeIcon icon={faUser} />
+                  <div>{comment.User.nickname}</div>
+                </Author>
+                {isEditing && currentEditingCommentId === comment.id ? (
+                  <>
+                    <Text
+                      cols="40"
+                      rows="2"
+                      value={content}
+                      onChange={contentOnChane}
+                      ref={textRef}
+                      onKeyUp={(e) => Enter(e, comment.id)}
+                    />
+                    <EndFlex>
+                      <Button onClick={() => handleModifyComment(comment.id)}>
+                        수정
+                      </Button>
+                      <Button onClick={handleCancelEdit}>취소</Button>
+                    </EndFlex>
+                  </>
+                ) : (
+                  <Content>{comment.content}</Content>
+                )}
+                <Date>{formattedDate}</Date>
+                {id ? (
+                  <Toggle onClick={() => onAddReCommentHandler(comment.id)}>
+                    <FontAwesomeIcon icon={faComment} />
                   </Toggle>
-                  <Toggle
-                    onClick={() =>
-                      onRemoveComment(
-                        comment.id /*매개변수를 위의 함수로 전달*/
-                      )
-                    }
-                  >
-                    삭제
-                  </Toggle>
-                </>
-              ) : (
-                <>
-                  <NotLoggedIn>수정</NotLoggedIn>
-                  <NotLoggedIn>삭제</NotLoggedIn>
-                </>
-              )}
-            </CommentWrapper>
-            {addComment[comment.id] ? (
+                ) : (
+                  <NotLoggedIn>
+                    <FontAwesomeIcon icon={faComment} />
+                  </NotLoggedIn>
+                )}
+                {id === comment.User.id ? (
+                  <>
+                    <Toggle
+                      onClick={() =>
+                        onEditReCommentHandler(comment.id, comment)
+                      }
+                    >
+                      <FontAwesomeIcon icon={faPen} />
+                    </Toggle>
+                    <Toggle
+                      onClick={() =>
+                        onRemoveComment(
+                          comment.id /*매개변수를 위의 함수로 전달*/
+                        )
+                      }
+                    >
+                      <FontAwesomeIcon icon={faTrash} />
+                    </Toggle>
+                  </>
+                ) : (
+                  <>
+                    <NotLoggedIn>
+                      <FontAwesomeIcon icon={faPen} />
+                    </NotLoggedIn>
+                    <NotLoggedIn>
+                      <FontAwesomeIcon icon={faTrash} />
+                    </NotLoggedIn>
+                  </>
+                )}
+              </CommentWrapper>
+              <ReComment post={post} comment={comment} />
+            </FullCommentWrapper>
+            {addReComment[comment.id] ? (
               <ReCommentForm post={post} comment={comment} />
             ) : null}
-            <ReComment post={post} comment={comment} />
           </div>
         );
       })}
@@ -178,8 +202,11 @@ const Comment = ({ post }) => {
 
 export default Comment;
 
+const FullCommentWrapper = styled.div`
+  border: 1px solid silver;
+`;
+
 const CommentWrapper = styled.div`
-  border: 1px solid ${(props) => props.theme.mainColor};
   display: flex;
   width: 100%;
   border-radius: 5px;
@@ -196,11 +223,21 @@ const Author = styled.div`
 const Content = styled.div`
   font-weight: bold;
   width: 60%;
+
+  height: 50px;
+  line-height: 50px;
 `;
 
 const Toggle = styled.button`
   font-weight: bold;
   width: 7%;
+`;
+
+const Date = styled.button`
+  font-weight: bold;
+  width: 7%;
+  cursor: default;
+  color: gray;
 `;
 
 const NotLoggedIn = styled.button`

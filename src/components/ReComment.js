@@ -7,6 +7,10 @@ import {
   UPDATE_RECOMMENT_REQUEST,
 } from "../reducer/post";
 import styled from "styled-components";
+import moment from "moment";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCircleXmark, faPen } from "@fortawesome/free-solid-svg-icons";
+
 const ReComment = ({ post, comment }) => {
   const dispatch = useDispatch();
   const id = useSelector((state) => state.user.me?.id);
@@ -92,10 +96,13 @@ const ReComment = ({ post, comment }) => {
     },
     [comment.id, dispatch, post.id]
   );
+
   return (
     <>
       {comment.ReComments.map((reComment) => {
         const isEditing = editReComment[reComment.id];
+        const createdAtCommentDate = moment(reComment.createdAt);
+        const formattedCommentDate = createdAtCommentDate.format("l");
         return (
           <div key={reComment.id}>
             <CommentWrapper key={reComment.id}>
@@ -116,7 +123,10 @@ const ReComment = ({ post, comment }) => {
                   </EndFlex>
                 </>
               ) : (
-                <Content>{reComment.content}</Content>
+                <>
+                  <Content>{reComment.content}</Content>
+                  <Date>{formattedCommentDate}</Date>
+                </>
               )}
               {id === reComment.User.id ? (
                 <>
@@ -125,7 +135,7 @@ const ReComment = ({ post, comment }) => {
                       onEditReCommentHandler(reComment.id, reComment)
                     }
                   >
-                    수정
+                    <FontAwesomeIcon icon={faPen} />
                   </Toggle>
                   <Toggle
                     onClick={() =>
@@ -134,7 +144,7 @@ const ReComment = ({ post, comment }) => {
                       )
                     }
                   >
-                    삭제
+                    <FontAwesomeIcon icon={faCircleXmark} />
                   </Toggle>
                 </>
               ) : (
@@ -151,11 +161,11 @@ const ReComment = ({ post, comment }) => {
 export default ReComment;
 
 const CommentWrapper = styled.div`
-  border: 1px solid ${(props) => props.theme.mainColor};
   background-color: #fff;
   display: flex;
   width: 80%;
-  border-radius: 5px;
+  border-top: 1px solid;
+
   padding: 5px;
   margin: 0 auto;
 `;
@@ -193,4 +203,9 @@ const Text = styled.input`
 const EndFlex = styled.div`
   display: flex;
   justify-content: end;
+`;
+
+const Date = styled.button`
+  cursor: default;
+  color: gray;
 `;

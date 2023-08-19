@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faInstagram, faYoutube } from "@fortawesome/free-brands-svg-icons";
+
 const Footer = () => {
   return (
     <FooterWrapper>
@@ -48,12 +49,12 @@ export const FooterWrapper = styled.footer`
 
 export const FooterTamplate = styled.div`
   width: 100%;
+  max-width: 1200px; /* Add max-width for centering */
   margin: 0.5rem auto;
-  min-width: 360px;
-  padding: 0.5rem;
+  padding: 1rem; /* Increase padding for more spacing */
   display: flex;
   justify-content: space-between;
-  flex-direction: auto;
+  align-items: center; /* Vertically align content */
 `;
 
 export const Footertxt = styled.div`
@@ -61,7 +62,6 @@ export const Footertxt = styled.div`
   color: #555;
 
   & p {
-    width: 70%;
     font-weight: auto;
     font-size: 0.825rem;
     color: auto;
@@ -71,40 +71,26 @@ export const Footertxt = styled.div`
 
 export const FooterRight = styled.div`
   display: flex;
-  justify-content: center;
   align-items: center;
-  align-content: auto;
-  flex-direction: auto;
-  flex-wrap: auto;
 
   & > ul {
     display: flex;
-    justify-content: center;
     align-items: center;
-    align-content: auto;
-    flex-direction: auto;
-    flex-wrap: auto;
     padding: 0 2rem;
     background-color: ${(props) => props.theme.mainColor};
     border-radius: 0.5rem;
+    list-style: none; /* Remove default list styles */
   }
 
   & > ul > li {
-    padding: 0.25rem 0.5rem;
+    padding: 0.5rem; /* Adjust padding for spacing */
     font-weight: 300;
     font-size: 1.3rem;
     color: #ffffff;
+    cursor: pointer;
 
-    & > span {
-      font-weight: 500;
-    }
-
-    :first-child {
-      padding-right: 2rem;
-    }
-
-    :hover {
-      color: #555;
+    &:hover {
+      color: #ff8c00;
     }
   }
 `;
