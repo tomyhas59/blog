@@ -97,45 +97,49 @@ const Post = ({ post }) => {
   return (
     <>
       <FormWrapper>
-        <BetweenFlex>
-          <div>
-            <Span>{post.User.nickname}</Span>
-            <Span>{formattedDate}</Span>
-          </div>
-          {id === post.User.id ? (
+        <PostWrapper>
+          <BetweenFlex>
             <div>
+              <Span>{post.User.nickname}</Span>
+              <Span>{formattedDate}</Span>
+            </div>
+            <div>
+              <Liked>좋아요 {post.Likers.length}</Liked>
+              {id === post.User.id ? null : liked ? (
+                <Button onClick={onUnLike}>♥</Button>
+              ) : (
+                <Button onClick={onLike}>♡</Button>
+              )}
+            </div>
+          </BetweenFlex>
+          <InPostWrapper>
+            {editPost ? (
+              <>
+                <Text
+                  cols="80"
+                  rows="5"
+                  value={content}
+                  onChange={contentOnChane}
+                  ref={editPostRef}
+                />
+                <EndFlex>
+                  <Button onClick={handleModifyPost}>수정</Button>
+                  <Button onClick={onEditPostHandler}>취소</Button>
+                </EndFlex>
+              </>
+            ) : (
+              <ContentWrapper>
+                <div>{post.content}</div>
+              </ContentWrapper>
+            )}
+          </InPostWrapper>
+          {id === post.User.id ? (
+            <EditDeleteForm>
               <Button onClick={onEditPostHandler}>수정</Button>
               <Button onClick={handleDeletePost}>삭제</Button>
-            </div>
-          ) : liked ? (
-            <Button onClick={onUnLike}>♥</Button>
-          ) : (
-            <Button onClick={onLike}>♡</Button>
-          )}
-          <div>좋아요 {post.Likers.length}개</div>
-        </BetweenFlex>
-        <PostWrapper>
-          {editPost ? (
-            <>
-              <Text
-                cols="80"
-                rows="5"
-                value={content}
-                onChange={contentOnChane}
-                ref={editPostRef}
-              />
-              <EndFlex>
-                <Button onClick={handleModifyPost}>수정</Button>
-                <Button onClick={onEditPostHandler}>취소</Button>
-              </EndFlex>
-            </>
-          ) : (
-            <ContentWrapper>
-              <div>{post.content}</div>
-            </ContentWrapper>
-          )}
+            </EditDeleteForm>
+          ) : null}
         </PostWrapper>
-
         <CommentContainer>
           <BetweenFlex>
             <Span>댓글 {post.Comments.length}개</Span>
@@ -169,6 +173,13 @@ const FormWrapper = styled.div`
 
 const PostWrapper = styled.div`
   width: 100%;
+  border-radius: 5px;
+  margin: 10px auto;
+  padding: 20px;
+`;
+
+const InPostWrapper = styled.div`
+  width: 100%;
   border: 1px solid silver;
   border-radius: 5px;
   margin: 10px auto;
@@ -187,6 +198,16 @@ const Button = styled.span`
   :hover {
     opacity: 0.7;
   }
+`;
+
+const Liked = styled.span`
+  width: 50px;
+  background-color: ${(props) => props.theme.mainColor};
+  margin: 2px;
+  color: #fff;
+  padding: 6px;
+  border-radius: 6px;
+  text-align: center;
 `;
 
 const Info = styled.span`
@@ -215,7 +236,6 @@ const EndFlex = styled.div`
 `;
 const ContentWrapper = styled.div`
   width: 100%;
-
   height: 70px;
   border-radius: 5px;
   margin: 0 auto;
@@ -231,7 +251,12 @@ const Span = styled.span`
 `;
 
 const CommentContainer = styled.div`
+  border: 1px solid silver;
   margin: 0 auto;
   padding: 20px;
   border-radius: 4px;
+`;
+
+const EditDeleteForm = styled.div`
+  float: right;
 `;
