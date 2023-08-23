@@ -2,8 +2,30 @@ const Post = require("../models/post");
 const User = require("../models/user");
 const Comment = require("../models/comment");
 const ReComment = require("../models/recomment");
+const Image = require("../models/image");
+const fs = require("fs");
+const path = require("path");
 
 module.exports = class PostService {
+  static async imageUpload(req, res) {
+    console.log(req.files);
+    res.json(req.files.map((v) => v.filename));
+  }
+
+  static async imageDelete(req, res, next) {
+    try {
+      const filename = req.params.filename;
+      const filePath = path.join(__dirname, "..", "uploads", filename);
+
+      // 이미지 파일 삭제
+      fs.unlinkSync(filePath);
+      res.sendStatus(200); // 성공 응답
+    } catch (error) {
+      console.error(error);
+      next(error);
+    }
+  }
+
   static async create(req, res, next) {
     try {
       const post = await Post.create({
@@ -11,9 +33,27 @@ module.exports = class PostService {
         userIdx: /*post 모델에서 관계 설정한 foreignKey 컬럼명*/ req.user.id,
         //passport를 통해서 로그인하면 세션 데이터 해석 후 user 정보가 req.user에 담겨서 id값이 생김
       });
+
+      if (req.body.image) {
+        if (Array.isArray(req.body.image)) {
+          //이미지를 여러 개 올리면 image: [1.png, 2.png] 배열로 올라감
+          const images = await Promise.all(
+            req.body.image.map((image) => Image.create({ src: image }))
+          );
+          await post.addImages(images);
+        } else {
+          const image = await Image.create({ src: req.body.image });
+          await post.addImages(image);
+
+          //이미지를 하나만 올리면 image: 1.png
+        }
+      }
       const fullPost = await Post.findOne({
         where: { id: post.id }, //게시글 쓰면 자동으로 id 생성
         include: [
+          {
+            model: Image,
+          },
           {
             model: User, //게시글 작성자
             attributes: ["id", "email", "nickname"],
@@ -80,6 +120,7 @@ module.exports = class PostService {
         //  offset: 0, //0~10  0에서 limit 만큼 가져와라
         include: [
           { model: User, attributes: ["id", "email", "nickname"] },
+          { model: Image },
           {
             model: User,
             as: "Likers",
@@ -125,11 +166,13 @@ module.exports = class PostService {
             model: User,
             attributes: ["id", "email", "nickname"],
           },
+
           {
             model: User,
             as: "Likers",
             attributes: ["id", "nickname"],
           },
+          { model: Image },
           {
             model: Comment,
             include: [
@@ -157,7 +200,33 @@ module.exports = class PostService {
   static async delete(req, res, next) {
     try {
       const postId = req.params.postId;
-      await Post.destroy({
+      // 이미지 파일 삭제 로직
+      const images = await Image.findAll({
+        where: {
+          PostId: postId,
+        },
+      });
+
+      images.forEach(async (image) => {
+        const filename = image.src;
+        const filePath = path.join(__dirname, "..", "uploads", filename);
+
+        try {
+          // 이미지 파일 삭제
+          fs.unlinkSync(filePath);
+          res.status(200);
+        } catch (error) {
+          console.error("Error deleting image:", error);
+        }
+      });
+
+      // 이미지 삭제 후 포스트 삭제
+      await Image.destroy({
+        where: {
+          PostId: postId,
+        },
+      });
+      Post.destroy({
         where: {
           id: postId,
           userIdx: req.user.id,

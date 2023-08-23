@@ -2,7 +2,7 @@ const postRouter = require("./routes/post");
 const userRouter = require("./routes/user");
 const express = require("express");
 const app = express();
-const morgan = require("morgan");
+const morgan = require("morgan"); //middleware
 const cors = require("cors");
 const path = require("path");
 const session = require("express-session");
@@ -24,6 +24,12 @@ app.use(
   })
 );
 app.use(cookieParser());
+
+// image 저장 경로 설정----------------------------
+app.use(
+  "/",
+  /*localhost:3075/와 같다*/ express.static(path.join(__dirname, "uploads"))
+);
 
 app.use(
   morgan("dev"), //로그를 찍어줌 ,종류 dev(개발용), combined(배포용), common, short, tiny

@@ -1,11 +1,12 @@
 const multer = require("multer");
+const path = require("path");
 
 const upload = multer({
   storage: multer.diskStorage({
     destination(req, file, done) {
       done(
         null, //err가 있을 때 로직
-        "uploads/" //성공 시 저장 폴더
+        "uploads" //성공 시 저장 폴더
       );
     },
     filename(req, file, done) {

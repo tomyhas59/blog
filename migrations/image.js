@@ -2,31 +2,20 @@
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.createTable("recomments", {
+    await queryInterface.createTable("images", {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER,
       },
-      content: {
-        type: Sequelize.TEXT,
+      src: {
+        type: Sequelize.STRING(200),
         allowNull: false,
-        comment: "리코멘트",
-      },
-      UserId: {
-        // 댓글 작성자인 User와의 관계를 위한 외래 키
-        type: Sequelize.INTEGER,
-        allowNull: false,
-        references: {
-          model: "Users",
-          key: "id",
-        },
-        onUpdate: "CASCADE",
-        onDelete: "CASCADE",
+        comment: "이미지",
       },
       PostId: {
-        // 댓글 작성자인 Post와의 관계를 위한 외래 키
+        //Post와의 관계를 위한 외래 키
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
@@ -34,16 +23,6 @@ module.exports = {
           key: "id",
         },
         onUpdate: "CASCADE",
-        onDelete: "CASCADE",
-      },
-      CommentId: {
-        type: Sequelize.INTEGER,
-        allowNull: false,
-        references: {
-          model: "Comments", // db.Comment 테이블과 연결됨
-          key: "id",
-        },
-        onUpdate: "CASCADE", //참조하는 레코드가 업데이트될 때 해당 레코드와 연결된 모든 레코드도 업데이트
         onDelete: "CASCADE",
       },
       createdAt: {
@@ -60,7 +39,7 @@ module.exports = {
   },
 
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.dropTable("ReComments");
+    await queryInterface.dropTable("Images");
   },
 };
 

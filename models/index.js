@@ -3,6 +3,7 @@ const post = require("./post");
 const user = require("./user");
 const comment = require("./comment");
 const recomment = require("./recomment");
+const image = require("./image");
 
 const env = process.env.NODE_ENV || "development";
 const config = require("../config/config");
@@ -18,6 +19,7 @@ const sequelize = new Sequelize(
 
 db.User = user;
 db.Post = post;
+db.Image = image;
 db.Comment = comment;
 db.ReComment = recomment;
 

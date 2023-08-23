@@ -2,12 +2,20 @@ const express = require("express");
 const router = express.Router();
 const { isLoggedIn, isNotLoggedIn } = require("./middlewares");
 const PostService = require("../service/post");
+const upload = require("./multer");
 
 router.get("/all", PostService.readAll);
 router.get("/:postId", PostService.read);
-router.post("/", isLoggedIn, PostService.create);
+router.post(
+  "/images",
+  isLoggedIn,
+  upload.array("image"),
+  PostService.imageUpload
+);
+router.post("/", isLoggedIn, upload.none(), PostService.create);
 router.put("/:postId", isLoggedIn, PostService.update);
 router.delete("/:postId", isLoggedIn, PostService.delete);
+router.delete("/images/:filename", isLoggedIn, PostService.imageDelete);
 //------comment-------------------------------------
 router.post("/:postId/comment", isLoggedIn, PostService.commentCreate);
 router.put(
