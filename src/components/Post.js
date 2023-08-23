@@ -130,6 +130,13 @@ const Post = ({ post }) => {
             ) : (
               <ContentWrapper>
                 <div>{post.content}</div>
+                {post.Images.map((v) => (
+                  <Img
+                    key={v.id}
+                    src={`http://localhost:3075/${v.src}`}
+                    alt={v.src}
+                  />
+                ))}
               </ContentWrapper>
             )}
           </InPostWrapper>
@@ -236,7 +243,7 @@ const EndFlex = styled.div`
 `;
 const ContentWrapper = styled.div`
   width: 100%;
-  height: 70px;
+  overflow: hidden;
   border-radius: 5px;
   margin: 0 auto;
   padding: 5px;
@@ -259,4 +266,8 @@ const CommentContainer = styled.div`
 
 const EditDeleteForm = styled.div`
   float: right;
+`;
+
+const Img = styled.img`
+  display: inline;
 `;

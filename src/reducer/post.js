@@ -3,9 +3,19 @@ import { produce } from "immer";
 //전역 상태 초기값
 const initialState = {
   allPosts: [],
+  imagePaths: [],
+
   allPostsLoading: false,
   allPostsDone: false,
   allPostsError: null,
+
+  uploadImagesLoading: false,
+  uploadImagesDone: false,
+  uploadImagesError: null,
+
+  removeImageLoading: false,
+  removeImageDone: false,
+  removeImageError: null,
 
   loadPostLoading: false,
   loadPostDone: false,
@@ -69,6 +79,14 @@ export const ADD_POST_REQUEST = "ADD_POST_REQUEST";
 export const ADD_POST_SUCCESS = "ADD_POST_SUCCESS";
 export const ADD_POST_FAILURE = "ADD_POST_FAILURE";
 
+export const UPLOAD_IMAGES_FAILURE = "UPLOAD_IMAGES_FAILURE";
+export const UPLOAD_IMAGES_REQUEST = "UPLOAD_IMAGES_REQUEST";
+export const UPLOAD_IMAGES_SUCCESS = "UPLOAD_IMAGES_SUCCESS";
+
+export const REMOVE_IMAGE_REQUEST = "REMOVE_IMAGE_REQUEST";
+export const REMOVE_IMAGE_SUCCESS = "REMOVE_IMAGE_SUCCESS";
+export const REMOVE_IMAGE_FAILURE = "REMOVE_IMAGE_FAILURE";
+
 export const REMOVE_POST_REQUEST = "REMOVE_POST_REQUEST";
 export const REMOVE_POST_SUCCESS = "REMOVE_POST_SUCCESS";
 export const REMOVE_POST_FAILURE = "REMOVE_POST_FAILURE";
@@ -112,6 +130,55 @@ export const UNLIKE_POST_FAILURE = "UNLIKE_POST_FAILURE";
 const post = (state = initialState, action) => {
   return produce(state, (draft) => {
     switch (action.type) {
+      //-----------------------------------------------------
+      case ADD_POST_REQUEST:
+        draft.addPostLoading = true;
+        draft.addPostDone = false;
+        draft.addPostError = null;
+        break;
+      case ADD_POST_SUCCESS:
+        draft.addPostLoading = false;
+        draft.addPostDone = true;
+        draft.allPosts.unshift(action.data);
+        draft.imagePaths = [];
+        break;
+      case ADD_POST_FAILURE:
+        draft.addPostLoading = false;
+        draft.addPostDone = true;
+        draft.addPostError = action.error;
+        break;
+      //-------------------------------------------------------------------
+      case UPLOAD_IMAGES_REQUEST:
+        draft.uploadImagesLoading = true;
+        draft.uploadImagesDone = false;
+        draft.uploadImagesError = null;
+        break;
+      case UPLOAD_IMAGES_SUCCESS:
+        draft.imagePaths = action.data;
+        draft.uploadImagesLoading = false;
+        draft.uploadImagesDone = true;
+        break;
+      case UPLOAD_IMAGES_FAILURE:
+        draft.uploadImagesLoading = false;
+        draft.uploadImagesError = action.error;
+        break;
+      //------------------------------------------------------
+      case REMOVE_IMAGE_REQUEST:
+        draft.removeImageLoading = true;
+        draft.removeImageDone = false;
+        draft.removeImageError = null;
+        break;
+      case REMOVE_IMAGE_SUCCESS: {
+        draft.removeImageLoading = false;
+        draft.imagePaths = draft.imagePaths.filter((v) => v !== action.data);
+        draft.removeImageDone = true;
+        break;
+      }
+      case REMOVE_IMAGE_FAILURE:
+        draft.removeImageLoading = false;
+        draft.removeImageError = action.error;
+        break;
+      //------------------------------------------------------
       case ALL_POSTS_REQUEST:
         draft.allPostsLoading = true;
         draft.allPostsDone = false;
@@ -126,22 +193,6 @@ const post = (state = initialState, action) => {
         draft.allPostsLoading = false;
         draft.allPostsDone = true;
         draft.allPostsError = action.error;
-        break;
-      //-----------------------------------------------------
-      case ADD_POST_REQUEST:
-        draft.addPostLoading = true;
-        draft.addPostDone = false;
-        draft.addPostError = null;
-        break;
-      case ADD_POST_SUCCESS:
-        draft.addPostLoading = false;
-        draft.addPostDone = true;
-        draft.allPosts.unshift(action.data);
-        break;
-      case ADD_POST_FAILURE:
-        draft.addPostLoading = false;
-        draft.addPostDone = true;
-        draft.addPostError = action.error;
         break;
       //-----------------------------------------------------
 

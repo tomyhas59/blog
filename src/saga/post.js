@@ -22,6 +22,9 @@ import {
   REMOVE_COMMENT_FAILURE,
   REMOVE_COMMENT_REQUEST,
   REMOVE_COMMENT_SUCCESS,
+  REMOVE_IMAGE_FAILURE,
+  REMOVE_IMAGE_REQUEST,
+  REMOVE_IMAGE_SUCCESS,
   REMOVE_POST_FAILURE,
   REMOVE_POST_REQUEST,
   REMOVE_POST_SUCCESS,
@@ -40,16 +43,19 @@ import {
   UPDATE_RECOMMENT_FAILURE,
   UPDATE_RECOMMENT_REQUEST,
   UPDATE_RECOMMENT_SUCCESS,
+  UPLOAD_IMAGES_FAILURE,
+  UPLOAD_IMAGES_REQUEST,
+  UPLOAD_IMAGES_SUCCESS,
 } from "../reducer/post";
 //-----------------------------------------------------
 
-function allPostsApi() {
-  return axios.get("/post/all");
+function allPostsApi(data) {
+  return axios.get("/post/all", data);
 }
 
-function* loadPosts() {
+function* loadPosts(action) {
   try {
-    const result = yield call(allPostsApi);
+    const result = yield call(allPostsApi, action.data);
     yield put({
       type: ALL_POSTS_SUCCESS,
       data: result.data,
@@ -67,13 +73,13 @@ function* watchLoadPosts() {
 }
 //-----------------------------------------------------
 
-function loadPostApi() {
-  return axios.get("/post");
+function loadPostApi(data) {
+  return axios.get("/post", data);
 }
 
-function* loadPost() {
+function* loadPost(action) {
   try {
-    const result = yield call(loadPostApi);
+    const result = yield call(loadPostApi, action.data);
     yield put({
       type: LOAD_POST_SUCCESS,
       data: result.data,
@@ -92,7 +98,7 @@ function* watchLoadPost() {
 //-----------------------------------------------------
 
 function addPostApi(data) {
-  return axios.post("/post", { content: data });
+  return axios.post("/post", data);
 }
 
 function* addPost(action) {
@@ -113,7 +119,58 @@ function* addPost(action) {
 function* watchAddPost() {
   yield takeLatest(ADD_POST_REQUEST, addPost);
 }
+//-------------------------------------------------------------
+function uploadImagesAPI(data) {
+  return axios.post("/post/images", data);
+}
 
+function* uploadImages(action) {
+  try {
+    const result = yield call(uploadImagesAPI, action.data);
+    yield put({
+      //put은 dipatch
+      type: UPLOAD_IMAGES_SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    console.error(err);
+    yield put({
+      type: UPLOAD_IMAGES_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+
+function* watchUploadImages() {
+  yield takeLatest(UPLOAD_IMAGES_REQUEST, uploadImages); //마지막 것만
+  //throttle("ADD_POST_REQUEST", addPost,2000) 2초 동안 1번 실행
+}
+//-------------------------------------------------------------
+function removeImagesAPI(data) {
+  return axios.delete(`/post/images/${data}`);
+}
+
+function* removeImages(action) {
+  try {
+    const result = yield call(removeImagesAPI, action.data);
+    yield put({
+      //put은 dipatch
+      type: REMOVE_IMAGE_SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    console.error(err);
+    yield put({
+      type: REMOVE_IMAGE_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+
+function* watchRemoveImages() {
+  yield takeLatest(REMOVE_IMAGE_REQUEST, removeImages); //마지막 것만
+  //throttle("ADD_POST_REQUEST", addPost,2000) 2초 동안 1번 실행
+}
 //-----------------------------------------------------
 
 function removePostApi(data) {
@@ -389,5 +446,7 @@ export default function* postSaga() {
     fork(watchUpdateReComment),
     fork(watchLikePost),
     fork(watchUnLikePost),
+    fork(watchUploadImages),
+    fork(watchRemoveImages),
   ]);
 }

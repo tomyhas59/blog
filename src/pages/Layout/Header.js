@@ -17,7 +17,7 @@ const Header = () => {
       dispatch({
         type: "INITIALIZE_STATE", // 초기화 액션 타입
       });
-      navigator("/signup");
+      navigator("/login");
     }
   }, [dispatch, logOutDone, navigator]);
 
