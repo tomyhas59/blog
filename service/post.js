@@ -19,7 +19,7 @@ module.exports = class PostService {
 
       // 이미지 파일 삭제
       fs.unlinkSync(filePath);
-      res.sendStatus(200); // 성공 응답
+      res.status(200).json({ filename: filename }); // 성공 응답
     } catch (error) {
       console.error(error);
       next(error);
@@ -40,7 +40,7 @@ module.exports = class PostService {
           const images = await Promise.all(
             req.body.image.map((image) => Image.create({ src: image }))
           );
-          await post.addImages(images);
+          await post.addImages(images); //addImages는 Post 모델 관계 설정에서 나온 함수
         } else {
           const image = await Image.create({ src: req.body.image });
           await post.addImages(image);
