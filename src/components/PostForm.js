@@ -29,8 +29,10 @@ const PostForm = () => {
     (e) => {
       console.log("images", e.target.files);
       const imageFormData = new FormData();
+
       // 중복된 이미지 파일명을 방지하기 위해 Set 사용
       const addedImageNames = new Set();
+      
       [].forEach.call(e.target.files /*선택한 파일들 */, (f) => {
         // 이미 추가된 이미지인지 확인하고 추가되지 않은 경우에만 처리
         if (!addedImageNames.has(f.name)) {
@@ -106,7 +108,7 @@ const PostForm = () => {
               />
             </div>
             <ImgWrapper>
-              {imagePaths.map((v, i) => (
+              {imagePaths.map((v) => (
                 <div key={v}>
                   <Img src={`http://localhost:3075/${v}`} alt="img" />
                   <Button type="button" onClick={onRemoveImage(v)}>

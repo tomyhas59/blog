@@ -170,7 +170,9 @@ const post = (state = initialState, action) => {
         break;
       case REMOVE_IMAGE_SUCCESS: {
         draft.removeImageLoading = false;
-        draft.imagePaths = draft.imagePaths.filter((v) => v !== action.data);
+        draft.imagePaths = draft.imagePaths.filter(
+          (v) => v !== action.data.filename
+        );
         draft.removeImageDone = true;
         break;
       }

@@ -55,18 +55,15 @@ const Post = ({ post }) => {
     }
   }, [editPost]);
 
+  //-----기존 폼 닫고 새로운 폼 엶--------------
   const onAddCommentHandler = useCallback(
     (postId) => {
       if (!id) {
         alert("로그인이 필요합니다");
       } else
         setAddComment((prev) => ({
-          ...Object.keys(prev).reduce((acc, key) => {
-            //...기존 상태값, acc: 누적 계산값,
-            acc[key] = false; //기존에 열린 폼 닫음
-            return acc;
-          }, {}),
-          [postId]: !prev[postId],
+          ...prev,
+          [postId]: !prev[postId], //참이면 거짓, 거짓이면 참이 됨
         }));
     },
     [id]
