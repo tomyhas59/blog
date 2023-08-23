@@ -36,7 +36,7 @@ module.exports = class User extends Sequelize.Model {
     db.User.hasMany(db.Post, { foreignKey: "userIdx" });
     db.User.hasMany(db.Comment);
     db.User.belongsToMany(db.Post, {
-      through: "Like", // 테이블 이름으로 생성
+      through: "Like", // 테이블 이름으로 생성, PostId 컬럼 생김
       as: "Liked" /* route에서 addLiked, getLiked, removeLiked 등의 매서드에 액세스 가능*/,
     });
   }
