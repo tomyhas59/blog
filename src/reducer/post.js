@@ -17,10 +17,6 @@ const initialState = {
   removeImageDone: false,
   removeImageError: null,
 
-  loadPostLoading: false,
-  loadPostDone: false,
-  loadPostError: null,
-
   addPostLoading: false,
   addPostDone: false,
   addPostError: null,
@@ -70,10 +66,6 @@ const initialState = {
 export const ALL_POSTS_REQUEST = "ALL_POSTS_REQUEST";
 export const ALL_POSTS_SUCCESS = "ALL_POSTS_SUCCESS";
 export const ALL_POSTS_FAILURE = "ALL_POSTS_FAILURE";
-
-export const LOAD_POST_REQUEST = "LOAD_POST_REQUEST";
-export const LOAD_POST_SUCCESS = "LOAD_POST_SUCCESS";
-export const LOAD_POST_FAILURE = "LOAD_POST_FAILURE";
 
 export const ADD_POST_REQUEST = "ADD_POST_REQUEST";
 export const ADD_POST_SUCCESS = "ADD_POST_SUCCESS";
@@ -144,7 +136,6 @@ const post = (state = initialState, action) => {
         break;
       case ADD_POST_FAILURE:
         draft.addPostLoading = false;
-        draft.addPostDone = true;
         draft.addPostError = action.error;
         break;
       //-------------------------------------------------------------------
@@ -193,7 +184,6 @@ const post = (state = initialState, action) => {
         break;
       case ALL_POSTS_FAILURE:
         draft.allPostsLoading = false;
-        draft.allPostsDone = true;
         draft.allPostsError = action.error;
         break;
       //-----------------------------------------------------
@@ -212,7 +202,6 @@ const post = (state = initialState, action) => {
         break;
       case REMOVE_POST_FAILURE:
         draft.removePostLoading = false;
-        draft.removePostDone = true;
         draft.removePostError = action.error;
         break;
       //-----------------------------------------------------
@@ -233,7 +222,6 @@ const post = (state = initialState, action) => {
       }
       case UPDATE_POST_FAILURE:
         draft.updatePostLoading = false;
-        draft.updatePostDone = true;
         draft.updatePostError = action.error;
         break;
       //-----------------------------------------------------
@@ -254,7 +242,6 @@ const post = (state = initialState, action) => {
       }
       case ADD_COMMENT_FAILURE:
         draft.addCommentLoading = false;
-        draft.addCommentDone = true;
         draft.addCommentError = action.error;
         break;
       //-----------------------------------------------------
@@ -277,7 +264,6 @@ const post = (state = initialState, action) => {
       }
       case REMOVE_COMMENT_FAILURE:
         draft.removeCommentLoading = false;
-        draft.removeCommentDone = true;
         draft.removeCommentError = action.error;
         break;
       //---------------------------------------------------
@@ -303,7 +289,6 @@ const post = (state = initialState, action) => {
 
       case UPDATE_COMMENT_FAILURE:
         draft.updateCommentLoading = false;
-        draft.updateCommentDone = true;
         draft.updateCommentError = action.error;
         break;
       //-----------------------------------------------------
@@ -329,7 +314,6 @@ const post = (state = initialState, action) => {
       }
       case ADD_RECOMMENT_FAILURE:
         draft.addReCommentLoading = false;
-        draft.addReCommentDone = true;
         draft.addReCommentError = action.error;
         break;
       //-----------------------------------------------------
@@ -356,7 +340,6 @@ const post = (state = initialState, action) => {
       }
       case REMOVE_RECOMMENT_FAILURE:
         draft.removeReCommentLoading = false;
-        draft.removeReCommentDone = true;
         draft.removeReCommentError = action.error;
         break;
       //---------------------------------------------------
@@ -387,7 +370,6 @@ const post = (state = initialState, action) => {
 
       case UPDATE_RECOMMENT_FAILURE:
         draft.updateReCommentLoading = false;
-        draft.updateReCommentDone = true;
         draft.updateReCommentError = action.error;
         break;
       //-------------------------------------------------------------------

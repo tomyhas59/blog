@@ -16,9 +16,6 @@ import {
   LIKE_POST_FAILURE,
   LIKE_POST_REQUEST,
   LIKE_POST_SUCCESS,
-  LOAD_POST_FAILURE,
-  LOAD_POST_REQUEST,
-  LOAD_POST_SUCCESS,
   REMOVE_COMMENT_FAILURE,
   REMOVE_COMMENT_REQUEST,
   REMOVE_COMMENT_SUCCESS,
@@ -71,30 +68,7 @@ function* loadPosts(action) {
 function* watchLoadPosts() {
   yield takeLatest(ALL_POSTS_REQUEST, loadPosts);
 }
-//-----------------------------------------------------
 
-function loadPostApi(data) {
-  return axios.get("/post", data);
-}
-
-function* loadPost(action) {
-  try {
-    const result = yield call(loadPostApi, action.data);
-    yield put({
-      type: LOAD_POST_SUCCESS,
-      data: result.data,
-    });
-  } catch (err) {
-    console.log(err);
-    yield put({
-      type: LOAD_POST_FAILURE,
-      error: err.response.data,
-    });
-  }
-}
-function* watchLoadPost() {
-  yield takeLatest(LOAD_POST_REQUEST, loadPost);
-}
 //-----------------------------------------------------
 
 function addPostApi(data) {
@@ -439,7 +413,6 @@ export default function* postSaga() {
     fork(watchUpdatePost),
     fork(watchAddComment),
     fork(watchRemoveComment),
-    fork(watchLoadPost),
     fork(watchUpdateComment),
     fork(watchAddReComment),
     fork(watchRemoveReComment),

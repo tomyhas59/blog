@@ -32,7 +32,7 @@ const PostForm = () => {
 
       // 중복된 이미지 파일명을 방지하기 위해 Set 사용
       const addedImageNames = new Set();
-      
+
       [].forEach.call(e.target.files /*선택한 파일들 */, (f) => {
         // 이미 추가된 이미지인지 확인하고 추가되지 않은 경우에만 처리
         if (!addedImageNames.has(f.name)) {
@@ -99,26 +99,23 @@ const PostForm = () => {
               onChange={contentOnChane}
               onKeyUp={Enter}
             ></TextArea>
-            <div>
-              <input
-                type="file"
-                name="image"
-                multiple
-                onChange={onChangeImages}
-              />
-            </div>
-            <ImgWrapper>
+            <FileInput
+              type="file"
+              name="image"
+              multiple
+              onChange={onChangeImages}
+            />
+            <ImageGrid>
               {imagePaths.map((v) => (
-                <div key={v}>
-                  <Img src={`http://localhost:3075/${v}`} alt="img" />
-                  <Button type="button" onClick={onRemoveImage(v)}>
-                    제거
-                  </Button>
-                </div>
+                <ImageContainer key={v}>
+                  <Image src={`http://localhost:3075/${v}`} alt="img" />
+                  <RemoveButton type="button" onClick={onRemoveImage(v)}>
+                    x
+                  </RemoveButton>
+                </ImageContainer>
               ))}
-            </ImgWrapper>
-            <br />
-            <Button type="submit">등록</Button>
+            </ImageGrid>
+            <SubmitButton type="submit">등록</SubmitButton>
           </Form>
         </FormWrapper>
       ) : null}
@@ -130,15 +127,18 @@ export default PostForm;
 
 const FormWrapper = styled.div`
   max-width: 800px;
-  border: 1px solid;
-  border-color: silver;
-  border-radius: 5px;
   margin: 10px auto;
   padding: 20px;
+  border: 1px solid silver;
+  border-radius: 10px;
+  background-color: #f5f5f5;
+  box-shadow: 10px 10px 10px rgba(144, 238, 144, 0.5);
 `;
+
 const Title = styled.h2`
   text-align: center;
   margin-bottom: 20px;
+  color: #333;
 `;
 
 const Form = styled.form`
@@ -148,34 +148,61 @@ const Form = styled.form`
 
 const TextArea = styled.textarea`
   width: 100%;
-  padding: 10px;
+  padding: 12px;
   font-size: 16px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
+  border: 2px solid #ccc;
+  border-radius: 8px;
   margin-bottom: 10px;
 `;
-const Button = styled.button`
-  padding: 10px;
-  background-color: #4caf50;
+
+const FileInput = styled.input`
+  display: block;
+  margin: 10px auto;
+`;
+
+const ImageGrid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+`;
+
+const ImageContainer = styled.div`
+  position: relative;
+  display: inline-block;
+`;
+
+const Image = styled.img`
+  width: 100%;
+  max-height: 200px;
+  border-radius: 8px;
+`;
+
+const RemoveButton = styled.button`
+  position: absolute;
+  top: 0;
+  right: 0;
+  padding: 5px 10px;
+  background-color: #e74c3c;
   color: white;
   border: none;
   border-radius: 4px;
   cursor: pointer;
 
   &:hover {
-    background-color: #45a049;
+    background-color: #c0392b;
   }
 `;
-const Img = styled.img`
-  width: 300px;
-  height: 200px;
-`;
 
-const ImgWrapper = styled.div`
-  display: grid;
-  grid-template-columns: repeat(
-    3,
-    1fr
-  ); /* n개의 열로 정렬, 1fr 동등한 비율로 크기 결정 */
-  gap: 20px; /* 이미지와 버튼 간의 간격 조절 */
+const SubmitButton = styled.button`
+  padding: 12px;
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+
+  &:hover {
+    background-color: #45a049;
+  }
 `;
