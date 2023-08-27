@@ -157,9 +157,18 @@ module.exports = class PostService {
       const searchText = req.query.query;
       const searchResults = await Post.findAll({
         where: {
-          content: {
-            [Op.like]: `%${searchText}%`, // 내용에 검색어가 포함된 포스트 검색
-          },
+          [Op.or]: [
+            {
+              content: {
+                [Op.like]: `%${searchText}%`, // 내용에 검색어가 포함된 포스트 검색
+              },
+            },
+            {
+              "$User.nickname$": {
+                [Op.like]: `%${searchText}%`, // 닉네임에 검색어가 포함된 포스트 검색
+              },
+            },
+          ],
         },
         include: [
           { model: User, attributes: ["id", "email", "nickname"] },
@@ -184,18 +193,20 @@ module.exports = class PostService {
             ],
           },
         ],
-        order: [["createdAt", "DESC"]], //DESC 내림차순 ASC 오름차순
+        order: [["createdAt", "DESC"]],
       });
       if (searchResults.length === 0) {
-        // No search results found
-        return res.status(404).json({ message: "No search results found." });
+        // 검색 결과가 없을 경우
+        return res.status(404).json("검색 결과를 찾을 수 없습니다.");
       }
+
       res.status(200).json(searchResults);
     } catch (error) {
       console.log(error);
       next(error);
     }
   }
+
   //----------------------------------------------------------------------
 
   static async delete(req, res, next) {
