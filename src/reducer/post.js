@@ -4,10 +4,15 @@ import { produce } from "immer";
 const initialState = {
   allPosts: [],
   imagePaths: [],
+  searchPosts: [],
 
   allPostsLoading: false,
   allPostsDone: false,
   allPostsError: null,
+
+  searchPostsLoading: false,
+  searchPostsDone: false,
+  searchPostsError: null,
 
   uploadImagesLoading: false,
   uploadImagesDone: false,
@@ -119,6 +124,10 @@ export const UNLIKE_POST_REQUEST = "UNLIKE_POST_REQUEST";
 export const UNLIKE_POST_SUCCESS = "UNLIKE_POST_SUCCESS";
 export const UNLIKE_POST_FAILURE = "UNLIKE_POST_FAILURE";
 
+export const SEARCH_POSTS_REQUEST = "SEARCH_POSTS_REQUEST";
+export const SEARCH_POSTS_SUCCESS = "SEARCH_POSTS_SUCCESS";
+export const SEARCH_POSTS_FAILURE = "SEARCH_POSTS_FAILURE";
+
 const post = (state = initialState, action) => {
   return produce(state, (draft) => {
     switch (action.type) {
@@ -185,6 +194,25 @@ const post = (state = initialState, action) => {
       case ALL_POSTS_FAILURE:
         draft.allPostsLoading = false;
         draft.allPostsError = action.error;
+        break;
+      //-----------------------------------------------
+
+      //------------------------------------------------------
+      case SEARCH_POSTS_REQUEST:
+        draft.searchPostsLoading = true;
+        draft.searchPostsDone = false;
+        draft.searchPostsError = null;
+        break;
+      case SEARCH_POSTS_SUCCESS:
+        draft.searchPostsError = false;
+        draft.searchPostsDone = true;
+        draft.searchPostsError = false;
+        draft.searchPosts = action.data;
+
+        break;
+      case SEARCH_POSTS_FAILURE:
+        draft.searchPostsLoading = false;
+        draft.searchPostsError = action.error;
         break;
       //-----------------------------------------------------
 
@@ -408,6 +436,8 @@ const post = (state = initialState, action) => {
         draft.unLikePostLoading = false;
         draft.unLikePostError = action.error;
         break;
+      case "GO_HOME":
+        return initialState;
       default:
         return;
     }

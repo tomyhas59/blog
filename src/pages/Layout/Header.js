@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import styled, { keyframes } from "styled-components";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
@@ -27,12 +27,20 @@ const Header = () => {
     });
   }, [dispatch]);
 
+  const handleGoHome = useCallback(() => {
+    dispatch({
+      type: "GO_HOME",
+    });
+    navigator("/");
+  }, [dispatch, navigator]);
+
   return (
     <HeaderWrapper>
       <HeaderWidth id="container">
         <HeaderLogo>
-          <Link to="/">Y BLOG </Link>
+          <button onClick={handleGoHome}>Y BLOG </button>
         </HeaderLogo>
+
         <HeaderList>
           {!isLoggedIn && (
             <>

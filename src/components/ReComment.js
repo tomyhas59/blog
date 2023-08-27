@@ -9,12 +9,7 @@ import {
 import styled from "styled-components";
 import moment from "moment";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faCircleXmark,
-  faPen,
-  faArrowTrendDown,
-  faUser,
-} from "@fortawesome/free-solid-svg-icons";
+import { faCircleXmark, faPen } from "@fortawesome/free-solid-svg-icons";
 
 const ReComment = ({ post, comment }) => {
   const dispatch = useDispatch();
