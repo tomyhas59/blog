@@ -5,6 +5,7 @@ const ReComment = require("../models/recomment");
 const Image = require("../models/image");
 const fs = require("fs");
 const path = require("path");
+const { Op } = require("sequelize");
 
 module.exports = class PostService {
   static async imageUpload(req, res) {
@@ -151,28 +152,23 @@ module.exports = class PostService {
   }
   //----------------------------------------------------------------------
 
-  static async read(req, res, next) {
+  static async search(req, res, next) {
     try {
-      const post = await Post.findOne({
-        where: { id: req.params.postId },
-      });
-      if (!post) {
-        return res.status(404).send("존재하지 않는 게시글입니다");
-      }
-      const fullPost = await Post.findOne({
-        where: { id: post.id },
-        include: [
-          {
-            model: User,
-            attributes: ["id", "email", "nickname"],
+      const searchText = req.query.query;
+      const searchResults = await Post.findAll({
+        where: {
+          content: {
+            [Op.like]: `%${searchText}%`, // 내용에 검색어가 포함된 포스트 검색
           },
-
+        },
+        include: [
+          { model: User, attributes: ["id", "email", "nickname"] },
+          { model: Image },
           {
             model: User,
             as: "Likers",
             attributes: ["id", "nickname"],
           },
-          { model: Image },
           {
             model: Comment,
             include: [
@@ -188,8 +184,13 @@ module.exports = class PostService {
             ],
           },
         ],
+        order: [["createdAt", "DESC"]], //DESC 내림차순 ASC 오름차순
       });
-      res.status(200).json(fullPost);
+      if (searchResults.length === 0) {
+        // No search results found
+        return res.status(404).json({ message: "No search results found." });
+      }
+      res.status(200).json(searchResults);
     } catch (error) {
       console.log(error);
       next(error);
