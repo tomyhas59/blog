@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useCallback, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { LOG_OUT_REQUEST } from "../../reducer/user";
+import Search from "../../components/Search";
 
 const Header = () => {
   const dispatch = useDispatch();
@@ -32,15 +33,18 @@ const Header = () => {
       type: "GO_HOME",
     });
     navigator("/");
+    window.scrollTo({ top: 0, behavior: "smooth" });
   }, [dispatch, navigator]);
 
   return (
     <HeaderWrapper>
-      <HeaderWidth id="container">
-        <HeaderLogo>
-          <button onClick={handleGoHome}>Y BLOG </button>
-        </HeaderLogo>
-
+      <HeaderLogo>
+        <button onClick={handleGoHome}>Y BLOG </button>
+      </HeaderLogo>
+      <HeaderWidth>
+        <div>
+          <Search />
+        </div>
         <HeaderList>
           {!isLoggedIn && (
             <>
@@ -54,18 +58,16 @@ const Header = () => {
           )}
           {isLoggedIn && (
             <>
-              <Nickname>{me.nickname}님 환영합니다</Nickname>
               <li>
                 <Button onClick={handleLogout}>로그아웃</Button>
               </li>
               <li>
-                <Button>
-                  <Link to="/chat">채팅</Link>
-                </Button>
+                <Link to="/chat">채팅</Link>
               </li>
             </>
           )}
         </HeaderList>
+        {isLoggedIn && <Nickname>{me.nickname}님 환영합니다</Nickname>}
       </HeaderWidth>
     </HeaderWrapper>
   );
@@ -74,30 +76,26 @@ const Header = () => {
 export default Header;
 
 const Nickname = styled.div`
-  margin-right: 5px;
-  font-size: 30px;
+  position: absolute;
+  bottom: 0px;
 `;
 
 const Button = styled.button`
-  padding: 10px 20px;
-  font-size: 16px;
-  background-color: #4caf50;
-  color: white;
-  border: none;
-  border-radius: 4px;
   cursor: pointer;
-
+  font-size: 1rem;
+  margin: 5px;
+  font-weight: bold;
+  transition: transform 0.3s ease, color 0.3s ease;
   &:hover {
-    background-color: #45a049;
+    transform: translateY(-2px);
+    color: #ff8c00;
   }
 `;
 
 export const HeaderWrapper = styled.header`
   width: 100%;
-  height: 4rem;
+  height: 5rem;
   padding: 1rem;
-  display: flex;
-  justify-content: space-between;
   top: 0;
   z-index: 1000;
   position: fixed;
@@ -107,7 +105,9 @@ export const HeaderWrapper = styled.header`
 export const HeaderWidth = styled.div`
   width: 700px;
   margin: 0 auto;
-  position: relative;
+  display: flex;
+  justify-content: end;
+  align-items: center;
 `;
 
 const shadowAnimation = keyframes`
@@ -136,20 +136,20 @@ export const HeaderLogo = styled.div`
   box-shadow: 0 0 0 rgba(0, 0, 0, 0.6);
   animation: ${shadowAnimation} 2s infinite;
   border: 1px solid;
-  padding: 5px 10px; /* Add some padding */
-  transition: background-color 0.3s ease; /* Add a smooth transition */
+  padding: 5px 10px;
+  transition: background-color 0.3s ease;
+  left: 30%;
 
   &:hover {
-    background-color: #ff8c00; /* Change background color on hover */
+    background-color: #ff8c00;
   }
 `;
 export const HeaderList = styled.ul`
   display: flex;
-  align-content: auto;
-  flex-direction: auto;
-  flex-wrap: auto;
-  float: right;
-  color: ${(props) => props.theme.mainColor};
+  background-color: ${(props) => props.theme.mainColor};
+  margin-left: 20px;
+  color: #fff;
+  border-radius: 8px;
   position: relative;
   align-items: center;
   height: 2.5rem;
@@ -157,33 +157,22 @@ export const HeaderList = styled.ul`
 
   & > li {
     cursor: pointer;
+    font-size: 1rem;
     margin: 5px;
     font-weight: bold;
-    transition: transform 0.3s ease, color 0.3s ease; /* Add a smooth transition */
+    transition: transform 0.3s ease, color 0.3s ease;
     &:hover {
-      transform: translateY(-2px); /* Lift up on hover */
-      color: #ff8c00; /* Change color on hover */
+      transform: translateY(-2px);
+      color: #ff8c00;
     }
   }
 
   & > a > li {
     cursor: pointer;
-    transition: color 0.3s ease; /* Add a smooth transition */
+    transition: color 0.3s ease;
 
     &:hover {
-      color: #ff8c00; /* Change color on hover */
-    }
-    ::after {
-      content: "|";
-      clear: both;
-      margin: 0 0.5rem;
-    }
-  }
-
-  & > a:last-child > li {
-    ::after {
-      content: "";
-      clear: both;
+      color: #ff8c00;
     }
   }
 `;

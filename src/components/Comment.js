@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { useDispatch, useSelector } from "react-redux";
 import {
   REMOVE_COMMENT_REQUEST,
+  SEARCH_POSTS_REQUEST,
   UPDATE_COMMENT_REQUEST,
 } from "../reducer/post";
 import moment from "moment";
@@ -20,6 +21,51 @@ const Comment = ({ post }) => {
   const [addReComment, setAddReComment] = useState({});
   const dispatch = useDispatch();
   const id = useSelector((state) => state.user.me?.id);
+  //----------팝업-------------------------------------
+  const [showPopup, setShowPopup] = useState({});
+
+  const handlePopupToggle = useCallback((commentId) => {
+    setShowPopup((prev) => ({
+      ...Object.keys(prev).reduce((acc, key) => {
+        //...기존 상태값, acc: 누적 계산값, key: 현재값
+        acc[key] = false;
+        return acc;
+      }, {}),
+      [commentId]: !prev[commentId],
+    }));
+  }, []);
+  //-----------------------------------------------
+  const popupRef = useRef(null);
+  const nicknameButtonRef = useRef(null);
+  const handleOutsideClick = useCallback((event) => {
+    if (
+      popupRef.current &&
+      !popupRef.current.contains(event.target) &&
+      event.target !== nicknameButtonRef.current
+    ) {
+      setShowPopup(false);
+    }
+  }, []);
+  useEffect(() => {
+    // Attach the event listener when the component mounts
+    document.addEventListener("click", handleOutsideClick);
+
+    // Remove the event listener when the component unmounts
+    return () => {
+      document.removeEventListener("click", handleOutsideClick);
+    };
+  }, [handleOutsideClick]);
+
+  const handleSearch = useCallback(
+    (comment) => {
+      dispatch({
+        type: SEARCH_POSTS_REQUEST,
+        query: comment.User.nickname,
+      });
+      window.scrollTo({ top: 0, behavior: "auto" });
+    },
+    [dispatch]
+  );
 
   //------------------댓글 수정--------------------------------
 
@@ -28,19 +74,19 @@ const Comment = ({ post }) => {
   const textRef = useRef(null);
 
   // 현재 열려 있는 댓글의 id추적하기 위한 상태 변수
-  const [currentEditingCommentId, setCurrentEditingCommentId] = useState(null);
+  const [currentCommentId, setCurrentCommentId] = useState(null);
 
   const onEditReCommentHandler = useCallback(
     (commentId, item) => {
       // 기존 댓글 닫기
-      if (currentEditingCommentId !== null) {
+      if (currentCommentId !== null) {
         setEditComment((prev) => ({
           ...prev,
-          [currentEditingCommentId]: false,
+          [currentCommentId]: false,
         }));
       }
       // 현재 열려 있는 댓글의 id 설정
-      setCurrentEditingCommentId(commentId);
+      setCurrentCommentId(commentId);
 
       setEditComment((prev) => ({
         ...prev,
@@ -48,18 +94,18 @@ const Comment = ({ post }) => {
       }));
       setContent(item.content);
     },
-    [currentEditingCommentId, setContent]
+    [currentCommentId, setContent]
   );
 
   // "취소" 버튼을 누를 때 호출되는 함수
   const handleCancelEdit = useCallback(() => {
     setEditComment((prev) => ({
       ...prev,
-      [currentEditingCommentId]: false,
+      [currentCommentId]: false,
     }));
-    setCurrentEditingCommentId(null);
+    setCurrentCommentId(null);
     setContent(""); // "Text" 영역 초기화
-  }, [currentEditingCommentId, setContent]);
+  }, [currentCommentId, setContent]);
 
   const handleModifyComment = useCallback(
     (commentId) => {
@@ -72,7 +118,7 @@ const Comment = ({ post }) => {
         },
       });
       setEditComment({});
-      setCurrentEditingCommentId(null);
+      setCurrentCommentId(null);
       setContent(""); // "Text" 영역 초기화
     },
     [content, dispatch, post.id, setContent]
@@ -85,7 +131,6 @@ const Comment = ({ post }) => {
     },
     [handleModifyComment]
   );
-  //-----------------------------------------------------
 
   //----------------map 안에서 하나만 작동 및 폼 중복 방지 코드---------------------
   const onAddReCommentHandler = useCallback((commentId) => {
@@ -124,11 +169,21 @@ const Comment = ({ post }) => {
           <div key={comment.id}>
             <FullCommentWrapper>
               <CommentWrapper key={comment.id}>
-                <Author>
+                <Author
+                  onClick={() => handlePopupToggle(comment.id)}
+                  ref={nicknameButtonRef}
+                >
                   <FontAwesomeIcon icon={faUser} />
                   <div>{comment.User.nickname}</div>
                 </Author>
-                {isEditing && currentEditingCommentId === comment.id ? (
+                {showPopup[comment.id] ? (
+                  <PopupMenu>
+                    <Button onClick={() => handleSearch(comment)}>
+                      작성 글 보기
+                    </Button>
+                  </PopupMenu>
+                ) : null}
+                {isEditing && currentCommentId === comment.id ? (
                   <>
                     <Text
                       cols="40"
@@ -211,9 +266,10 @@ const CommentWrapper = styled.div`
   width: 100%;
   border-radius: 5px;
   padding: 20px;
+  position: relative;
 `;
 
-const Author = styled.div`
+const Author = styled.button`
   font-weight: bold;
   width: 10%;
   text-align: center;
@@ -266,4 +322,10 @@ const Text = styled.textarea`
 const EndFlex = styled.div`
   display: flex;
   justify-content: end;
+`;
+
+const PopupMenu = styled.div`
+  position: absolute;
+  top: 70%;
+  left: 5%;
 `;

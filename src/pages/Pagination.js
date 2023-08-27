@@ -10,7 +10,7 @@ const Pagination = ({ postsPerPage, totalPosts, paginate, currentPage }) => {
 
   const handlePageClick = (number) => {
     paginate(number);
-    window.scrollTo({ top: 0, behavior: "smooth" }); // 페이지 맨 위로 스크롤
+    window.scrollTo({ top: 0, behavior: "auto" }); // 페이지 맨 위로 스크롤
   };
 
   return (

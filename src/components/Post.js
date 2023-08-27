@@ -1,13 +1,14 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import CommentForm from "./CommentForm";
 import Comment from "./Comment";
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
 import { useDispatch, useSelector } from "react-redux";
 import {
   LIKE_POST_REQUEST,
   REMOVE_POST_REQUEST,
   UPDATE_POST_REQUEST,
   UNLIKE_POST_REQUEST,
+  SEARCH_POSTS_REQUEST,
 } from "../reducer/post";
 import useInput from "../hooks/useInput";
 import moment from "moment";
@@ -22,7 +23,32 @@ const Post = ({ post }) => {
   const editCommentRef = useRef(null);
   const id = useSelector((state) => state.user.me?.id);
   const liked = post.Likers.find((v) => v.id === id);
+  //----------팝업-------------------------------------
+  const [showPopup, setShowPopup] = useState(false);
+  const handlePopupToggle = useCallback(() => {
+    setShowPopup((prevShowPopup) => !prevShowPopup);
+  }, []);
+  //----------------------------------------------
+  const popupRef = useRef(null);
+  const nicknameButtonRef = useRef(null);
+  const handleOutsideClick = useCallback((event) => {
+    if (
+      popupRef.current &&
+      !popupRef.current.contains(event.target) &&
+      event.target !== nicknameButtonRef.current
+    ) {
+      setShowPopup(false);
+    }
+  }, []);
+  useEffect(() => {
+    // Attach the event listener when the component mounts
+    document.addEventListener("click", handleOutsideClick);
 
+    // Remove the event listener when the component unmounts
+    return () => {
+      document.removeEventListener("click", handleOutsideClick);
+    };
+  }, [handleOutsideClick]);
   //-----게시글 수정-------------------------
   const onEditPostHandler = useCallback(() => {
     setEditPost((prev) => !prev);
@@ -91,15 +117,33 @@ const Post = ({ post }) => {
   const createdAtDate = moment(post.createdAt);
   const formattedDate = createdAtDate.format("l");
 
+  const handleSearch = useCallback(() => {
+    dispatch({
+      type: SEARCH_POSTS_REQUEST,
+      query: post.User.nickname,
+    });
+    window.scrollTo({ top: 0, behavior: "auto" });
+  }, [dispatch, post.User.nickname]);
+
   return (
     <>
       <FormWrapper>
         <PostWrapper>
-          <BetweenFlex>
-            <div>
-              <Span>{post.User.nickname}</Span>
+          <PostHeaderFlex>
+            <PostHeader>
+              <NicknameButton
+                onClick={handlePopupToggle}
+                ref={nicknameButtonRef}
+              >
+                {post.User.nickname}
+              </NicknameButton>
+              {showPopup && (
+                <PopupMenu ref={popupRef}>
+                  <Button onClick={handleSearch}>작성 글 보기</Button>
+                </PopupMenu>
+              )}
               <Span>{formattedDate}</Span>
-            </div>
+            </PostHeader>
             <div>
               <Liked>좋아요 {post.Likers.length}</Liked>
               {id === post.User.id ? null : liked ? (
@@ -108,7 +152,7 @@ const Post = ({ post }) => {
                 <Button onClick={onLike}>♡</Button>
               )}
             </div>
-          </BetweenFlex>
+          </PostHeaderFlex>
           <InPostWrapper>
             {editPost ? (
               <>
@@ -145,10 +189,10 @@ const Post = ({ post }) => {
           ) : null}
         </PostWrapper>
         <CommentContainer>
-          <BetweenFlex>
+          <PostHeaderFlex>
             <Span>댓글 {post.Comments.length}개</Span>
             <Info onClick={() => onAddCommentHandler(post.id)}>댓글 달기</Info>
-          </BetweenFlex>
+          </PostHeaderFlex>
           {addComment[post.id] ? (
             <div>
               <CommentForm
@@ -225,7 +269,7 @@ const Info = styled.span`
   cursor: pointer;
 `;
 
-const BetweenFlex = styled.div`
+const PostHeaderFlex = styled.div`
   display: flex;
   justify-content: space-between;
 `;
@@ -255,7 +299,6 @@ const Span = styled.span`
 `;
 
 const CommentContainer = styled.div`
-  border: 1px solid silver;
   margin: 0 auto;
   padding: 20px;
   border-radius: 4px;
@@ -267,4 +310,22 @@ const EditDeleteForm = styled.div`
 
 const Img = styled.img`
   display: inline;
+`;
+
+const NicknameButton = styled.button`
+  display: inline-block;
+  background-color: ${(props) => props.theme.mainColor};
+  border-radius: 30%;
+  width: 50px;
+  text-align: center;
+  color: #fff;
+`;
+
+const PostHeader = styled.div`
+  position: relative;
+`;
+const PopupMenu = styled.div`
+  position: absolute;
+  top: 30px;
+  left: 0;
 `;
