@@ -155,21 +155,34 @@ module.exports = class PostService {
   static async search(req, res, next) {
     try {
       const searchText = req.query.query;
+      const searchOption = req.query.option;
+      const whereCondition = {};
+      
+      if (searchOption === "author") {
+        whereCondition["$User.nickname$"] = {
+          [Op.like]: `%${searchText}%`,
+        };
+      } else if (searchOption === "content") {
+        whereCondition.content = {
+          [Op.like]: `%${searchText}%`,
+        };
+      } else if (searchOption === "both") {
+        whereCondition[Op.or] = [
+          {
+            content: {
+              [Op.like]: `%${searchText}%`,
+            },
+          },
+          {
+            "$User.nickname$": {
+              [Op.like]: `%${searchText}%`,
+            },
+          },
+        ];
+      }
+
       const searchResults = await Post.findAll({
-        where: {
-          [Op.or]: [
-            {
-              content: {
-                [Op.like]: `%${searchText}%`, // 내용에 검색어가 포함된 포스트 검색
-              },
-            },
-            {
-              "$User.nickname$": {
-                [Op.like]: `%${searchText}%`, // 닉네임에 검색어가 포함된 포스트 검색
-              },
-            },
-          ],
-        },
+        where: whereCondition,
         include: [
           { model: User, attributes: ["id", "email", "nickname"] },
           { model: Image },
