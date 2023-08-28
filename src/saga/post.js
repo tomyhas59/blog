@@ -72,13 +72,16 @@ function* watchLoadPosts() {
   yield takeLatest(ALL_POSTS_REQUEST, loadPosts);
 }
 //----------------------------------------------
-function searchPostsApi(query) {
-  return axios.get(`/post/search?query=${query}`); // 적절한 검색 API 엔드포인트로 변경
+function searchPostsApi(query, searchOption) {
+  return axios.get(`/post/search?query=${query}&option=${searchOption}`);
 }
-
 function* searchPosts(action) {
   try {
-    const result = yield call(searchPostsApi, action.query);
+    const result = yield call(
+      searchPostsApi,
+      action.query,
+      action.searchOption
+    );
     yield put({
       type: SEARCH_POSTS_SUCCESS,
       data: result.data,

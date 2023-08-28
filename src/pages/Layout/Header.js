@@ -8,6 +8,7 @@ import { LOG_OUT_REQUEST } from "../../reducer/user";
 import Search from "../../components/Search";
 
 const Header = () => {
+  const [searchOption, setSearchOption] = useState("author");
   const dispatch = useDispatch();
   const navigator = useNavigate();
   const { isLoggedIn, logOutDone } = useSelector((state) => state.user);
@@ -42,8 +43,16 @@ const Header = () => {
         <button onClick={handleGoHome}>Y BLOG </button>
       </HeaderLogo>
       <HeaderWidth>
+        <select
+          value={searchOption}
+          onChange={(e) => setSearchOption(e.target.value)}
+        >
+          <option value="author">글쓴이</option>
+          <option value="content">내용</option>
+          <option value="both">글쓴이+내용</option>
+        </select>
         <div>
-          <Search />
+          <Search searchOption={searchOption} />
         </div>
         <HeaderList>
           {!isLoggedIn && (

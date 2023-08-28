@@ -5,7 +5,7 @@ import { SEARCH_POSTS_REQUEST } from "../reducer/post";
 import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-const Search = () => {
+const Search = ({ searchOption }) => {
   const [searchText, setSearchText] = useState("");
   const dispatch = useDispatch();
   const { searchPostsError } = useSelector((state) => state.post);
@@ -18,11 +18,12 @@ const Search = () => {
       dispatch({
         type: SEARCH_POSTS_REQUEST,
         query: searchText,
+        searchOption,
       });
     } // 검색 액션을 디스패치
     setSearchText("");
     window.scrollTo({ top: 0, behavior: "auto" }); // 페이지 맨 위로 스크롤
-  }, [dispatch, searchText]);
+  }, [dispatch, searchOption, searchText]);
 
   useEffect(() => {
     if (searchPostsError) {
