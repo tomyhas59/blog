@@ -12,5 +12,5 @@ const StyledDivider = styled.div`
   height: 3px;
   margin: 30px 0;
   background-color: #a2d5a2;
-  box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.1);
+  box-shadow: 0px 3px 6px rgba(1, 1, 1, 0.1);
 `;
