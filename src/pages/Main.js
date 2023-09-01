@@ -5,13 +5,12 @@ import Divider from "./Divider";
 import { useDispatch, useSelector } from "react-redux";
 import { ALL_POSTS_REQUEST } from "../reducer/post";
 import Pagination from "./Pagination";
+import { usePagination } from "./PaginationProvider";
 
 const Main = () => {
   const dispatch = useDispatch();
   const { allPosts, searchPosts } = useSelector((state) => state.post);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [postsPerPage] = useState(3); // 페이지당 표시할 게시물 수
-
+  const { currentPage, postsPerPage, paginate } = usePagination();
   useEffect(() => {
     if (allPosts.length === 0) {
       // 초기 게시물 불러오기
@@ -25,10 +24,6 @@ const Main = () => {
   const indexOfFirstPost = indexOfLastPost - postsPerPage;
   const currentPosts = allPosts.slice(indexOfFirstPost, indexOfLastPost);
 
-  const paginate = (pageNumber) => {
-    setCurrentPage(pageNumber);
-  };
-
   return (
     <div>
       <PostForm />
@@ -40,12 +35,7 @@ const Main = () => {
               <Divider />
             </div>
           ))}
-          <Pagination
-            postsPerPage={postsPerPage}
-            totalPosts={searchPosts.length}
-            paginate={paginate}
-            currentPage={currentPage}
-          />
+          <Pagination totalPosts={searchPosts.length} />
         </div>
       ) : (
         <>

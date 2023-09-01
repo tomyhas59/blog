@@ -7,6 +7,7 @@ import Main from "./pages/Main";
 import AppLayout from "./pages/Layout/AppLayout";
 import GlobalStyle from "./style/global";
 import Chat from "./pages/Chat";
+import { PaginationProvider } from "./pages/PaginationProvider";
 function App() {
   useEffect(() => {
     console.log(`기본 지원 모드:${process.env.NODE_ENV}`);
@@ -19,14 +20,16 @@ function App() {
   return (
     <BrowserRouter>
       <GlobalStyle />
-      <AppLayout>
-        <Routes>
-          <Route path="/" element={<Main />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/signup" element={<Signup />} />
-          <Route path="/chat" element={<Chat />} />
-        </Routes>
-      </AppLayout>
+      <PaginationProvider>
+        <AppLayout>
+          <Routes>
+            <Route path="/" element={<Main />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/signup" element={<Signup />} />
+            <Route path="/chat" element={<Chat />} />
+          </Routes>
+        </AppLayout>
+      </PaginationProvider>
     </BrowserRouter>
   );
 }

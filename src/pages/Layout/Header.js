@@ -6,6 +6,7 @@ import { useCallback, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { LOG_OUT_REQUEST } from "../../reducer/user";
 import Search from "../../components/Search";
+import { usePagination } from "../PaginationProvider";
 
 const Header = () => {
   const [searchOption, setSearchOption] = useState("author");
@@ -13,6 +14,7 @@ const Header = () => {
   const navigator = useNavigate();
   const { isLoggedIn, logOutDone } = useSelector((state) => state.user);
   const { me } = useSelector((state) => state.user);
+  const { paginate } = usePagination();
 
   useEffect(() => {
     if (logOutDone) {
@@ -33,9 +35,10 @@ const Header = () => {
     dispatch({
       type: "GO_HOME",
     });
+    paginate(1);
     navigator("/");
     window.scrollTo({ top: 0, behavior: "smooth" });
-  }, [dispatch, navigator]);
+  }, [dispatch, navigator, paginate]);
 
   return (
     <HeaderWrapper>
