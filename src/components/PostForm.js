@@ -81,12 +81,6 @@ const PostForm = () => {
     [content, imagePaths, dispatch]
   );
 
-  const Enter = (e) => {
-    if (e.key === "Enter") {
-      onSubmit();
-    }
-  };
-
   return (
     <>
       {me ? (
@@ -97,7 +91,6 @@ const PostForm = () => {
               placeholder="Content"
               value={content}
               onChange={contentOnChane}
-              onKeyUp={Enter}
             ></TextArea>
             <FileInput
               type="file"
