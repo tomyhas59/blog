@@ -6,6 +6,7 @@ const upload = require("./multer");
 
 router.get("/all", PostService.readAll);
 router.get("/search", PostService.search);
+router.get("/searchNickname", PostService.searchNickname);
 router.post(
   "/images",
   isLoggedIn,

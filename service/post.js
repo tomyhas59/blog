@@ -157,7 +157,7 @@ module.exports = class PostService {
       const searchText = req.query.query;
       const searchOption = req.query.option;
       const whereCondition = {};
-      
+
       if (searchOption === "author") {
         whereCondition["$User.nickname$"] = {
           [Op.like]: `%${searchText}%`,
@@ -183,6 +183,53 @@ module.exports = class PostService {
 
       const searchResults = await Post.findAll({
         where: whereCondition,
+        include: [
+          { model: User, attributes: ["id", "email", "nickname"] },
+          { model: Image },
+          {
+            model: User,
+            as: "Likers",
+            attributes: ["id", "nickname"],
+          },
+          {
+            model: Comment,
+            include: [
+              {
+                model: ReComment,
+                include: [{ model: User, attributes: ["id", "nickname"] }],
+                attributes: ["id", "content"],
+              },
+              {
+                model: User, //댓글 작성자
+                attributes: ["id", "nickname"],
+              },
+            ],
+          },
+        ],
+        order: [["createdAt", "DESC"]],
+      });
+      if (searchResults.length === 0) {
+        // 검색 결과가 없을 경우
+        return res.status(404).json("검색 결과를 찾을 수 없습니다.");
+      }
+
+      res.status(200).json(searchResults);
+    } catch (error) {
+      console.log(error);
+      next(error);
+    }
+  }
+
+  //----------------------------------------------------------------------
+
+  static async searchNickname(req, res, next) {
+    try {
+      const searchNickname = req.query.query;
+
+      const searchResults = await Post.findAll({
+        where: {
+          "$User.nickname$": searchNickname,
+        },
         include: [
           { model: User, attributes: ["id", "email", "nickname"] },
           { model: Image },
