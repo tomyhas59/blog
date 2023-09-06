@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import CommentForm from "./CommentForm";
 import Comment from "./Comment";
-import styled, { keyframes } from "styled-components";
+import styled from "styled-components";
 import { useDispatch, useSelector } from "react-redux";
 import {
   LIKE_POST_REQUEST,
@@ -309,6 +309,7 @@ const EditDeleteForm = styled.div`
 `;
 
 const Img = styled.img`
+  width: 30%;
   display: inline;
 `;
 

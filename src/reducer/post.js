@@ -208,11 +208,13 @@ const post = (state = initialState, action) => {
         draft.searchPostsDone = true;
         draft.searchPostsError = false;
         draft.searchPosts = action.data;
-
         break;
       case SEARCH_POSTS_FAILURE:
         draft.searchPostsLoading = false;
         draft.searchPostsError = action.error;
+        break;
+      case "SEARCH_NICKNAME":
+        draft.searchPosts = action.data;
         break;
       //-----------------------------------------------------
 
