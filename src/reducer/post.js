@@ -14,6 +14,10 @@ const initialState = {
   searchPostsDone: false,
   searchPostsError: null,
 
+  searchNicknameLoading: false,
+  searchNicknameDone: false,
+  searchNicknameError: null,
+
   uploadImagesLoading: false,
   uploadImagesDone: false,
   uploadImagesError: null,
@@ -128,6 +132,10 @@ export const SEARCH_POSTS_REQUEST = "SEARCH_POSTS_REQUEST";
 export const SEARCH_POSTS_SUCCESS = "SEARCH_POSTS_SUCCESS";
 export const SEARCH_POSTS_FAILURE = "SEARCH_POSTS_FAILURE";
 
+export const SEARCH_NICKNAME_REQUEST = "SEARCH_NICKNAME_REQUEST";
+export const SEARCH_NICKNAME_SUCCESS = "SEARCH_NICKNAME_SUCCESS";
+export const SEARCH_NICKNAME_FAILURE = "SEARCH_NICKNAME_FAILURE";
+
 const post = (state = initialState, action) => {
   return produce(state, (draft) => {
     switch (action.type) {
@@ -195,7 +203,6 @@ const post = (state = initialState, action) => {
         draft.allPostsLoading = false;
         draft.allPostsError = action.error;
         break;
-      //-----------------------------------------------
 
       //------------------------------------------------------
       case SEARCH_POSTS_REQUEST:
@@ -213,8 +220,21 @@ const post = (state = initialState, action) => {
         draft.searchPostsLoading = false;
         draft.searchPostsError = action.error;
         break;
-      case "SEARCH_NICKNAME":
+      //-----------------------------------------------
+      case SEARCH_NICKNAME_REQUEST:
+        draft.searchNicknameLoading = true;
+        draft.searchNicknameDone = false;
+        draft.searchNicknameError = null;
+        break;
+      case SEARCH_NICKNAME_SUCCESS:
+        draft.searchNicknameError = false;
+        draft.searchNicknameDone = true;
+        draft.searchNicknameError = false;
         draft.searchPosts = action.data;
+        break;
+      case SEARCH_NICKNAME_FAILURE:
+        draft.searchNicknameLoading = false;
+        draft.searchNicknameError = action.error;
         break;
       //-----------------------------------------------------
 

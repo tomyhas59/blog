@@ -28,6 +28,9 @@ import {
   REMOVE_RECOMMENT_FAILURE,
   REMOVE_RECOMMENT_REQUEST,
   REMOVE_RECOMMENT_SUCCESS,
+  SEARCH_NICKNAME_FAILURE,
+  SEARCH_NICKNAME_REQUEST,
+  SEARCH_NICKNAME_SUCCESS,
   SEARCH_POSTS_FAILURE,
   SEARCH_POSTS_REQUEST,
   SEARCH_POSTS_SUCCESS,
@@ -96,6 +99,28 @@ function* searchPosts(action) {
 }
 function* watchSearchPosts() {
   yield takeLatest(SEARCH_POSTS_REQUEST, searchPosts);
+}
+//----------------------------------------------
+function searchNicknameApi(query) {
+  return axios.get(`/post/searchNickname?query=${query}`);
+}
+function* searchNickname(action) {
+  try {
+    const result = yield call(searchNicknameApi, action.query);
+    yield put({
+      type: SEARCH_NICKNAME_SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    console.log(err);
+    yield put({
+      type: SEARCH_NICKNAME_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+function* watchSearchNickname() {
+  yield takeLatest(SEARCH_NICKNAME_REQUEST, searchNickname);
 }
 //-----------------------------------------------------
 
@@ -450,5 +475,6 @@ export default function* postSaga() {
     fork(watchUploadImages),
     fork(watchRemoveImages),
     fork(watchSearchPosts),
+    fork(watchSearchNickname),
   ]);
 }

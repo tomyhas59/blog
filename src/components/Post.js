@@ -8,7 +8,7 @@ import {
   REMOVE_POST_REQUEST,
   UPDATE_POST_REQUEST,
   UNLIKE_POST_REQUEST,
-  SEARCH_POSTS_REQUEST,
+  SEARCH_NICKNAME_REQUEST,
 } from "../reducer/post";
 import useInput from "../hooks/useInput";
 import moment from "moment";
@@ -119,7 +119,7 @@ const Post = ({ post }) => {
 
   const handleSearch = useCallback(() => {
     dispatch({
-      type: SEARCH_POSTS_REQUEST,
+      type: SEARCH_NICKNAME_REQUEST,
       query: post.User.nickname,
     });
     window.scrollTo({ top: 0, behavior: "auto" });
@@ -309,8 +309,8 @@ const EditDeleteForm = styled.div`
 `;
 
 const Img = styled.img`
-  width: 30%;
   display: inline;
+  width: 50%;
 `;
 
 const NicknameButton = styled.button`
