@@ -49,6 +49,7 @@ const Post = ({ post }) => {
       document.removeEventListener("click", handleOutsideClick);
     };
   }, [handleOutsideClick]);
+  
   //-----게시글 수정-------------------------
   const onEditPostHandler = useCallback(() => {
     setEditPost((prev) => !prev);

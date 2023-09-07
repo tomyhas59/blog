@@ -13,9 +13,9 @@ const Header = () => {
   const dispatch = useDispatch();
   const navigator = useNavigate();
   const { isLoggedIn, logOutDone } = useSelector((state) => state.user);
+
   const { me } = useSelector((state) => state.user);
   const { paginate } = usePagination();
-
   useEffect(() => {
     if (logOutDone) {
       dispatch({

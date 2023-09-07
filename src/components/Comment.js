@@ -1,9 +1,9 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback, useRef, useState } from "react";
 import styled from "styled-components";
 import { useDispatch, useSelector } from "react-redux";
 import {
   REMOVE_COMMENT_REQUEST,
-  SEARCH_POSTS_REQUEST,
+  SEARCH_NICKNAME_REQUEST,
   UPDATE_COMMENT_REQUEST,
 } from "../reducer/post";
 import moment from "moment";
@@ -21,6 +21,7 @@ const Comment = ({ post }) => {
   const [addReComment, setAddReComment] = useState({});
   const dispatch = useDispatch();
   const id = useSelector((state) => state.user.me?.id);
+
   //----------팝업-------------------------------------
   const [showPopup, setShowPopup] = useState({});
 
@@ -34,34 +35,14 @@ const Comment = ({ post }) => {
       [commentId]: !prev[commentId],
     }));
   }, []);
-  //-----------------------------------------------
-  const popupRef = useRef(null);
-  const nicknameButtonRef = useRef(null);
-  const handleOutsideClick = useCallback((event) => {
-    if (
-      popupRef.current &&
-      !popupRef.current.contains(event.target) &&
-      event.target !== nicknameButtonRef.current
-    ) {
-      setShowPopup(false);
-    }
-  }, []);
-  useEffect(() => {
-    // Attach the event listener when the component mounts
-    document.addEventListener("click", handleOutsideClick);
-
-    // Remove the event listener when the component unmounts
-    return () => {
-      document.removeEventListener("click", handleOutsideClick);
-    };
-  }, [handleOutsideClick]);
 
   const handleSearch = useCallback(
     (comment) => {
       dispatch({
-        type: SEARCH_POSTS_REQUEST,
+        type: SEARCH_NICKNAME_REQUEST,
         query: comment.User.nickname,
       });
+      setShowPopup(false);
       window.scrollTo({ top: 0, behavior: "auto" });
     },
     [dispatch]
@@ -169,10 +150,7 @@ const Comment = ({ post }) => {
           <div key={comment.id}>
             <FullCommentWrapper>
               <CommentWrapper key={comment.id}>
-                <Author
-                  onClick={() => handlePopupToggle(comment.id)}
-                  ref={nicknameButtonRef}
-                >
+                <Author onClick={() => handlePopupToggle(comment.id)}>
                   <FontAwesomeIcon icon={faUser} />
                   <div>{comment.User.nickname}</div>
                 </Author>

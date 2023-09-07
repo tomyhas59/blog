@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import PostForm from "../components/PostForm";
 import Post from "../components/Post";
 import Divider from "./Divider";
@@ -9,8 +9,17 @@ import { usePagination } from "./PaginationProvider";
 
 const Main = () => {
   const dispatch = useDispatch();
-  const { allPosts, searchPosts } = useSelector((state) => state.post);
+  const { allPosts, searchPosts, searchNicknameError } = useSelector(
+    (state) => state.post
+  );
   const { currentPage, postsPerPage, paginate } = usePagination();
+
+  useEffect(() => {
+    if (searchNicknameError) {
+      alert(searchNicknameError);
+    }
+  }, [searchNicknameError]);
+
   useEffect(() => {
     if (allPosts.length === 0) {
       // 초기 게시물 불러오기
