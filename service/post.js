@@ -257,7 +257,7 @@ module.exports = class PostService {
       });
       if (searchResults.length === 0) {
         // 검색 결과가 없을 경우
-        return res.status(404).json("검색 결과를 찾을 수 없습니다.");
+        return res.status(404).json("작성한 게시글이 없습니다");
       }
 
       res.status(200).json(searchResults);
