@@ -22,6 +22,10 @@ const CommentForm = ({ post, editCommentRef }) => {
   const onSubmitComment = useCallback(
     (e) => {
       e.preventDefault();
+      if (comment === "") {
+        alert("댓글을 입력하세요");
+        return;
+      }
       console.log(post.id, comment);
       dispatch({
         type: ADD_COMMENT_REQUEST,
