@@ -14,7 +14,12 @@ const passportConfig = require("./passport");
 const passport = require("passport");
 
 dotenv.config();
-
+/* db.sequelize
+  .sync()
+  .then(() => {
+    console.log("db 연결 성공");
+  })
+  .catch(console.error); */
 // Middleware-------------------------------
 //프론트와 백엔드의 도메인 일치시키기---------------
 app.use(
