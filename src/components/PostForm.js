@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useRef } from "react";
 import styled from "styled-components";
 import useInput from "../hooks/useInput";
 import { useDispatch, useSelector } from "react-redux";
@@ -15,6 +15,7 @@ const PostForm = () => {
   );
   const { me } = useSelector((state) => state.user);
   const [content, contentOnChane, setContent] = useInput();
+  const imageInput = useRef(null);
 
   useEffect(() => {
     if (addPostError) {
@@ -24,6 +25,10 @@ const PostForm = () => {
       setContent("");
     }
   }, [addPostDone, addPostError, setContent]);
+
+  const onClickFileUpload = useCallback(() => {
+    imageInput.current.click();
+  }, []);
 
   const onChangeImages = useCallback(
     (e) => {
@@ -92,12 +97,15 @@ const PostForm = () => {
               value={content}
               onChange={contentOnChane}
             ></TextArea>
-            <FileInput
+            <input
               type="file"
               name="image"
               multiple
+              hidden
+              ref={imageInput}
               onChange={onChangeImages}
             />
+            <FileButton onClick={onClickFileUpload}>파일 첨부</FileButton>
             <ImageGrid>
               {imagePaths.map((v) => (
                 <ImageContainer key={v}>
@@ -148,9 +156,21 @@ const TextArea = styled.textarea`
   margin-bottom: 10px;
 `;
 
-const FileInput = styled.input`
+const FileButton = styled.div`
   display: block;
   margin: 10px auto;
+  padding: 10px;
+  width: 100px;
+  background-color: #3498db;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+
+  &:hover {
+    background-color: #2980b9;
+  }
 `;
 
 const ImageGrid = styled.div`
