@@ -186,7 +186,7 @@ const ImageContainer = styled.div`
 
 const Image = styled.img`
   width: 100%;
-  max-height: 200px;
+  height: 100%;
   border-radius: 8px;
 `;
 
