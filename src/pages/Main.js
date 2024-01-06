@@ -9,9 +9,8 @@ import { usePagination } from "./PaginationProvider";
 
 const Main = () => {
   const dispatch = useDispatch();
-  const { allPosts, searchPosts, searchNicknameError } = useSelector(
-    (state) => state.post
-  );
+  const { allPosts, searchPosts, searchNicknameError, imagePaths } =
+    useSelector((state) => state.post);
   const { currentPage, postsPerPage, paginate } = usePagination();
 
   useEffect(() => {
@@ -50,7 +49,7 @@ const Main = () => {
         <>
           {currentPosts.map((post) => (
             <div key={post.id}>
-              <Post post={post} />
+              <Post post={post} imagePaths={imagePaths} />
               <Divider />
             </div>
           ))}

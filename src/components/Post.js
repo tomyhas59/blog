@@ -9,12 +9,13 @@ import {
   UPDATE_POST_REQUEST,
   UNLIKE_POST_REQUEST,
   SEARCH_NICKNAME_REQUEST,
+  REMOVE_IMAGE_REQUEST,
 } from "../reducer/post";
 import useInput from "../hooks/useInput";
 import moment from "moment";
 import "moment/locale/ko";
 
-const Post = ({ post }) => {
+const Post = ({ post, imagePaths }) => {
   const [addComment, setAddComment] = useState({});
   const dispatch = useDispatch();
   const [editPost, setEditPost] = useState(false);
@@ -97,15 +98,20 @@ const Post = ({ post }) => {
   );
 
   const handleModifyPost = useCallback(() => {
+    const formData = new FormData();
+    imagePaths.forEach((p) => {
+      formData.append("image", p); //req.body.image
+    });
+    formData.append("content", content);
     dispatch({
       type: UPDATE_POST_REQUEST,
       data: {
         postId: post.id,
-        content: content,
+        content: formData,
       },
     });
     setEditPost(false);
-  }, [content, dispatch, post.id]);
+  }, [content, dispatch, imagePaths, post.id]);
 
   const handleDeletePost = useCallback(() => {
     if (!window.confirm("삭제하시겠습니까?")) return false;
@@ -125,6 +131,18 @@ const Post = ({ post }) => {
     });
     window.scrollTo({ top: 0, behavior: "auto" });
   }, [dispatch, post.User.nickname]);
+
+  const onRemoveImage = useCallback(
+    (filename) => () => {
+      if (filename) {
+        dispatch({
+          type: REMOVE_IMAGE_REQUEST,
+          data: filename,
+        });
+      }
+    },
+    [dispatch]
+  );
 
   return (
     <>
@@ -164,6 +182,22 @@ const Post = ({ post }) => {
                   onChange={contentOnChane}
                   ref={editPostRef}
                 />
+                <ImageGrid>
+                  {post.Images.map((image, index) => (
+                    <ImageContainer key={index}>
+                      <Image
+                        src={`http://localhost:3075/${image.src}`}
+                        alt={image.src}
+                      />
+                      <RemoveButton
+                        type="button"
+                        onClick={onRemoveImage(image.src)}
+                      >
+                        x
+                      </RemoveButton>
+                    </ImageContainer>
+                  ))}
+                </ImageGrid>
                 <EndFlex>
                   <Button onClick={handleModifyPost}>수정</Button>
                   <Button onClick={onEditPostHandler}>취소</Button>
@@ -172,11 +206,11 @@ const Post = ({ post }) => {
             ) : (
               <ContentWrapper>
                 <div>{post.content}</div>
-                {post.Images.map((v) => (
+                {post.Images.map((image) => (
                   <Img
-                    key={v.id}
-                    src={`http://localhost:3075/${v.src}`}
-                    alt={v.src}
+                    key={image.id}
+                    src={`http://localhost:3075/${image.src}`}
+                    alt={image.src}
                   />
                 ))}
               </ContentWrapper>
@@ -330,4 +364,36 @@ const PopupMenu = styled.div`
   position: absolute;
   top: 30px;
   left: 0;
+`;
+const ImageGrid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+`;
+
+const ImageContainer = styled.div`
+  position: relative;
+  display: inline-block;
+`;
+
+const Image = styled.img`
+  width: 100%;
+  height: 100%;
+  border-radius: 8px;
+`;
+
+const RemoveButton = styled.button`
+  position: absolute;
+  top: 0;
+  right: 0;
+  padding: 5px 10px;
+  background-color: #e74c3c;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+
+  &:hover {
+    background-color: #c0392b;
+  }
 `;

@@ -106,15 +106,13 @@ const PostForm = () => {
               ref={imageInput}
               onChange={onChangeImages}
             />
-
             <FileButton onClick={onClickFileUpload}>파일 첨부</FileButton>
             <SubmitButton type="submit">등록</SubmitButton>
-
             <ImageGrid>
-              {imagePaths.map((v) => (
-                <ImageContainer key={v}>
-                  <Image src={`http://localhost:3075/${v}`} alt="img" />
-                  <RemoveButton type="button" onClick={onRemoveImage(v)}>
+              {imagePaths.map((filename, index) => (
+                <ImageContainer key={index}>
+                  <Image src={`http://localhost:3075/${filename}`} alt="img" />
+                  <RemoveButton type="button" onClick={onRemoveImage(filename)}>
                     x
                   </RemoveButton>
                 </ImageContainer>
