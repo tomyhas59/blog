@@ -51,6 +51,7 @@ const PostForm = () => {
         data: imageFormData,
       });
     },
+
     [dispatch]
   );
 
@@ -105,7 +106,10 @@ const PostForm = () => {
               ref={imageInput}
               onChange={onChangeImages}
             />
+
             <FileButton onClick={onClickFileUpload}>파일 첨부</FileButton>
+            <SubmitButton type="submit">등록</SubmitButton>
+
             <ImageGrid>
               {imagePaths.map((v) => (
                 <ImageContainer key={v}>
@@ -116,7 +120,6 @@ const PostForm = () => {
                 </ImageContainer>
               ))}
             </ImageGrid>
-            <SubmitButton type="submit">등록</SubmitButton>
           </Form>
         </FormWrapper>
       ) : null}
@@ -129,6 +132,7 @@ export default PostForm;
 const FormWrapper = styled.div`
   max-width: 800px;
   margin: 10px auto;
+  height: auto;
   padding: 20px;
   border: 1px solid silver;
   border-radius: 10px;
@@ -148,7 +152,9 @@ const Form = styled.form`
 `;
 
 const TextArea = styled.textarea`
-  width: 100%;
+  max-width: 100%;
+  min-width: 100%;
+
   padding: 12px;
   font-size: 16px;
   border: 2px solid #ccc;
@@ -157,8 +163,8 @@ const TextArea = styled.textarea`
 `;
 
 const FileButton = styled.div`
+  float: left;
   display: block;
-  margin: 10px auto;
   padding: 10px;
   width: 100px;
   background-color: #3498db;
@@ -207,6 +213,7 @@ const RemoveButton = styled.button`
 `;
 
 const SubmitButton = styled.button`
+  float: right;
   padding: 12px;
   background-color: #4caf50;
   color: white;

@@ -49,12 +49,12 @@ export const FooterWrapper = styled.footer`
 
 export const FooterTamplate = styled.div`
   width: 100%;
-  max-width: 1200px; /* Add max-width for centering */
+  max-width: 1200px; 
   margin: 0.5rem auto;
-  padding: 1rem; /* Increase padding for more spacing */
+  padding: 1rem;
   display: flex;
   justify-content: space-between;
-  align-items: center; /* Vertically align content */
+  align-items: center; 
 `;
 
 export const Footertxt = styled.div`
@@ -79,11 +79,11 @@ export const FooterRight = styled.div`
     padding: 0 2rem;
     background-color: ${(props) => props.theme.mainColor};
     border-radius: 0.5rem;
-    list-style: none; /* Remove default list styles */
+    list-style: none; 
   }
 
   & > ul > li {
-    padding: 0.5rem; /* Adjust padding for spacing */
+    padding: 0.5rem;
     font-weight: 300;
     font-size: 1.3rem;
     color: #ffffff;
