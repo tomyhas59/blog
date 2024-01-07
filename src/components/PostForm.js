@@ -1,4 +1,4 @@
-import React, { useCallback, useRef } from "react";
+import React, { useCallback, useRef, useState } from "react";
 import styled from "styled-components";
 import useInput from "../hooks/useInput";
 import { useDispatch, useSelector } from "react-redux";
@@ -8,6 +8,7 @@ import {
   UPLOAD_IMAGES_REQUEST,
 } from "../reducer/post";
 import { useEffect } from "react";
+
 const PostForm = () => {
   const dispatch = useDispatch();
   const { imagePaths, addPostDone, addPostError } = useSelector(
@@ -16,6 +17,7 @@ const PostForm = () => {
   const { me } = useSelector((state) => state.user);
   const [content, contentOnChane, setContent] = useInput();
   const imageInput = useRef(null);
+  const [active, setActive] = useState(false);
 
   useEffect(() => {
     if (addPostError) {
@@ -50,6 +52,7 @@ const PostForm = () => {
         type: UPLOAD_IMAGES_REQUEST,
         data: imageFormData,
       });
+      setActive(true);
     },
 
     [dispatch]
@@ -79,7 +82,9 @@ const PostForm = () => {
         formData.append("image", p); //req.body.image
       });
       formData.append("content", content);
-      return dispatch({
+    
+      setActive(false);
+      dispatch({
         type: ADD_POST_REQUEST,
         data: formData,
       });
@@ -109,14 +114,21 @@ const PostForm = () => {
             <FileButton onClick={onClickFileUpload}>파일 첨부</FileButton>
             <SubmitButton type="submit">등록</SubmitButton>
             <ImageGrid>
-              {imagePaths.map((filename, index) => (
-                <ImageContainer key={index}>
-                  <Image src={`http://localhost:3075/${filename}`} alt="img" />
-                  <RemoveButton type="button" onClick={onRemoveImage(filename)}>
-                    x
-                  </RemoveButton>
-                </ImageContainer>
-              ))}
+              {active &&
+                imagePaths.map((filename, index) => (
+                  <ImageContainer key={index}>
+                    <Image
+                      src={`http://localhost:3075/${filename}`}
+                      alt="img"
+                    />
+                    <RemoveButton
+                      type="button"
+                      onClick={onRemoveImage(filename)}
+                    >
+                      x
+                    </RemoveButton>
+                  </ImageContainer>
+                ))}
             </ImageGrid>
           </Form>
         </FormWrapper>
@@ -144,12 +156,12 @@ const Title = styled.h2`
   color: #333;
 `;
 
-const Form = styled.form`
+export const Form = styled.form`
   width: 100%;
   text-align: center;
 `;
 
-const TextArea = styled.textarea`
+export const TextArea = styled.textarea`
   max-width: 100%;
   min-width: 100%;
 
@@ -160,7 +172,7 @@ const TextArea = styled.textarea`
   margin-bottom: 10px;
 `;
 
-const FileButton = styled.div`
+export const FileButton = styled.div`
   float: left;
   display: block;
   padding: 10px;
@@ -210,7 +222,7 @@ const RemoveButton = styled.button`
   }
 `;
 
-const SubmitButton = styled.button`
+export const SubmitButton = styled.button`
   float: right;
   padding: 12px;
   background-color: #4caf50;

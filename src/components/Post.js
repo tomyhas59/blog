@@ -9,11 +9,14 @@ import {
   UPDATE_POST_REQUEST,
   UNLIKE_POST_REQUEST,
   SEARCH_NICKNAME_REQUEST,
+  DELETE_IMAGE_REQUEST,
+  UPLOAD_IMAGES_REQUEST,
   REMOVE_IMAGE_REQUEST,
 } from "../reducer/post";
 import useInput from "../hooks/useInput";
 import moment from "moment";
 import "moment/locale/ko";
+import { Form, SubmitButton, TextArea, FileButton } from "./PostForm";
 
 const Post = ({ post, imagePaths }) => {
   const [addComment, setAddComment] = useState({});
@@ -24,6 +27,8 @@ const Post = ({ post, imagePaths }) => {
   const editCommentRef = useRef(null);
   const id = useSelector((state) => state.user.me?.id);
   const liked = post.Likers.find((v) => v.id === id);
+  const imageInput = useRef(null);
+
   //----------팝업-------------------------------------
   const [showPopup, setShowPopup] = useState(false);
   const handlePopupToggle = useCallback(() => {
@@ -97,22 +102,6 @@ const Post = ({ post, imagePaths }) => {
     [id]
   );
 
-  const handleModifyPost = useCallback(() => {
-    const formData = new FormData();
-    imagePaths.forEach((p) => {
-      formData.append("image", p); //req.body.image
-    });
-    formData.append("content", content);
-    dispatch({
-      type: UPDATE_POST_REQUEST,
-      data: {
-        postId: post.id,
-        content: formData,
-      },
-    });
-    setEditPost(false);
-  }, [content, dispatch, imagePaths, post.id]);
-
   const handleDeletePost = useCallback(() => {
     if (!window.confirm("삭제하시겠습니까?")) return false;
     dispatch({
@@ -142,6 +131,70 @@ const Post = ({ post, imagePaths }) => {
       }
     },
     [dispatch]
+  );
+  const onDeleteImage = useCallback(
+    (filename) => () => {
+      if (filename) {
+        dispatch({
+          type: DELETE_IMAGE_REQUEST,
+          data: {
+            postId: post.id,
+            filename,
+          },
+        });
+      }
+    },
+    [dispatch, post.id]
+  );
+
+  const onClickFileUpload = useCallback(() => {
+    imageInput.current.click();
+  }, []);
+
+  const onChangeImages = useCallback(
+    (e) => {
+      console.log("images", e.target.files);
+      const imageFormData = new FormData();
+
+      // 중복된 이미지 파일명을 방지하기 위해 Set 사용
+      const addedImageNames = new Set();
+
+      [].forEach.call(e.target.files /*선택한 파일들 */, (f) => {
+        // 이미 추가된 이미지인지 확인하고 추가되지 않은 경우에만 처리
+        if (!addedImageNames.has(f.name)) {
+          addedImageNames.add(f.name);
+          imageFormData.append("image" /*키값 */, f);
+        }
+      });
+
+      dispatch({
+        type: UPLOAD_IMAGES_REQUEST,
+        data: imageFormData,
+      });
+    },
+
+    [dispatch]
+  );
+
+  const handleModifyPost = useCallback(
+    (e, postId) => {
+      e.preventDefault();
+      const formData = new FormData();
+      imagePaths.forEach((p) => {
+        formData.append("image", p); //req.body.image
+      });
+
+      formData.append("content", content);
+
+      dispatch({
+        type: UPDATE_POST_REQUEST,
+        data: {
+          postId: postId,
+          data: formData,
+        },
+      });
+    },
+    [content, dispatch, imagePaths]
   );
 
   return (
@@ -175,31 +228,58 @@ const Post = ({ post, imagePaths }) => {
           <InPostWrapper>
             {editPost ? (
               <>
-                <Text
-                  cols="80"
-                  rows="5"
-                  value={content}
-                  onChange={contentOnChane}
-                  ref={editPostRef}
-                />
-                <ImageGrid>
-                  {post.Images.map((image, index) => (
-                    <ImageContainer key={index}>
-                      <Image
-                        src={`http://localhost:3075/${image.src}`}
-                        alt={image.src}
-                      />
-                      <RemoveButton
-                        type="button"
-                        onClick={onRemoveImage(image.src)}
-                      >
-                        x
-                      </RemoveButton>
-                    </ImageContainer>
-                  ))}
-                </ImageGrid>
+                <Form
+                  encType="multipart/form-data"
+                  onSubmit={(e) => handleModifyPost(e, post.id)}
+                >
+                  <TextArea
+                    placeholder="Content"
+                    value={content}
+                    onChange={contentOnChane}
+                    ref={editPostRef}
+                  ></TextArea>
+                  <input
+                    type="file"
+                    name="image"
+                    multiple
+                    hidden
+                    ref={imageInput}
+                    onChange={onChangeImages}
+                  />
+                  <FileButton onClick={onClickFileUpload}>파일 첨부</FileButton>
+                  <SubmitButton type="submit">수정</SubmitButton>
+                  <ImageGrid>
+                    {post.Images.map((image, index) => (
+                      <ImageContainer key={index}>
+                        <Image
+                          src={`http://localhost:3075/${image.src}`}
+                          alt={image.src}
+                        />
+                        <RemoveButton
+                          type="button"
+                          onClick={onDeleteImage(image.src)}
+                        >
+                          x
+                        </RemoveButton>
+                      </ImageContainer>
+                    ))}
+                    {imagePaths.map((filename, index) => (
+                      <ImageContainer key={index}>
+                        <Image
+                          src={`http://localhost:3075/${filename}`}
+                          alt="img"
+                        />
+                        <RemoveButton
+                          type="button"
+                          onClick={onRemoveImage(filename)}
+                        >
+                          x
+                        </RemoveButton>
+                      </ImageContainer>
+                    ))}
+                  </ImageGrid>
+                </Form>
                 <EndFlex>
-                  <Button onClick={handleModifyPost}>수정</Button>
                   <Button onClick={onEditPostHandler}>취소</Button>
                 </EndFlex>
               </>

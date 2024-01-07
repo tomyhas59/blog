@@ -26,6 +26,10 @@ const initialState = {
   removeImageDone: false,
   removeImageError: null,
 
+  deleteImageLoading: false,
+  deleteImageDone: false,
+  deleteImageError: null,
+
   addPostLoading: false,
   addPostDone: false,
   addPostError: null,
@@ -87,6 +91,10 @@ export const UPLOAD_IMAGES_SUCCESS = "UPLOAD_IMAGES_SUCCESS";
 export const REMOVE_IMAGE_REQUEST = "REMOVE_IMAGE_REQUEST";
 export const REMOVE_IMAGE_SUCCESS = "REMOVE_IMAGE_SUCCESS";
 export const REMOVE_IMAGE_FAILURE = "REMOVE_IMAGE_FAILURE";
+
+export const DELETE_IMAGE_REQUEST = "DELETE_IMAGE_REQUEST";
+export const DELETE_IMAGE_SUCCESS = "DELETE_IMAGE_SUCCESS";
+export const DELETE_IMAGE_FAILURE = "DELETE_IMAGE_FAILURE";
 
 export const REMOVE_POST_REQUEST = "REMOVE_POST_REQUEST";
 export const REMOVE_POST_SUCCESS = "REMOVE_POST_SUCCESS";
@@ -189,6 +197,30 @@ const post = (state = initialState, action) => {
         draft.removeImageError = action.error;
         break;
       //------------------------------------------------------
+      case DELETE_IMAGE_REQUEST:
+        draft.deleteImageLoading = true;
+        draft.deleteImageDone = false;
+        draft.deleteImageError = null;
+        break;
+      case DELETE_IMAGE_SUCCESS: {
+        draft.deleteImageLoading = false;
+        const postIndex = draft.allPosts.findIndex(
+          (v) => v.id === action.data.PostId //백엔드의 json의 PostId
+        );
+        const imageIndex = draft.allPosts[postIndex].Images.findIndex(
+          (v) => v.src === action.data.filename
+        );
+        if (imageIndex > -1) {
+          draft.allPosts[postIndex].Images.splice(imageIndex, 1);
+        }
+        draft.deleteImageDone = true;
+        break;
+      }
+      case DELETE_IMAGE_FAILURE:
+        draft.deleteImageLoading = false;
+        draft.deleteImageError = action.error;
+        break;
+      //------------------------------------------------------
       case ALL_POSTS_REQUEST:
         draft.allPostsLoading = true;
         draft.allPostsDone = false;
@@ -268,6 +300,7 @@ const post = (state = initialState, action) => {
           (v) => v.id === action.data.PostId //백엔드의 json의 PostId
         );
         draft.allPosts[postIndex].content = action.data.content;
+        draft.allPosts[postIndex].Images.src = action.data.src;
 
         break;
       }

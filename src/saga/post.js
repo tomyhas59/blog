@@ -13,6 +13,9 @@ import {
   ALL_POSTS_FAILURE,
   ALL_POSTS_REQUEST,
   ALL_POSTS_SUCCESS,
+  DELETE_IMAGE_FAILURE,
+  DELETE_IMAGE_REQUEST,
+  DELETE_IMAGE_SUCCESS,
   LIKE_POST_FAILURE,
   LIKE_POST_REQUEST,
   LIKE_POST_SUCCESS,
@@ -196,6 +199,32 @@ function* removeImages(action) {
 
 function* watchRemoveImages() {
   yield takeLatest(REMOVE_IMAGE_REQUEST, removeImages); //마지막 것만
+  //throttle("ADD_POST_REQUEST", addPost,2000) 2초 동안 1번 실행
+}
+//-------------------------------------------------------------
+function deleteImagesAPI(data) {
+  return axios.delete(`/post/${data.postId}/images/${data.filename}`);
+}
+
+function* deleteImages(action) {
+  try {
+    const result = yield call(deleteImagesAPI, action.data);
+    yield put({
+      //put은 dipatch
+      type: DELETE_IMAGE_SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    console.error(err);
+    yield put({
+      type: DELETE_IMAGE_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+
+function* watchDeleteImages() {
+  yield takeLatest(DELETE_IMAGE_REQUEST, deleteImages); //마지막 것만
   //throttle("ADD_POST_REQUEST", addPost,2000) 2초 동안 1번 실행
 }
 //-----------------------------------------------------
@@ -476,5 +505,6 @@ export default function* postSaga() {
     fork(watchRemoveImages),
     fork(watchSearchPosts),
     fork(watchSearchNickname),
+    fork(watchDeleteImages),
   ]);
 }
