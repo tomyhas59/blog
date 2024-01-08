@@ -183,16 +183,16 @@ const Post = ({ post, imagePaths }) => {
       imagePaths.forEach((p) => {
         formData.append("image", p); //req.body.image
       });
-
       formData.append("content", content);
 
       dispatch({
         type: UPDATE_POST_REQUEST,
         data: {
           postId: postId,
-          data: formData,
+          content: content, //서버 데이터 req.body.content key값
         },
       });
+      setEditPost(false);
     },
     [content, dispatch, imagePaths]
   );
