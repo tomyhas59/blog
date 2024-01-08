@@ -39,7 +39,7 @@ const Main = () => {
         <div>
           {searchPosts.map((post) => (
             <div>
-              <Post post={post} />
+              <Post post={post} imagePaths={imagePaths} />
               <Divider />
             </div>
           ))}

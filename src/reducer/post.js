@@ -300,6 +300,7 @@ const post = (state = initialState, action) => {
           (v) => v.id === action.data.PostId //백엔드의 json의 PostId
         );
         draft.allPosts[postIndex].content = action.data.content;
+        draft.allPosts[postIndex].Images.concat(action.data.imagePaths);
         break;
       }
       case UPDATE_POST_FAILURE:

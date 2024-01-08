@@ -179,19 +179,16 @@ const Post = ({ post, imagePaths }) => {
   const handleModifyPost = useCallback(
     (e, postId) => {
       e.preventDefault();
-      const formData = new FormData();
-      imagePaths.forEach((p) => {
-        formData.append("image", p); //req.body.image
-      });
-      formData.append("content", content);
 
       dispatch({
         type: UPDATE_POST_REQUEST,
         data: {
           postId: postId,
-          content: content, //서버 데이터 req.body.content key값
+          content: content,
+          imagePaths: imagePaths, //서버 데이터 req.body.content key값
         },
       });
+
       setEditPost(false);
     },
     [content, dispatch, imagePaths]

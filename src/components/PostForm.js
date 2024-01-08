@@ -82,7 +82,7 @@ const PostForm = () => {
         formData.append("image", p); //req.body.image
       });
       formData.append("content", content); //req.body.content
-
+   
       setActive(false);
       dispatch({
         type: ADD_POST_REQUEST,
