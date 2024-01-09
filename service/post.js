@@ -13,14 +13,48 @@ module.exports = class PostService {
     res.json(req.files.map((v) => v.filename));
   }
 
-  static async imageDelete(req, res, next) {
+  static async imageRemove(req, res, next) {
     try {
       const filename = req.params.filename;
       const filePath = path.join(__dirname, "..", "uploads", filename);
 
       // 이미지 파일 삭제
       fs.unlinkSync(filePath);
-      res.status(200).json({ filename: filename }); // 성공 응답
+      res.status(200).json({ filename: filename }); // reducer action.data.filename 전달
+    } catch (error) {
+      console.error(error);
+      next(error);
+    }
+  }
+
+  static async imageDelete(req, res, next) {
+    try {
+      const postId = req.params.postId;
+      const filename = req.params.filename;
+
+      const images = await Image.findAll({
+        where: {
+          PostId: postId,
+          src: filename,
+        },
+      });
+
+      for (const image of images) {
+        const imagePaths = path.join(__dirname, "..", "uploads", image.src);
+
+        try {
+          fs.unlinkSync(imagePaths);
+        } catch (error) {
+          console.error("Error deleting image file:", error);
+        }
+
+        await image.destroy();
+      }
+
+      res.status(200).json({
+        PostId: parseInt(postId, 10), //reducer의 action.data. 값
+        filename: filename,
+      });
     } catch (error) {
       console.error(error);
       next(error);
@@ -91,9 +125,11 @@ module.exports = class PostService {
   static async update(req, res, next) {
     try {
       const postId = req.params.postId;
+
       await Post.update(
         {
           content: req.body.content,
+          //body 뒤의 content는 action.data의 key
         },
         {
           where: {
@@ -102,9 +138,26 @@ module.exports = class PostService {
           },
         }
       );
+      const post = await Post.findOne({
+        where: { id: postId },
+        include: [{ model: Image }],
+      });
+
+      if (req.body.imagePaths) {
+        const images = await Promise.all(
+          req.body.imagePaths.map((filename) => Image.create({ src: filename }))
+        );
+        await post.addImages(images); //addImages는 Post 모델 관계 설정에서 나온 함수
+      }
+
+      const imagesData = post.Images.map((image) => image.dataValues);
+
+      console.log(imagesData, "zzzzzzzzzzz");
+
       res.status(200).json({
-        PostId: parseInt(postId, 10),
+        PostId: parseInt(postId),
         content: req.body.content,
+        images: imagesData,
       });
     } catch (err) {
       console.log(err);

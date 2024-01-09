@@ -14,9 +14,10 @@ router.post(
   PostService.imageUpload
 );
 router.post("/", isLoggedIn, upload.none(), PostService.create);
-router.put("/:postId", isLoggedIn, PostService.update);
+router.put("/:postId", isLoggedIn, upload.none(), PostService.update);
 router.delete("/:postId", isLoggedIn, PostService.delete);
-router.delete("/images/:filename", isLoggedIn, PostService.imageDelete);
+router.delete("/images/:filename", isLoggedIn, PostService.imageRemove);
+router.delete("/:postId/images/:filename", isLoggedIn, PostService.imageDelete);
 //------comment-------------------------------------
 router.post("/:postId/comment", isLoggedIn, PostService.commentCreate);
 router.put(
