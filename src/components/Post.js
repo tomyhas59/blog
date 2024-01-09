@@ -58,9 +58,17 @@ const Post = ({ post, imagePaths }) => {
 
   //-----게시글 수정-------------------------
   const onEditPostHandler = useCallback(() => {
-    setEditPost((prev) => !prev);
-    setContent(post.content);
-  }, [post.content, setContent]);
+    setEditPost((prev) => {
+      if (!prev) {
+        setContent(post.content);
+      } else {
+        dispatch({
+          type: "CANCEL_MODIFY",
+        });
+      }
+      return !prev;
+    });
+  }, [dispatch, post.content, setContent]);
   //---------------------------------------------
   const onLike = useCallback(() => {
     if (!id) {
@@ -185,7 +193,7 @@ const Post = ({ post, imagePaths }) => {
         data: {
           postId: postId,
           content: content,
-          imagePaths: imagePaths, //서버 데이터 req.body.content key값
+          imagePaths: imagePaths, //서버 데이터 req.body. key값
         },
       });
 

@@ -147,6 +147,9 @@ export const SEARCH_NICKNAME_FAILURE = "SEARCH_NICKNAME_FAILURE";
 const post = (state = initialState, action) => {
   return produce(state, (draft) => {
     switch (action.type) {
+      case "CANCEL_MODIFY":
+        draft.imagePaths = [];
+        break;
       //-----------------------------------------------------
       case ADD_POST_REQUEST:
         draft.addPostLoading = true;
@@ -300,7 +303,7 @@ const post = (state = initialState, action) => {
           (v) => v.id === action.data.PostId //백엔드의 json의 PostId
         );
         draft.allPosts[postIndex].content = action.data.content;
-        draft.allPosts[postIndex].Images.concat(action.data.imagePaths);
+        draft.allPosts[postIndex].Images.concat(action.data.imagesData);
         break;
       }
       case UPDATE_POST_FAILURE:
