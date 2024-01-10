@@ -302,8 +302,8 @@ const post = (state = initialState, action) => {
         const postIndex = draft.allPosts.findIndex(
           (v) => v.id === action.data.PostId //백엔드의 json의 PostId
         );
-        draft.allPosts[postIndex].content = action.data.content;
-        draft.allPosts[postIndex].Images.concat(action.data.imagesData);
+        draft.allPosts[postIndex] = action.data.updatePost;
+
         break;
       }
       case UPDATE_POST_FAILURE:
