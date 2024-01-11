@@ -303,7 +303,7 @@ const post = (state = initialState, action) => {
           (v) => v.id === action.data.PostId //백엔드의 json의 PostId
         );
         draft.allPosts[postIndex] = action.data.updatePost;
-
+        draft.imagePaths = [];
         break;
       }
       case UPDATE_POST_FAILURE:

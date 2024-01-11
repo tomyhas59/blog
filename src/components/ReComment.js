@@ -21,20 +21,19 @@ const ReComment = ({ post, comment }) => {
   const [content, contentOnChane, setContent] = useInput("");
   const textRef = useRef(null);
   //현재 열려 있는 댓글의 id추적하기 위한 상태 변수
-  const [currentEditingReCommentId, setCurrentEditingReCommentId] =
-    useState(null);
+  const [currentReCommentId, setCurrentReCommentId] = useState(null);
 
-  const onEditReCommentHandler = useCallback(
+  const editReCommentHandler = useCallback(
     (recommentId, item) => {
       // 기존 댓글 닫기
-      if (currentEditingReCommentId !== null) {
+      if (currentReCommentId !== null) {
         setEditReComment((prev) => ({
           ...prev,
-          [currentEditingReCommentId]: false,
+          [currentReCommentId]: false,
         }));
       }
       // 현재 열려 있는 댓글의 id 설정
-      setCurrentEditingReCommentId(recommentId);
+      setCurrentReCommentId(recommentId);
 
       setEditReComment((prev) => ({
         ...prev,
@@ -42,20 +41,20 @@ const ReComment = ({ post, comment }) => {
       }));
       setContent(item.content);
     },
-    [currentEditingReCommentId, setContent]
+    [currentReCommentId, setContent]
   );
 
   // "취소" 버튼을 누를 때 호출되는 함수
-  const handleCancelEdit = useCallback(() => {
+  const cancelEdit = useCallback(() => {
     setEditReComment((prev) => ({
       ...prev,
-      [currentEditingReCommentId]: false,
+      [currentReCommentId]: false,
     }));
-    setCurrentEditingReCommentId(null);
+    setCurrentReCommentId(null);
     setContent(""); // "Text" 영역 초기화
-  }, [currentEditingReCommentId, setContent]);
+  }, [currentReCommentId, setContent]);
 
-  const handleModifyReComment = useCallback(
+  const modifyReComment = useCallback(
     (reCommentId) => {
       dispatch({
         type: UPDATE_RECOMMENT_REQUEST,
@@ -67,7 +66,7 @@ const ReComment = ({ post, comment }) => {
         },
       });
       setEditReComment({});
-      setCurrentEditingReCommentId(null);
+      setCurrentReCommentId(null);
       setContent(""); // "Text" 영역 초기화
     },
     [comment.id, content, dispatch, post.id, setContent]
@@ -75,14 +74,14 @@ const ReComment = ({ post, comment }) => {
   const Enter = useCallback(
     (e, reCommentId) => {
       if (e.key === "Enter") {
-        handleModifyReComment(reCommentId);
+        modifyReComment(reCommentId);
       }
     },
-    [handleModifyReComment]
+    [modifyReComment]
   );
 
   //---댓글 삭제----------------------------------------
-  const onRemoveReComment = useCallback(
+  const removeReComment = useCallback(
     (reCommentId) => {
       if (!window.confirm("삭제하시겠습니까?")) return false;
       dispatch({
@@ -107,7 +106,7 @@ const ReComment = ({ post, comment }) => {
           <div key={reComment.id}>
             <CommentWrapper key={reComment.id}>
               <Author>☞{reComment.User.nickname}</Author>
-              {isEditing && currentEditingReCommentId === reComment.id ? (
+              {isEditing && currentReCommentId === reComment.id ? (
                 <>
                   <Text
                     value={content}
@@ -116,10 +115,10 @@ const ReComment = ({ post, comment }) => {
                     onKeyUp={(e) => Enter(e, reComment.id)}
                   />
                   <EndFlex>
-                    <Button onClick={() => handleModifyReComment(reComment.id)}>
+                    <Button onClick={() => modifyReComment(reComment.id)}>
                       수정
                     </Button>
-                    <Button onClick={handleCancelEdit}>취소</Button>
+                    <Button onClick={cancelEdit}>취소</Button>
                   </EndFlex>
                 </>
               ) : (
@@ -132,14 +131,14 @@ const ReComment = ({ post, comment }) => {
                 <>
                   <Toggle
                     onClick={() =>
-                      onEditReCommentHandler(reComment.id, reComment)
+                      editReCommentHandler(reComment.id, reComment)
                     }
                   >
                     <FontAwesomeIcon icon={faPen} />
                   </Toggle>
                   <Toggle
                     onClick={() =>
-                      onRemoveReComment(
+                      removeReComment(
                         reComment.id /*매개변수를 위의 함수로 전달*/
                       )
                     }
@@ -164,8 +163,7 @@ const CommentWrapper = styled.div`
   background-color: #fff;
   display: flex;
   width: 80%;
-  border-top: 1px solid;
-
+  border-top: 1px solid silver;
   padding: 5px;
   margin: 0 auto;
 `;

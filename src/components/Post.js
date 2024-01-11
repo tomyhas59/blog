@@ -222,7 +222,7 @@ const Post = ({ post, imagePaths }) => {
               <Span>{formattedDate}</Span>
             </PostHeader>
             <div>
-              <Liked>좋아요 {post.Likers.length}</Liked>
+              <Liked>좋아요 {post.Likers.length}개</Liked>
               {id === post.User.id ? null : liked ? (
                 <Button onClick={onUnLike}>♥</Button>
               ) : (
@@ -252,7 +252,7 @@ const Post = ({ post, imagePaths }) => {
                     onChange={onChangeImages}
                   />
                   <FileButton onClick={onClickFileUpload}>파일 첨부</FileButton>
-                  <SubmitButton type="submit">수정</SubmitButton>
+
                   <ImageGrid>
                     {post.Images.map((image, index) => (
                       <ImageContainer key={index}>
@@ -283,10 +283,9 @@ const Post = ({ post, imagePaths }) => {
                       </ImageContainer>
                     ))}
                   </ImageGrid>
+                  <SubmitButton type="submit">적용</SubmitButton>
                 </Form>
-                <EndFlex>
-                  <Button onClick={onEditPostHandler}>취소</Button>
-                </EndFlex>
+                <EndFlex></EndFlex>
               </>
             ) : (
               <ContentWrapper>
@@ -303,8 +302,16 @@ const Post = ({ post, imagePaths }) => {
           </InPostWrapper>
           {id === post.User.id ? (
             <EditDeleteForm>
-              <Button onClick={onEditPostHandler}>수정</Button>
-              <Button onClick={handleDeletePost}>삭제</Button>
+              {editPost ? (
+                <>
+                  <Button onClick={onEditPostHandler}>취소</Button>
+                </>
+              ) : (
+                <>
+                  <Button onClick={onEditPostHandler}>수정</Button>
+                  <Button onClick={handleDeletePost}>삭제</Button>
+                </>
+              )}
             </EditDeleteForm>
           ) : null}
         </PostWrapper>
@@ -357,6 +364,7 @@ const InPostWrapper = styled.div`
 const Button = styled.span`
   width: 50px;
   background-color: ${(props) => props.theme.mainColor};
+
   margin: 2px;
   color: #fff;
   padding: 6px;
@@ -370,9 +378,7 @@ const Button = styled.span`
 
 const Liked = styled.span`
   width: 50px;
-  background-color: ${(props) => props.theme.mainColor};
   margin: 2px;
-  color: #fff;
   padding: 6px;
   border-radius: 6px;
   text-align: center;
@@ -394,10 +400,6 @@ const PostHeaderFlex = styled.div`
   justify-content: space-between;
 `;
 
-const Text = styled.textarea`
-  width: 100%;
-`;
-
 const EndFlex = styled.div`
   display: flex;
   justify-content: end;
@@ -408,6 +410,8 @@ const ContentWrapper = styled.div`
   border-radius: 5px;
   margin: 0 auto;
   padding: 5px;
+  //줄바꿈 유지
+  white-space: pre-wrap;
 `;
 
 const Span = styled.span`
