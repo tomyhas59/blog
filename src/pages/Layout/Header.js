@@ -46,18 +46,19 @@ const Header = () => {
         <button onClick={handleGoHome}>Y BLOG </button>
       </HeaderLogo>
       <HeaderWidth>
-        <select
+        {isLoggedIn && <Nickname>{me.nickname}님 환영합니다</Nickname>}
+        <Select
           value={searchOption}
           onChange={(e) => setSearchOption(e.target.value)}
         >
           <option value="author">글쓴이</option>
           <option value="content">내용</option>
           <option value="both">글쓴이+내용</option>
-        </select>
-        <div>
+        </Select>
+        <div style={{ marginLeft: "5px" }}>
           <Search searchOption={searchOption} />
         </div>
-        <HeaderList>
+        <SignList>
           {!isLoggedIn && (
             <>
               <li>
@@ -78,8 +79,7 @@ const Header = () => {
               </li>
             </>
           )}
-        </HeaderList>
-        {isLoggedIn && <Nickname>{me.nickname}님 환영합니다</Nickname>}
+        </SignList>
       </HeaderWidth>
     </HeaderWrapper>
   );
@@ -87,9 +87,23 @@ const Header = () => {
 
 export default Header;
 
+export const HeaderWrapper = styled.header`
+  width: 100%;
+  height: 5rem;
+  padding: 1rem;
+  top: 0;
+  z-index: 1000;
+  position: fixed;
+  background-color: ${(props) => props.theme.subColor};
+  display: flex;
+  justify-content: space-evenly;
+`;
+
 const Nickname = styled.div`
-  position: absolute;
-  bottom: 0px;
+  font-size: 1.5rem;
+  margin-left: -120px;
+  font-weight: bold;
+  text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.5);
 `;
 
 const Button = styled.button`
@@ -104,19 +118,14 @@ const Button = styled.button`
   }
 `;
 
-export const HeaderWrapper = styled.header`
-  width: 100%;
-  height: 5rem;
-  padding: 1rem;
-  top: 0;
-  z-index: 1000;
-  position: fixed;
-  background-color: ${(props) => props.theme.subColor};
+const Select = styled.select`
+  margin-left: 30px;
+  height: 44px;
+  text-align: center;
+  border: none;
 `;
 
 export const HeaderWidth = styled.div`
-  width: 700px;
-  margin: 0 auto;
   display: flex;
   justify-content: end;
   align-items: center;
@@ -138,9 +147,8 @@ const shadowAnimation = keyframes`
 `;
 
 export const HeaderLogo = styled.div`
-  position: absolute;
   cursor: pointer;
-  font-size: 1.5rem;
+  font-size: 2.5rem;
   color: #ffffff;
   background-color: ${(props) => props.theme.mainColor};
   border: none;
@@ -150,13 +158,14 @@ export const HeaderLogo = styled.div`
   border: 1px solid;
   padding: 5px 10px;
   transition: background-color 0.3s ease;
-  left: 30%;
-
+  width: 170px;
+  height: 70px;
+  margin-left: 100px;
   &:hover {
     background-color: #ff8c00;
   }
 `;
-export const HeaderList = styled.ul`
+export const SignList = styled.ul`
   display: flex;
   background-color: ${(props) => props.theme.mainColor};
   margin-left: 20px;
