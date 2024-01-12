@@ -140,24 +140,56 @@ module.exports = class PostService {
       );
       const post = await Post.findOne({
         where: { id: postId },
-        include: [{ model: Image }],
+        include: [
+          {
+            model: Image,
+          },
+        ],
       });
 
       if (req.body.imagePaths) {
         const images = await Promise.all(
           req.body.imagePaths.map((filename) => Image.create({ src: filename }))
         );
+
         await post.addImages(images); //addImages는 Post 모델 관계 설정에서 나온 함수
       }
 
-      const imagesData = post.Images.map((image) => image.dataValues);
-
-      console.log(imagesData, "zzzzzzzzzzz");
-
+      //addImgaes 한 다음 다시 호출
+      const updatePost = await Post.findOne({
+        where: { id: post.id }, //게시글 쓰면 자동으로 id 생성
+        include: [
+          {
+            model: Image,
+          },
+          {
+            model: User, //게시글 작성자
+            attributes: ["id", "email", "nickname"],
+          },
+          {
+            model: User, //좋아요 누른 사람
+            as: "Likers", //post.Likers.id 이런 식으로 불러옴
+            attributes: ["id", "nickname"],
+          },
+          {
+            model: Comment,
+            include: [
+              {
+                model: ReComment,
+                include: [{ model: User, attributes: ["id", "nickname"] }],
+                attributes: ["id", "content"],
+              },
+              {
+                model: User, //댓글 작성자
+                attributes: ["id", "nickname"],
+              },
+            ],
+          },
+        ],
+      });
       res.status(200).json({
         PostId: parseInt(postId),
-        content: req.body.content,
-        images: imagesData,
+        updatePost,
       });
     } catch (err) {
       console.log(err);
