@@ -70,17 +70,18 @@ module.exports = class PostService {
       });
 
       if (req.body.image) {
-        if (Array.isArray(req.body.image)) {
-          //이미지를 여러 개 올리면 image: [1.png, 2.png] 배열로 올라감
-          const images = await Promise.all(
-            req.body.image.map((image) => Image.create({ src: image }))
-          );
-          await post.addImages(images); //addImages는 Post 모델 관계 설정에서 나온 함수
-        } else {
-          const image = await Image.create({ src: req.body.image });
-          await post.addImages(image);
+        if (req.body.image) {
+          const imagePromises = Array.isArray(req.body.image)
+            ? req.body.image.map((image) => Image.create({ src: image }))
+            : [Image.create({ src: req.body.image })];
 
-          //이미지를 하나만 올리면 image: 1.png
+          const imageResults = await Promise.allSettled(imagePromises);
+
+          const successfulImages = imageResults
+            .filter((result) => result.status === "fulfilled")
+            .map((result) => result.value);
+
+          await post.addImages(successfulImages);
         }
       }
       const fullPost = await Post.findOne({
