@@ -172,8 +172,8 @@ function* uploadImages(action) {
 }
 
 function* watchUploadImages() {
-  yield takeLatest(UPLOAD_IMAGES_REQUEST, uploadImages); //마지막 것만
-  //throttle("ADD_POST_REQUEST", addPost,2000) 2초 동안 1번 실행
+  yield takeLatest(UPLOAD_IMAGES_REQUEST, uploadImages); 
+ 
 }
 //-------------------------------------------------------------
 function removeImagesAPI(data) {
@@ -198,8 +198,7 @@ function* removeImages(action) {
 }
 
 function* watchRemoveImages() {
-  yield takeLatest(REMOVE_IMAGE_REQUEST, removeImages); //마지막 것만
-  //throttle("ADD_POST_REQUEST", addPost,2000) 2초 동안 1번 실행
+  yield takeLatest(REMOVE_IMAGE_REQUEST, removeImages);
 }
 //-------------------------------------------------------------
 function deleteImagesAPI(data) {
@@ -224,8 +223,7 @@ function* deleteImages(action) {
 }
 
 function* watchDeleteImages() {
-  yield takeLatest(DELETE_IMAGE_REQUEST, deleteImages); //마지막 것만
-  //throttle("ADD_POST_REQUEST", addPost,2000) 2초 동안 1번 실행
+  yield takeLatest(DELETE_IMAGE_REQUEST, deleteImages); 
 }
 //-----------------------------------------------------
 
@@ -457,8 +455,7 @@ function* likePost(action) {
 }
 
 function* watchLikePost() {
-  yield takeLatest(LIKE_POST_REQUEST, likePost); //마지막 것만
-  //throttle("ADD_POST_REQUEST", addPost,2000) 2초 동안 1번 실행
+  yield takeLatest(LIKE_POST_REQUEST, likePost); 
 }
 //-------------------------------------------------------------
 
@@ -484,8 +481,7 @@ function* unLikePost(action) {
 }
 
 function* watchUnLikePost() {
-  yield takeLatest(UNLIKE_POST_REQUEST, unLikePost); //마지막 것만
-  //throttle("ADD_POST_REQUEST", addPost,2000) 2초 동안 1번 실행
+  yield takeLatest(UNLIKE_POST_REQUEST, unLikePost); 
 }
 export default function* postSaga() {
   yield all([

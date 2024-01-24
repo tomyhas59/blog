@@ -4,7 +4,7 @@ import styled from "styled-components";
 import io from "socket.io-client";
 import moment from "moment";
 
-const socket = io("http://localhost:3001"); // Socket server URL
+const socket = io("http://localhost:3001");
 
 const Chat = () => {
   const [messages, setMessages] = useState([]);

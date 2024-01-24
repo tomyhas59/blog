@@ -323,7 +323,7 @@ const post = (state = initialState, action) => {
         const postIndex = draft.allPosts.findIndex(
           (v) => v.id === action.data.PostId //백엔드의 json의 PostId
         );
-        draft.allPosts[postIndex].Comments.push(action.data); //unshift 제일 위로 올라옴, push 제일 마지막에 위치
+        draft.allPosts[postIndex].Comments.push(action.data);
         break;
       }
       case ADD_COMMENT_FAILURE:

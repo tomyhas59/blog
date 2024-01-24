@@ -28,7 +28,7 @@ function* signUp(action) {
   try {
     const result = yield call(signUpAPI, action.data);
     console.log(result);
-    //call: 함수를 실행시킴(함수: 로그인 로직(백엔드 주소를 실행시키는 함수명), 인수:(로그인 데이터(id, pw)))
+
     yield put({
       //put은 dipatch
       type: SIGN_UP_SUCCESS,
@@ -54,7 +54,7 @@ function logInAPI(data) {
 function* logIn(action) {
   try {
     const result = yield call(logInAPI, action.data);
-    //call: 함수를 실행시킴(함수: 로그인 로직(백엔드 주소를 실행시키는 함수명), 인수:(로그인 데이터(id, pw)))
+   
     yield put({
       //put은 dipatch
       type: LOG_IN_SUCCESS,
@@ -80,7 +80,7 @@ function logOutAPI() {
 function* logOut() {
   try {
     yield call(logOutAPI);
-    //call: 함수를 실행시킴(함수: 로그인 로직(백엔드 주소를 실행시키는 함수명), 인수:(로그인 데이터(id, pw)))
+ 
     yield put({
       //put은 dipatch
       type: LOG_OUT_SUCCESS,
