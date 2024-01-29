@@ -248,7 +248,6 @@ const post = (state = initialState, action) => {
       case SEARCH_POSTS_SUCCESS:
         draft.searchPostsError = false;
         draft.searchPostsDone = true;
-        draft.searchPostsError = false;
         draft.searchPosts = action.data;
         break;
       case SEARCH_POSTS_FAILURE:
@@ -264,7 +263,6 @@ const post = (state = initialState, action) => {
       case SEARCH_NICKNAME_SUCCESS:
         draft.searchNicknameError = false;
         draft.searchNicknameDone = true;
-        draft.searchNicknameError = false;
         draft.searchPosts = action.data;
         break;
       case SEARCH_NICKNAME_FAILURE:
@@ -282,7 +280,12 @@ const post = (state = initialState, action) => {
         draft.removePostLoading = false;
         draft.removePostDone = true;
         draft.allPosts = draft.allPosts.filter(
-          (v) => v.id !== action.data.PostId //백엔드의 json의 PostId
+          (v) => v.id !== action.data.PostId
+        ); //백엔드의 json의 PostId
+        //search
+
+        draft.searchPosts = draft.searchPosts.filter(
+          (v) => v.id !== action.data.PostId
         );
         break;
       case REMOVE_POST_FAILURE:
@@ -303,6 +306,13 @@ const post = (state = initialState, action) => {
           (v) => v.id === action.data.PostId //백엔드의 json의 PostId
         );
         draft.allPosts[postIndex] = action.data.updatePost;
+        //search
+
+        const searchPostIndex = draft.searchPosts.findIndex(
+          (v) => v.id === action.data.PostId //백엔드의 json의 PostId
+        );
+        draft.searchPosts[searchPostIndex] = action.data.updatePost;
+
         draft.imagePaths = [];
         break;
       }
@@ -324,6 +334,12 @@ const post = (state = initialState, action) => {
           (v) => v.id === action.data.PostId //백엔드의 json의 PostId
         );
         draft.allPosts[postIndex].Comments.push(action.data);
+        //search
+
+        const searchPostIndex = draft.searchPosts.findIndex(
+          (v) => v.id === action.data.PostId //백엔드의 json의 PostId
+        );
+        draft.searchPosts[searchPostIndex].Comments.push(action.data);
         break;
       }
       case ADD_COMMENT_FAILURE:
@@ -345,6 +361,14 @@ const post = (state = initialState, action) => {
         );
         draft.allPosts[postIndex].Comments = draft.allPosts[
           postIndex
+        ].Comments.filter((v) => v.id !== action.data.CommentId);
+        //search
+
+        const searchPostIndex = draft.searchPosts.findIndex(
+          (v) => v.id === action.data.PostId //백엔드의 json의 PostId
+        );
+        draft.searchPosts[searchPostIndex].Comments = draft.searchPosts[
+          searchPostIndex
         ].Comments.filter((v) => v.id !== action.data.CommentId);
         break;
       }
@@ -370,6 +394,17 @@ const post = (state = initialState, action) => {
         );
         draft.allPosts[postIndex].Comments[commentIndex].content =
           action.data.content; //post 안의 Comments안에 있는 content를 찾아서 바꾸므로 배열값 넣어줌
+        //search
+
+        const searchPostIndex = draft.searchPosts.findIndex(
+          (v) => v.id === action.data.PostId //백엔드의 json의 PostId
+        );
+        const searchCommentIndex = draft.searchPosts[
+          searchPostIndex
+        ].Comments.findIndex((v) => v.id === action.data.CommentId);
+        draft.searchPosts[searchPostIndex].Comments[
+          searchCommentIndex
+        ].content = action.data.content;
         break;
       }
 
@@ -396,6 +431,19 @@ const post = (state = initialState, action) => {
         draft.allPosts[postIndex].Comments[commentIndex].ReComments.push(
           action.data
         );
+
+        //search
+
+        const searchPostIndex = draft.searchPosts.findIndex(
+          (v) => v.id === action.data.PostId //백엔드의 json의 PostId
+        );
+        const searchCommentIndex = draft.searchPosts[
+          searchPostIndex
+        ].Comments.findIndex((v) => v.id === action.data.CommentId);
+        draft.searchPosts[searchPostIndex].Comments[
+          searchCommentIndex
+        ].ReComments.push(action.data);
+
         break;
       }
       case ADD_RECOMMENT_FAILURE:
@@ -422,6 +470,21 @@ const post = (state = initialState, action) => {
           draft.allPosts[postIndex].Comments[commentIndex].ReComments.filter(
             (v) => v.id !== action.data.ReCommentId
           );
+        //search
+
+        const searchPostIndex = draft.searchPosts.findIndex(
+          (v) => v.id === action.data.PostId //백엔드의 json의 PostId
+        );
+        const searchCommentIndex = draft.searchPosts[
+          searchPostIndex
+        ].Comments.findIndex((v) => v.id === action.data.CommentId);
+
+        draft.searchPosts[searchPostIndex].Comments[
+          searchCommentIndex
+        ].ReComments = draft.searchPosts[searchPostIndex].Comments[
+          searchCommentIndex
+        ].ReComments.filter((v) => v.id !== action.data.ReCommentId);
+
         break;
       }
       case REMOVE_RECOMMENT_FAILURE:
@@ -451,6 +514,23 @@ const post = (state = initialState, action) => {
         draft.allPosts[postIndex].Comments[commentIndex].ReComments[
           reCommentIndex
         ].content = action.data.content; //post 안의 Comments안의 ReComments 안에 있는 content를 찾아서 바꾸므로 배열값 넣어줌
+        //search
+        const searchPostIndex = draft.searchPosts.findIndex(
+          (v) => v.id === action.data.PostId //백엔드의 json의 PostId
+        );
+        const searchCommentIndex = draft.searchPosts[
+          searchPostIndex
+        ].Comments.findIndex((v) => v.id === action.data.CommentId);
+        const searchReCommentIndex = draft.searchPosts[
+          searchPostIndex
+        ].Comments[searchCommentIndex].ReComments.findIndex(
+          (v) => v.id === action.data.ReCommentId
+        );
+
+        draft.searchPosts[searchPostIndex].Comments[
+          searchCommentIndex
+        ].ReComments[searchReCommentIndex].content = action.data.content;
+
         break;
       }
 

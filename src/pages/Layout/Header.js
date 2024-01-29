@@ -16,6 +16,7 @@ const Header = () => {
 
   const { me } = useSelector((state) => state.user);
   const { paginate } = usePagination();
+
   useEffect(() => {
     if (logOutDone) {
       dispatch({

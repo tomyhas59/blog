@@ -1,13 +1,16 @@
-import React, { useCallback, useEffect } from "react";
+import React, { useCallback, useContext, useEffect } from "react";
 import styled from "styled-components";
 import useInput from "../hooks/useInput";
 import { LOG_IN_REQUEST } from "../reducer/user";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 
+import { usePagination } from "./PaginationProvider";
+
 function Login() {
   const dispatch = useDispatch();
   const navigator = useNavigate();
+  const { paginate } = usePagination();
 
   const [email, emailOnChange] = useInput("");
   const [password, PasswordOnChange] = useInput("");
@@ -19,9 +22,14 @@ function Login() {
       alert(logInError);
     }
     if (logInDone) {
+      dispatch({
+        type: "GO_HOME",
+      });
+      paginate(1);
       navigator("/");
+      window.scrollTo({ top: 0, behavior: "smooth" });
     }
-  }, [logInDone, logInError, navigator]);
+  }, [dispatch, logInDone, logInError, navigator, paginate]);
 
   const handleLogin = useCallback(
     (e) => {

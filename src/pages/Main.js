@@ -5,12 +5,20 @@ import Divider from "./Divider";
 import { useDispatch, useSelector } from "react-redux";
 import { ALL_POSTS_REQUEST } from "../reducer/post";
 import Pagination from "./Pagination";
+import { useNavigate } from "react-router-dom";
 import { usePagination } from "./PaginationProvider";
 
 const Main = () => {
   const dispatch = useDispatch();
-  const { allPosts, searchPosts, searchNicknameError, imagePaths } =
-    useSelector((state) => state.post);
+  const navigator = useNavigate();
+
+  const {
+    allPosts,
+    searchPosts,
+    searchNicknameError,
+    imagePaths,
+    addPostDone,
+  } = useSelector((state) => state.post);
   const { currentPage, postsPerPage, paginate } = usePagination();
 
   useEffect(() => {
@@ -18,6 +26,17 @@ const Main = () => {
       alert(searchNicknameError);
     }
   }, [searchNicknameError]);
+
+  useEffect(() => {
+    if (addPostDone) {
+      dispatch({
+        type: "GO_HOME",
+      });
+      paginate(1);
+      navigator("/");
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  });
 
   useEffect(() => {
     if (allPosts.length === 0) {
@@ -38,12 +57,11 @@ const Main = () => {
       {searchPosts.length > 0 ? (
         <div>
           {searchPosts.map((post) => (
-            <div>
+            <div key={post.id}>
               <Post post={post} imagePaths={imagePaths} />
               <Divider />
             </div>
           ))}
-          <Pagination totalPosts={searchPosts.length} />
         </div>
       ) : (
         <>
