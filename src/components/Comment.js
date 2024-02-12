@@ -22,14 +22,13 @@ const Comment = ({ post }) => {
   const dispatch = useDispatch();
   const id = useSelector((state) => state.user.me?.id);
 
-  //----------팝업-------------------------------------
+  //----------작성글 보기 팝업-------------------------------------
   const [showPopup, setShowPopup] = useState({});
 
   const handlePopupToggle = useCallback((commentId) => {
     setShowPopup((prev) => ({
       ...Object.keys(prev).reduce((acc, key) => {
-        //...기존 상태값, acc: 누적 계산값, key: 현재값
-        acc[key] = false;
+         acc[key] = false;
         return acc;
       }, {}),
       [commentId]: !prev[commentId],
