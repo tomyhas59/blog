@@ -94,7 +94,8 @@ export const HeaderWrapper = styled.header`
   z-index: 1000;
   position: fixed;
   background-color: ${(props) => props.theme.subColor};
-  display: flex;
+  display: grid;
+  grid-template-columns: 1fr 3fr; /* 첫 번째 컬럼에는 로고, 두 번째 컬럼에는 나머지 요소들 */
   justify-content: space-evenly;
 `;
 
@@ -112,6 +113,11 @@ const Nickname = styled.div`
 
   &:hover {
     transform: translateY(-2px);
+  }
+
+  @media (max-width: 750px) {
+    font-size: 1rem;
+    width: 100px;
   }
 `;
 const Button = styled.button`
@@ -134,12 +140,18 @@ const Select = styled.select`
 `;
 
 export const HeaderWidth = styled.div`
+  grid-column: 2; /* 두 번째 컬럼에 배치 */
   display: flex;
-  justify-content: end;
+  justify-content: center;
   align-items: center;
+
+  @media (max-width: 750px) {
+    justify-content: start;
+  }
 `;
 
 export const HeaderLogoBtn = styled.button`
+  grid-column: 1; /* 첫 번째 컬럼에 배치 */
   position: relative;
   cursor: pointer;
   font-size: 1.5rem;
@@ -153,6 +165,11 @@ export const HeaderLogoBtn = styled.button`
   margin-left: 100px;
   &:hover {
     color: ${(props) => props.theme.charColor};
+  }
+  @media (max-width: 750px) {
+    width: 85px;
+    height: 60px;
+    font-size: 1rem;
   }
 `;
 

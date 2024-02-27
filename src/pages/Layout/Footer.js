@@ -59,7 +59,7 @@ export const FooterTamplate = styled.div`
 
 export const Footertxt = styled.div`
   width: 70%;
-  color: #555;
+  color: #fff;
 
   & p {
     font-weight: auto;
