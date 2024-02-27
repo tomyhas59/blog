@@ -176,7 +176,7 @@ export const FileButton = styled.div`
   display: block;
   padding: 10px;
   width: 100px;
-  background-color: #3498db;
+  background-color: ${(props) => props.theme.mainColor};
   color: white;
   border: none;
   border-radius: 8px;
@@ -184,7 +184,7 @@ export const FileButton = styled.div`
   font-weight: bold;
 
   &:hover {
-    background-color: #2980b9;
+    background-color: ${(props) => props.theme.subColor};
   }
 `;
 
@@ -223,7 +223,7 @@ const RemoveButton = styled.button`
 
 export const SubmitButton = styled.button`
   padding: 12px;
-  background-color: #4caf50;
+  background-color: ${(props) => props.theme.mainColor};
   color: white;
   border: none;
   border-radius: 8px;
@@ -231,6 +231,6 @@ export const SubmitButton = styled.button`
   font-weight: bold;
 
   &:hover {
-    background-color: #45a049;
+    background-color: ${(props) => props.theme.subColor};
   }
 `;

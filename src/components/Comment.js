@@ -28,7 +28,7 @@ const Comment = ({ post }) => {
   const handlePopupToggle = useCallback((commentId) => {
     setShowPopup((prev) => ({
       ...Object.keys(prev).reduce((acc, key) => {
-         acc[key] = false;
+        acc[key] = false;
         return acc;
       }, {}),
       [commentId]: !prev[commentId],

@@ -49,12 +49,12 @@ export const FooterWrapper = styled.footer`
 
 export const FooterTamplate = styled.div`
   width: 100%;
-  max-width: 1200px; 
+  max-width: 1200px;
   margin: 0.5rem auto;
   padding: 1rem;
   display: flex;
   justify-content: space-between;
-  align-items: center; 
+  align-items: center;
 `;
 
 export const Footertxt = styled.div`
@@ -79,7 +79,7 @@ export const FooterRight = styled.div`
     padding: 0 2rem;
     background-color: ${(props) => props.theme.mainColor};
     border-radius: 0.5rem;
-    list-style: none; 
+    list-style: none;
   }
 
   & > ul > li {
@@ -90,7 +90,7 @@ export const FooterRight = styled.div`
     cursor: pointer;
 
     &:hover {
-      color: #ff8c00;
+      color: ${(props) => props.theme.charColor};
     }
   }
 `;

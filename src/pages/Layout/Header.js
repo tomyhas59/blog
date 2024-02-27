@@ -43,9 +43,7 @@ const Header = () => {
 
   return (
     <HeaderWrapper>
-      <HeaderLogo>
-        <button onClick={handleGoHome}>Y BLOG </button>
-      </HeaderLogo>
+      <HeaderLogoBtn onClick={handleGoHome}>Y BLOG</HeaderLogoBtn>
       <HeaderWidth>
         {isLoggedIn && <Nickname>{me.nickname}님 환영합니다</Nickname>}
         <Select
@@ -102,11 +100,20 @@ export const HeaderWrapper = styled.header`
 
 const Nickname = styled.div`
   font-size: 1.5rem;
-  margin-left: -120px;
   font-weight: bold;
   text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.5);
-`;
+  padding: 5px 10px;
+  border-radius: 10px;
+  background-color: #3498db;
+  color: #fff;
+  margin-left: -120px;
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+  transition: transform 0.2s ease-in-out;
 
+  &:hover {
+    transform: translateY(-2px);
+  }
+`;
 const Button = styled.button`
   cursor: pointer;
   font-size: 1rem;
@@ -115,7 +122,7 @@ const Button = styled.button`
   transition: transform 0.3s ease, color 0.3s ease;
   &:hover {
     transform: translateY(-2px);
-    color: #ff8c00;
+    color: ${(props) => props.theme.subColor};
   }
 `;
 
@@ -132,40 +139,23 @@ export const HeaderWidth = styled.div`
   align-items: center;
 `;
 
-const shadowAnimation = keyframes`
-  0% {
-    transform: translateY(0);
-    box-shadow: 0 0 0 rgba(0, 0, 0, 0.6);
-  }
-  50% {
-    transform: translateY(-10px);
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
-  }
-  100% {
-    transform: translateY(0);
-    box-shadow: 0 0 0 rgba(0, 0, 0, 0.6);
-  }
-`;
-
-export const HeaderLogo = styled.div`
+export const HeaderLogoBtn = styled.button`
+  position: relative;
   cursor: pointer;
-  font-size: 2.5rem;
+  font-size: 1.5rem;
   color: #ffffff;
   background-color: ${(props) => props.theme.mainColor};
-  border: none;
   border-radius: 8px;
-  box-shadow: 0 0 0 rgba(0, 0, 0, 0.6);
-  animation: ${shadowAnimation} 2s infinite;
   border: 1px solid;
   padding: 5px 10px;
   transition: background-color 0.3s ease;
   width: 170px;
-  height: 70px;
   margin-left: 100px;
   &:hover {
-    background-color: #ff8c00;
+    color: ${(props) => props.theme.charColor};
   }
 `;
+
 export const SignList = styled.ul`
   display: flex;
   background-color: ${(props) => props.theme.mainColor};
@@ -185,7 +175,7 @@ export const SignList = styled.ul`
     transition: transform 0.3s ease, color 0.3s ease;
     &:hover {
       transform: translateY(-2px);
-      color: #ff8c00;
+      color: ${(props) => props.theme.charColor};
     }
   }
 

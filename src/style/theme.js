@@ -1,4 +1,5 @@
 export const theme = {
-  mainColor: "#4caf50",
-  subColor: "yellowgreen",
+  mainColor: "#3498db",
+  subColor: "#2980b9",
+  charColor: "#333333",
 };

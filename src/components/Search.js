@@ -73,4 +73,7 @@ const Button = styled.button`
   border: none;
   border-radius: 0 4px 4px 0;
   cursor: pointer;
+  &:hover {
+    color: ${(props) => props.theme.charColor};
+  }
 `;

@@ -1,7 +1,6 @@
 import React, { useEffect } from "react";
 import PostForm from "../components/PostForm";
 import Post from "../components/Post";
-import Divider from "./Divider";
 import { useDispatch, useSelector } from "react-redux";
 import { ALL_POSTS_REQUEST } from "../reducer/post";
 import Pagination from "./Pagination";
@@ -59,7 +58,6 @@ const Main = () => {
           {searchPosts.map((post) => (
             <div key={post.id}>
               <Post post={post} imagePaths={imagePaths} />
-              <Divider />
             </div>
           ))}
         </div>
@@ -68,7 +66,6 @@ const Main = () => {
           {currentPosts.map((post) => (
             <div key={post.id}>
               <Post post={post} imagePaths={imagePaths} />
-              <Divider />
             </div>
           ))}
           <Pagination
