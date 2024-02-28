@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useEffect } from "react";
+import React, { useCallback, useEffect } from "react";
 import styled from "styled-components";
 import useInput from "../hooks/useInput";
 import { LOG_IN_REQUEST } from "../reducer/user";

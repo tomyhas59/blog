@@ -9,7 +9,6 @@ import Search from "../../components/Search";
 import { usePagination } from "../PaginationProvider";
 
 const Header = () => {
-  const [searchOption, setSearchOption] = useState("author");
   const dispatch = useDispatch();
   const navigator = useNavigate();
   const { isLoggedIn, logOutDone } = useSelector((state) => state.user);
@@ -44,42 +43,30 @@ const Header = () => {
   return (
     <HeaderWrapper>
       <HeaderLogoBtn onClick={handleGoHome}>Y BLOG</HeaderLogoBtn>
-      <HeaderWidth>
-        {isLoggedIn && <Nickname>{me.nickname}님 환영합니다</Nickname>}
-        <Select
-          value={searchOption}
-          onChange={(e) => setSearchOption(e.target.value)}
-        >
-          <option value="author">글쓴이</option>
-          <option value="content">내용</option>
-          <option value="both">글쓴이+내용</option>
-        </Select>
-        <div style={{ marginLeft: "5px" }}>
-          <Search searchOption={searchOption} />
-        </div>
-        <SignList>
-          {!isLoggedIn && (
-            <>
-              <li>
-                <Link to="/signup">회원가입</Link>
-              </li>
-              <li>
-                <Link to="/login">로그인</Link>
-              </li>
-            </>
-          )}
-          {isLoggedIn && (
-            <>
-              <li>
-                <Button onClick={handleLogout}>로그아웃</Button>
-              </li>
-              <li>
-                <Link to="/chat">채팅</Link>
-              </li>
-            </>
-          )}
-        </SignList>
-      </HeaderWidth>
+      <Nickname>{me && me.nickname + "님 환영합니다"}</Nickname>
+      <Search />
+      <SignList>
+        {!isLoggedIn && (
+          <>
+            <li>
+              <Link to="/signup">회원가입</Link>
+            </li>
+            <li>
+              <Link to="/login">로그인</Link>
+            </li>
+          </>
+        )}
+        {isLoggedIn && (
+          <>
+            <li>
+              <Button onClick={handleLogout}>로그아웃</Button>
+            </li>
+            <li>
+              <Link to="/chat">채팅</Link>
+            </li>
+          </>
+        )}
+      </SignList>
     </HeaderWrapper>
   );
 };
@@ -95,31 +82,45 @@ export const HeaderWrapper = styled.header`
   position: fixed;
   background-color: ${(props) => props.theme.subColor};
   display: grid;
-  grid-template-columns: 1fr 3fr; /* 첫 번째 컬럼에는 로고, 두 번째 컬럼에는 나머지 요소들 */
-  justify-content: space-evenly;
+  grid-template-columns: repeat(4, 1fr);
+
+  @media (max-width: 600px) {
+    height: 10rem;
+    grid-template-columns: repeat(2, 1fr);
+  }
+`;
+
+export const HeaderLogoBtn = styled.button`
+  cursor: pointer;
+  font-size: 1.5rem;
+  color: #ffffff;
+  background-color: ${(props) => props.theme.mainColor};
+  border-radius: 8px;
+  border: 1px solid;
+  margin-left: 100px;
+  width: 10rem;
+  height: 3rem;
+  &:hover {
+    color: ${(props) => props.theme.charColor};
+  }
+  @media (max-width: 600px) {
+    margin-left: 10px;
+    margin-bottom: 10px;
+  }
 `;
 
 const Nickname = styled.div`
+  width: 15rem;
   font-size: 1.5rem;
   font-weight: bold;
   text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.5);
   padding: 5px 10px;
-  border-radius: 10px;
-  background-color: #3498db;
   color: #fff;
-  margin-left: -120px;
-  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
-  transition: transform 0.2s ease-in-out;
-
-  &:hover {
-    transform: translateY(-2px);
-  }
-
-  @media (max-width: 750px) {
-    font-size: 1rem;
-    width: 100px;
+  @media (max-width: 600px) {
+    margin-left: -100px;
   }
 `;
+
 const Button = styled.button`
   cursor: pointer;
   font-size: 1rem;
@@ -132,58 +133,15 @@ const Button = styled.button`
   }
 `;
 
-const Select = styled.select`
-  margin-left: 30px;
-  height: 44px;
-  text-align: center;
-  border: none;
-`;
-
-export const HeaderWidth = styled.div`
-  grid-column: 2; /* 두 번째 컬럼에 배치 */
-  display: flex;
-  justify-content: center;
-  align-items: center;
-
-  @media (max-width: 750px) {
-    justify-content: start;
-  }
-`;
-
-export const HeaderLogoBtn = styled.button`
-  grid-column: 1; /* 첫 번째 컬럼에 배치 */
-  position: relative;
-  cursor: pointer;
-  font-size: 1.5rem;
-  color: #ffffff;
-  background-color: ${(props) => props.theme.mainColor};
-  border-radius: 8px;
-  border: 1px solid;
-  padding: 5px 10px;
-  transition: background-color 0.3s ease;
-  width: 170px;
-  margin-left: 100px;
-  &:hover {
-    color: ${(props) => props.theme.charColor};
-  }
-  @media (max-width: 750px) {
-    width: 85px;
-    height: 60px;
-    font-size: 1rem;
-  }
-`;
-
 export const SignList = styled.ul`
   display: flex;
   background-color: ${(props) => props.theme.mainColor};
   margin-left: 20px;
   color: #fff;
   border-radius: 8px;
-  position: relative;
   align-items: center;
   height: 2.5rem;
-  font-size: 0.825rem;
-
+  width: 8rem;
   & > li {
     cursor: pointer;
     font-size: 1rem;
@@ -195,13 +153,10 @@ export const SignList = styled.ul`
       color: ${(props) => props.theme.charColor};
     }
   }
-
-  & > a > li {
-    cursor: pointer;
-    transition: color 0.3s ease;
-
-    &:hover {
-      color: #ff8c00;
+  @media (max-width: 600px) {
+    width: 8rem;
+    & > li {
+      font-size: 0.8rem;
     }
   }
 `;

@@ -22,7 +22,7 @@ const LayoutWrapper = styled.div`
 
 const ContentWrapper = styled.div`
   flex-grow: 1;
-  padding-top: 50px;
+  padding-top: 150px;
   overflow-y: auto;
 `;
 

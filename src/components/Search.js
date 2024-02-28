@@ -5,7 +5,8 @@ import { SEARCH_POSTS_REQUEST } from "../reducer/post";
 import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-const Search = ({ searchOption }) => {
+const Search = () => {
+  const [searchOption, setSearchOption] = useState("author");
   const [searchText, setSearchText] = useState("");
   const dispatch = useDispatch();
   const { searchPostsError } = useSelector((state) => state.post);
@@ -42,7 +43,15 @@ const Search = ({ searchOption }) => {
   );
 
   return (
-    <div>
+    <Container>
+      <select
+        value={searchOption}
+        onChange={(e) => setSearchOption(e.target.value)}
+      >
+        <option value="author">글쓴이</option>
+        <option value="content">내용</option>
+        <option value="both">글쓴이+내용</option>
+      </select>
       <Input
         placeholder="검색"
         type="text"
@@ -53,11 +62,20 @@ const Search = ({ searchOption }) => {
       <Button onClick={handleSearch}>
         <FontAwesomeIcon icon={faMagnifyingGlass} />
       </Button>
-    </div>
+    </Container>
   );
 };
 
 export default Search;
+
+const Container = styled.div`
+  display: grid;
+  grid-template-columns: 30% 50% 20%;
+  border: 2px solid;
+  & > select {
+    text-align: center;
+  }
+`;
 
 const Input = styled.input`
   padding: 10px;

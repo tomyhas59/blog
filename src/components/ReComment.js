@@ -103,54 +103,48 @@ const ReComment = ({ post, comment }) => {
         const createdAtCommentDate = moment(reComment.createdAt);
         const formattedCommentDate = createdAtCommentDate.format("l");
         return (
-          <div key={reComment.id}>
-            <CommentWrapper key={reComment.id}>
-              <Author>☞{reComment.User.nickname}</Author>
-              {isEditing && currentReCommentId === reComment.id ? (
-                <>
-                  <Text
-                    value={content}
-                    onChange={contentOnChane}
-                    ref={textRef}
-                    onKeyUp={(e) => Enter(e, reComment.id)}
-                  />
-                  <EndFlex>
-                    <Button onClick={() => modifyReComment(reComment.id)}>
-                      수정
-                    </Button>
-                    <Button onClick={cancelEdit}>취소</Button>
-                  </EndFlex>
-                </>
-              ) : (
-                <>
-                  <Content>{reComment.content}</Content>
-                  <Date>{formattedCommentDate}</Date>
-                </>
-              )}
-              {id === reComment.User.id ? (
-                <>
-                  <Toggle
-                    onClick={() =>
-                      editReCommentHandler(reComment.id, reComment)
-                    }
-                  >
-                    <FontAwesomeIcon icon={faPen} />
-                  </Toggle>
-                  <Toggle
-                    onClick={() =>
-                      removeReComment(
-                        reComment.id /*매개변수를 위의 함수로 전달*/
-                      )
-                    }
-                  >
-                    <FontAwesomeIcon icon={faCircleXmark} />
-                  </Toggle>
-                </>
-              ) : (
-                <>{null}</>
-              )}
-            </CommentWrapper>
-          </div>
+          <CommentWrapper key={reComment.id}>
+            <Author>☞{reComment.User.nickname}</Author>
+            {isEditing && currentReCommentId === reComment.id ? (
+              <>
+                <Text
+                  value={content}
+                  onChange={contentOnChane}
+                  ref={textRef}
+                  onKeyUp={(e) => Enter(e, reComment.id)}
+                />
+                <EndFlex>
+                  <Button onClick={() => modifyReComment(reComment.id)}>
+                    수정
+                  </Button>
+                  <Button onClick={cancelEdit}>취소</Button>
+                </EndFlex>
+              </>
+            ) : (
+              <Content>{reComment.content}</Content>
+            )}
+            <Date>{formattedCommentDate}</Date>
+            {id === reComment.User.id ? (
+              <>
+                <Toggle
+                  onClick={() => editReCommentHandler(reComment.id, reComment)}
+                >
+                  <FontAwesomeIcon icon={faPen} />
+                </Toggle>
+                <Toggle
+                  onClick={() =>
+                    removeReComment(
+                      reComment.id /*매개변수를 위의 함수로 전달*/
+                    )
+                  }
+                >
+                  <FontAwesomeIcon icon={faCircleXmark} />
+                </Toggle>
+              </>
+            ) : (
+              <>{null}</>
+            )}
+          </CommentWrapper>
         );
       })}
     </>
@@ -203,7 +197,10 @@ const EndFlex = styled.div`
   justify-content: end;
 `;
 
-const Date = styled.button`
+const Date = styled.div`
   cursor: default;
   color: gray;
+  width: 8%;
+  @media (max-width: 600px) {
+  }
 `;
