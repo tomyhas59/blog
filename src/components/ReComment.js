@@ -14,6 +14,7 @@ import { faCircleXmark, faPen } from "@fortawesome/free-solid-svg-icons";
 const ReComment = ({ post, comment }) => {
   const dispatch = useDispatch();
   const id = useSelector((state) => state.user.me?.id);
+  const nickname = useSelector((state) => state.user.me?.nickname);
 
   //------------------댓글 수정----------------------------
 
@@ -124,7 +125,7 @@ const ReComment = ({ post, comment }) => {
               <Content>{reComment.content}</Content>
             )}
             <Date>{formattedCommentDate}</Date>
-            {id === reComment.User.id ? (
+            {id === reComment.User.id || nickname === "admin" ? (
               <>
                 <Toggle
                   onClick={() => editReCommentHandler(reComment.id, reComment)}

@@ -26,6 +26,7 @@ const Post = ({ post, imagePaths }) => {
   const editPostRef = useRef(null);
   const editCommentRef = useRef(null);
   const id = useSelector((state) => state.user.me?.id);
+  const nickname = useSelector((state) => state.user.me?.nickname);
   const liked = post.Likers.find((v) => v.id === id);
   const imageInput = useRef(null);
 
@@ -300,7 +301,7 @@ const Post = ({ post, imagePaths }) => {
               </ContentWrapper>
             )}
           </InPostWrapper>
-          {id === post.User.id ? (
+          {id === post.User.id || nickname === "admin" ? (
             <EditDeleteForm>
               {editPost ? (
                 <>

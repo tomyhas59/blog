@@ -21,6 +21,7 @@ const Comment = ({ post }) => {
   const [addReComment, setAddReComment] = useState({});
   const dispatch = useDispatch();
   const id = useSelector((state) => state.user.me?.id);
+  const nickname = useSelector((state) => state.user.me?.nickname);
 
   //----------작성글 보기 팝업-------------------------------------
   const [showPopup, setShowPopup] = useState({});
@@ -190,7 +191,7 @@ const Comment = ({ post }) => {
                     <FontAwesomeIcon icon={faComment} />
                   </NotLoggedIn>
                 )}
-                {id === comment.User.id ? (
+                {id === comment.User.id || nickname === "admin" ? (
                   <>
                     <Toggle
                       onClick={() =>

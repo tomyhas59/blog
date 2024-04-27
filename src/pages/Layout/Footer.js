@@ -22,7 +22,11 @@ const Footer = () => {
         <FooterRight>
           <ul>
             <li>
-              <span>YH SNS</span>
+              <span>
+                <a href="https://tmshop.vercel.app" target="blank">
+                  TMShop
+                </a>
+              </span>
             </li>
             <li>
               <FontAwesomeIcon icon={faInstagram} />

@@ -113,8 +113,6 @@ const Nickname = styled.div`
   width: 15rem;
   font-size: 1.5rem;
   font-weight: bold;
-  text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.5);
-  padding: 5px 10px;
   color: #fff;
   @media (max-width: 600px) {
     margin-left: -100px;

@@ -70,6 +70,7 @@ export default Search;
 
 const Container = styled.div`
   display: grid;
+  height: 50px;
   grid-template-columns: 30% 50% 20%;
   border: 2px solid;
   & > select {
