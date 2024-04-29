@@ -58,7 +58,12 @@ const Sign = () => {
       <form onSubmit={handleSubmit}>
         <FormGroup>
           <Label>Email:</Label>
-          <Input type="email" value={email} onChange={emailOnChange} />
+          <Input
+            type="email"
+            value={email}
+            onChange={emailOnChange}
+            placeholder="형식 aa@aa.com"
+          />
         </FormGroup>
         <FormGroup>
           <Label>닉네임:</Label>

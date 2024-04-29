@@ -255,9 +255,10 @@ const Post = ({ post, imagePaths }) => {
                   <FileButton onClick={onClickFileUpload}>파일 첨부</FileButton>
 
                   <ImageGrid>
+                    {/**기존 이미지 */}
                     {post.Images.map((image, index) => (
                       <ImageContainer key={index}>
-                        <Image
+                        <ModifyImage
                           src={`http://localhost:3075/${image.src}`}
                           alt={image.src}
                         />
@@ -269,9 +270,10 @@ const Post = ({ post, imagePaths }) => {
                         </RemoveButton>
                       </ImageContainer>
                     ))}
+                    {/**파일 첨부 시 이미지 */}
                     {imagePaths.map((filename, index) => (
                       <ImageContainer key={index}>
-                        <Image
+                        <ModifyImage
                           src={`http://localhost:3075/${filename}`}
                           alt="img"
                         />
@@ -291,13 +293,21 @@ const Post = ({ post, imagePaths }) => {
             ) : (
               <ContentWrapper>
                 <div>{post.content}</div>
-                {post.Images.map((image) => (
-                  <Img
-                    key={image.id}
-                    src={`http://localhost:3075/${image.src}`}
-                    alt={image.src}
-                  />
-                ))}
+                <ContentImgWrapper>
+                  {post.Images.map((image) => (
+                    <ContentImg
+                      key={image.id}
+                      src={`http://localhost:3075/${image.src}`}
+                      alt={image.src}
+                      onClick={() => {
+                        window.open(
+                          `http://localhost:3075/${image.src}`,
+                          "_blank"
+                        );
+                      }}
+                    />
+                  ))}
+                </ContentImgWrapper>
               </ContentWrapper>
             )}
           </InPostWrapper>
@@ -433,11 +443,19 @@ const EditDeleteForm = styled.div`
   float: right;
 `;
 
-const Img = styled.img`
-  display: inline;
-  width: 50%;
+const ContentImg = styled.img`
+  width: 300px;
+  height: 300px;
+  border-radius: 4px;
+  margin: 1px;
+  cursor: pointer;
 `;
 
+const ContentImgWrapper = styled.div`
+  margin-top: 15px;
+  display: flex;
+  flex-wrap: wrap;
+`;
 const NicknameButton = styled.button`
   display: inline-block;
   background-color: ${(props) => props.theme.mainColor};
@@ -464,18 +482,19 @@ const ImageGrid = styled.div`
 const ImageContainer = styled.div`
   position: relative;
   display: inline-block;
+  margin: 2px;
 `;
 
-const Image = styled.img`
-  width: 100%;
-  height: 100%;
+const ModifyImage = styled.img`
+  width: 200px;
+  height: 200px;
   border-radius: 8px;
 `;
 
 const RemoveButton = styled.button`
   position: absolute;
   top: 0;
-  right: 0;
+  right: 8px;
   padding: 5px 10px;
   background-color: #e74c3c;
   color: white;

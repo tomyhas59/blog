@@ -44,14 +44,14 @@ const Search = () => {
 
   return (
     <Container>
-      <select
+      <Select
         value={searchOption}
         onChange={(e) => setSearchOption(e.target.value)}
       >
         <option value="author">글쓴이</option>
         <option value="content">내용</option>
         <option value="both">글쓴이+내용</option>
-      </select>
+      </Select>
       <Input
         placeholder="검색"
         type="text"
@@ -59,20 +59,23 @@ const Search = () => {
         onChange={(e) => setSearchText(e.target.value)}
         onKeyUp={(e) => Enter(e)}
       />
-      <Button onClick={handleSearch}>
+      <SearchButton onClick={handleSearch}>
         <FontAwesomeIcon icon={faMagnifyingGlass} />
-      </Button>
+      </SearchButton>
     </Container>
   );
 };
 
 export default Search;
 
+const Select = styled.select`
+  border-radius: 4px;
+`;
+
 const Container = styled.div`
   display: grid;
   height: 50px;
   grid-template-columns: 30% 50% 20%;
-  border: 2px solid;
   & > select {
     text-align: center;
   }
@@ -80,12 +83,13 @@ const Container = styled.div`
 
 const Input = styled.input`
   padding: 10px;
+  margin-left: 5px;
   font-size: 16px;
   border: 1px solid #ccc;
   border-radius: 4px 0 0 4px;
 `;
 
-const Button = styled.button`
+const SearchButton = styled.button`
   padding: 10px 15px;
   background-color: ${(props) => props.theme.mainColor};
   color: #fff;
