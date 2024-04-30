@@ -214,7 +214,7 @@ const Post = ({ post, imagePaths }) => {
                 onClick={handlePopupToggle}
                 ref={nicknameButtonRef}
               >
-                {post.length > 0 && post.User.nickname}
+                {post?.User.nickname}
               </NicknameButton>
               {showPopup && (
                 <PopupMenu ref={popupRef}>
