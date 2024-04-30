@@ -224,7 +224,7 @@ const Post = ({ post, imagePaths }) => {
               <Span>{formattedDate}</Span>
             </PostHeader>
             <div>
-              <Liked>좋아요 {post.Likers.length}개</Liked>
+              {/*   <Liked>좋아요 {post.Likers.length}개</Liked> */}
               {id === post.User.id ? null : liked ? (
                 <Button onClick={onUnLike}>♥</Button>
               ) : (
@@ -293,7 +293,7 @@ const Post = ({ post, imagePaths }) => {
               </>
             ) : (
               <ContentWrapper>
-                <div>{post.content}</div>
+                {/*   <div>{post.content}</div>
                 <ContentImgWrapper>
                   {post.Images.map((image) => (
                     <ContentImg
@@ -308,7 +308,7 @@ const Post = ({ post, imagePaths }) => {
                       }}
                     />
                   ))}
-                </ContentImgWrapper>
+                </ContentImgWrapper> */}
               </ContentWrapper>
             )}
           </InPostWrapper>
@@ -329,7 +329,7 @@ const Post = ({ post, imagePaths }) => {
         </PostWrapper>
         <CommentContainer>
           <PostHeaderFlex>
-            <Span>댓글 {post?.Comments.length}개</Span>
+            {/*  <Span>댓글 {post?.Comments.length}개</Span> */}
             <Info onClick={() => onAddCommentHandler(post.id)}>댓글 달기</Info>
           </PostHeaderFlex>
           {addComment[post.id] ? (
