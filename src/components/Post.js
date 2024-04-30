@@ -27,7 +27,7 @@ const Post = ({ post, imagePaths }) => {
   const editCommentRef = useRef(null);
   const id = useSelector((state) => state.user.me?.id);
   const nickname = useSelector((state) => state.user.me?.nickname);
-  const liked = post.Likers.find((v) => v.id === id);
+  const liked = post.Likers?.find((v) => v.id === id);
   const imageInput = useRef(null);
 
   //----------팝업-------------------------------------

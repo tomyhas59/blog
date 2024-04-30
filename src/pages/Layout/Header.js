@@ -61,9 +61,9 @@ const Header = () => {
             <li>
               <Button onClick={handleLogout}>로그아웃</Button>
             </li>
-            <li>
+            {/*  <li>
               <Link to="/chat">채팅</Link>
-            </li>
+            </li> */}
           </>
         )}
       </SignList>
