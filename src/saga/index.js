@@ -3,7 +3,8 @@ import axios from "axios";
 import postSaga from "./post";
 import userSaga from "./user";
 
-axios.defaults.baseURL = "http://localhost:3075";
+axios.defaults.baseURL =
+  process.env.NODE_ENV === "development" ? "http://localhost:3075" : "";
 axios.defaults.withCredentials = true;
 //백에서 쿠키 받음,
 //app.use(
