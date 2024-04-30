@@ -27,7 +27,7 @@ const Post = ({ post, imagePaths }) => {
   const editCommentRef = useRef(null);
   const id = useSelector((state) => state.user.me?.id);
   const nickname = useSelector((state) => state.user.me?.nickname);
-  const liked = post.Likers?.find((v) => v.id === id);
+  const liked = post.Likers.find((v) => v.id === id);
   const imageInput = useRef(null);
 
   //----------팝업-------------------------------------
@@ -123,13 +123,12 @@ const Post = ({ post, imagePaths }) => {
   const formattedDate = createdAtDate.format("l");
 
   const handleSearch = useCallback(() => {
-    const nickname = post?.User.nickname;
     dispatch({
       type: SEARCH_NICKNAME_REQUEST,
-      query: nickname,
+      query: post.User.nickname,
     });
     window.scrollTo({ top: 0, behavior: "auto" });
-  }, [dispatch, nickname]);
+  }, [dispatch, post.User.nickname]);
 
   const onRemoveImage = useCallback(
     (filename) => () => {
@@ -214,7 +213,7 @@ const Post = ({ post, imagePaths }) => {
                 onClick={handlePopupToggle}
                 ref={nicknameButtonRef}
               >
-                {/*   {post.User.nickname} */}
+                {post.User.nickname}
               </NicknameButton>
               {showPopup && (
                 <PopupMenu ref={popupRef}>
@@ -224,7 +223,7 @@ const Post = ({ post, imagePaths }) => {
               <Span>{formattedDate}</Span>
             </PostHeader>
             <div>
-              {/*   <Liked>좋아요 {post.Likers.length}개</Liked> */}
+              <Liked>좋아요 {post.Likers.length}개</Liked>
               {id === post.User.id ? null : liked ? (
                 <Button onClick={onUnLike}>♥</Button>
               ) : (
@@ -293,7 +292,7 @@ const Post = ({ post, imagePaths }) => {
               </>
             ) : (
               <ContentWrapper>
-                {/*   <div>{post.content}</div>
+                <div>{post.content}</div>
                 <ContentImgWrapper>
                   {post.Images.map((image) => (
                     <ContentImg
@@ -308,7 +307,7 @@ const Post = ({ post, imagePaths }) => {
                       }}
                     />
                   ))}
-                </ContentImgWrapper> */}
+                </ContentImgWrapper>
               </ContentWrapper>
             )}
           </InPostWrapper>
@@ -329,7 +328,7 @@ const Post = ({ post, imagePaths }) => {
         </PostWrapper>
         <CommentContainer>
           <PostHeaderFlex>
-            {/*  <Span>댓글 {post?.Comments.length}개</Span> */}
+            <Span>댓글 {post.Comments.length}개</Span>
             <Info onClick={() => onAddCommentHandler(post.id)}>댓글 달기</Info>
           </PostHeaderFlex>
           {addComment[post.id] ? (
