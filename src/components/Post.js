@@ -214,7 +214,7 @@ const Post = ({ post, imagePaths }) => {
                 onClick={handlePopupToggle}
                 ref={nicknameButtonRef}
               >
-                {post.User.nickname}
+                {post?.User.nickname}
               </NicknameButton>
               {showPopup && (
                 <PopupMenu ref={popupRef}>
@@ -329,7 +329,7 @@ const Post = ({ post, imagePaths }) => {
         </PostWrapper>
         <CommentContainer>
           <PostHeaderFlex>
-            <Span>댓글 {post.Comments.length}개</Span>
+            <Span>댓글 {post?.Comments.length}개</Span>
             <Info onClick={() => onAddCommentHandler(post.id)}>댓글 달기</Info>
           </PostHeaderFlex>
           {addComment[post.id] ? (
