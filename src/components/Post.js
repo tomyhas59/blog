@@ -123,12 +123,13 @@ const Post = ({ post, imagePaths }) => {
   const formattedDate = createdAtDate.format("l");
 
   const handleSearch = useCallback(() => {
+    const nickname = post?.User.nickname;
     dispatch({
       type: SEARCH_NICKNAME_REQUEST,
-      query: post.User.nickname,
+      query: nickname,
     });
     window.scrollTo({ top: 0, behavior: "auto" });
-  }, [dispatch, post.User.nickname]);
+  }, [dispatch, nickname]);
 
   const onRemoveImage = useCallback(
     (filename) => () => {
