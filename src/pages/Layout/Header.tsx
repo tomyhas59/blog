@@ -7,13 +7,15 @@ import { useNavigate } from "react-router-dom";
 import { LOG_OUT_REQUEST } from "../../reducer/user";
 import Search from "../../components/Search";
 import { usePagination } from "../PaginationProvider";
+import { RootState } from "../../reducer";
 
 const Header = () => {
   const dispatch = useDispatch();
   const navigator = useNavigate();
-  const { isLoggedIn, logOutDone } = useSelector((state) => state.user);
+  const { isLoggedIn, logOutDone, me } = useSelector(
+    (state: RootState) => state.user
+  );
 
-  const { me } = useSelector((state) => state.user);
   const { paginate } = usePagination();
 
   useEffect(() => {

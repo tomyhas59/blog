@@ -1,25 +1,33 @@
-import React, { useEffect, useCallback } from "react";
+import React, { useEffect, useCallback, SyntheticEvent } from "react";
 import styled from "styled-components";
 import { useDispatch, useSelector } from "react-redux";
 import useInput from "../hooks/useInput";
 import { ADD_COMMENT_REQUEST } from "../reducer/post";
+import { PostType } from "../types";
+import { RootState } from "../reducer";
 
-const CommentForm = ({ post, editCommentRef }) => {
-  const { addCommentDone } = useSelector((state) => state.post);
+const CommentForm = ({
+  post,
+  editCommentRef,
+}: {
+  post: PostType;
+  editCommentRef: React.RefObject<HTMLInputElement>;
+}) => {
+  const { addCommentDone } = useSelector((state: RootState) => state.post);
   const [comment, onChangeComment, setComment] = useInput();
   const dispatch = useDispatch();
-  const id = useSelector((state) => state.user.me?.id);
+  const id = useSelector((state: RootState) => state.user.me?.id);
   useEffect(() => {
     if (addCommentDone) {
       setComment("");
     }
     if (editCommentRef) {
-      editCommentRef.current.focus();
+      editCommentRef.current!.focus();
     }
   }, [addCommentDone, editCommentRef, setComment]);
 
   const onSubmitComment = useCallback(
-    (e) => {
+    (e: SyntheticEvent) => {
       e.preventDefault();
       if (comment === "") {
         alert("댓글을 입력하세요");

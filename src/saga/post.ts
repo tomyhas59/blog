@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios, { AxiosRequestConfig } from "axios";
 import { fork, takeLatest, put, all, call } from "redux-saga/effects";
 import {
   ADD_COMMENT_FAILURE,
@@ -53,20 +53,21 @@ import {
   UPLOAD_IMAGES_REQUEST,
   UPLOAD_IMAGES_SUCCESS,
 } from "../reducer/post";
+import { SagaIterator } from "redux-saga";
 //-----------------------------------------------------
 
-function allPostsApi(data) {
+function allPostsApi(data: AxiosRequestConfig<any> | undefined) {
   return axios.get("/post/all", data);
 }
 
-function* loadPosts(action) {
+function* loadPosts(action: { data: any }): SagaIterator {
   try {
     const result = yield call(allPostsApi, action.data);
     yield put({
       type: ALL_POSTS_SUCCESS,
       data: result.data,
     });
-  } catch (err) {
+  } catch (err: any) {
     console.log(err);
     yield put({
       type: ALL_POSTS_FAILURE,
@@ -75,13 +76,13 @@ function* loadPosts(action) {
   }
 }
 function* watchLoadPosts() {
-  yield takeLatest(ALL_POSTS_REQUEST, loadPosts);
+  yield takeLatest<any>(ALL_POSTS_REQUEST, loadPosts);
 }
 //----------------------------------------------
-function searchPostsApi(query, searchOption) {
+function searchPostsApi(query: any, searchOption: any) {
   return axios.get(`/post/search?query=${query}&option=${searchOption}`);
 }
-function* searchPosts(action) {
+function* searchPosts(action: { query: any; searchOption: any }): SagaIterator {
   try {
     const result = yield call(
       searchPostsApi,
@@ -92,7 +93,7 @@ function* searchPosts(action) {
       type: SEARCH_POSTS_SUCCESS,
       data: result.data,
     });
-  } catch (err) {
+  } catch (err: any) {
     console.log(err);
     yield put({
       type: SEARCH_POSTS_FAILURE,
@@ -101,20 +102,20 @@ function* searchPosts(action) {
   }
 }
 function* watchSearchPosts() {
-  yield takeLatest(SEARCH_POSTS_REQUEST, searchPosts);
+  yield takeLatest<any>(SEARCH_POSTS_REQUEST, searchPosts);
 }
 //----------------------------------------------
-function searchNicknameApi(query) {
+function searchNicknameApi(query: any) {
   return axios.get(`/post/searchNickname?query=${query}`);
 }
-function* searchNickname(action) {
+function* searchNickname(action: { query: any }): SagaIterator {
   try {
     const result = yield call(searchNicknameApi, action.query);
     yield put({
       type: SEARCH_NICKNAME_SUCCESS,
       data: result.data,
     });
-  } catch (err) {
+  } catch (err: any) {
     console.log(err);
     yield put({
       type: SEARCH_NICKNAME_FAILURE,
@@ -123,22 +124,22 @@ function* searchNickname(action) {
   }
 }
 function* watchSearchNickname() {
-  yield takeLatest(SEARCH_NICKNAME_REQUEST, searchNickname);
+  yield takeLatest<any>(SEARCH_NICKNAME_REQUEST, searchNickname);
 }
 //-----------------------------------------------------
 
-function addPostApi(data) {
+function addPostApi(data: any) {
   return axios.post("/post", data);
 }
 
-function* addPost(action) {
+function* addPost(action: { data: any }): SagaIterator {
   try {
     const result = yield call(addPostApi, action.data);
     yield put({
       type: ADD_POST_SUCCESS,
       data: result.data,
     });
-  } catch (err) {
+  } catch (err: any) {
     console.log(err);
     yield put({
       type: ADD_POST_FAILURE,
@@ -147,14 +148,14 @@ function* addPost(action) {
   }
 }
 function* watchAddPost() {
-  yield takeLatest(ADD_POST_REQUEST, addPost);
+  yield takeLatest<any>(ADD_POST_REQUEST, addPost);
 }
 //-------------------------------------------------------------
-function uploadImagesAPI(data) {
+function uploadImagesAPI(data: any) {
   return axios.post("/post/images", data);
 }
 
-function* uploadImages(action) {
+function* uploadImages(action: { data: any }): SagaIterator {
   try {
     const result = yield call(uploadImagesAPI, action.data);
     yield put({
@@ -162,7 +163,7 @@ function* uploadImages(action) {
       type: UPLOAD_IMAGES_SUCCESS,
       data: result.data,
     });
-  } catch (err) {
+  } catch (err: any) {
     console.error(err);
     yield put({
       type: UPLOAD_IMAGES_FAILURE,
@@ -172,15 +173,14 @@ function* uploadImages(action) {
 }
 
 function* watchUploadImages() {
-  yield takeLatest(UPLOAD_IMAGES_REQUEST, uploadImages); 
- 
+  yield takeLatest<any>(UPLOAD_IMAGES_REQUEST, uploadImages);
 }
 //-------------------------------------------------------------
-function removeImagesAPI(data) {
+function removeImagesAPI(data: any) {
   return axios.delete(`/post/images/${data}`);
 }
 
-function* removeImages(action) {
+function* removeImages(action: { data: any }): SagaIterator {
   try {
     const result = yield call(removeImagesAPI, action.data);
     yield put({
@@ -188,7 +188,7 @@ function* removeImages(action) {
       type: REMOVE_IMAGE_SUCCESS,
       data: result.data,
     });
-  } catch (err) {
+  } catch (err: any) {
     console.error(err);
     yield put({
       type: REMOVE_IMAGE_FAILURE,
@@ -198,14 +198,14 @@ function* removeImages(action) {
 }
 
 function* watchRemoveImages() {
-  yield takeLatest(REMOVE_IMAGE_REQUEST, removeImages);
+  yield takeLatest<any>(REMOVE_IMAGE_REQUEST, removeImages);
 }
 //-------------------------------------------------------------
-function deleteImagesAPI(data) {
+function deleteImagesAPI(data: { postId: any; filename: any }) {
   return axios.delete(`/post/${data.postId}/images/${data.filename}`);
 }
 
-function* deleteImages(action) {
+function* deleteImages(action: { data: any }): SagaIterator {
   try {
     const result = yield call(deleteImagesAPI, action.data);
     yield put({
@@ -213,7 +213,7 @@ function* deleteImages(action) {
       type: DELETE_IMAGE_SUCCESS,
       data: result.data,
     });
-  } catch (err) {
+  } catch (err: any) {
     console.error(err);
     yield put({
       type: DELETE_IMAGE_FAILURE,
@@ -223,22 +223,22 @@ function* deleteImages(action) {
 }
 
 function* watchDeleteImages() {
-  yield takeLatest(DELETE_IMAGE_REQUEST, deleteImages); 
+  yield takeLatest<any>(DELETE_IMAGE_REQUEST, deleteImages);
 }
 //-----------------------------------------------------
 
-function removePostApi(data) {
+function removePostApi(data: any) {
   return axios.delete(`/post/${data}`);
 }
 
-function* removePost(action) {
+function* removePost(action: { data: any }): SagaIterator {
   try {
     const result = yield call(removePostApi, action.data);
     yield put({
       type: REMOVE_POST_SUCCESS,
       data: result.data,
     });
-  } catch (err) {
+  } catch (err: any) {
     console.log(err);
     yield put({
       type: REMOVE_POST_FAILURE,
@@ -247,23 +247,23 @@ function* removePost(action) {
   }
 }
 function* watchRemovePost() {
-  yield takeLatest(REMOVE_POST_REQUEST, removePost);
+  yield takeLatest<any>(REMOVE_POST_REQUEST, removePost);
 }
 
 //-----------------------------------------------------
 
-function updateApi(data) {
+function updateApi(data: { postId: any }) {
   return axios.put(`/post/${data.postId}`, data);
 }
 
-function* updatePost(action) {
+function* updatePost(action: { data: any }): SagaIterator {
   try {
     const result = yield call(updateApi, action.data);
     yield put({
       type: UPDATE_POST_SUCCESS,
       data: result.data,
     });
-  } catch (err) {
+  } catch (err: any) {
     console.log(err);
     yield put({
       type: UPDATE_POST_FAILURE,
@@ -272,23 +272,23 @@ function* updatePost(action) {
   }
 }
 function* watchUpdatePost() {
-  yield takeLatest(UPDATE_POST_REQUEST, updatePost);
+  yield takeLatest<any>(UPDATE_POST_REQUEST, updatePost);
 }
 
 //-----------------------------------------------------
 
-function addCommentApi(data) {
+function addCommentApi(data: { postId: any }) {
   return axios.post(`/post/${data.postId}/comment`, data);
 }
 
-function* addCommnet(action) {
+function* addCommnet(action: { data: any }): SagaIterator {
   try {
     const result = yield call(addCommentApi, action.data);
     yield put({
       type: ADD_COMMENT_SUCCESS,
       data: result.data,
     });
-  } catch (err) {
+  } catch (err: any) {
     console.log(err);
     yield put({
       type: ADD_COMMENT_FAILURE,
@@ -297,15 +297,15 @@ function* addCommnet(action) {
   }
 }
 function* watchAddComment() {
-  yield takeLatest(ADD_COMMENT_REQUEST, addCommnet);
+  yield takeLatest<any>(ADD_COMMENT_REQUEST, addCommnet);
 }
 
 //-----------------------------------------------------
 
-function removeCommentApi(data) {
+function removeCommentApi(data: { postId: any; commentId: any }) {
   return axios.delete(`/post/${data.postId}/comment/${data.commentId}`); //component에서 주는 data
 }
-function* removeComment(action) {
+function* removeComment(action: { data: any }): SagaIterator {
   try {
     const result = yield call(removeCommentApi, action.data); //서버 json에서 주는 data값이 담김
     console.log(result.data);
@@ -313,7 +313,7 @@ function* removeComment(action) {
       type: REMOVE_COMMENT_SUCCESS,
       data: result.data, //여기 바꿨더니 됨
     });
-  } catch (err) {
+  } catch (err: any) {
     console.log(err);
     yield put({
       type: REMOVE_COMMENT_FAILURE,
@@ -322,22 +322,22 @@ function* removeComment(action) {
   }
 }
 function* watchRemoveComment() {
-  yield takeLatest(REMOVE_COMMENT_REQUEST, removeComment);
+  yield takeLatest<any>(REMOVE_COMMENT_REQUEST, removeComment);
 }
 //-----------------------------------------------------
 
-function updateCommentApi(data) {
+function updateCommentApi(data: { postId: any; commentId: any }) {
   return axios.put(`/post/${data.postId}/comment/${data.commentId}`, data);
 }
 
-function* updateComment(action) {
+function* updateComment(action: { data: any }): SagaIterator {
   try {
     const result = yield call(updateCommentApi, action.data);
     yield put({
       type: UPDATE_COMMENT_SUCCESS,
       data: result.data,
     });
-  } catch (err) {
+  } catch (err: any) {
     console.log(err);
     yield put({
       type: UPDATE_COMMENT_FAILURE,
@@ -346,19 +346,19 @@ function* updateComment(action) {
   }
 }
 function* watchUpdateComment() {
-  yield takeLatest(UPDATE_COMMENT_REQUEST, updateComment);
+  yield takeLatest<any>(UPDATE_COMMENT_REQUEST, updateComment);
 }
 
 //-----------------------------------------------------
 
-function addReCommentApi(data) {
+function addReCommentApi(data: { postId: any; commentId: any }) {
   return axios.post(
     `/post/${data.postId}/comment/${data.commentId}/reComment`,
     data
   );
 }
 
-function* addReComment(action) {
+function* addReComment(action: { data: any }): SagaIterator {
   try {
     const result = yield call(addReCommentApi, action.data);
     console.log(result.data); //서버 json에서 주는 data값이 담김
@@ -366,7 +366,7 @@ function* addReComment(action) {
       type: ADD_RECOMMENT_SUCCESS,
       data: result.data,
     });
-  } catch (err) {
+  } catch (err: any) {
     console.log(err);
     yield put({
       type: ADD_RECOMMENT_FAILURE,
@@ -375,17 +375,21 @@ function* addReComment(action) {
   }
 }
 function* watchAddReComment() {
-  yield takeLatest(ADD_RECOMMENT_REQUEST, addReComment);
+  yield takeLatest<any>(ADD_RECOMMENT_REQUEST, addReComment);
 }
 
 //-----------------------------------------------------
 
-function removeReCommentApi(data) {
+function removeReCommentApi(data: {
+  postId: any;
+  commentId: any;
+  reCommentId: any;
+}) {
   return axios.delete(
     `/post/${data.postId}/comment/${data.commentId}/reComment/${data.reCommentId}`
   ); //component에서 주는 data
 }
-function* removeReComment(action) {
+function* removeReComment(action: { data: any }): SagaIterator {
   try {
     const result = yield call(removeReCommentApi, action.data); //서버 json에서 주는 data값이 담김
     console.log(result.data);
@@ -393,7 +397,7 @@ function* removeReComment(action) {
       type: REMOVE_RECOMMENT_SUCCESS,
       data: result.data, //여기 바꿨더니 됨
     });
-  } catch (err) {
+  } catch (err: any) {
     console.log(err);
     yield put({
       type: REMOVE_RECOMMENT_FAILURE,
@@ -402,25 +406,29 @@ function* removeReComment(action) {
   }
 }
 function* watchRemoveReComment() {
-  yield takeLatest(REMOVE_RECOMMENT_REQUEST, removeReComment);
+  yield takeLatest<any>(REMOVE_RECOMMENT_REQUEST, removeReComment);
 }
 //-----------------------------------------------------
 
-function updateReCommentApi(data) {
+function updateReCommentApi(data: {
+  postId: any;
+  commentId: any;
+  reCommentId: any;
+}) {
   return axios.put(
     `/post/${data.postId}/comment/${data.commentId}/reComment/${data.reCommentId}`,
     data
   );
 }
 
-function* updateReComment(action) {
+function* updateReComment(action: { data: any }): SagaIterator {
   try {
     const result = yield call(updateReCommentApi, action.data);
     yield put({
       type: UPDATE_RECOMMENT_SUCCESS,
       data: result.data,
     });
-  } catch (err) {
+  } catch (err: any) {
     console.log(err);
     yield put({
       type: UPDATE_RECOMMENT_FAILURE,
@@ -429,15 +437,15 @@ function* updateReComment(action) {
   }
 }
 function* watchUpdateReComment() {
-  yield takeLatest(UPDATE_RECOMMENT_REQUEST, updateReComment);
+  yield takeLatest<any>(UPDATE_RECOMMENT_REQUEST, updateReComment);
 }
 //-------------------------------------------------------------
 
-function likePostAPI(data) {
+function likePostAPI(data: any) {
   return axios.patch(`/post/${data}/like`); //patch 일부분 수정
 }
 
-function* likePost(action) {
+function* likePost(action: { data: any }): SagaIterator {
   try {
     const result = yield call(likePostAPI, action.data);
     yield put({
@@ -445,7 +453,7 @@ function* likePost(action) {
       type: LIKE_POST_SUCCESS,
       data: result.data,
     });
-  } catch (err) {
+  } catch (err: any) {
     console.error(err);
     yield put({
       type: LIKE_POST_FAILURE,
@@ -455,15 +463,15 @@ function* likePost(action) {
 }
 
 function* watchLikePost() {
-  yield takeLatest(LIKE_POST_REQUEST, likePost); 
+  yield takeLatest<any>(LIKE_POST_REQUEST, likePost);
 }
 //-------------------------------------------------------------
 
-function unLikePostAPI(data) {
+function unLikePostAPI(data: any) {
   return axios.delete(`/post/${data}/like`);
 }
 
-function* unLikePost(action) {
+function* unLikePost(action: { data: any }): SagaIterator {
   try {
     const result = yield call(unLikePostAPI, action.data);
     yield put({
@@ -471,7 +479,7 @@ function* unLikePost(action) {
       type: UNLIKE_POST_SUCCESS,
       data: result.data,
     });
-  } catch (err) {
+  } catch (err: any) {
     console.error(err);
     yield put({
       type: UNLIKE_POST_FAILURE,
@@ -481,7 +489,7 @@ function* unLikePost(action) {
 }
 
 function* watchUnLikePost() {
-  yield takeLatest(UNLIKE_POST_REQUEST, unLikePost); 
+  yield takeLatest(<any>UNLIKE_POST_REQUEST, unLikePost);
 }
 export default function* postSaga() {
   yield all([

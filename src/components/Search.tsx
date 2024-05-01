@@ -1,15 +1,16 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { KeyboardEvent, useCallback, useEffect, useState } from "react";
 import styled from "styled-components";
 import { useDispatch, useSelector } from "react-redux";
 import { SEARCH_POSTS_REQUEST } from "../reducer/post";
 import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { RootState } from "../reducer";
 
 const Search = () => {
   const [searchOption, setSearchOption] = useState("author");
   const [searchText, setSearchText] = useState("");
   const dispatch = useDispatch();
-  const { searchPostsError } = useSelector((state) => state.post);
+  const { searchPostsError } = useSelector((state: RootState) => state.post);
 
   const handleSearch = useCallback(() => {
     if (!searchText) {
@@ -34,7 +35,7 @@ const Search = () => {
   }, [searchPostsError]);
 
   const Enter = useCallback(
-    (e) => {
+    (e: KeyboardEvent<HTMLInputElement>) => {
       if (e.key === "Enter") {
         handleSearch();
       }

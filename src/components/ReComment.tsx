@@ -10,30 +10,43 @@ import styled from "styled-components";
 import moment from "moment";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleXmark, faPen } from "@fortawesome/free-solid-svg-icons";
+import { CommentType, PostType, ReCommentType } from "../types";
+import { RootState } from "../reducer";
 
-const ReComment = ({ post, comment }) => {
+const ReComment = ({
+  post,
+  comment,
+}: {
+  post: PostType;
+  comment: CommentType;
+}) => {
   const dispatch = useDispatch();
-  const id = useSelector((state) => state.user.me?.id);
-  const nickname = useSelector((state) => state.user.me?.nickname);
+  const id = useSelector((state: RootState) => state.user.me?.id);
+  const nickname = useSelector((state: RootState) => state.user.me?.nickname);
 
-  //------------------댓글 수정----------------------------
+  //------------------대댓글 수정----------------------------
 
-  const [editReComment, setEditReComment] = useState({});
-  const [content, contentOnChane, setContent] = useInput("");
+  const [editReComment, setEditReComment] = useState<{
+    [key: number]: boolean;
+  }>({});
+
+  const [content, contentOnChane, setContent] = useInput();
   const textRef = useRef(null);
-  //현재 열려 있는 댓글의 id추적하기 위한 상태 변수
-  const [currentReCommentId, setCurrentReCommentId] = useState(null);
+  //현재 열려 있는 대댓글의 id추적하기 위한 상태 변수
+  const [currentReCommentId, setCurrentReCommentId] = useState<number | null>(
+    null
+  );
 
   const editReCommentHandler = useCallback(
-    (recommentId, item) => {
-      // 기존 댓글 닫기
+    (recommentId: number, item: ReCommentType) => {
+      // 기존 대댓글 닫기
       if (currentReCommentId !== null) {
         setEditReComment((prev) => ({
           ...prev,
           [currentReCommentId]: false,
         }));
       }
-      // 현재 열려 있는 댓글의 id 설정
+      // 현재 열려 있는 대댓글의 id 설정
       setCurrentReCommentId(recommentId);
 
       setEditReComment((prev) => ({
@@ -49,14 +62,14 @@ const ReComment = ({ post, comment }) => {
   const cancelEdit = useCallback(() => {
     setEditReComment((prev) => ({
       ...prev,
-      [currentReCommentId]: false,
+      [currentReCommentId as number]: false,
     }));
     setCurrentReCommentId(null);
     setContent(""); // "Text" 영역 초기화
   }, [currentReCommentId, setContent]);
 
   const modifyReComment = useCallback(
-    (reCommentId) => {
+    (reCommentId: number) => {
       dispatch({
         type: UPDATE_RECOMMENT_REQUEST,
         data: {
@@ -73,7 +86,7 @@ const ReComment = ({ post, comment }) => {
     [comment.id, content, dispatch, post.id, setContent]
   );
   const Enter = useCallback(
-    (e, reCommentId) => {
+    (e: React.KeyboardEvent<HTMLInputElement>, reCommentId: number) => {
       if (e.key === "Enter") {
         modifyReComment(reCommentId);
       }
@@ -81,9 +94,9 @@ const ReComment = ({ post, comment }) => {
     [modifyReComment]
   );
 
-  //---댓글 삭제----------------------------------------
+  //---대댓글 삭제----------------------------------------
   const removeReComment = useCallback(
-    (reCommentId) => {
+    (reCommentId: number) => {
       if (!window.confirm("삭제하시겠습니까?")) return false;
       dispatch({
         type: REMOVE_RECOMMENT_REQUEST,

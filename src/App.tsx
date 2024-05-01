@@ -5,8 +5,9 @@ import { useEffect } from "react";
 import Main from "./pages/Main";
 import AppLayout from "./pages/Layout/AppLayout";
 import GlobalStyle from "./style/global";
-import Chat from "./pages/Chat";
+/* import Chat from "./pages/Chat"; */
 import { PaginationProvider } from "./pages/PaginationProvider";
+import React from "react";
 function App() {
   useEffect(() => {
     console.log(`기본 지원 모드:${process.env.NODE_ENV}`);

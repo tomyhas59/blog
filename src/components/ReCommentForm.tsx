@@ -1,28 +1,36 @@
-import React, { useEffect, useCallback, useRef } from "react";
+import React, { useEffect, useCallback, useRef, SyntheticEvent } from "react";
 import styled from "styled-components";
 import { useDispatch, useSelector } from "react-redux";
 import { ADD_RECOMMENT_REQUEST } from "../reducer/post";
 import useInput from "../hooks/useInput";
+import { CommentType, PostType } from "../types";
+import { RootState } from "../reducer";
 
-const ReCommentForm = ({ post, comment }) => {
-  const { addReCommentDone } = useSelector((state) => state.post);
-  const editReCommentRef = useRef(null);
+const ReCommentForm = ({
+  post,
+  comment,
+}: {
+  post: PostType;
+  comment: CommentType;
+}) => {
+  const { addReCommentDone } = useSelector((state: RootState) => state.post);
+  const editReCommentRef = useRef<HTMLInputElement>(null);
 
   const [reComment, onChangeReComment, setReComment] = useInput();
   const dispatch = useDispatch();
-  const id = useSelector((state) => state.user.me?.id);
+  const id = useSelector((state: RootState) => state.user.me?.id);
 
   useEffect(() => {
     if (addReCommentDone) {
       setReComment("");
     }
     if (editReCommentRef) {
-      editReCommentRef.current.focus();
+      editReCommentRef.current!.focus();
     }
   }, [addReCommentDone, editReCommentRef, setReComment]);
 
   const onSubmitReComment = useCallback(
-    (e) => {
+    (e: SyntheticEvent) => {
       e.preventDefault();
       console.log(comment.id, reComment);
       dispatch({

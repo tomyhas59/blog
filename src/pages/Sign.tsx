@@ -1,23 +1,30 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, {
+  ChangeEvent,
+  SyntheticEvent,
+  useCallback,
+  useEffect,
+  useState,
+} from "react";
 import styled from "styled-components";
 import useInput from "../hooks/useInput";
 import { useDispatch, useSelector } from "react-redux";
 import { SIGN_UP_REQUEST } from "../reducer/user";
 import { useNavigate } from "react-router-dom";
+import { RootState } from "../reducer";
 
 const Sign = () => {
-  const [nickname, nickNameOnChange] = useInput("");
-  const [email, emailOnChange] = useInput("");
-  const [password, passwordOnChange] = useInput("");
+  const [nickname, nickNameOnChange] = useInput();
+  const [email, emailOnChange] = useInput();
+  const [password, passwordOnChange] = useInput();
   const [passwordConfirm, setpasswordConfirm] = useState("");
   const [passwordError, setpasswordError] = useState(false);
   const dispatch = useDispatch();
   const navigator = useNavigate();
 
-  const { signUpDone } = useSelector((state) => state.user);
+  const { signUpDone } = useSelector((state: RootState) => state.user);
 
   const PasswordConfirmOnChange = useCallback(
-    (e) => {
+    (e: ChangeEvent<HTMLInputElement>) => {
       setpasswordConfirm(e.target.value);
       setpasswordError(e.target.value !== password);
     },
@@ -35,15 +42,14 @@ const Sign = () => {
   }, [signUpDone, navigator, dispatch]);
 
   const handleSubmit = useCallback(
-    (e) => {
+    (e: SyntheticEvent) => {
       e.preventDefault();
-      if (!email | !nickname | !password | !passwordConfirm) {
+      if (!email || !nickname || !password || !passwordConfirm) {
         alert("빈 칸을 확인하세요");
       }
       if (password !== passwordConfirm) {
-        return setpasswordError(true);
-      }
-      if ((email, nickname, password, passwordConfirm)) {
+        setpasswordError(true);
+      } else {
         dispatch({
           type: SIGN_UP_REQUEST,
           data: { email, nickname, password },

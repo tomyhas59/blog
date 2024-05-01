@@ -2,15 +2,15 @@ import React from "react";
 import styled from "styled-components";
 import { usePagination } from "./PaginationProvider";
 
-const Pagination = ({ totalPosts }) => {
-  const { postsPerPage, currentPage, paginate } = usePagination(); 
+const Pagination = ({ totalPosts }: { totalPosts: number }) => {
+  const { postsPerPage, currentPage, paginate } = usePagination();
   const pageNumbers = [];
 
   for (let i = 1; i <= Math.ceil(totalPosts / postsPerPage); i++) {
     pageNumbers.push(i);
   }
 
-  const handlePageClick = (number) => {
+  const handlePageClick = (number: number) => {
     paginate(number);
     window.scrollTo({ top: 0, behavior: "auto" }); // 페이지 맨 위로 스크롤
   };
@@ -44,7 +44,11 @@ const PaginationContainer = styled.nav`
   }
 `;
 
-const PageItem = styled.li`
+type PageItemProps = {
+  isActive: boolean;
+};
+
+const PageItem = styled.li<PageItemProps>`
   button {
     padding: 5px 10px;
     border: 1px solid #ccc;

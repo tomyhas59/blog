@@ -17,32 +17,34 @@ import {
   faPen,
   faTrash,
 } from "@fortawesome/free-solid-svg-icons";
-const Comment = ({ post }) => {
-  const [addReComment, setAddReComment] = useState({});
+import { PostType } from "../types";
+import { RootState } from "../reducer";
+const Comment = ({ post }: { post: PostType }) => {
   const dispatch = useDispatch();
-  const id = useSelector((state) => state.user.me?.id);
-  const nickname = useSelector((state) => state.user.me?.nickname);
+  const id = useSelector((state: RootState) => state.user.me?.id);
+  const nickname = useSelector((state: RootState) => state.user.me?.nickname);
 
   //----------작성글 보기 팝업-------------------------------------
-  const [showPopup, setShowPopup] = useState({});
+  const [showPopup, setShowPopup] = useState<Record<number, boolean>>({});
 
-  const handlePopupToggle = useCallback((commentId) => {
-    setShowPopup((prev) => ({
-      ...Object.keys(prev).reduce((acc, key) => {
-        acc[key] = false;
-        return acc;
-      }, {}),
-      [commentId]: !prev[commentId],
-    }));
+  const handlePopupToggle = useCallback((commentId: number) => {
+    setShowPopup((prev) => {
+      const updatedPopupState: Record<number, boolean> = { ...prev };
+      for (const key in updatedPopupState) {
+        updatedPopupState[key] = false;
+      }
+      updatedPopupState[commentId] = !prev[commentId];
+      return updatedPopupState;
+    });
   }, []);
 
   const handleSearch = useCallback(
-    (comment) => {
+    (userNickname: string) => {
       dispatch({
         type: SEARCH_NICKNAME_REQUEST,
-        query: comment.User.nickname,
+        query: userNickname,
       });
-      setShowPopup(false);
+      setShowPopup({});
       window.scrollTo({ top: 0, behavior: "auto" });
     },
     [dispatch]
@@ -50,15 +52,15 @@ const Comment = ({ post }) => {
 
   //------------------댓글 수정--------------------------------
 
-  const [editComment, setEditComment] = useState({});
-  const [content, contentOnChane, setContent] = useInput("");
+  const [editComment, setEditComment] = useState<Record<number, boolean>>({});
+  const [content, contentOnChane, setContent] = useInput();
   const textRef = useRef(null);
 
   // 현재 열려 있는 댓글의 id추적하기 위한 상태 변수
-  const [currentCommentId, setCurrentCommentId] = useState(null);
+  const [currentCommentId, setCurrentCommentId] = useState<number | null>(null);
 
   const onEditReCommentHandler = useCallback(
-    (commentId, item) => {
+    (commentId: number, commentContent: string) => {
       // 기존 댓글 닫기
       if (currentCommentId !== null) {
         setEditComment((prev) => ({
@@ -73,7 +75,7 @@ const Comment = ({ post }) => {
         ...prev,
         [commentId]: !prev[commentId],
       }));
-      setContent(item.content);
+      setContent(commentContent);
     },
     [currentCommentId, setContent]
   );
@@ -82,14 +84,14 @@ const Comment = ({ post }) => {
   const handleCancelEdit = useCallback(() => {
     setEditComment((prev) => ({
       ...prev,
-      [currentCommentId]: false,
+      [currentCommentId as number]: false,
     }));
     setCurrentCommentId(null);
     setContent(""); // "Text" 영역 초기화
   }, [currentCommentId, setContent]);
 
   const handleModifyComment = useCallback(
-    (commentId) => {
+    (commentId: number) => {
       dispatch({
         type: UPDATE_COMMENT_REQUEST,
         data: {
@@ -105,7 +107,7 @@ const Comment = ({ post }) => {
     [content, dispatch, post.id, setContent]
   );
   const Enter = useCallback(
-    (e, commentId) => {
+    (e: React.KeyboardEvent<HTMLInputElement>, commentId: number) => {
       if (e.key === "Enter") {
         handleModifyComment(commentId);
       }
@@ -113,21 +115,23 @@ const Comment = ({ post }) => {
     [handleModifyComment]
   );
 
-  //----------------map 안에서 하나만 작동 및 폼 중복 방지 코드---------------------
-  const onAddReCommentHandler = useCallback((commentId) => {
-    setAddReComment((prev) => ({
-      ...Object.keys(prev).reduce((acc, key) => {
-        //...기존 상태값, acc: 누적 계산값, key: 현재값
-        acc[key] = false;
-        return acc;
-      }, {}),
-      [commentId]: !prev[commentId],
-    }));
+  //대댓글 쓰기 창,map 안에서 하나만 작동 및 폼 중복 방지 코드---------------------
+  const [addReComment, setAddReComment] = useState<Record<string, boolean>>({});
+
+  const onAddReCommentHandler = useCallback((commentId: number) => {
+    setAddReComment((prev) => {
+      const newReCommentState: Record<string, boolean> = {};
+      Object.keys(prev).forEach((key) => {
+        newReCommentState[key] = false;
+      });
+      newReCommentState[commentId] = !prev[commentId];
+      return newReCommentState;
+    });
   }, []);
 
   //---댓글 삭제-----------------------------------------------------
   const onRemoveComment = useCallback(
-    (commentId) => {
+    (commentId: number) => {
       if (!window.confirm("삭제하시겠습니까?")) return false;
       dispatch({
         type: REMOVE_COMMENT_REQUEST,
@@ -156,16 +160,14 @@ const Comment = ({ post }) => {
                 </Author>
                 {showPopup[comment.id] ? (
                   <PopupMenu>
-                    <Button onClick={() => handleSearch(comment)}>
+                    <Button onClick={() => handleSearch(comment.User.nickname)}>
                       작성 글 보기
                     </Button>
                   </PopupMenu>
                 ) : null}
                 {isEditing && currentCommentId === comment.id ? (
                   <>
-                    <Text
-                      cols="40"
-                      rows="2"
+                    <Input
                       value={content}
                       onChange={contentOnChane}
                       ref={textRef}
@@ -195,7 +197,7 @@ const Comment = ({ post }) => {
                   <>
                     <Toggle
                       onClick={() =>
-                        onEditReCommentHandler(comment.id, comment)
+                        onEditReCommentHandler(comment.id, comment.content)
                       }
                     >
                       <FontAwesomeIcon icon={faPen} />
@@ -293,7 +295,7 @@ const Button = styled.button`
   }
 `;
 
-const Text = styled.textarea`
+const Input = styled.input`
   width: 46%;
 `;
 

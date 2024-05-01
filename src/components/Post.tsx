@@ -1,4 +1,11 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, {
+  ChangeEvent,
+  SyntheticEvent,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import CommentForm from "./CommentForm";
 import Comment from "./Comment";
 import styled from "styled-components";
@@ -13,45 +20,58 @@ import {
   UPLOAD_IMAGES_REQUEST,
   REMOVE_IMAGE_REQUEST,
 } from "../reducer/post";
-import useInput from "../hooks/useInput";
 import moment from "moment";
 import "moment/locale/ko";
 import { Form, SubmitButton, TextArea, FileButton } from "./PostForm";
+import { PostType } from "../types";
+import { RootState } from "../reducer";
 
-const Post = ({ post, imagePaths }) => {
-  const [addComment, setAddComment] = useState({});
+const Post = ({
+  post,
+  imagePaths,
+}: {
+  post: PostType;
+  imagePaths: string[];
+}) => {
   const dispatch = useDispatch();
   const [editPost, setEditPost] = useState(false);
-  const [content, contentOnChane, setContent] = useInput("");
-  const editPostRef = useRef(null);
-  const editCommentRef = useRef(null);
-  const id = useSelector((state) => state.user.me?.id);
-  const nickname = useSelector((state) => state.user.me?.nickname);
-  const liked = post.Likers.find((v) => v.id === id);
-  const imageInput = useRef(null);
+  const [content, setContent] = useState("");
 
-  //----------팝업-------------------------------------
+  const contentOnChange = useCallback(
+    (e: ChangeEvent<HTMLTextAreaElement>) => {
+      setContent(e.target.value);
+    },
+    [setContent]
+  );
+
+  const editPostRef = useRef<HTMLTextAreaElement>(null);
+  const editCommentRef = useRef<HTMLInputElement>(null);
+  const id = useSelector((state: RootState) => state.user.me?.id);
+  const nickname = useSelector((state: RootState) => state.user.me?.nickname);
+  const liked = post.Likers.find((v) => v.id === id);
+  const imageInput = useRef<HTMLInputElement>(null);
+
+  //---작성글 보기 팝업-------------------------------------
   const [showPopup, setShowPopup] = useState(false);
   const handlePopupToggle = useCallback(() => {
     setShowPopup((prevShowPopup) => !prevShowPopup);
   }, []);
   //----------------------------------------------
-  const popupRef = useRef(null);
+  const popupRef = useRef<HTMLInputElement>(null);
   const nicknameButtonRef = useRef(null);
-  const handleOutsideClick = useCallback((event) => {
+  const handleOutsideClick = useCallback((e: MouseEvent) => {
     if (
       popupRef.current &&
-      !popupRef.current.contains(event.target) &&
-      event.target !== nicknameButtonRef.current
+      !popupRef.current.contains(e.target as Node) &&
+      e.target !== nicknameButtonRef.current
     ) {
       setShowPopup(false);
     }
   }, []);
+
   useEffect(() => {
-    // Attach the event listener when the component mounts
     document.addEventListener("click", handleOutsideClick);
 
-    // Remove the event listener when the component unmounts
     return () => {
       document.removeEventListener("click", handleOutsideClick);
     };
@@ -93,20 +113,25 @@ const Post = ({ post, imagePaths }) => {
 
   useEffect(() => {
     if (editPost) {
-      editPostRef.current.focus();
+      editPostRef.current!.focus();
     }
   }, [editPost]);
 
-  //-----기존 폼 닫고 새로운 폼 엶--------------
+  //댓글 창, 기존 폼 닫고 새로운 폼 엶--------------
+  const [addComment, setAddComment] = useState<Record<number, boolean>>({});
   const onAddCommentHandler = useCallback(
-    (postId) => {
+    (postId: number) => {
       if (!id) {
         alert("로그인이 필요합니다");
       } else
-        setAddComment((prev) => ({
-          ...prev,
-          [postId]: !prev[postId], //참이면 거짓, 거짓이면 참이 됨
-        }));
+        setAddComment((prev) => {
+          const newCommentState: Record<string, boolean> = {};
+          Object.keys(prev).forEach((key) => {
+            newCommentState[key] = false;
+          });
+          newCommentState[postId] = !prev[postId];
+          return newCommentState;
+        });
     },
     [id]
   );
@@ -131,7 +156,7 @@ const Post = ({ post, imagePaths }) => {
   }, [dispatch, post.User.nickname]);
 
   const onRemoveImage = useCallback(
-    (filename) => () => {
+    (filename: string) => () => {
       if (filename) {
         dispatch({
           type: REMOVE_IMAGE_REQUEST,
@@ -142,7 +167,7 @@ const Post = ({ post, imagePaths }) => {
     [dispatch]
   );
   const onDeleteImage = useCallback(
-    (filename) => () => {
+    (filename: string) => () => {
       if (filename) {
         dispatch({
           type: DELETE_IMAGE_REQUEST,
@@ -157,18 +182,19 @@ const Post = ({ post, imagePaths }) => {
   );
 
   const onClickFileUpload = useCallback(() => {
-    imageInput.current.click();
+    imageInput.current!.click();
   }, []);
 
   const onChangeImages = useCallback(
-    (e) => {
+    (e: React.ChangeEvent<HTMLInputElement>) => {
       console.log("images", e.target.files);
-      const imageFormData = new FormData();
 
+      const imageFormData = new FormData();
       // 중복된 이미지 파일명을 방지하기 위해 Set 사용
       const addedImageNames = new Set();
 
-      [].forEach.call(e.target.files /*선택한 파일들 */, (f) => {
+      const files = e.target.files as FileList;
+      [].forEach.call(files /*선택한 파일들 */, (f: File) => {
         // 이미 추가된 이미지인지 확인하고 추가되지 않은 경우에만 처리
         if (!addedImageNames.has(f.name)) {
           addedImageNames.add(f.name);
@@ -186,7 +212,7 @@ const Post = ({ post, imagePaths }) => {
   );
 
   const handleModifyPost = useCallback(
-    (e, postId) => {
+    (e: SyntheticEvent, postId: number) => {
       e.preventDefault();
 
       dispatch({
@@ -241,7 +267,7 @@ const Post = ({ post, imagePaths }) => {
                   <TextArea
                     placeholder="Content"
                     value={content}
-                    onChange={contentOnChane}
+                    onChange={contentOnChange}
                     ref={editPostRef}
                   ></TextArea>
                   <input
@@ -333,11 +359,7 @@ const Post = ({ post, imagePaths }) => {
           </PostHeaderFlex>
           {addComment[post.id] ? (
             <div>
-              <CommentForm
-                post={post}
-                editCommentRef={editCommentRef}
-                setEditPost={setEditPost}
-              />
+              <CommentForm post={post} editCommentRef={editCommentRef} />
             </div>
           ) : null}
           <Comment post={post} />

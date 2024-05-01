@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from "react";
+import React, { SyntheticEvent, useCallback, useEffect } from "react";
 import styled from "styled-components";
 import useInput from "../hooks/useInput";
 import { LOG_IN_REQUEST } from "../reducer/user";
@@ -6,16 +6,19 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 
 import { usePagination } from "./PaginationProvider";
+import { RootState } from "../reducer";
 
 function Login() {
   const dispatch = useDispatch();
   const navigator = useNavigate();
   const { paginate } = usePagination();
 
-  const [email, emailOnChange] = useInput("");
-  const [password, PasswordOnChange] = useInput("");
+  const [email, emailOnChange] = useInput();
+  const [password, PasswordOnChange] = useInput();
 
-  const { logInDone, logInError } = useSelector((state) => state.user);
+  const { logInDone, logInError } = useSelector(
+    (state: RootState) => state.user
+  );
 
   useEffect(() => {
     if (logInError) {
@@ -32,12 +35,11 @@ function Login() {
   }, [dispatch, logInDone, logInError, navigator, paginate]);
 
   const handleLogin = useCallback(
-    (e) => {
+    (e: SyntheticEvent) => {
       e.preventDefault();
-      if (!email | !password) {
+      if (!email || !password) {
         alert("빈 칸을 확인하세요");
-      }
-      if ((email, password)) {
+      } else {
         dispatch({
           type: LOG_IN_REQUEST,
           data: {
@@ -51,21 +53,9 @@ function Login() {
   );
 
   const LoginEnter = useCallback(
-    (e) => {
+    (e: React.KeyboardEvent<HTMLInputElement>) => {
       if (e.key === "Enter") {
-        e.preventDefault();
-        if (!email | !password) {
-          alert("빈 칸을 확인하세요");
-        }
-        if ((email, password)) {
-          dispatch({
-            type: LOG_IN_REQUEST,
-            data: {
-              email: email,
-              password: password,
-            },
-          });
-        }
+        handleLogin(e);
       }
     },
     [dispatch, email, password]

@@ -3,7 +3,7 @@ import styled from "styled-components";
 import Header from "./Header";
 import Footer from "./Footer";
 
-const AppLayout = ({ children }) => {
+const AppLayout = ({ children }: any) => {
   return (
     <LayoutWrapper>
       <Header />

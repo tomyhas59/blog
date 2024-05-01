@@ -1,4 +1,5 @@
 import { produce } from "immer";
+import { UserType } from "../types";
 
 export const initialState = {
   isLoggedIn: false,
@@ -15,7 +16,7 @@ export const initialState = {
   signUpDone: false,
   signUpError: null,
 
-  me: null,
+  me: null as UserType | null,
 };
 
 export const LOG_IN_FAILURE = "LOG_IN_FAILURE";
@@ -30,7 +31,10 @@ export const SIGN_UP_FAILURE = "SIGN_UP_FAILURE";
 export const SIGN_UP_REQUEST = "SIGN_UP_REQUEST";
 export const SIGN_UP_SUCCESS = "SIGN_UP_SUCCESS";
 
-const user = (state = initialState, action) => {
+const user = (
+  state = initialState,
+  action: { type: any; data: null; error: null }
+) => {
   return produce(state, (draft) => {
     /*draft 안에 불변성이 지켜진 채로 존재*/
     switch (action.type) {

@@ -6,6 +6,8 @@ import { ALL_POSTS_REQUEST } from "../reducer/post";
 import Pagination from "./Pagination";
 import { useNavigate } from "react-router-dom";
 import { usePagination } from "./PaginationProvider";
+import { RootState } from "../reducer";
+import { PostType } from "../types";
 
 const Main = () => {
   const dispatch = useDispatch();
@@ -17,7 +19,7 @@ const Main = () => {
     searchNicknameError,
     imagePaths,
     addPostDone,
-  } = useSelector((state) => state.post);
+  } = useSelector((state: RootState) => state.post);
   const { currentPage, postsPerPage, paginate } = usePagination();
 
   useEffect(() => {
@@ -55,7 +57,7 @@ const Main = () => {
       <PostForm />
       {searchPosts.length > 0 ? (
         <div>
-          {searchPosts.map((post) => (
+          {searchPosts.map((post: PostType) => (
             <div key={post.id}>
               <Post post={post} imagePaths={imagePaths} />
             </div>
@@ -63,17 +65,12 @@ const Main = () => {
         </div>
       ) : (
         <>
-          {currentPosts.map((post) => (
+          {currentPosts.map((post: PostType) => (
             <div key={post.id}>
               <Post post={post} imagePaths={imagePaths} />
             </div>
           ))}
-          <Pagination
-            postsPerPage={postsPerPage}
-            totalPosts={allPosts.length}
-            paginate={paginate}
-            currentPage={currentPage}
-          />
+          <Pagination totalPosts={allPosts.length} />
         </>
       )}
     </div>

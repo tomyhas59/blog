@@ -1,10 +1,11 @@
 import { produce } from "immer";
+import { Data, PostType } from "../types";
 
 //전역 상태 초기값
 const initialState = {
-  allPosts: [],
-  imagePaths: [],
-  searchPosts: [],
+  allPosts: [] as PostType[],
+  imagePaths: [] as string[],
+  searchPosts: [] as PostType[],
 
   allPostsLoading: false,
   allPostsDone: false,
@@ -144,7 +145,7 @@ export const SEARCH_NICKNAME_REQUEST = "SEARCH_NICKNAME_REQUEST";
 export const SEARCH_NICKNAME_SUCCESS = "SEARCH_NICKNAME_SUCCESS";
 export const SEARCH_NICKNAME_FAILURE = "SEARCH_NICKNAME_FAILURE";
 
-const post = (state = initialState, action) => {
+const post = (state = initialState, action: any) => {
   return produce(state, (draft) => {
     switch (action.type) {
       case "CANCEL_MODIFY":
@@ -211,7 +212,7 @@ const post = (state = initialState, action) => {
           (v) => v.id === action.data.PostId //백엔드의 json의 PostId
         );
         const imageIndex = draft.allPosts[postIndex].Images.findIndex(
-          (v) => v.src === action.data.filename
+          (v: { src: any }) => v.src === action.data.filename
         );
         if (imageIndex > -1) {
           draft.allPosts[postIndex].Images.splice(imageIndex, 1);
@@ -246,7 +247,7 @@ const post = (state = initialState, action) => {
         draft.searchPostsError = null;
         break;
       case SEARCH_POSTS_SUCCESS:
-        draft.searchPostsError = false;
+        draft.searchPostsError = null;
         draft.searchPostsDone = true;
         draft.searchPosts = action.data;
         break;
@@ -261,7 +262,7 @@ const post = (state = initialState, action) => {
         draft.searchNicknameError = null;
         break;
       case SEARCH_NICKNAME_SUCCESS:
-        draft.searchNicknameError = false;
+        draft.searchNicknameError = null;
         draft.searchNicknameDone = true;
         draft.searchPosts = action.data;
         break;
@@ -364,7 +365,7 @@ const post = (state = initialState, action) => {
         );
         draft.allPosts[postIndex].Comments = draft.allPosts[
           postIndex
-        ].Comments.filter((v) => v.id !== action.data.CommentId);
+        ].Comments.filter((v: { id: any }) => v.id !== action.data.CommentId);
 
         //search
         if (draft.searchPosts.length > 0) {
@@ -373,7 +374,7 @@ const post = (state = initialState, action) => {
           );
           draft.searchPosts[searchPostIndex].Comments = draft.searchPosts[
             searchPostIndex
-          ].Comments.filter((v) => v.id !== action.data.CommentId);
+          ].Comments.filter((v: { id: any }) => v.id !== action.data.CommentId);
         }
 
         break;
@@ -396,7 +397,7 @@ const post = (state = initialState, action) => {
           (v) => v.id === action.data.PostId //백엔드의 json의 PostId
         );
         const commentIndex = draft.allPosts[postIndex].Comments.findIndex(
-          (v) => v.id === action.data.CommentId
+          (v: { id: any }) => v.id === action.data.CommentId
         );
         draft.allPosts[postIndex].Comments[commentIndex].content =
           action.data.content; //post 안의 Comments안에 있는 content를 찾아서 바꾸므로 배열값 넣어줌
@@ -408,7 +409,9 @@ const post = (state = initialState, action) => {
           );
           const searchCommentIndex = draft.searchPosts[
             searchPostIndex
-          ].Comments.findIndex((v) => v.id === action.data.CommentId);
+          ].Comments.findIndex(
+            (v: { id: any }) => v.id === action.data.CommentId
+          );
           draft.searchPosts[searchPostIndex].Comments[
             searchCommentIndex
           ].content = action.data.content;
@@ -435,7 +438,7 @@ const post = (state = initialState, action) => {
           (v) => v.id === action.data.PostId //백엔드의 json의 PostId
         );
         const commentIndex = draft.allPosts[postIndex].Comments.findIndex(
-          (v) => v.id === action.data.CommentId
+          (v: { id: any }) => v.id === action.data.CommentId
         );
         draft.allPosts[postIndex].Comments[commentIndex].ReComments.push(
           action.data
@@ -448,7 +451,9 @@ const post = (state = initialState, action) => {
           );
           const searchCommentIndex = draft.searchPosts[
             searchPostIndex
-          ].Comments.findIndex((v) => v.id === action.data.CommentId);
+          ].Comments.findIndex(
+            (v: { id: any }) => v.id === action.data.CommentId
+          );
           draft.searchPosts[searchPostIndex].Comments[
             searchCommentIndex
           ].ReComments.push(action.data);
@@ -474,11 +479,11 @@ const post = (state = initialState, action) => {
           (v) => v.id === action.data.PostId //백엔드의 json의 PostId
         );
         const commentIndex = draft.allPosts[postIndex].Comments.findIndex(
-          (v) => v.id === action.data.CommentId
+          (v: { id: any }) => v.id === action.data.CommentId
         );
         draft.allPosts[postIndex].Comments[commentIndex].ReComments =
           draft.allPosts[postIndex].Comments[commentIndex].ReComments.filter(
-            (v) => v.id !== action.data.ReCommentId
+            (v: { id: any }) => v.id !== action.data.ReCommentId
           );
         //search
         if (draft.searchPosts.length > 0) {
@@ -487,13 +492,17 @@ const post = (state = initialState, action) => {
           );
           const searchCommentIndex = draft.searchPosts[
             searchPostIndex
-          ].Comments.findIndex((v) => v.id === action.data.CommentId);
+          ].Comments.findIndex(
+            (v: { id: any }) => v.id === action.data.CommentId
+          );
 
           draft.searchPosts[searchPostIndex].Comments[
             searchCommentIndex
           ].ReComments = draft.searchPosts[searchPostIndex].Comments[
             searchCommentIndex
-          ].ReComments.filter((v) => v.id !== action.data.ReCommentId);
+          ].ReComments.filter(
+            (v: { id: any }) => v.id !== action.data.ReCommentId
+          );
         }
 
         break;
@@ -516,11 +525,13 @@ const post = (state = initialState, action) => {
           (v) => v.id === action.data.PostId //백엔드의 json의 PostId
         );
         const commentIndex = draft.allPosts[postIndex].Comments.findIndex(
-          (v) => v.id === action.data.CommentId
+          (v: { id: any }) => v.id === action.data.CommentId
         );
         const reCommentIndex = draft.allPosts[postIndex].Comments[
           commentIndex
-        ].ReComments.findIndex((v) => v.id === action.data.ReCommentId);
+        ].ReComments.findIndex(
+          (v: { id: any }) => v.id === action.data.ReCommentId
+        );
 
         draft.allPosts[postIndex].Comments[commentIndex].ReComments[
           reCommentIndex
@@ -532,11 +543,13 @@ const post = (state = initialState, action) => {
           );
           const searchCommentIndex = draft.searchPosts[
             searchPostIndex
-          ].Comments.findIndex((v) => v.id === action.data.CommentId);
+          ].Comments.findIndex(
+            (v: { id: any }) => v.id === action.data.CommentId
+          );
           const searchReCommentIndex = draft.searchPosts[
             searchPostIndex
           ].Comments[searchCommentIndex].ReComments.findIndex(
-            (v) => v.id === action.data.ReCommentId
+            (v: { id: any }) => v.id === action.data.ReCommentId
           );
 
           draft.searchPosts[searchPostIndex].Comments[
@@ -560,7 +573,9 @@ const post = (state = initialState, action) => {
         break;
       case LIKE_POST_SUCCESS: {
         const post = draft.allPosts.find((v) => v.id === action.data.PostId);
-        post.Likers.push({ id: action.data.UserId });
+        if (post) {
+          post.Likers.push({ id: action.data.UserId });
+        }
         draft.likePostLoading = false;
         draft.likePostDone = true;
         break;
@@ -578,7 +593,9 @@ const post = (state = initialState, action) => {
         break;
       case UNLIKE_POST_SUCCESS: {
         const post = draft.allPosts.find((v) => v.id === action.data.PostId);
-        post.Likers = post.Likers.filter((v) => v.id !== action.data.UserId);
+        post!.Likers = post!.Likers.filter(
+          (v: { id: any }) => v.id !== action.data.UserId
+        );
         draft.unLikePostLoading = false;
         draft.unLikePostDone = true;
         break;

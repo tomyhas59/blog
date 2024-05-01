@@ -1,6 +1,11 @@
-import React, { useCallback, useRef, useState } from "react";
+import React, {
+  ChangeEvent,
+  SyntheticEvent,
+  useCallback,
+  useRef,
+  useState,
+} from "react";
 import styled from "styled-components";
-import useInput from "../hooks/useInput";
 import { useDispatch, useSelector } from "react-redux";
 import {
   ADD_POST_REQUEST,
@@ -8,15 +13,24 @@ import {
   UPLOAD_IMAGES_REQUEST,
 } from "../reducer/post";
 import { useEffect } from "react";
+import { RootState } from "../reducer";
 
 const PostForm = () => {
   const dispatch = useDispatch();
   const { imagePaths, addPostDone, addPostError } = useSelector(
-    (state) => state.post
+    (state: RootState) => state.post
   );
-  const { me } = useSelector((state) => state.user);
-  const [content, contentOnChane, setContent] = useInput();
-  const imageInput = useRef(null);
+  const { me } = useSelector((state: RootState) => state.user);
+  const [content, setContent] = useState("");
+
+  const contentOnChange = useCallback(
+    (e: ChangeEvent<HTMLTextAreaElement>) => {
+      setContent(e.target.value);
+    },
+    [setContent]
+  );
+
+  const imageInput = useRef<HTMLInputElement>(null);
   const [active, setActive] = useState(false);
 
   useEffect(() => {
@@ -29,18 +43,20 @@ const PostForm = () => {
   }, [addPostDone, addPostError, setContent]);
 
   const onClickFileUpload = useCallback(() => {
-    imageInput.current.click();
+    imageInput.current!.click();
   }, []);
 
   const onChangeImages = useCallback(
-    (e) => {
+    (e: React.ChangeEvent<HTMLInputElement>) => {
       console.log("images", e.target.files);
       const imageFormData = new FormData();
 
       // 중복된 이미지 파일명을 방지하기 위해 Set 사용
       const addedImageNames = new Set();
 
-      [].forEach.call(e.target.files /*선택한 파일들 */, (f) => {
+      const filse = e.target.files as FileList;
+
+      [].forEach.call(filse /*선택한 파일들 */, (f: File) => {
         // 이미 추가된 이미지인지 확인하고 추가되지 않은 경우에만 처리
         if (!addedImageNames.has(f.name)) {
           addedImageNames.add(f.name);
@@ -59,7 +75,7 @@ const PostForm = () => {
   );
 
   const onRemoveImage = useCallback(
-    (filename) => () => {
+    (filename: string) => () => {
       if (filename) {
         dispatch({
           type: REMOVE_IMAGE_REQUEST,
@@ -71,7 +87,7 @@ const PostForm = () => {
   );
 
   const onSubmit = useCallback(
-    (e) => {
+    (e: SyntheticEvent) => {
       e.preventDefault();
       if (!content || !content.trim()) {
         //trim 공백 제거
@@ -101,7 +117,7 @@ const PostForm = () => {
             <TextArea
               placeholder="Content"
               value={content}
-              onChange={contentOnChane}
+              onChange={contentOnChange}
             ></TextArea>
             <input
               type="file"

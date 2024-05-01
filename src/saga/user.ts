@@ -18,22 +18,23 @@ import {
   takeEvery,
 } from "redux-saga/effects";
 import axios from "axios";
+import { SagaIterator } from "redux-saga";
 
 //----------------------------------------------------
-function signUpAPI(data) {
+function signUpAPI(data: any) {
   return axios.post("/user/signup", data);
 }
 
-function* signUp(action) {
+function* signUp(action: { data: any }): SagaIterator {
   try {
     const result = yield call(signUpAPI, action.data);
     console.log(result);
 
     yield put({
-      //put은 dipatch
+      //put은 dispatch
       type: SIGN_UP_SUCCESS,
     });
-  } catch (err) {
+  } catch (err: any) {
     console.error(err);
     yield put({
       type: SIGN_UP_FAILURE,
@@ -43,24 +44,24 @@ function* signUp(action) {
 }
 
 function* watchSignUp() {
-  yield takeLatest(SIGN_UP_REQUEST, signUp);
+  yield takeLatest<any>(SIGN_UP_REQUEST, signUp);
 }
 
 //--------------------------------------------------------
-function logInAPI(data) {
+function logInAPI(data: any) {
   return axios.post("/user/login", data);
 }
 
-function* logIn(action) {
+function* logIn(action: { data: any }): SagaIterator {
   try {
     const result = yield call(logInAPI, action.data);
-   
+
     yield put({
       //put은 dipatch
       type: LOG_IN_SUCCESS,
       data: result.data,
     });
-  } catch (err) {
+  } catch (err: any) {
     console.error(err);
     yield put({
       type: LOG_IN_FAILURE,
@@ -70,7 +71,7 @@ function* logIn(action) {
 }
 
 function* watchLogin() {
-  yield takeEvery(LOG_IN_REQUEST, logIn);
+  yield takeEvery<any>(LOG_IN_REQUEST, logIn);
 }
 //--------------------------------------------------------
 function logOutAPI() {
@@ -80,12 +81,12 @@ function logOutAPI() {
 function* logOut() {
   try {
     yield call(logOutAPI);
- 
+
     yield put({
       //put은 dipatch
       type: LOG_OUT_SUCCESS,
     });
-  } catch (err) {
+  } catch (err: any) {
     console.error(err);
     yield put({
       type: LOG_OUT_FAILURE,
