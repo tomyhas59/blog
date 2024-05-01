@@ -55,7 +55,7 @@ function logInAPI(data: any) {
 function* logIn(action: { data: any }): SagaIterator {
   try {
     const result = yield call(logInAPI, action.data);
-
+    console.log(result);
     yield put({
       //put은 dipatch
       type: LOG_IN_SUCCESS,

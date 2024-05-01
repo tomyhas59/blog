@@ -1,10 +1,4 @@
-import {
-  AnyAction,
-  Dispatch,
-  Middleware,
-  applyMiddleware,
-  createStore,
-} from "redux";
+import { applyMiddleware, createStore } from "redux";
 import rootReducer from "../reducer";
 import { composeWithDevTools } from "redux-devtools-extension";
 import createSagaMiddleware from "redux-saga";
