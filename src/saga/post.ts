@@ -489,7 +489,7 @@ function* unLikePost(action: { data: any }): SagaIterator {
 }
 
 function* watchUnLikePost() {
-  yield takeLatest(<any>UNLIKE_POST_REQUEST, unLikePost);
+  yield takeLatest<any>(UNLIKE_POST_REQUEST, unLikePost);
 }
 export default function* postSaga() {
   yield all([
