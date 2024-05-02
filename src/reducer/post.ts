@@ -277,18 +277,21 @@ const post = (state = initialState, action: any) => {
         draft.removePostDone = false;
         draft.removePostError = null;
         break;
-      case REMOVE_POST_SUCCESS:
+      case REMOVE_POST_SUCCESS: {
         draft.removePostLoading = false;
         draft.removePostDone = true;
-        draft.allPosts = draft.allPosts.filter(
-          (v) => v.id !== action.data.PostId
-        ); //백엔드의 json의 PostId
+        const postIndex = draft.allPosts.findIndex(
+          (v) => v.id === action.data.PostId //백엔드의 json의 PostId
+        );
+        if (postIndex > -1) {
+          draft.allPosts.splice(postIndex, 1);
+        }
         //search
-
         draft.searchPosts = draft.searchPosts.filter(
           (v) => v.id !== action.data.PostId
         );
         break;
+      }
       case REMOVE_POST_FAILURE:
         draft.removePostLoading = false;
         draft.removePostError = action.error;
