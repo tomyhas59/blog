@@ -58,7 +58,7 @@ function Login() {
         handleLogin(e);
       }
     },
-    [dispatch, email, password]
+    [handleLogin]
   );
   return (
     <LoginContainer>
