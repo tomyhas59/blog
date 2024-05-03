@@ -1,5 +1,5 @@
 import { produce } from "immer";
-import { Data, PostType } from "../types";
+import { PostType } from "../types";
 
 //전역 상태 초기값
 const initialState = {
