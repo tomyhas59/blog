@@ -5,7 +5,7 @@ import userSaga from "./user";
 
 axios.defaults.baseURL =
   process.env.NODE_ENV === "production"
-    ? "http://localhost:8000"
+    ? "https://port-0-blog-server-rccln2llvsdixmg.sel5.cloudtype.app"
     : "http://localhost:3075";
 axios.defaults.withCredentials = true;
 //백에서 쿠키 받음,
