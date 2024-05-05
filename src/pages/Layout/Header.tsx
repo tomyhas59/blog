@@ -12,9 +12,14 @@ import { RootState } from "../../reducer";
 const Header = () => {
   const dispatch = useDispatch();
   const navigator = useNavigate();
-  const { isLoggedIn, logOutDone, me } = useSelector(
+  const { isLoggedIn, logOutDone, me, logInError } = useSelector(
     (state: RootState) => state.user
   );
+  useEffect(() => {
+    if (logInError) {
+      alert(logInError);
+    }
+  }, [logInError]);
 
   const { paginate } = usePagination();
 

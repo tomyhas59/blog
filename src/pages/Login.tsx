@@ -16,14 +16,9 @@ function Login() {
   const [email, emailOnChange] = useInput();
   const [password, PasswordOnChange] = useInput();
 
-  const { logInDone, logInError } = useSelector(
-    (state: RootState) => state.user
-  );
+  const { logInDone } = useSelector((state: RootState) => state.user);
 
   useEffect(() => {
-    if (logInError) {
-      alert(logInError);
-    }
     if (logInDone) {
       dispatch({
         type: "GO_HOME",
@@ -32,7 +27,7 @@ function Login() {
       navigator("/");
       window.scrollTo({ top: 0, behavior: "smooth" });
     }
-  }, [dispatch, logInDone, logInError, navigator, paginate]);
+  }, [dispatch, logInDone, , navigator, paginate]);
 
   const handleLogin = useCallback(
     (e: SyntheticEvent) => {
