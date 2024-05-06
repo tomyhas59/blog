@@ -158,6 +158,9 @@ export const SignList = styled.ul`
       color: ${(props) => props.theme.charColor};
     }
   }
+  @media (max-width: 480px) {
+    transform: scale(0.7);
+  }
 `;
 
 const SignButton = styled.li`
