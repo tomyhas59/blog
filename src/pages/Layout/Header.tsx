@@ -145,8 +145,8 @@ export const SignList = styled.ul`
   border-radius: 8px;
   align-items: center;
   height: 2.5rem;
-  width: 9rem;
-  padding: 5px;
+  margin-left: -50px;
+  margin-top: -10px;
   & > li {
     cursor: pointer;
     font-size: 1rem;

@@ -91,6 +91,9 @@ const LoginContainer = styled.div`
   border: 1px solid #ccc;
   border-radius: 4px;
   background-color: #f8f8f8;
+  @media (max-width: 480px) {
+    transform: scale(0.7) translateY(-50px);
+  }
 `;
 
 const InputGroup = styled.div`

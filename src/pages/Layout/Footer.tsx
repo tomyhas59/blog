@@ -72,7 +72,8 @@ export const Footertxt = styled.div`
     color: auto;
     margin-top: 5px;
     @media (max-width: 480px) {
-      font-size: 0.525rem;
+      transform: scale(0.7) translateX(50px);
+      margin-top: -15px;
     }
   }
 `;
@@ -80,6 +81,7 @@ export const Footertxt = styled.div`
 export const FooterRight = styled.div`
   display: flex;
   align-items: center;
+
   & > ul {
     display: flex;
     align-items: center;
@@ -101,6 +103,7 @@ export const FooterRight = styled.div`
     }
   }
   @media (max-width: 480px) {
-    margin-left: -100px;
+    transform: scale(0.7) translateX(-50px);
+    margin-top: -15px;
   }
 `;

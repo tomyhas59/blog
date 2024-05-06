@@ -18,12 +18,16 @@ const LayoutWrapper = styled.div`
   flex-direction: column;
   min-height: 100vh;
   margin-top: 3rem;
+  overflow: hidden;
 `;
 
 const ContentWrapper = styled.div`
   flex-grow: 1;
   padding-top: 150px;
   overflow-y: auto;
+  @media (max-width: 480px) {
+    transform: scale(0.9);
+  }
 `;
 
 export default AppLayout;
