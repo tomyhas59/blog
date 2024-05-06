@@ -91,7 +91,7 @@ export const HeaderWrapper = styled.header`
   display: grid;
   grid-template-columns: repeat(4, 1fr);
 
-  @media (max-width: 480px) {
+  @media (max-width: 680px) {
     height: 10rem;
     grid-template-columns: repeat(2, 1fr);
   }
@@ -141,12 +141,13 @@ const Button = styled.button`
 export const SignList = styled.ul`
   display: flex;
   background-color: ${(props) => props.theme.mainColor};
-  margin-left: 20px;
+  margin-left: 5px;
   color: #fff;
   border-radius: 8px;
   align-items: center;
   height: 2.5rem;
-  width: 8rem;
+  width: 9rem;
+  padding: 5px;
   & > li {
     cursor: pointer;
     font-size: 1rem;

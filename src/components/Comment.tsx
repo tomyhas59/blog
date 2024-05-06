@@ -275,9 +275,7 @@ const Date = styled.button`
   cursor: default;
   color: gray;
   @media (max-width: 480px) {
-    margin-left: 10px;
-    margin-bottom: 10px;
-    display: none;
+    font-size: 7px;
   }
 `;
 

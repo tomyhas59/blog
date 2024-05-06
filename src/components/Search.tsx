@@ -80,6 +80,10 @@ const Container = styled.div`
   & > select {
     text-align: center;
   }
+  @media (max-width: 680px) {
+    width: 250px;
+    height: 4px;
+  }
 `;
 
 const Input = styled.input`

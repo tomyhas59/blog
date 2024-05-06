@@ -58,7 +58,7 @@ export const FooterTamplate = styled.div`
   margin: 0.5rem auto;
   padding: 1rem;
   display: flex;
-  justify-content: space-between;
+  justify-content: space-around;
   align-items: center;
 `;
 
@@ -77,7 +77,6 @@ export const Footertxt = styled.div`
 export const FooterRight = styled.div`
   display: flex;
   align-items: center;
-
   & > ul {
     display: flex;
     align-items: center;
@@ -97,5 +96,8 @@ export const FooterRight = styled.div`
     &:hover {
       color: ${(props) => props.theme.charColor};
     }
+  }
+  @media (max-width: 480px) {
+    margin-left: -100px;
   }
 `;
