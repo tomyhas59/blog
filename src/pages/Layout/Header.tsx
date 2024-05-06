@@ -159,6 +159,7 @@ export const SignList = styled.ul`
     }
   }
   @media (max-width: 480px) {
+    flex-direction: column;
     transform: scale(0.7);
   }
 `;
