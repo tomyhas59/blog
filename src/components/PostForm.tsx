@@ -90,7 +90,6 @@ const PostForm = () => {
     (e: SyntheticEvent) => {
       e.preventDefault();
       if (!content || !content.trim()) {
-        //trim 공백 제거
         return alert("게시글을 작성하세요.");
       }
       const formData = new FormData();
@@ -127,7 +126,7 @@ const PostForm = () => {
               ref={imageInput}
               onChange={onChangeImages}
             />
-            <FileButton onClick={onClickFileUpload}>파일 첨부</FileButton>
+            {/*      {<FileButton onClick={onClickFileUpload}>파일 첨부</FileButton>
             <ImageGrid>
               {active &&
                 imagePaths.map((filename, index) => (
@@ -144,7 +143,7 @@ const PostForm = () => {
                     </RemoveButton>
                   </ImageContainer>
                 ))}
-            </ImageGrid>
+            </ImageGrid>} */}
 
             <SubmitButton type="submit">등록</SubmitButton>
           </Form>
