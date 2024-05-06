@@ -71,6 +71,9 @@ export const Footertxt = styled.div`
     font-size: 0.825rem;
     color: auto;
     margin-top: 5px;
+    @media (max-width: 480px) {
+      font-size: 0.525rem;
+    }
   }
 `;
 

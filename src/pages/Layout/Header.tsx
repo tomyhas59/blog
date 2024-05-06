@@ -55,12 +55,12 @@ const Header = () => {
       <SignList>
         {!isLoggedIn && (
           <>
-            <li>
+            <SignButton>
               <Link to="/signup">회원가입</Link>
-            </li>
-            <li>
+            </SignButton>
+            <SignButton>
               <Link to="/login">로그인</Link>
-            </li>
+            </SignButton>
           </>
         )}
         {isLoggedIn && (
@@ -140,7 +140,6 @@ const Button = styled.button`
 
 export const SignList = styled.ul`
   display: flex;
-  background-color: ${(props) => props.theme.mainColor};
   margin-left: 5px;
   color: #fff;
   border-radius: 8px;
@@ -159,10 +158,11 @@ export const SignList = styled.ul`
       color: ${(props) => props.theme.charColor};
     }
   }
-  @media (max-width: 480px) {
-    width: 8rem;
-    & > li {
-      font-size: 0.8rem;
-    }
-  }
+`;
+
+const SignButton = styled.li`
+  background-color: ${(props) => props.theme.mainColor};
+  padding: 5px;
+  color: #fff;
+  border-radius: 8px;
 `;
