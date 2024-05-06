@@ -91,7 +91,7 @@ export const HeaderWrapper = styled.header`
   display: grid;
   grid-template-columns: repeat(4, 1fr);
 
-  @media (max-width: 600px) {
+  @media (max-width: 480px) {
     height: 10rem;
     grid-template-columns: repeat(2, 1fr);
   }
@@ -110,7 +110,7 @@ export const HeaderLogoBtn = styled.button`
   &:hover {
     color: ${(props) => props.theme.charColor};
   }
-  @media (max-width: 600px) {
+  @media (max-width: 480px) {
     margin-left: 10px;
     margin-bottom: 10px;
   }
@@ -121,7 +121,7 @@ const Nickname = styled.div`
   font-size: 1.5rem;
   font-weight: bold;
   color: #fff;
-  @media (max-width: 600px) {
+  @media (max-width: 480px) {
     margin-left: -100px;
   }
 `;
@@ -158,7 +158,7 @@ export const SignList = styled.ul`
       color: ${(props) => props.theme.charColor};
     }
   }
-  @media (max-width: 600px) {
+  @media (max-width: 480px) {
     width: 8rem;
     & > li {
       font-size: 0.8rem;

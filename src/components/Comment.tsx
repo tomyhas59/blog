@@ -274,6 +274,11 @@ const Date = styled.button`
   width: 7%;
   cursor: default;
   color: gray;
+  @media (max-width: 480px) {
+    margin-left: 10px;
+    margin-bottom: 10px;
+    display: none;
+  }
 `;
 
 const NotLoggedIn = styled.button`

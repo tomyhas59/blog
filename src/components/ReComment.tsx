@@ -215,6 +215,6 @@ const Date = styled.div`
   cursor: default;
   color: gray;
   width: 8%;
-  @media (max-width: 600px) {
+  @media (max-width: 480px) {
   }
 `;
