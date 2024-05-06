@@ -29,6 +29,9 @@ function Login() {
     }
   }, [dispatch, logInDone, , navigator, paginate]);
 
+  const cookie = document.cookie;
+  console.log("--------", cookie);
+
   const handleLogin = useCallback(
     (e: SyntheticEvent) => {
       e.preventDefault();
