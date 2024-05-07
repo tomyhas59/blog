@@ -122,11 +122,15 @@ const Nickname = styled.div`
   font-weight: bold;
   color: #fff;
   @media (max-width: 480px) {
-    margin-left: -100px;
+    transform: scale(0.5) translateX(-200px);
   }
 `;
 
 const Button = styled.button`
+  background-color: ${(props) => props.theme.mainColor};
+  padding: 5px;
+  color: #fff;
+  border-radius: 8px;
   cursor: pointer;
   font-size: 1rem;
   margin: 5px;
@@ -145,8 +149,7 @@ export const SignList = styled.ul`
   border-radius: 8px;
   align-items: center;
   height: 2.5rem;
-  margin-left: -50px;
-  margin-top: -10px;
+
   & > li {
     cursor: pointer;
     font-size: 1rem;
@@ -160,7 +163,7 @@ export const SignList = styled.ul`
   }
   @media (max-width: 480px) {
     flex-direction: column;
-    transform: scale(0.7);
+    transform: scale(0.7) translateX(-100px) translateY(-10px);
   }
 `;
 

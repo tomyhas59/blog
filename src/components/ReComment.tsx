@@ -216,5 +216,6 @@ const Date = styled.div`
   color: gray;
   width: 8%;
   @media (max-width: 480px) {
+    font-size: 7px;
   }
 `;

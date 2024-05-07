@@ -270,7 +270,7 @@ const Post = ({
                     onChange={contentOnChange}
                     ref={editPostRef}
                   ></TextArea>
-                  <input
+                  {/*     <input
                     type="file"
                     name="image"
                     multiple
@@ -279,7 +279,7 @@ const Post = ({
                     onChange={onChangeImages}
                   />
                   <FileButton onClick={onClickFileUpload}>파일 첨부</FileButton>
-
+ */}
                   <ImageGrid>
                     {/**기존 이미지 */}
                     {post.Images.map((image, index) => (
