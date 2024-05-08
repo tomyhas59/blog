@@ -49,7 +49,7 @@ const Header = () => {
 
   return (
     <HeaderWrapper>
-      <HeaderLogoBtn onClick={handleGoHome}>Y BLOG</HeaderLogoBtn>
+      <HeaderLogoBtn onClick={handleGoHome}>TMS</HeaderLogoBtn>
       <Nickname>{me && me.nickname + "님 환영합니다"}</Nickname>
       <Search />
       <SignList>
