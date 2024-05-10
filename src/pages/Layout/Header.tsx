@@ -155,6 +155,7 @@ export const SignList = styled.ul`
   height: 2.5rem;
   & > li {
     cursor: pointer;
+    margin-left: 3px;
     font-size: 1rem;
     font-weight: bold;
     transition: transform 0.3s ease, color 0.3s ease;
