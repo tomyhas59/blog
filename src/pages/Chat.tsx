@@ -7,7 +7,7 @@ import { RootState } from "../reducer";
 
 const socket =
   process.env.NODE_ENV === "production"
-    ? io("https://port-0-blog-server-rccln2llvsdixmg.sel5.cloudtype.app")
+    ? io("https://port-0-blog-server-rccln2llvsdixmg.sel5.cloudtype.app:8001")
     : io("http://localhost:3001");
 interface Message {
   id: number;
