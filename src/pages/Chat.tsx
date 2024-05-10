@@ -1,19 +1,28 @@
-/* import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, SyntheticEvent, ChangeEvent } from "react";
 import { useSelector } from "react-redux";
 import styled from "styled-components";
 import io from "socket.io-client";
 import moment from "moment";
+import { RootState } from "../reducer";
 
-const socket = io("http://localhost:3001");
-
+const socket =
+  process.env.NODE_ENV === "production"
+    ? io("https://port-0-blog-server-rccln2llvsdixmg.sel5.cloudtype.app")
+    : io("http://localhost:3001");
+interface Message {
+  id: number;
+  sender: string;
+  text: string;
+  time: string;
+}
 const Chat = () => {
-  const [messages, setMessages] = useState([]);
-  const [inputValue, setInputValue] = useState("");
-  const { me } = useSelector((state) => state.user);
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [inputValue, setInputValue] = useState<string>("");
+  const { me } = useSelector((state: RootState) => state.user);
 
   useEffect(() => {
     socket.on("receiveMessage", (message) => {
-      setMessages((prevMessages) => [...prevMessages, message]);
+      setMessages((prevMessages: Message[]) => [...prevMessages, message]);
     });
 
     return () => {
@@ -21,12 +30,12 @@ const Chat = () => {
     };
   }, []);
 
-  const handleMessageSubmit = (e) => {
+  const handleMessageSubmit = (e: SyntheticEvent) => {
     e.preventDefault();
     if (inputValue.trim() !== "") {
       const newMessage = {
         id: new Date().getTime(),
-        sender: me.nickname,
+        sender: me?.nickname || null,
         text: inputValue,
         time: moment().format("HH:mm"),
       };
@@ -35,7 +44,7 @@ const Chat = () => {
     }
   };
 
-  const handleInputChange = (e) => {
+  const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     setInputValue(e.target.value);
   };
 
@@ -44,9 +53,9 @@ const Chat = () => {
       <ChatHeader>채팅방</ChatHeader>
       <MessageList>
         {messages.map((v) => (
-          <MessageItem key={v.id} isMe={v.sender === me.nickname}>
+          <MessageItem key={v.id} isMe={v.sender === me?.nickname}>
             <MessageSender>{v.sender}</MessageSender>
-            <MessageText isMe={v.sender === me.nickname}>{v.text}</MessageText>
+            <MessageText isMe={v.sender === me?.nickname}>{v.text}</MessageText>
             <MessageTime>{v.time}</MessageTime>
           </MessageItem>
         ))}
@@ -85,14 +94,21 @@ const MessageList = styled.ul`
   padding: 0;
 `;
 
-const MessageItem = styled.li`
+interface MessageItemProps {
+  isMe: boolean;
+}
+
+const MessageItem = styled.li<MessageItemProps>`
   margin-bottom: 10px;
   display: flex;
   flex-direction: ${(props) => (props.isMe ? "row" : "row-reverse")};
   align-items: flex-start;
 `;
+interface MessageTextProps {
+  isMe: boolean;
+}
 
-const MessageText = styled.p`
+const MessageText = styled.p<MessageTextProps>`
   margin: 5px 0;
   padding: 5px 10px;
   background-color: ${(props) => (props.isMe ? "#f0f0f0" : "#ccc")};
@@ -133,4 +149,3 @@ const MessageButton = styled.button`
   border-radius: 0 4px 4px 0;
   cursor: pointer;
 `;
- */

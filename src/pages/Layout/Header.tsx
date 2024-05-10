@@ -47,6 +47,10 @@ const Header = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, [dispatch, navigator, paginate]);
 
+  const goToChat = () => {
+    navigator("/chat");
+  };
+
   return (
     <HeaderWrapper>
       <HeaderLogoBtn onClick={handleGoHome}>TMS</HeaderLogoBtn>
@@ -68,9 +72,9 @@ const Header = () => {
             <li>
               <Button onClick={handleLogout}>로그아웃</Button>
             </li>
-            {/*  <li>
-              <Link to="/chat">채팅</Link>
-            </li> */}
+            <li>
+              <Button onClick={goToChat}>채팅</Button>
+            </li>
           </>
         )}
       </SignList>
@@ -149,11 +153,9 @@ export const SignList = styled.ul`
   border-radius: 8px;
   align-items: center;
   height: 2.5rem;
-
   & > li {
     cursor: pointer;
     font-size: 1rem;
-    margin: 5px;
     font-weight: bold;
     transition: transform 0.3s ease, color 0.3s ease;
     &:hover {
