@@ -9,9 +9,13 @@ import { RootState } from "../reducer";
 const ReCommentForm = ({
   post,
   comment,
+  setAddReComment,
 }: {
   post: PostType;
   comment: CommentType;
+  setAddReComment: React.Dispatch<
+    React.SetStateAction<Record<number, boolean>>
+  >;
 }) => {
   const { addReCommentDone } = useSelector((state: RootState) => state.post);
   const editReCommentRef = useRef<HTMLInputElement>(null);
@@ -32,6 +36,11 @@ const ReCommentForm = ({
   const onSubmitReComment = useCallback(
     (e: SyntheticEvent) => {
       e.preventDefault();
+      if (reComment === "") {
+        alert("댓글을 입력하세요");
+        return;
+      }
+
       console.log(comment.id, reComment);
       dispatch({
         type: ADD_RECOMMENT_REQUEST,
@@ -42,6 +51,7 @@ const ReCommentForm = ({
           userId: id,
         },
       });
+      setAddReComment({ [comment.id]: false });
     },
     [comment.id, reComment, dispatch, post.id, id]
   );

@@ -184,6 +184,9 @@ const Author = styled.div`
 
 const Content = styled.div`
   width: 70%;
+  /**내용 수직 정렬용 */
+  display: flex;
+  align-items: center;
 `;
 
 const Toggle = styled.button`

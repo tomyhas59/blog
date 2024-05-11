@@ -359,7 +359,11 @@ const Post = ({
           </PostHeaderFlex>
           {addComment[post.id] ? (
             <div>
-              <CommentForm post={post} editCommentRef={editCommentRef} />
+              <CommentForm
+                post={post}
+                editCommentRef={editCommentRef}
+                setAddComment={setAddComment}
+              />
             </div>
           ) : null}
           <Comment post={post} />

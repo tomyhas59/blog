@@ -226,7 +226,11 @@ const Comment = ({ post }: { post: PostType }) => {
               <ReComment post={post} comment={comment} />
             </FullCommentWrapper>
             {addReComment[comment.id] ? (
-              <ReCommentForm post={post} comment={comment} />
+              <ReCommentForm
+                post={post}
+                comment={comment}
+                setAddReComment={setAddReComment}
+              />
             ) : null}
           </div>
         );
@@ -238,14 +242,14 @@ const Comment = ({ post }: { post: PostType }) => {
 export default Comment;
 
 const FullCommentWrapper = styled.div`
-  border: 1px solid silver;
+  border-bottom: 1px solid silver;
 `;
 
 const CommentWrapper = styled.div`
   display: flex;
   width: 100%;
   border-radius: 5px;
-  padding: 20px;
+  padding: 5px;
   position: relative;
 `;
 
@@ -257,11 +261,10 @@ const Author = styled.button`
 `;
 
 const Content = styled.div`
-  font-weight: bold;
   width: 60%;
-
-  height: 50px;
-  line-height: 50px;
+  /**내용 수직 정렬용 */
+  display: flex;
+  align-items: center;
 `;
 
 const Toggle = styled.button`

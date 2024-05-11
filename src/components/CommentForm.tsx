@@ -9,14 +9,17 @@ import { RootState } from "../reducer";
 const CommentForm = ({
   post,
   editCommentRef,
+  setAddComment,
 }: {
   post: PostType;
   editCommentRef: React.RefObject<HTMLInputElement>;
+  setAddComment: React.Dispatch<React.SetStateAction<Record<number, boolean>>>;
 }) => {
   const { addCommentDone } = useSelector((state: RootState) => state.post);
   const [comment, onChangeComment, setComment] = useInput();
   const dispatch = useDispatch();
   const id = useSelector((state: RootState) => state.user.me?.id);
+
   useEffect(() => {
     if (addCommentDone) {
       setComment("");
@@ -38,6 +41,7 @@ const CommentForm = ({
         type: ADD_COMMENT_REQUEST,
         data: { content: comment, postId: post.id, userId: id },
       });
+      setAddComment({ [post.id]: false });
     },
     [comment, dispatch, id, post.id]
   );
