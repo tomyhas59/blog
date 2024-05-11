@@ -87,8 +87,6 @@ const user = (
       //----------------------------------------------
       case "INITIALIZE_STATE":
         return initialState; // 초기 상태로 리셋
-      default:
-        return;
     }
   });
 };
