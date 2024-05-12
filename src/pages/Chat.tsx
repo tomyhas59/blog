@@ -1,9 +1,16 @@
-import React, { useState, useEffect, SyntheticEvent, ChangeEvent } from "react";
+import React, {
+  useState,
+  useEffect,
+  SyntheticEvent,
+  ChangeEvent,
+  useRef,
+} from "react";
 import { useSelector } from "react-redux";
 import styled from "styled-components";
 import io from "socket.io-client";
 import moment from "moment";
 import { RootState } from "../reducer";
+import { UserType } from "../types";
 
 const socket =
   process.env.NODE_ENV === "production"
@@ -20,6 +27,24 @@ const Chat = () => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputValue, setInputValue] = useState<string>("");
   const { me } = useSelector((state: RootState) => state.user);
+  const [userList, setUserList] = useState<UserType[] | null>(null);
+  const messageRef = useRef<HTMLInputElement>(null);
+  console.log("userList", userList);
+
+  useEffect(() => {
+    if (me) {
+      const userInfo = { id: me.id, nickname: me.nickname };
+      socket.emit("loginUser", userInfo);
+    }
+
+    socket.on("updateUserList", (updatedUserList: UserType[]) => {
+      setUserList(updatedUserList);
+    });
+
+    return () => {
+      socket.off("updateUserList");
+    };
+  }, []);
 
   useEffect(() => {
     socket.on("receiveMessage", (message) => {
@@ -42,6 +67,7 @@ const Chat = () => {
       };
       socket.emit("sendMessage", newMessage);
       setInputValue("");
+      messageRef.current?.focus();
     }
   };
 
@@ -52,7 +78,7 @@ const Chat = () => {
   return (
     <ChatContainer>
       <ChatWrapper>
-        <ChatHeader>채팅방</ChatHeader>
+        <ChatHeader>단체 채팅방</ChatHeader>
         <MessageList>
           {messages.map((v) => (
             <MessageItem key={v.id} isMe={v.sender === me?.nickname}>
@@ -69,14 +95,19 @@ const Chat = () => {
             type="text"
             placeholder="메시지를 입력해주세요"
             value={inputValue}
+            ref={messageRef}
             onChange={handleInputChange}
           />
           <MessageButton type="submit">전송</MessageButton>
         </MessageForm>
       </ChatWrapper>
       <UserList>
-        <div>접속 중인 유저</div>
-        <ul></ul>
+        <div>접속 중인 유저 : {userList?.length || 0}명</div>
+        <ul>
+          {userList?.map((user) => (
+            <li key={user.id}>{user.nickname}</li>
+          ))}
+        </ul>
       </UserList>
     </ChatContainer>
   );
@@ -93,7 +124,19 @@ const UserList = styled.div`
   color: ${(props) => props.theme.mainColor};
   font-size: 24px;
   margin-left: 100px;
+  > ul {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    > li {
+      &:hover {
+        cursor: pointer;
+        text-decoration: underline;
+      }
+    }
+  }
 `;
+
 const ChatWrapper = styled.div`
   width: 600px;
   padding: 20px;

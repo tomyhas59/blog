@@ -8,6 +8,7 @@ import { LOG_OUT_REQUEST } from "../../reducer/user";
 import Search from "../../components/Search";
 import { usePagination } from "../PaginationProvider";
 import { RootState } from "../../reducer";
+import io from "socket.io-client";
 
 const Header = () => {
   const dispatch = useDispatch();
@@ -15,6 +16,11 @@ const Header = () => {
   const { isLoggedIn, logOutDone, me, logInError } = useSelector(
     (state: RootState) => state.user
   );
+  const socket =
+    process.env.NODE_ENV === "production"
+      ? io("https://port-0-blog-server-rccln2llvsdixmg.sel5.cloudtype.app")
+      : io("http://localhost:3075");
+
   useEffect(() => {
     if (logInError) {
       alert(logInError);
@@ -33,10 +39,11 @@ const Header = () => {
   }, [dispatch, logOutDone, navigator]);
 
   const handleLogout = useCallback(() => {
+    socket.emit("logoutUser", me?.id);
     dispatch({
       type: LOG_OUT_REQUEST,
     });
-  }, [dispatch]);
+  }, [dispatch, me?.id]);
 
   const handleGoHome = useCallback(() => {
     dispatch({
