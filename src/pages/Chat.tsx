@@ -51,25 +51,33 @@ const Chat = () => {
 
   return (
     <ChatContainer>
-      <ChatHeader>채팅방</ChatHeader>
-      <MessageList>
-        {messages.map((v) => (
-          <MessageItem key={v.id} isMe={v.sender === me?.nickname}>
-            <MessageSender>{v.sender}</MessageSender>
-            <MessageText isMe={v.sender === me?.nickname}>{v.text}</MessageText>
-            <MessageTime>{v.time}</MessageTime>
-          </MessageItem>
-        ))}
-      </MessageList>
-      <MessageForm onSubmit={handleMessageSubmit}>
-        <MessageInput
-          type="text"
-          placeholder="메시지를 입력해주세요"
-          value={inputValue}
-          onChange={handleInputChange}
-        />
-        <MessageButton type="submit">전송</MessageButton>
-      </MessageForm>
+      <ChatWrapper>
+        <ChatHeader>채팅방</ChatHeader>
+        <MessageList>
+          {messages.map((v) => (
+            <MessageItem key={v.id} isMe={v.sender === me?.nickname}>
+              <MessageSender>{v.sender}</MessageSender>
+              <MessageText isMe={v.sender === me?.nickname}>
+                {v.text}
+              </MessageText>
+              <MessageTime>{v.time}</MessageTime>
+            </MessageItem>
+          ))}
+        </MessageList>
+        <MessageForm onSubmit={handleMessageSubmit}>
+          <MessageInput
+            type="text"
+            placeholder="메시지를 입력해주세요"
+            value={inputValue}
+            onChange={handleInputChange}
+          />
+          <MessageButton type="submit">전송</MessageButton>
+        </MessageForm>
+      </ChatWrapper>
+      <UserList>
+        <div>접속 중인 유저</div>
+        <ul></ul>
+      </UserList>
     </ChatContainer>
   );
 };
@@ -77,8 +85,17 @@ const Chat = () => {
 export default Chat;
 
 const ChatContainer = styled.div`
-  max-width: 600px;
-  margin: 0 auto;
+  display: flex;
+  justify-content: center;
+`;
+
+const UserList = styled.div`
+  color: ${(props) => props.theme.mainColor};
+  font-size: 24px;
+  margin-left: 100px;
+`;
+const ChatWrapper = styled.div`
+  width: 600px;
   padding: 20px;
   border: 1px solid #ccc;
   border-radius: 4px;
