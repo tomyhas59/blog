@@ -1,6 +1,9 @@
 import axios, { AxiosRequestConfig } from "axios";
 import { fork, takeLatest, put, all, call } from "redux-saga/effects";
 import {
+  ADD_CHAT_MESSAGE_FAILURE,
+  ADD_CHAT_MESSAGE_REQUEST,
+  ADD_CHAT_MESSAGE_SUCCESS,
   ADD_COMMENT_FAILURE,
   ADD_COMMENT_REQUEST,
   ADD_COMMENT_SUCCESS,
@@ -491,6 +494,34 @@ function* unLikePost(action: { data: any }): SagaIterator {
 function* watchUnLikePost() {
   yield takeLatest<any>(UNLIKE_POST_REQUEST, unLikePost);
 }
+
+//---------------------------------------------------------
+
+function addChatMessageAPI(data: any) {
+  return axios.post(`/post/chat`, data);
+}
+
+function* addChatMessage(action: { data: any }): SagaIterator {
+  try {
+    const result = yield call(addChatMessageAPI, action.data);
+    yield put({
+      //put은 dipatch
+      type: ADD_CHAT_MESSAGE_SUCCESS,
+      data: result.data,
+    });
+  } catch (err: any) {
+    console.error(err);
+    yield put({
+      type: ADD_CHAT_MESSAGE_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+
+function* watchAddChatMessage() {
+  yield takeLatest<any>(ADD_CHAT_MESSAGE_REQUEST, addChatMessage);
+}
+
 export default function* postSaga() {
   yield all([
     fork(watchLoadPosts),
@@ -510,5 +541,6 @@ export default function* postSaga() {
     fork(watchSearchPosts),
     fork(watchSearchNickname),
     fork(watchDeleteImages),
+    fork(watchAddChatMessage),
   ]);
 }

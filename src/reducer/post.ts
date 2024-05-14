@@ -6,6 +6,7 @@ const initialState = {
   allPosts: [] as PostType[],
   imagePaths: [] as string[],
   searchPosts: [] as PostType[],
+  chatMessages: [] as string[],
 
   allPostsLoading: false,
   allPostsDone: false,
@@ -74,6 +75,10 @@ const initialState = {
   unLikePostLoading: false,
   unLikePostDone: false,
   unLikePostError: null,
+
+  addChatMessageLoading: false,
+  addChatMessageDone: false,
+  addChatMessageError: null,
 };
 
 //action명
@@ -144,6 +149,10 @@ export const SEARCH_POSTS_FAILURE = "SEARCH_POSTS_FAILURE";
 export const SEARCH_NICKNAME_REQUEST = "SEARCH_NICKNAME_REQUEST";
 export const SEARCH_NICKNAME_SUCCESS = "SEARCH_NICKNAME_SUCCESS";
 export const SEARCH_NICKNAME_FAILURE = "SEARCH_NICKNAME_FAILURE";
+
+export const ADD_CHAT_MESSAGE_REQUEST = "ADD_CHAT_MESSAGE_REQUEST";
+export const ADD_CHAT_MESSAGE_SUCCESS = "ADD_CHAT_MESSAGE_SUCCESS";
+export const ADD_CHAT_MESSAGE_FAILURE = "ADD_CHAT_MESSAGE_FAILURE";
 
 const post = (state = initialState, action: any) => {
   return produce(state, (draft) => {
@@ -609,6 +618,21 @@ const post = (state = initialState, action: any) => {
         break;
       case "GO_HOME":
         return initialState;
+      //-------------------------------------------------------
+      case ADD_CHAT_MESSAGE_REQUEST:
+        draft.addChatMessageLoading = true;
+        draft.addChatMessageDone = false;
+        draft.addChatMessageError = null;
+        break;
+      case ADD_CHAT_MESSAGE_SUCCESS: {
+        draft.addChatMessageLoading = false;
+        draft.addChatMessageDone = true;
+        break;
+      }
+      case ADD_CHAT_MESSAGE_FAILURE:
+        draft.addChatMessageLoading = false;
+        draft.addChatMessageError = action.error;
+        break;
       default:
         return;
     }

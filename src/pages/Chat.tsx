@@ -11,6 +11,8 @@ import io from "socket.io-client";
 import moment from "moment";
 import { RootState } from "../reducer";
 import { UserType } from "../types";
+import { useDispatch } from "react-redux";
+import { ADD_CHAT_MESSAGE_REQUEST } from "../reducer/post";
 
 const socket =
   process.env.NODE_ENV === "production"
@@ -20,8 +22,8 @@ const socket =
 interface Message {
   id: number;
   sender: string;
-  text: string;
-  time: string;
+  content: string;
+  createdAt: string;
 }
 const Chat = () => {
   const [messages, setMessages] = useState<Message[]>([]);
@@ -29,7 +31,19 @@ const Chat = () => {
   const { me } = useSelector((state: RootState) => state.user);
   const [userList, setUserList] = useState<UserType[] | null>(null);
   const messageRef = useRef<HTMLInputElement>(null);
+  const dispatch = useDispatch();
+
   console.log("userList", userList);
+
+  useEffect(() => {
+    socket.on("chatMessages", (messages: Message[]) => {
+      console.log("-----------", messages);
+      setMessages(messages);
+    });
+    return () => {
+      socket.off("chatMessages");
+    };
+  }, []);
 
   useEffect(() => {
     if (me) {
@@ -62,12 +76,16 @@ const Chat = () => {
       const newMessage = {
         id: new Date().getTime(),
         sender: me?.nickname || null,
-        text: inputValue,
-        time: moment().format("HH:mm"),
+        content: inputValue,
+        createdAt: moment().format("HH:mm"),
       };
       socket.emit("sendMessage", newMessage);
       setInputValue("");
       messageRef.current?.focus();
+      dispatch({
+        type: ADD_CHAT_MESSAGE_REQUEST,
+        data: { content: inputValue, sender: me!.nickname },
+      });
     }
   };
 
@@ -84,9 +102,9 @@ const Chat = () => {
             <MessageItem key={v.id} isMe={v.sender === me?.nickname}>
               <MessageSender>{v.sender}</MessageSender>
               <MessageText isMe={v.sender === me?.nickname}>
-                {v.text}
+                {v.content}
               </MessageText>
-              <MessageTime>{v.time}</MessageTime>
+              <MessageTime>{moment(v.createdAt).format("HH:mm")}</MessageTime>
             </MessageItem>
           ))}
         </MessageList>
