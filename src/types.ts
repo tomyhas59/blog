@@ -61,3 +61,10 @@ export type Data = {
   ReCommnetId: number;
   content: string;
 };
+
+export type Message = {
+  id: number;
+  sender: string;
+  content: string;
+  createdAt: string;
+};

@@ -16,12 +16,18 @@ import {
   ALL_POSTS_FAILURE,
   ALL_POSTS_REQUEST,
   ALL_POSTS_SUCCESS,
+  DELETE_ALL_CHAT_FAILURE,
+  DELETE_ALL_CHAT_REQUEST,
+  DELETE_ALL_CHAT_SUCCESS,
   DELETE_IMAGE_FAILURE,
   DELETE_IMAGE_REQUEST,
   DELETE_IMAGE_SUCCESS,
   LIKE_POST_FAILURE,
   LIKE_POST_REQUEST,
   LIKE_POST_SUCCESS,
+  READ_CHAT_FAILURE,
+  READ_CHAT_REQUEST,
+  READ_CHAT_SUCCESS,
   REMOVE_COMMENT_FAILURE,
   REMOVE_COMMENT_REQUEST,
   REMOVE_COMMENT_SUCCESS,
@@ -398,7 +404,7 @@ function* removeReComment(action: { data: any }): SagaIterator {
     console.log(result.data);
     yield put({
       type: REMOVE_RECOMMENT_SUCCESS,
-      data: result.data, //여기 바꿨더니 됨
+      data: result.data,
     });
   } catch (err: any) {
     console.log(err);
@@ -521,6 +527,55 @@ function* addChatMessage(action: { data: any }): SagaIterator {
 function* watchAddChatMessage() {
   yield takeLatest<any>(ADD_CHAT_MESSAGE_REQUEST, addChatMessage);
 }
+//-----------------------------------------------------
+
+function readChatApi(data: AxiosRequestConfig<any> | undefined) {
+  return axios.get("/post/allChat", data);
+}
+
+function* readChat(action: { data: any }): SagaIterator {
+  try {
+    const result = yield call(readChatApi, action.data);
+    yield put({
+      type: READ_CHAT_SUCCESS,
+      data: result.data,
+    });
+  } catch (err: any) {
+    console.log(err);
+    yield put({
+      type: READ_CHAT_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+function* watchreadChat() {
+  yield takeLatest<any>(READ_CHAT_REQUEST, readChat);
+}
+
+//-----------------------------------------------------
+
+function deleteAllChatApi(data: AxiosRequestConfig<any> | undefined) {
+  return axios.delete("/post/chat/delete", data);
+}
+
+function* deleteAllChat(action: { data: any }): SagaIterator {
+  try {
+    const result = yield call(deleteAllChatApi, action.data);
+    yield put({
+      type: DELETE_ALL_CHAT_SUCCESS,
+      data: result.data,
+    });
+  } catch (err: any) {
+    console.log(err);
+    yield put({
+      type: DELETE_ALL_CHAT_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+function* watchDeleteAllChat() {
+  yield takeLatest<any>(DELETE_ALL_CHAT_REQUEST, deleteAllChat);
+}
 
 export default function* postSaga() {
   yield all([
@@ -542,5 +597,7 @@ export default function* postSaga() {
     fork(watchSearchNickname),
     fork(watchDeleteImages),
     fork(watchAddChatMessage),
+    fork(watchreadChat),
+    fork(watchDeleteAllChat),
   ]);
 }

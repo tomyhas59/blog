@@ -4,46 +4,46 @@ import React, {
   SyntheticEvent,
   ChangeEvent,
   useRef,
+  useCallback,
 } from "react";
 import { useSelector } from "react-redux";
 import styled from "styled-components";
 import io from "socket.io-client";
 import moment from "moment";
 import { RootState } from "../reducer";
-import { UserType } from "../types";
+import { Message, UserType } from "../types";
 import { useDispatch } from "react-redux";
-import { ADD_CHAT_MESSAGE_REQUEST } from "../reducer/post";
+import {
+  ADD_CHAT_MESSAGE_REQUEST,
+  DELETE_ALL_CHAT_REQUEST,
+  READ_CHAT_REQUEST,
+} from "../reducer/post";
 
 const socket =
   process.env.NODE_ENV === "production"
     ? io("https://port-0-blog-server-rccln2llvsdixmg.sel5.cloudtype.app")
     : io("http://localhost:3075");
 
-interface Message {
-  id: number;
-  sender: string;
-  content: string;
-  createdAt: string;
-}
 const Chat = () => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputValue, setInputValue] = useState<string>("");
+  const { chatMessages } = useSelector((state: RootState) => state.post);
   const { me } = useSelector((state: RootState) => state.user);
   const [userList, setUserList] = useState<UserType[] | null>(null);
   const messageRef = useRef<HTMLInputElement>(null);
   const dispatch = useDispatch();
 
-  console.log("userList", userList);
+  console.log("chatMessages", chatMessages);
 
   useEffect(() => {
-    socket.on("chatMessages", (messages: Message[]) => {
-      console.log("-----------", messages);
-      setMessages(messages);
+    dispatch({
+      type: READ_CHAT_REQUEST,
     });
-    return () => {
-      socket.off("chatMessages");
-    };
   }, []);
+
+  useEffect(() => {
+    setMessages(chatMessages);
+  }, [chatMessages]);
 
   useEffect(() => {
     if (me) {
@@ -77,7 +77,7 @@ const Chat = () => {
         id: new Date().getTime(),
         sender: me?.nickname || null,
         content: inputValue,
-        createdAt: moment().format("HH:mm"),
+        createdAt: new Date().getTime(),
       };
       socket.emit("sendMessage", newMessage);
       setInputValue("");
@@ -93,19 +93,45 @@ const Chat = () => {
     setInputValue(e.target.value);
   };
 
+  const handleDeleteAllMessages = useCallback(() => {
+    dispatch({
+      type: DELETE_ALL_CHAT_REQUEST,
+      data: {},
+    });
+  }, [dispatch]);
+
   return (
     <ChatContainer>
       <ChatWrapper>
         <ChatHeader>단체 채팅방</ChatHeader>
+        {me?.nickname === "admin" && (
+          <button onClick={handleDeleteAllMessages}>모든 대화 삭제</button>
+        )}
         <MessageList>
-          {messages.map((v) => (
-            <MessageItem key={v.id} isMe={v.sender === me?.nickname}>
-              <MessageSender>{v.sender}</MessageSender>
-              <MessageText isMe={v.sender === me?.nickname}>
-                {v.content}
-              </MessageText>
-              <MessageTime>{moment(v.createdAt).format("HH:mm")}</MessageTime>
-            </MessageItem>
+          {messages.map((message, i) => (
+            <>
+              {i === 0 ||
+              moment(message.createdAt).isAfter(
+                messages[i - 1].createdAt,
+                "day"
+              ) ? (
+                <DateSeparator>
+                  {moment(message.createdAt).format("YYYY-MM-DD")}
+                </DateSeparator>
+              ) : null}
+              <MessageItem
+                key={message.id}
+                isMe={message.sender === me?.nickname}
+              >
+                <MessageSender>{message.sender}</MessageSender>
+                <MessageText isMe={message.sender === me?.nickname}>
+                  {message.content}
+                </MessageText>
+                <MessageTime>
+                  {moment(message.createdAt).format("HH:mm")}
+                </MessageTime>
+              </MessageItem>
+            </>
           ))}
         </MessageList>
         <MessageForm onSubmit={handleMessageSubmit}>
@@ -227,4 +253,13 @@ const MessageButton = styled.button`
   border: none;
   border-radius: 0 4px 4px 0;
   cursor: pointer;
+`;
+
+const DateSeparator = styled.div`
+  width: 100%;
+  font-size: 10px;
+  color: #ccc;
+  border-bottom: 1px solid #ccc;
+  margin: 10px 0;
+  text-align: center;
 `;

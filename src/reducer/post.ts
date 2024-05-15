@@ -1,12 +1,12 @@
 import { produce } from "immer";
-import { PostType } from "../types";
+import { Message, PostType } from "../types";
 
 //전역 상태 초기값
 const initialState = {
   allPosts: [] as PostType[],
   imagePaths: [] as string[],
   searchPosts: [] as PostType[],
-  chatMessages: [] as string[],
+  chatMessages: [] as Message[],
 
   allPostsLoading: false,
   allPostsDone: false,
@@ -79,6 +79,14 @@ const initialState = {
   addChatMessageLoading: false,
   addChatMessageDone: false,
   addChatMessageError: null,
+
+  readChatLoading: false,
+  readChatDone: false,
+  readChatError: null,
+
+  deleteAllChatLoading: false,
+  deleteAllChatDone: false,
+  deleteAllChatError: null,
 };
 
 //action명
@@ -153,6 +161,14 @@ export const SEARCH_NICKNAME_FAILURE = "SEARCH_NICKNAME_FAILURE";
 export const ADD_CHAT_MESSAGE_REQUEST = "ADD_CHAT_MESSAGE_REQUEST";
 export const ADD_CHAT_MESSAGE_SUCCESS = "ADD_CHAT_MESSAGE_SUCCESS";
 export const ADD_CHAT_MESSAGE_FAILURE = "ADD_CHAT_MESSAGE_FAILURE";
+
+export const READ_CHAT_REQUEST = "READ_CHAT_REQUEST";
+export const READ_CHAT_SUCCESS = "READ_CHAT_SUCCESS";
+export const READ_CHAT_FAILURE = "READ_CHAT_FAILURE";
+
+export const DELETE_ALL_CHAT_REQUEST = "DELETE_ALL_CHAT_REQUEST";
+export const DELETE_ALL_CHAT_SUCCESS = "DELETE_ALL_CHAT_SUCCESS";
+export const DELETE_ALL_CHAT_FAILURE = "DELETE_ALL_CHAT_FAILURE";
 
 const post = (state = initialState, action: any) => {
   return produce(state, (draft) => {
@@ -632,6 +648,39 @@ const post = (state = initialState, action: any) => {
       case ADD_CHAT_MESSAGE_FAILURE:
         draft.addChatMessageLoading = false;
         draft.addChatMessageError = action.error;
+        break;
+
+      //-------------------------------------------------------
+      case READ_CHAT_REQUEST:
+        draft.readChatLoading = true;
+        draft.readChatDone = false;
+        draft.readChatError = null;
+        break;
+      case READ_CHAT_SUCCESS: {
+        draft.readChatLoading = false;
+        draft.readChatDone = true;
+        draft.chatMessages = draft.chatMessages.concat(action.data);
+        break;
+      }
+      case READ_CHAT_FAILURE:
+        draft.readChatLoading = false;
+        draft.readChatError = action.error;
+        break;
+      //-------------------------------------------------------
+      case DELETE_ALL_CHAT_REQUEST:
+        draft.deleteAllChatLoading = true;
+        draft.deleteAllChatDone = false;
+        draft.deleteAllChatError = null;
+        break;
+      case DELETE_ALL_CHAT_SUCCESS: {
+        draft.deleteAllChatLoading = false;
+        draft.deleteAllChatDone = true;
+        draft.chatMessages = [];
+        break;
+      }
+      case DELETE_ALL_CHAT_FAILURE:
+        draft.deleteAllChatLoading = false;
+        draft.deleteAllChatError = action.error;
         break;
       default:
         return;
