@@ -54,34 +54,30 @@ export const FooterWrapper = styled.footer`
 
 export const FooterTamplate = styled.div`
   width: 100%;
-  max-width: 1200px;
-  margin: 0.5rem auto;
+  margin: 0 auto;
   padding: 1rem;
   display: flex;
   justify-content: space-around;
   align-items: center;
+  @media (max-width: 480px) {
+    width: 400px;
+  }
 `;
 
 export const Footertxt = styled.div`
   width: 70%;
   color: #fff;
-
   & p {
     font-weight: auto;
-    font-size: 0.825rem;
     color: auto;
+    font-size: 0.7rem;
     margin-top: 5px;
-    @media (max-width: 480px) {
-      transform: scale(0.7) translateX(50px);
-      margin-top: -15px;
-    }
   }
 `;
 
 export const FooterRight = styled.div`
   display: flex;
   align-items: center;
-
   & > ul {
     display: flex;
     align-items: center;
@@ -89,6 +85,9 @@ export const FooterRight = styled.div`
     background-color: ${(props) => props.theme.mainColor};
     border-radius: 0.5rem;
     list-style: none;
+    @media (max-width: 480px) {
+      transform: scale(0.7) translateX(-120px);
+    }
   }
 
   & > ul > li {
@@ -101,9 +100,5 @@ export const FooterRight = styled.div`
     &:hover {
       color: ${(props) => props.theme.charColor};
     }
-  }
-  @media (max-width: 480px) {
-    transform: scale(0.7) translateX(-50px);
-    margin-top: -15px;
   }
 `;

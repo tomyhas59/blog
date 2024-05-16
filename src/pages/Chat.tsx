@@ -146,7 +146,7 @@ const Chat = () => {
         </MessageForm>
       </ChatWrapper>
       <UserList>
-        <div>접속 중인 유저 : {userList?.length || 0}명</div>
+        <div>{userList?.length || 0}명 접속 중</div>
         <ul>
           {userList?.map((user) => (
             <li key={user.id}>{user.nickname}</li>
@@ -162,6 +162,9 @@ export default Chat;
 const ChatContainer = styled.div`
   display: flex;
   justify-content: center;
+  @media (max-width: 480px) {
+    display: block;
+  }
 `;
 
 const UserList = styled.div`
@@ -179,6 +182,9 @@ const UserList = styled.div`
       }
     }
   }
+  @media (max-width: 480px) {
+    display: none;
+  }
 `;
 
 const ChatWrapper = styled.div`
@@ -186,6 +192,9 @@ const ChatWrapper = styled.div`
   padding: 20px;
   border: 1px solid #ccc;
   border-radius: 4px;
+  @media (max-width: 480px) {
+    width: 380px;
+  }
 `;
 
 const ChatHeader = styled.h2`

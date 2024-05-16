@@ -102,7 +102,7 @@ export const HeaderWrapper = styled.header`
   display: grid;
   grid-template-columns: repeat(4, 1fr);
 
-  @media (max-width: 680px) {
+  @media (max-width: 480px) {
     height: 10rem;
     grid-template-columns: repeat(2, 1fr);
   }
