@@ -46,7 +46,7 @@ const Main = () => {
         type: ALL_POSTS_REQUEST,
       });
     }
-  }, [allPosts.length, dispatch]);
+  }, [allPosts.length, dispatch, currentPage]);
 
   const indexOfLastPost = currentPage * postsPerPage;
   const indexOfFirstPost = indexOfLastPost - postsPerPage;
