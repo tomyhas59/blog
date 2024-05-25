@@ -173,6 +173,8 @@ export const DELETE_ALL_CHAT_FAILURE = "DELETE_ALL_CHAT_FAILURE";
 const post = (state = initialState, action: any) => {
   return produce(state, (draft) => {
     switch (action.type) {
+      case "REFRESH":
+        return initialState;
       case "CANCEL_MODIFY":
         draft.imagePaths = [];
         break;
@@ -632,8 +634,7 @@ const post = (state = initialState, action: any) => {
         draft.unLikePostLoading = false;
         draft.unLikePostError = action.error;
         break;
-      case "GO_HOME":
-        return initialState;
+
       //-------------------------------------------------------
       case ADD_CHAT_MESSAGE_REQUEST:
         draft.addChatMessageLoading = true;

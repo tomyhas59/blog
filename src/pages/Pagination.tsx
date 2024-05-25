@@ -1,17 +1,21 @@
 import React from "react";
 import styled from "styled-components";
 import { usePagination } from "./PaginationProvider";
+import { useDispatch } from "react-redux";
 
 const Pagination = ({ totalPosts }: { totalPosts: number }) => {
   const { postsPerPage, currentPage, paginate } = usePagination();
   const pageNumbers = [];
-
+  const dispatch = useDispatch();
   for (let i = 1; i <= Math.ceil(totalPosts / postsPerPage); i++) {
     pageNumbers.push(i);
   }
 
   const handlePageClick = (number: number) => {
     paginate(number);
+    dispatch({
+      type: "REFRESH", //새로 고침
+    });
     window.scrollTo({ top: 0, behavior: "auto" }); // 페이지 맨 위로 스크롤
   };
 

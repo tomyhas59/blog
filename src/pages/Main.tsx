@@ -31,7 +31,7 @@ const Main = () => {
   useEffect(() => {
     if (addPostDone) {
       dispatch({
-        type: "GO_HOME",
+        type: "REFRESH",
       });
       paginate(1);
       navigator("/");
@@ -40,13 +40,13 @@ const Main = () => {
   });
 
   useEffect(() => {
-    if (allPosts.length === 0 || currentPage > 0) {
+    if (allPosts.length === 0) {
       // 초기 게시물 불러오기
       dispatch({
         type: ALL_POSTS_REQUEST,
       });
     }
-  }, [allPosts.length, dispatch, currentPage]);
+  }, [allPosts.length, dispatch]);
 
   const indexOfLastPost = currentPage * postsPerPage;
   const indexOfFirstPost = indexOfLastPost - postsPerPage;
