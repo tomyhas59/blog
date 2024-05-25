@@ -40,7 +40,7 @@ const Main = () => {
   });
 
   useEffect(() => {
-    if (allPosts.length === 0) {
+    if (allPosts.length === 0 || currentPage > 0) {
       // 초기 게시물 불러오기
       dispatch({
         type: ALL_POSTS_REQUEST,
