@@ -16,6 +16,10 @@ export const initialState = {
   signUpDone: false,
   signUpError: null,
 
+  refreshTokenLoading: false,
+  refreshTokenDone: false,
+  refreshTokenError: null,
+
   me: null as UserType | null,
 };
 
@@ -30,6 +34,10 @@ export const LOG_OUT_SUCCESS = "LOG_OUT_SUCCESS";
 export const SIGN_UP_FAILURE = "SIGN_UP_FAILURE";
 export const SIGN_UP_REQUEST = "SIGN_UP_REQUEST";
 export const SIGN_UP_SUCCESS = "SIGN_UP_SUCCESS";
+
+export const REFRESH_TOKEN_FAILURE = "REFRESH_TOKEN_FAILURE";
+export const REFRESH_TOKEN_REQUEST = "REFRESH_TOKEN_REQUEST";
+export const REFRESH_TOKEN_SUCCESS = "REFRESH_TOKEN_SUCCESS";
 
 const user = (
   state = initialState,
@@ -84,7 +92,27 @@ const user = (
         draft.signUpLoading = false;
         draft.signUpError = action.error;
         break;
+      //--------------------------------------------
+      case REFRESH_TOKEN_REQUEST:
+        draft.refreshTokenError = null;
+        draft.refreshTokenLoading = true;
+        draft.refreshTokenDone = false;
+        break;
+      case REFRESH_TOKEN_SUCCESS:
+        draft.refreshTokenLoading = false;
+        draft.refreshTokenDone = true;
+        draft.me = action.data;
+        draft.isLoggedIn = true;
+        break;
+      case REFRESH_TOKEN_FAILURE:
+        draft.refreshTokenLoading = false;
+        draft.refreshTokenError = action.error;
+        break;
       //----------------------------------------------
+      case "SET_USER":
+        draft.me = action.data;
+        draft.isLoggedIn = true;
+        break;
       case "INITIALIZE_STATE":
         return initialState; // 초기 상태로 리셋
     }

@@ -4,11 +4,12 @@ import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { useCallback, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { LOG_OUT_REQUEST } from "../../reducer/user";
+import { LOG_OUT_REQUEST, REFRESH_TOKEN_REQUEST } from "../../reducer/user";
 import Search from "../../components/Search";
 import { usePagination } from "../PaginationProvider";
 import { RootState } from "../../reducer";
 import io from "socket.io-client";
+import axios from "axios";
 
 const Header = () => {
   const dispatch = useDispatch();
@@ -16,6 +17,38 @@ const Header = () => {
   const { isLoggedIn, logOutDone, me, logInError } = useSelector(
     (state: RootState) => state.user
   );
+
+  //새로고침 로그인 유지
+  useEffect(() => {
+    const accessToken = localStorage.getItem("accessToken");
+    const refreshToken = localStorage.getItem("refreshToken");
+
+    const fetchUserData = async () => {
+      try {
+        const response = await axios.get("/user/setUser", {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        });
+        const userData = response.data;
+        dispatch({
+          type: "SET_USER",
+          data: userData,
+        });
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    if (accessToken) {
+      fetchUserData();
+    }
+
+    if (!accessToken && refreshToken) {
+      dispatch({ type: REFRESH_TOKEN_REQUEST });
+    }
+  }, [dispatch]);
+
   const socket =
     process.env.NODE_ENV === "production"
       ? io("https://port-0-blog-server-rccln2llvsdixmg.sel5.cloudtype.app")
@@ -43,11 +76,11 @@ const Header = () => {
     dispatch({
       type: LOG_OUT_REQUEST,
     });
-  }, [dispatch, me?.id]);
+  }, [dispatch, me?.id, socket]);
 
   const handleGoHome = useCallback(() => {
     dispatch({
-      type: "GO_HOME",
+      type: "REFRESH",
     });
     paginate(1);
     navigator("/");

@@ -33,8 +33,6 @@ const Chat = () => {
   const messageRef = useRef<HTMLInputElement>(null);
   const dispatch = useDispatch();
 
-  console.log("chatMessages", chatMessages);
-
   useEffect(() => {
     dispatch({
       type: READ_CHAT_REQUEST,

@@ -1,10 +1,15 @@
 import {
+  REFRESH_TOKEN_FAILURE,
+  REFRESH_TOKEN_REQUEST,
+} from "./../reducer/user";
+import {
   LOG_IN_FAILURE,
   LOG_IN_REQUEST,
   LOG_IN_SUCCESS,
   LOG_OUT_FAILURE,
   LOG_OUT_REQUEST,
   LOG_OUT_SUCCESS,
+  REFRESH_TOKEN_SUCCESS,
   SIGN_UP_FAILURE,
   SIGN_UP_REQUEST,
   SIGN_UP_SUCCESS,
@@ -55,7 +60,8 @@ function logInAPI(data: any) {
 function* logIn(action: { data: any }): SagaIterator {
   try {
     const result = yield call(logInAPI, action.data);
-
+    localStorage.setItem("accessToken", result.data.accessToken);
+    localStorage.setItem("refreshToken", result.data.refreshToken);
     yield put({
       //put은 dipatch
       type: LOG_IN_SUCCESS,
@@ -74,6 +80,34 @@ function* watchLogin() {
   yield takeEvery<any>(LOG_IN_REQUEST, logIn);
 }
 //--------------------------------------------------------
+
+function refreshTokenAPI() {
+  const refreshToken = localStorage.getItem("refreshToken");
+  return axios.post("/user/refreshToken", { refreshToken });
+}
+
+function* refreshToken(): SagaIterator {
+  try {
+    const result = yield call(refreshTokenAPI);
+
+    localStorage.setItem("accessToken", result.data.accessToken);
+    yield put({
+      type: REFRESH_TOKEN_SUCCESS,
+      data: result.data,
+    });
+  } catch (err: any) {
+    yield put({
+      type: REFRESH_TOKEN_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+
+function* watchRefreshToken() {
+  yield takeEvery<any>(REFRESH_TOKEN_REQUEST, refreshToken);
+}
+
+//--------------------------------------------------------
 function logOutAPI() {
   return axios.post("/user/logout");
 }
@@ -81,7 +115,8 @@ function logOutAPI() {
 function* logOut() {
   try {
     yield call(logOutAPI);
-
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("refreshToken");
     yield put({
       //put은 dipatch
       type: LOG_OUT_SUCCESS,
@@ -100,7 +135,12 @@ function* watchLogOut() {
 }
 
 export default function* userSaga() {
-  yield all([fork(watchLogin), fork(watchLogOut), fork(watchSignUp)]);
+  yield all([
+    fork(watchLogin),
+    fork(watchLogOut),
+    fork(watchSignUp),
+    fork(watchRefreshToken),
+  ]);
   //fork:  함수의 비동기적인 호출 사용
   //call과 달리 순서 상관없이 실행할 때 사용
   //보통은 이벤트 리스너 함수를 실행할 때 사용
