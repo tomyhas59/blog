@@ -22,9 +22,10 @@ import {
 } from "../reducer/post";
 import moment from "moment";
 import "moment/locale/ko";
-import { Form, SubmitButton, TextArea, FileButton } from "./PostForm";
+import { Form, TextArea, FileButton } from "./PostForm";
 import { PostType } from "../types";
 import { RootState } from "../reducer";
+import { baseURL } from "../config";
 
 const Post = ({
   post,
@@ -51,31 +52,42 @@ const Post = ({
   const liked = post.Likers.find((v) => v.id === id);
   const imageInput = useRef<HTMLInputElement>(null);
 
-  //---작성글 보기 팝업-------------------------------------
+  //---닉네임 클릭 정보 보기-------------------------------------
+  const [showInfo, setShowInfo] = useState(false);
+  const handleShowInfo = useCallback(() => {
+    setShowInfo((prevShowInfo) => !prevShowInfo);
+  }, []);
+
+  //---게시글 수정, 삭제 토글-------------------------------------
+
   const [showPopup, setShowPopup] = useState(false);
   const handlePopupToggle = useCallback(() => {
     setShowPopup((prevShowPopup) => !prevShowPopup);
   }, []);
-  //----------------------------------------------
-  const popupRef = useRef<HTMLInputElement>(null);
-  const nicknameButtonRef = useRef(null);
-  const handleOutsideClick = useCallback((e: MouseEvent) => {
-    if (
-      popupRef.current &&
-      !popupRef.current.contains(e.target as Node) &&
-      e.target !== nicknameButtonRef.current
-    ) {
-      setShowPopup(false);
-    }
-  }, []);
+
+  //OutsideClick----------------------------------------------
+  const infoMenuRef = useRef<HTMLDivElement>(null);
+  const popupMenuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    document.addEventListener("click", handleOutsideClick);
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        infoMenuRef.current &&
+        !infoMenuRef.current.contains(event.target as Node)
+      )
+        setShowInfo(false);
 
-    return () => {
-      document.removeEventListener("click", handleOutsideClick);
+      if (
+        popupMenuRef.current &&
+        !popupMenuRef.current.contains(event.target as Node)
+      )
+        setShowPopup(false);
     };
-  }, [handleOutsideClick]);
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   //-----게시글 수정-------------------------
   const onEditPostHandler = useCallback(() => {
@@ -235,18 +247,15 @@ const Post = ({
         <PostWrapper>
           <PostHeaderFlex>
             <PostHeader>
-              <NicknameButton
-                onClick={handlePopupToggle}
-                ref={nicknameButtonRef}
-              >
+              <NicknameButton onClick={handleShowInfo}>
                 {post.User.nickname}
               </NicknameButton>
-              {showPopup && (
-                <PopupMenu ref={popupRef}>
+              {showInfo && (
+                <InfoMenu ref={infoMenuRef}>
                   <Button onClick={handleSearch}>작성 글 보기</Button>
-                </PopupMenu>
+                </InfoMenu>
               )}
-              <Span>{formattedDate}</Span>
+              <Date>{formattedDate}</Date>
             </PostHeader>
             <div>
               <Liked>좋아요 {post.Likers.length}개</Liked>
@@ -285,7 +294,7 @@ const Post = ({
                     {post.Images.map((image, index) => (
                       <ImageContainer key={index}>
                         <ModifyImage
-                          src={`http://localhost:3075/${image.src}`}
+                          src={`${baseURL}/${image.src}`}
                           alt={image.src}
                         />
                         <RemoveButton
@@ -299,10 +308,7 @@ const Post = ({
                     {/**파일 첨부 시 이미지 */}
                     {imagePaths.map((filename, index) => (
                       <ImageContainer key={index}>
-                        <ModifyImage
-                          src={`http://localhost:3075/${filename}`}
-                          alt="img"
-                        />
+                        <ModifyImage src={`${baseURL}/${filename}`} alt="img" />
                         <RemoveButton
                           type="button"
                           onClick={onRemoveImage(filename)}
@@ -312,7 +318,8 @@ const Post = ({
                       </ImageContainer>
                     ))}
                   </ImageGrid>
-                  <SubmitButton type="submit">적용</SubmitButton>
+                  <Button type="submit">적용</Button>
+                  <Button onClick={onEditPostHandler}>취소</Button>
                 </Form>
                 <EndFlex></EndFlex>
               </>
@@ -323,39 +330,39 @@ const Post = ({
                   {post.Images.map((image) => (
                     <ContentImg
                       key={image.id}
-                      src={`http://localhost:3075/${image.src}`}
+                      src={`${baseURL}/${image.src}`}
                       alt={image.src}
                       onClick={() => {
-                        window.open(
-                          `http://localhost:3075/${image.src}`,
-                          "_blank"
-                        );
+                        window.open(`${baseURL}/${image.src}`, "_blank");
                       }}
                     />
                   ))}
                 </ContentImgWrapper>
               </ContentWrapper>
             )}
+            {id === post.User.id || nickname === "admin" ? (
+              <div>
+                {!editPost && (
+                  <EditToggle onClick={handlePopupToggle}>
+                    ⋮
+                    {showPopup && (
+                      <PopupMenu ref={popupMenuRef}>
+                        <Button onClick={onEditPostHandler}>수정</Button>
+                        <Button onClick={handleDeletePost}>삭제</Button>
+                      </PopupMenu>
+                    )}
+                  </EditToggle>
+                )}
+              </div>
+            ) : null}
           </InPostWrapper>
-          {id === post.User.id || nickname === "admin" ? (
-            <EditDeleteForm>
-              {editPost ? (
-                <>
-                  <Button onClick={onEditPostHandler}>취소</Button>
-                </>
-              ) : (
-                <>
-                  <Button onClick={onEditPostHandler}>수정</Button>
-                  <Button onClick={handleDeletePost}>삭제</Button>
-                </>
-              )}
-            </EditDeleteForm>
-          ) : null}
         </PostWrapper>
         <CommentContainer>
           <PostHeaderFlex>
-            <Span>댓글 {post.Comments.length}개</Span>
-            <Info onClick={() => onAddCommentHandler(post.id)}>댓글 달기</Info>
+            <CommentNum>댓글 {post.Comments.length}개</CommentNum>
+            <Button onClick={() => onAddCommentHandler(post.id)}>
+              댓글 달기
+            </Button>
           </PostHeaderFlex>
           {addComment[post.id] ? (
             <div>
@@ -384,24 +391,22 @@ const FormWrapper = styled.div`
 `;
 
 const PostWrapper = styled.div`
-  width: 100%;
   border-radius: 5px;
   margin: 10px auto;
-  padding: 20px;
 `;
 
 const InPostWrapper = styled.div`
-  width: 100%;
-  border: 1px solid silver;
   border-radius: 5px;
   margin: 10px auto;
-  padding: 20px;
+  padding: 10px;
+  display: flex;
+  justify-content: space-between;
 `;
 
-const Button = styled.span`
-  width: 50px;
+const Button = styled.button`
   background-color: ${(props) => props.theme.mainColor};
-
+  height: 30px;
+  font-size: 12px;
   margin: 2px;
   color: #fff;
   padding: 6px;
@@ -421,17 +426,6 @@ const Liked = styled.span`
   text-align: center;
 `;
 
-const Info = styled.span`
-  width: 100px;
-  background-color: ${(props) => props.theme.mainColor};
-  margin: 2px;
-  color: #fff;
-  padding: 6px;
-  border-radius: 6px;
-  text-align: center;
-  cursor: pointer;
-`;
-
 const PostHeaderFlex = styled.div`
   display: flex;
   justify-content: space-between;
@@ -442,31 +436,24 @@ const EndFlex = styled.div`
   justify-content: end;
 `;
 const ContentWrapper = styled.div`
-  width: 100%;
-  overflow: hidden;
-  border-radius: 5px;
-  margin: 0 auto;
-  padding: 5px;
-  //줄바꿈 유지
-  white-space: pre-wrap;
+  width: 97%;
 `;
 
-const Span = styled.span`
+const Date = styled.span`
   width: 100px;
-  margin: 2px;
-  color: #000;
-  padding: 6px;
-  font-weight: bold;
+  margin: 5px;
+  color: silver;
+`;
+
+const CommentNum = styled.span`
+  font-size: 12px;
+  margin: 5px;
+  color: "#000";
 `;
 
 const CommentContainer = styled.div`
-  margin: 0 auto;
-  padding: 20px;
-  border-radius: 4px;
-`;
-
-const EditDeleteForm = styled.div`
-  float: right;
+  padding: 10px;
+  border-top: 1px solid silver;
 `;
 
 const ContentImg = styled.img`
@@ -494,10 +481,18 @@ const NicknameButton = styled.button`
 const PostHeader = styled.div`
   position: relative;
 `;
-const PopupMenu = styled.div`
+const InfoMenu = styled.div`
   position: absolute;
   top: 30px;
   left: 0;
+`;
+
+const PopupMenu = styled.div`
+  position: absolute;
+  top: 20px;
+  width: 40px;
+  display: flex;
+  flex-direction: column;
 `;
 const ImageGrid = styled.div`
   display: grid;
@@ -531,4 +526,10 @@ const RemoveButton = styled.button`
   &:hover {
     background-color: #c0392b;
   }
+`;
+
+const EditToggle = styled.div`
+  position: relative;
+  font-size: 19px;
+  cursor: pointer;
 `;

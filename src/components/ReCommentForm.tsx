@@ -83,6 +83,7 @@ const InputComment = styled.input`
 
 const Button = styled.button`
   background-color: ${(props) => props.theme.mainColor};
+  font-size: 12px;
   margin: 2px;
   color: #fff;
   padding: 6px;

@@ -1,4 +1,4 @@
-import React, { useCallback, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -144,6 +144,25 @@ const Comment = ({ post }: { post: PostType }) => {
     [dispatch, post.id]
   );
 
+  //OutsideClick----------------------------------------------
+  const popupRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        popupRef.current &&
+        !popupRef.current.contains(event.target as Node)
+      ) {
+        setShowPopup({});
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [popupRef]);
+
   return (
     <>
       {post.Comments.map((comment) => {
@@ -159,7 +178,7 @@ const Comment = ({ post }: { post: PostType }) => {
                   <div>{comment.User.nickname}</div>
                 </Author>
                 {showPopup[comment.id] ? (
-                  <PopupMenu>
+                  <PopupMenu ref={popupRef}>
                     <Button onClick={() => handleSearch(comment.User.nickname)}>
                       작성 글 보기
                     </Button>
@@ -183,45 +202,47 @@ const Comment = ({ post }: { post: PostType }) => {
                 ) : (
                   <Content>{comment.content}</Content>
                 )}
-                <Date>{formattedDate}</Date>
-                {id ? (
-                  <Toggle onClick={() => onAddReCommentHandler(comment.id)}>
-                    <FontAwesomeIcon icon={faComment} />
-                  </Toggle>
-                ) : (
-                  <NotLoggedIn>
-                    <FontAwesomeIcon icon={faComment} />
-                  </NotLoggedIn>
-                )}
-                {id === comment.User.id || nickname === "admin" ? (
-                  <>
-                    <Toggle
-                      onClick={() =>
-                        onEditReCommentHandler(comment.id, comment.content)
-                      }
-                    >
-                      <FontAwesomeIcon icon={faPen} />
+                <CommentOptions>
+                  <Date>{formattedDate}</Date>
+                  {id ? (
+                    <Toggle onClick={() => onAddReCommentHandler(comment.id)}>
+                      <FontAwesomeIcon icon={faComment} />
                     </Toggle>
-                    <Toggle
-                      onClick={() =>
-                        onRemoveComment(
-                          comment.id /*매개변수를 위의 함수로 전달*/
-                        )
-                      }
-                    >
-                      <FontAwesomeIcon icon={faTrash} />
-                    </Toggle>
-                  </>
-                ) : (
-                  <>
+                  ) : (
                     <NotLoggedIn>
-                      <FontAwesomeIcon icon={faPen} />
+                      <FontAwesomeIcon icon={faComment} />
                     </NotLoggedIn>
-                    <NotLoggedIn>
-                      <FontAwesomeIcon icon={faTrash} />
-                    </NotLoggedIn>
-                  </>
-                )}
+                  )}
+                  {id === comment.User.id || nickname === "admin" ? (
+                    <>
+                      <Toggle
+                        onClick={() =>
+                          onEditReCommentHandler(comment.id, comment.content)
+                        }
+                      >
+                        <FontAwesomeIcon icon={faPen} />
+                      </Toggle>
+                      <Toggle
+                        onClick={() =>
+                          onRemoveComment(
+                            comment.id /*매개변수를 위의 함수로 전달*/
+                          )
+                        }
+                      >
+                        <FontAwesomeIcon icon={faTrash} />
+                      </Toggle>
+                    </>
+                  ) : (
+                    <>
+                      <NotLoggedIn>
+                        <FontAwesomeIcon icon={faPen} />
+                      </NotLoggedIn>
+                      <NotLoggedIn>
+                        <FontAwesomeIcon icon={faTrash} />
+                      </NotLoggedIn>
+                    </>
+                  )}
+                </CommentOptions>
               </CommentWrapper>
               <ReComment post={post} comment={comment} />
             </FullCommentWrapper>
@@ -243,6 +264,7 @@ export default Comment;
 
 const FullCommentWrapper = styled.div`
   border-bottom: 1px solid silver;
+  font-size: 15px;
 `;
 
 const CommentWrapper = styled.div`
@@ -261,7 +283,7 @@ const Author = styled.button`
 `;
 
 const Content = styled.div`
-  width: 60%;
+  width: 70%;
   /**내용 수직 정렬용 */
   display: flex;
   align-items: center;
@@ -269,12 +291,16 @@ const Content = styled.div`
 
 const Toggle = styled.button`
   font-weight: bold;
-  width: 7%;
+`;
+
+const CommentOptions = styled.div`
+  display: flex;
+  & * {
+    margin-left: 2px;
+  }
 `;
 
 const Date = styled.button`
-  font-weight: bold;
-  width: 7%;
   cursor: default;
   color: gray;
   @media (max-width: 480px) {
@@ -284,7 +310,6 @@ const Date = styled.button`
 
 const NotLoggedIn = styled.button`
   font-weight: bold;
-  width: 8%;
   color: gray;
   cursor: default;
 `;
@@ -302,7 +327,7 @@ const Button = styled.button`
 `;
 
 const Input = styled.input`
-  width: 46%;
+  width: 60%;
 `;
 
 const EndFlex = styled.div`

@@ -68,11 +68,10 @@ const CommentWrapper = styled.div`
   border: 1px solid ${(props) => props.theme.mainColor};
   border-radius: 5px;
   margin: 10px auto;
-  padding: 20px;
+  padding: 10px;
 `;
 
 const Form = styled.form`
-  width: 100%;
   text-align: center;
 `;
 
@@ -82,6 +81,7 @@ const InputComment = styled.input`
 
 const Button = styled.button`
   background-color: ${(props) => props.theme.mainColor};
+  font-size: 12px;
   margin: 2px;
   color: #fff;
   padding: 6px;
