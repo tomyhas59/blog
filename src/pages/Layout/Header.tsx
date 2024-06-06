@@ -51,7 +51,7 @@ const Header = () => {
 
   const socket =
     process.env.NODE_ENV === "production"
-      ? io("https://port-0-blog-server-rccln2llvsdixmg.sel5.cloudtype.app")
+      ? io("https://quarrelsome-laura-tomyhas59-09167dc6.koyeb.app")
       : io("http://localhost:3075");
 
   useEffect(() => {
