@@ -94,7 +94,6 @@ const Chat = () => {
   const handleDeleteAllMessages = useCallback(() => {
     dispatch({
       type: DELETE_ALL_CHAT_REQUEST,
-      data: {},
     });
   }, [dispatch]);
 
@@ -107,7 +106,7 @@ const Chat = () => {
         )}
         <MessageList>
           {messages.map((message, i) => (
-            <>
+            <React.Fragment key={message.id}>
               {i === 0 ||
               moment(message.createdAt).isAfter(
                 messages[i - 1].createdAt,
@@ -129,7 +128,7 @@ const Chat = () => {
                   {moment(message.createdAt).format("HH:mm")}
                 </MessageTime>
               </MessageItem>
-            </>
+            </React.Fragment>
           ))}
         </MessageList>
         <MessageForm onSubmit={handleMessageSubmit}>

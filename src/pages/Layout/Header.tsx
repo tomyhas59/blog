@@ -17,6 +17,10 @@ const Header = () => {
   const { isLoggedIn, logOutDone, me, logInError } = useSelector(
     (state: RootState) => state.user
   );
+  const socket =
+    process.env.NODE_ENV === "production"
+      ? io("https://quarrelsome-laura-tomyhas59-09167dc6.koyeb.app")
+      : io("http://localhost:3075");
 
   //새로고침 로그인 유지
   useEffect(() => {
@@ -48,11 +52,6 @@ const Header = () => {
       dispatch({ type: REFRESH_TOKEN_REQUEST });
     }
   }, [dispatch]);
-
-  const socket =
-    process.env.NODE_ENV === "production"
-      ? io("https://quarrelsome-laura-tomyhas59-09167dc6.koyeb.app")
-      : io("http://localhost:3075");
 
   useEffect(() => {
     if (logInError) {

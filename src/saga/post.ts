@@ -529,13 +529,13 @@ function* watchAddChatMessage() {
 }
 //-----------------------------------------------------
 
-function readChatApi(data: AxiosRequestConfig<any> | undefined) {
-  return axios.get("/post/allChat", data);
+function readChatApi() {
+  return axios.get("/post/allChat");
 }
 
 function* readChat(action: { data: any }): SagaIterator {
   try {
-    const result = yield call(readChatApi, action.data);
+    const result = yield call(readChatApi);
     yield put({
       type: READ_CHAT_SUCCESS,
       data: result.data,
@@ -554,13 +554,13 @@ function* watchreadChat() {
 
 //-----------------------------------------------------
 
-function deleteAllChatApi(data: AxiosRequestConfig<any> | undefined) {
-  return axios.delete("/post/chat/delete", data);
+function deleteAllChatApi() {
+  return axios.delete("/post/chat/delete");
 }
 
 function* deleteAllChat(action: { data: any }): SagaIterator {
   try {
-    const result = yield call(deleteAllChatApi, action.data);
+    const result = yield call(deleteAllChatApi);
     yield put({
       type: DELETE_ALL_CHAT_SUCCESS,
       data: result.data,
