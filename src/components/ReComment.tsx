@@ -117,7 +117,7 @@ const ReComment = ({
         const createdAtCommentDate = moment(reComment.createdAt);
         const formattedCommentDate = createdAtCommentDate.format("l");
         return (
-          <CommentWrapper key={reComment.id}>
+          <ReCommentWrapper key={reComment.id}>
             <Author>☞{reComment.User.nickname}</Author>
             {isEditing && currentReCommentId === reComment.id ? (
               <>
@@ -137,28 +137,32 @@ const ReComment = ({
             ) : (
               <Content>{reComment.content}</Content>
             )}
-            <Date>{formattedCommentDate}</Date>
-            {id === reComment.User.id || nickname === "admin" ? (
-              <>
-                <Toggle
-                  onClick={() => editReCommentHandler(reComment.id, reComment)}
-                >
-                  <FontAwesomeIcon icon={faPen} />
-                </Toggle>
-                <Toggle
-                  onClick={() =>
-                    removeReComment(
-                      reComment.id /*매개변수를 위의 함수로 전달*/
-                    )
-                  }
-                >
-                  <FontAwesomeIcon icon={faCircleXmark} />
-                </Toggle>
-              </>
-            ) : (
-              <>{null}</>
-            )}
-          </CommentWrapper>
+            <ReCommentOptions>
+              <Date>{formattedCommentDate}</Date>
+              {id === reComment.User.id || nickname === "admin" ? (
+                <>
+                  <Toggle
+                    onClick={() =>
+                      editReCommentHandler(reComment.id, reComment)
+                    }
+                  >
+                    <FontAwesomeIcon icon={faPen} />
+                  </Toggle>
+                  <Toggle
+                    onClick={() =>
+                      removeReComment(
+                        reComment.id /*매개변수를 위의 함수로 전달*/
+                      )
+                    }
+                  >
+                    <FontAwesomeIcon icon={faCircleXmark} />
+                  </Toggle>
+                </>
+              ) : (
+                <>{null}</>
+              )}
+            </ReCommentOptions>
+          </ReCommentWrapper>
         );
       })}
     </>
@@ -167,7 +171,7 @@ const ReComment = ({
 
 export default ReComment;
 
-const CommentWrapper = styled.div`
+const ReCommentWrapper = styled.div`
   background-color: #fff;
   display: flex;
   width: 80%;
@@ -217,8 +221,14 @@ const EndFlex = styled.div`
 const Date = styled.div`
   cursor: default;
   color: gray;
-  width: 8%;
   @media (max-width: 480px) {
     font-size: 7px;
+  }
+`;
+
+const ReCommentOptions = styled.div`
+  display: flex;
+  & * {
+    margin-left: 2px;
   }
 `;

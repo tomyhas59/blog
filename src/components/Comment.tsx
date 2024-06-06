@@ -283,7 +283,7 @@ const Author = styled.button`
 `;
 
 const Content = styled.div`
-  width: 70%;
+  width: 65%;
   /**내용 수직 정렬용 */
   display: flex;
   align-items: center;

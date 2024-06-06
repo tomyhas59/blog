@@ -134,8 +134,13 @@ export const HeaderWrapper = styled.header`
   display: grid;
   grid-template-columns: repeat(4, 1fr);
 
+  @media (max-width: 780px) {
+    height: 9rem;
+    grid-template-columns: repeat(2, 500px);
+  }
+
   @media (max-width: 480px) {
-    height: 10rem;
+    height: 9rem;
     grid-template-columns: repeat(2, 1fr);
   }
 `;
@@ -182,6 +187,13 @@ const Button = styled.button`
   &:hover {
     transform: translateY(-2px);
     color: ${(props) => props.theme.subColor};
+  }
+  @media (max-width: 780px) {
+    width: 100px;
+  }
+
+  @media (max-width: 480px) {
+    width: 100px;
   }
 `;
 
