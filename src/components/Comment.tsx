@@ -175,7 +175,7 @@ const Comment = ({ post }: { post: PostType }) => {
               <CommentWrapper key={comment.id}>
                 <Author onClick={() => handlePopupToggle(comment.id)}>
                   <FontAwesomeIcon icon={faUser} />
-                  <div>{comment.User.nickname}</div>
+                  <div>{comment.User.nickname.slice(0, 5)}</div>
                 </Author>
                 {showPopup[comment.id] ? (
                   <PopupMenu ref={popupRef}>
@@ -269,6 +269,7 @@ const FullCommentWrapper = styled.div`
 
 const CommentWrapper = styled.div`
   display: flex;
+  justify-content: space-around;
   width: 100%;
   border-radius: 5px;
   padding: 5px;
@@ -277,7 +278,6 @@ const CommentWrapper = styled.div`
 
 const Author = styled.button`
   font-weight: bold;
-  width: 10%;
   text-align: center;
   margin-right: 10px;
 `;
@@ -287,6 +287,7 @@ const Content = styled.div`
   /**내용 수직 정렬용 */
   display: flex;
   align-items: center;
+  word-break: break-word; /**텍스트 줄바꿈 */
 `;
 
 const Toggle = styled.button`
@@ -301,10 +302,12 @@ const CommentOptions = styled.div`
 `;
 
 const Date = styled.button`
+  width: 30%;
   cursor: default;
   color: gray;
   @media (max-width: 480px) {
     font-size: 7px;
+    width: 20%;
   }
 `;
 

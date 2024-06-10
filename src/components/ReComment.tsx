@@ -118,7 +118,7 @@ const ReComment = ({
         const formattedCommentDate = createdAtCommentDate.format("l");
         return (
           <ReCommentWrapper key={reComment.id}>
-            <Author>☞{reComment.User.nickname}</Author>
+            <Author>☞{reComment.User.nickname.slice(0, 5)}</Author>
             {isEditing && currentReCommentId === reComment.id ? (
               <>
                 <Text
@@ -181,7 +181,6 @@ const ReCommentWrapper = styled.div`
 `;
 
 const Author = styled.div`
-  width: 10%;
   text-align: center;
   margin-right: 10px;
 `;
@@ -191,6 +190,7 @@ const Content = styled.div`
   /**내용 수직 정렬용 */
   display: flex;
   align-items: center;
+  word-break: break-word; /**텍스트 줄바꿈 */
 `;
 
 const Toggle = styled.button`
@@ -221,7 +221,9 @@ const EndFlex = styled.div`
 const Date = styled.div`
   cursor: default;
   color: gray;
+  width: 35%;
   @media (max-width: 480px) {
+    width: 25%;
     font-size: 7px;
   }
 `;

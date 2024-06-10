@@ -248,7 +248,7 @@ const Post = ({
           <PostHeaderFlex>
             <PostHeader>
               <NicknameButton onClick={handleShowInfo}>
-                {post.User.nickname}
+                {post.User.nickname.slice(0, 5)}
               </NicknameButton>
               {showInfo && (
                 <InfoMenu ref={infoMenuRef}>

@@ -93,7 +93,7 @@ const Header = () => {
   return (
     <HeaderWrapper>
       <HeaderLogoBtn onClick={handleGoHome}>TMS</HeaderLogoBtn>
-      <Nickname>{me && me.nickname + "님 환영합니다"}</Nickname>
+      <Nickname>{me && me.nickname.slice(0, 5) + "님 환영합니다"}</Nickname>
       <Search />
       <SignList>
         {!isLoggedIn && (
