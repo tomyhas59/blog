@@ -37,7 +37,7 @@ const Chat = () => {
     dispatch({
       type: READ_CHAT_REQUEST,
     });
-  }, []);
+  }, [dispatch]);
 
   useEffect(() => {
     setMessages(chatMessages);
@@ -120,7 +120,7 @@ const Chat = () => {
                 key={message.id}
                 isMe={message.sender === me?.nickname}
               >
-                <MessageSender>{message.sender}</MessageSender>
+                <MessageSender>{message.sender.slice(0, 5)}</MessageSender>
                 <MessageText isMe={message.sender === me?.nickname}>
                   {message.content}
                 </MessageText>
@@ -146,7 +146,7 @@ const Chat = () => {
         <div>{userList?.length || 0}명 접속 중</div>
         <ul>
           {userList?.map((user) => (
-            <li key={user.id}>{user.nickname}</li>
+            <li key={user.id}>{user.nickname.slice(0, 5)}</li>
           ))}
         </ul>
       </UserList>
@@ -219,6 +219,11 @@ interface MessageTextProps {
   isMe: boolean;
 }
 
+const MessageSender = styled.span`
+  font-weight: bold;
+  line-height: 250%;
+`;
+
 const MessageText = styled.p<MessageTextProps>`
   margin: 5px 0;
   padding: 5px 10px;
@@ -228,14 +233,10 @@ const MessageText = styled.p<MessageTextProps>`
   max-width: 70%;
 `;
 
-const MessageSender = styled.span`
-  font-weight: bold;
-  line-height: 250%;
-`;
-
 const MessageTime = styled.span`
   font-size: 12px;
   color: #999;
+  align-self: end;
 `;
 
 const MessageForm = styled.form`
