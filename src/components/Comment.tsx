@@ -280,6 +280,7 @@ const Author = styled.button`
   font-weight: bold;
   text-align: center;
   margin-right: 10px;
+  color: ${(props) => props.theme.mainColor};
 `;
 
 const Content = styled.div`

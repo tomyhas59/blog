@@ -118,7 +118,7 @@ const ReComment = ({
         const formattedCommentDate = createdAtCommentDate.format("l");
         return (
           <ReCommentWrapper key={reComment.id}>
-            <Author>☞{reComment.User.nickname.slice(0, 5)}</Author>
+            <Author>{reComment.User.nickname.slice(0, 5)}➡️</Author>
             {isEditing && currentReCommentId === reComment.id ? (
               <>
                 <Text
@@ -174,6 +174,7 @@ export default ReComment;
 const ReCommentWrapper = styled.div`
   background-color: #fff;
   display: flex;
+  align-items: center;
   width: 80%;
   border-top: 1px solid silver;
   padding: 5px;
@@ -194,7 +195,7 @@ const Content = styled.div`
 `;
 
 const Toggle = styled.button`
-  width: 7%;
+  font-size: 10px;
 `;
 
 const Button = styled.button`
@@ -221,9 +222,9 @@ const EndFlex = styled.div`
 const Date = styled.div`
   cursor: default;
   color: gray;
-  width: 35%;
+  width: 40px;
   @media (max-width: 480px) {
-    width: 25%;
+    width: 20px;
     font-size: 7px;
   }
 `;
