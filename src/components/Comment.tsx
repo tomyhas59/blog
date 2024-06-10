@@ -171,19 +171,25 @@ const Comment = ({ post }: { post: PostType }) => {
         const formattedDate = createdAtDate.format("l");
         return (
           <div key={comment.id}>
-            <FullCommentWrapper>
-              <CommentWrapper key={comment.id}>
+            <FullCommentWrapper key={comment.id}>
+              <AuthorWrapper>
                 <Author onClick={() => handlePopupToggle(comment.id)}>
                   <FontAwesomeIcon icon={faUser} />
-                  <div>{comment.User.nickname.slice(0, 5)}</div>
+                  <span>{comment.User.nickname.slice(0, 5)}</span>
+                  {showPopup[comment.id] ? (
+                    <PopupMenu ref={popupRef}>
+                      <Button
+                        onClick={() => handleSearch(comment.User.nickname)}
+                      >
+                        작성 글 보기
+                      </Button>
+                    </PopupMenu>
+                  ) : null}
                 </Author>
-                {showPopup[comment.id] ? (
-                  <PopupMenu ref={popupRef}>
-                    <Button onClick={() => handleSearch(comment.User.nickname)}>
-                      작성 글 보기
-                    </Button>
-                  </PopupMenu>
-                ) : null}
+                <Date>({formattedDate})</Date>
+              </AuthorWrapper>
+
+              <ContentWrapper>
                 {isEditing && currentCommentId === comment.id ? (
                   <>
                     <Input
@@ -203,7 +209,6 @@ const Comment = ({ post }: { post: PostType }) => {
                   <Content>{comment.content}</Content>
                 )}
                 <CommentOptions>
-                  <Date>{formattedDate}</Date>
                   {id ? (
                     <Toggle onClick={() => onAddReCommentHandler(comment.id)}>
                       <FontAwesomeIcon icon={faComment} />
@@ -243,16 +248,16 @@ const Comment = ({ post }: { post: PostType }) => {
                     </>
                   )}
                 </CommentOptions>
-              </CommentWrapper>
+              </ContentWrapper>
+              {addReComment[comment.id] ? (
+                <ReCommentForm
+                  post={post}
+                  comment={comment}
+                  setAddReComment={setAddReComment}
+                />
+              ) : null}
               <ReComment post={post} comment={comment} />
             </FullCommentWrapper>
-            {addReComment[comment.id] ? (
-              <ReCommentForm
-                post={post}
-                comment={comment}
-                setAddReComment={setAddReComment}
-              />
-            ) : null}
           </div>
         );
       })}
@@ -263,17 +268,19 @@ const Comment = ({ post }: { post: PostType }) => {
 export default Comment;
 
 const FullCommentWrapper = styled.div`
-  border-bottom: 1px solid silver;
+  border-top: 1px solid silver;
   font-size: 15px;
+  padding: 5px;
 `;
 
-const CommentWrapper = styled.div`
-  display: flex;
-  justify-content: space-around;
-  width: 100%;
-  border-radius: 5px;
-  padding: 5px;
+const AuthorWrapper = styled.div`
   position: relative;
+`;
+
+const ContentWrapper = styled.div`
+  display: flex;
+  padding: 5px;
+  justify-content: space-between;
 `;
 
 const Author = styled.button`
@@ -284,7 +291,8 @@ const Author = styled.button`
 `;
 
 const Content = styled.div`
-  width: 65%;
+  width: 90%;
+  margin: 0 auto;
   /**내용 수직 정렬용 */
   display: flex;
   align-items: center;
@@ -302,10 +310,9 @@ const CommentOptions = styled.div`
   }
 `;
 
-const Date = styled.button`
-  width: 30%;
-  cursor: default;
+const Date = styled.span`
   color: gray;
+  font-size: 12px;
   @media (max-width: 480px) {
     font-size: 7px;
     width: 20%;
@@ -331,7 +338,8 @@ const Button = styled.button`
 `;
 
 const Input = styled.input`
-  width: 60%;
+  width: 77%;
+  margin: 0 auto;
 `;
 
 const EndFlex = styled.div`

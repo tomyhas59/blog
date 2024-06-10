@@ -76,7 +76,7 @@ const Form = styled.form`
 `;
 
 const InputComment = styled.input`
-  width: 70%;
+  width: 77%;
 `;
 
 const Button = styled.button`

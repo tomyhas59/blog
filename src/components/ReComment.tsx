@@ -118,50 +118,54 @@ const ReComment = ({
         const formattedCommentDate = createdAtCommentDate.format("l");
         return (
           <ReCommentWrapper key={reComment.id}>
-            <Author>{reComment.User.nickname.slice(0, 5)}➡️</Author>
-            {isEditing && currentReCommentId === reComment.id ? (
-              <>
-                <Text
-                  value={content}
-                  onChange={contentOnChane}
-                  ref={textRef}
-                  onKeyUp={(e) => Enter(e, reComment.id)}
-                />
-                <EndFlex>
-                  <Button onClick={() => modifyReComment(reComment.id)}>
-                    수정
-                  </Button>
-                  <Button onClick={cancelEdit}>취소</Button>
-                </EndFlex>
-              </>
-            ) : (
-              <Content>{reComment.content}</Content>
-            )}
-            <ReCommentOptions>
-              <Date>{formattedCommentDate}</Date>
-              {id === reComment.User.id || nickname === "admin" ? (
+            <AuthorWrapper>
+              <Author>↪ {reComment.User.nickname.slice(0, 5)}</Author>
+              <Date>({formattedCommentDate})</Date>
+            </AuthorWrapper>
+            <ContentWrapper>
+              {isEditing && currentReCommentId === reComment.id ? (
                 <>
-                  <Toggle
-                    onClick={() =>
-                      editReCommentHandler(reComment.id, reComment)
-                    }
-                  >
-                    <FontAwesomeIcon icon={faPen} />
-                  </Toggle>
-                  <Toggle
-                    onClick={() =>
-                      removeReComment(
-                        reComment.id /*매개변수를 위의 함수로 전달*/
-                      )
-                    }
-                  >
-                    <FontAwesomeIcon icon={faCircleXmark} />
-                  </Toggle>
+                  <Text
+                    value={content}
+                    onChange={contentOnChane}
+                    ref={textRef}
+                    onKeyUp={(e) => Enter(e, reComment.id)}
+                  />
+                  <EndFlex>
+                    <Button onClick={() => modifyReComment(reComment.id)}>
+                      수정
+                    </Button>
+                    <Button onClick={cancelEdit}>취소</Button>
+                  </EndFlex>
                 </>
               ) : (
-                <>{null}</>
+                <Content>{reComment.content}</Content>
               )}
-            </ReCommentOptions>
+              <ReCommentOptions>
+                {id === reComment.User.id || nickname === "admin" ? (
+                  <>
+                    <Toggle
+                      onClick={() =>
+                        editReCommentHandler(reComment.id, reComment)
+                      }
+                    >
+                      <FontAwesomeIcon icon={faPen} />
+                    </Toggle>
+                    <Toggle
+                      onClick={() =>
+                        removeReComment(
+                          reComment.id /*매개변수를 위의 함수로 전달*/
+                        )
+                      }
+                    >
+                      <FontAwesomeIcon icon={faCircleXmark} />
+                    </Toggle>
+                  </>
+                ) : (
+                  <>{null}</>
+                )}
+              </ReCommentOptions>
+            </ContentWrapper>
           </ReCommentWrapper>
         );
       })}
@@ -172,22 +176,31 @@ const ReComment = ({
 export default ReComment;
 
 const ReCommentWrapper = styled.div`
-  background-color: #fff;
-  display: flex;
-  align-items: center;
-  width: 80%;
-  border-top: 1px solid silver;
+  width: 85%;
   padding: 5px;
   margin: 0 auto;
+  border-top: 1px solid silver;
+  background-color: #e4f8fc;
 `;
 
-const Author = styled.div`
+const AuthorWrapper = styled.div`
+  position: relative;
+`;
+
+const Author = styled.span`
   text-align: center;
   margin-right: 10px;
+  color: ${(props) => props.theme.mainColor};
+`;
+
+const ContentWrapper = styled.div`
+  padding: 5px;
+  display: flex;
+  justify-content: space-between;
 `;
 
 const Content = styled.div`
-  width: 70%;
+  width: 77%;
   /**내용 수직 정렬용 */
   display: flex;
   align-items: center;
@@ -211,7 +224,7 @@ const Button = styled.button`
 `;
 
 const Text = styled.input`
-  width: 56%;
+  width: 77%;
 `;
 
 const EndFlex = styled.div`
@@ -219,10 +232,9 @@ const EndFlex = styled.div`
   justify-content: end;
 `;
 
-const Date = styled.div`
-  cursor: default;
+const Date = styled.span`
   color: gray;
-  width: 40px;
+  font-size: 10px;
   @media (max-width: 480px) {
     width: 20px;
     font-size: 7px;
