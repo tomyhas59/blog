@@ -270,11 +270,11 @@ export default Comment;
 const FullCommentWrapper = styled.div`
   border-top: 1px solid silver;
   font-size: 15px;
-  padding: 5px;
 `;
 
 const AuthorWrapper = styled.div`
   position: relative;
+  margin-top: 15px;
 `;
 
 const ContentWrapper = styled.div`
