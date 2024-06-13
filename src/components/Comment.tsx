@@ -24,11 +24,11 @@ const Comment = ({ post }: { post: PostType }) => {
   const id = useSelector((state: RootState) => state.user.me?.id);
   const nickname = useSelector((state: RootState) => state.user.me?.nickname);
 
-  //----------작성글 보기 팝업-------------------------------------
-  const [showPopup, setShowPopup] = useState<Record<number, boolean>>({});
+  //---닉네임 클릭 정보 보기-------------------------------------
+  const [showInfo, setShowinfo] = useState<Record<number, boolean>>({});
 
-  const handlePopupToggle = useCallback((commentId: number) => {
-    setShowPopup((prev) => {
+  const toggleShowInfo = useCallback((commentId: number) => {
+    setShowinfo((prev) => {
       const updatedPopupState: Record<number, boolean> = { ...prev };
       for (const key in updatedPopupState) {
         updatedPopupState[key] = false;
@@ -38,13 +38,13 @@ const Comment = ({ post }: { post: PostType }) => {
     });
   }, []);
 
-  const handleSearch = useCallback(
+  const onSearch = useCallback(
     (userNickname: string) => {
       dispatch({
         type: SEARCH_NICKNAME_REQUEST,
         query: userNickname,
       });
-      setShowPopup({});
+      setShowinfo({});
       window.scrollTo({ top: 0, behavior: "auto" });
     },
     [dispatch]
@@ -53,13 +53,13 @@ const Comment = ({ post }: { post: PostType }) => {
   //------------------댓글 수정--------------------------------
 
   const [editComment, setEditComment] = useState<Record<number, boolean>>({});
-  const [content, contentOnChane, setContent] = useInput();
+  const [content, onChangeContent, setContent] = useInput();
   const textRef = useRef(null);
 
   // 현재 열려 있는 댓글의 id추적하기 위한 상태 변수
   const [currentCommentId, setCurrentCommentId] = useState<number | null>(null);
 
-  const onEditReCommentHandler = useCallback(
+  const onEditCommentForm = useCallback(
     (commentId: number, commentContent: string) => {
       // 기존 댓글 닫기
       if (currentCommentId !== null) {
@@ -81,7 +81,7 @@ const Comment = ({ post }: { post: PostType }) => {
   );
 
   // "취소" 버튼을 누를 때 호출되는 함수
-  const handleCancelEdit = useCallback(() => {
+  const onCancelEditComment = useCallback(() => {
     setEditComment((prev) => ({
       ...prev,
       [currentCommentId as number]: false,
@@ -90,7 +90,7 @@ const Comment = ({ post }: { post: PostType }) => {
     setContent(""); // "Text" 영역 초기화
   }, [currentCommentId, setContent]);
 
-  const handleModifyComment = useCallback(
+  const onModifytComment = useCallback(
     (commentId: number) => {
       dispatch({
         type: UPDATE_COMMENT_REQUEST,
@@ -106,19 +106,20 @@ const Comment = ({ post }: { post: PostType }) => {
     },
     [content, dispatch, post.id, setContent]
   );
-  const Enter = useCallback(
+
+  const onEnterKeyPress = useCallback(
     (e: React.KeyboardEvent<HTMLInputElement>, commentId: number) => {
       if (e.key === "Enter") {
-        handleModifyComment(commentId);
+        onModifytComment(commentId);
       }
     },
-    [handleModifyComment]
+    [onModifytComment]
   );
 
   //대댓글 쓰기 창,map 안에서 하나만 작동 및 폼 중복 방지 코드---------------------
   const [addReComment, setAddReComment] = useState<Record<string, boolean>>({});
 
-  const onAddReCommentHandler = useCallback((commentId: number) => {
+  const onAddReCommentForm = useCallback((commentId: number) => {
     setAddReComment((prev) => {
       const newReCommentState: Record<string, boolean> = {};
       Object.keys(prev).forEach((key) => {
@@ -148,18 +149,18 @@ const Comment = ({ post }: { post: PostType }) => {
   const popupRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
+    const onClickOutside = (event: MouseEvent) => {
       if (
         popupRef.current &&
         !popupRef.current.contains(event.target as Node)
       ) {
-        setShowPopup({});
+        setShowinfo({});
       }
     };
 
-    document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener("mousedown", onClickOutside);
     return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("mousedown", onClickOutside);
     };
   }, [popupRef]);
 
@@ -173,14 +174,12 @@ const Comment = ({ post }: { post: PostType }) => {
           <div key={comment.id}>
             <FullCommentWrapper key={comment.id}>
               <AuthorWrapper>
-                <Author onClick={() => handlePopupToggle(comment.id)}>
+                <Author onClick={() => toggleShowInfo(comment.id)}>
                   <FontAwesomeIcon icon={faUser} />
                   <span>{comment.User.nickname.slice(0, 5)}</span>
-                  {showPopup[comment.id] ? (
+                  {showInfo[comment.id] ? (
                     <PopupMenu ref={popupRef}>
-                      <Button
-                        onClick={() => handleSearch(comment.User.nickname)}
-                      >
+                      <Button onClick={() => onSearch(comment.User.nickname)}>
                         작성 글 보기
                       </Button>
                     </PopupMenu>
@@ -194,15 +193,15 @@ const Comment = ({ post }: { post: PostType }) => {
                   <>
                     <Input
                       value={content}
-                      onChange={contentOnChane}
+                      onChange={onChangeContent}
                       ref={textRef}
-                      onKeyUp={(e) => Enter(e, comment.id)}
+                      onKeyUp={(e) => onEnterKeyPress(e, comment.id)}
                     />
                     <EndFlex>
-                      <Button onClick={() => handleModifyComment(comment.id)}>
+                      <Button onClick={() => onModifytComment(comment.id)}>
                         수정
                       </Button>
-                      <Button onClick={handleCancelEdit}>취소</Button>
+                      <Button onClick={onCancelEditComment}>취소</Button>
                     </EndFlex>
                   </>
                 ) : (
@@ -210,7 +209,7 @@ const Comment = ({ post }: { post: PostType }) => {
                 )}
                 <CommentOptions>
                   {id ? (
-                    <Toggle onClick={() => onAddReCommentHandler(comment.id)}>
+                    <Toggle onClick={() => onAddReCommentForm(comment.id)}>
                       <FontAwesomeIcon icon={faComment} />
                     </Toggle>
                   ) : (
@@ -222,7 +221,7 @@ const Comment = ({ post }: { post: PostType }) => {
                     <>
                       <Toggle
                         onClick={() =>
-                          onEditReCommentHandler(comment.id, comment.content)
+                          onEditCommentForm(comment.id, comment.content)
                         }
                       >
                         <FontAwesomeIcon icon={faPen} />

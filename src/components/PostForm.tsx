@@ -23,7 +23,7 @@ const PostForm = () => {
   const { me } = useSelector((state: RootState) => state.user);
   const [content, setContent] = useState("");
 
-  const contentOnChange = useCallback(
+  const onChangeContent = useCallback(
     (e: ChangeEvent<HTMLTextAreaElement>) => {
       setContent(e.target.value);
     },
@@ -116,7 +116,7 @@ const PostForm = () => {
             <TextArea
               placeholder="Content"
               value={content}
-              onChange={contentOnChange}
+              onChange={onChangeContent}
             ></TextArea>
             <input
               type="file"

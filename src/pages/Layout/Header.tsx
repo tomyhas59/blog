@@ -27,7 +27,7 @@ const Header = () => {
     const accessToken = localStorage.getItem("accessToken");
     const refreshToken = localStorage.getItem("refreshToken");
 
-    const fetchUserData = async () => {
+    const getUserData = async () => {
       try {
         const response = await axios.get("/user/setUser", {
           headers: {
@@ -45,7 +45,7 @@ const Header = () => {
     };
 
     if (accessToken) {
-      fetchUserData();
+      getUserData();
     }
 
     if (!accessToken && refreshToken) {
@@ -70,14 +70,14 @@ const Header = () => {
     }
   }, [dispatch, logOutDone, navigator]);
 
-  const handleLogout = useCallback(() => {
+  const onLogout = useCallback(() => {
     socket.emit("logoutUser", me?.id);
     dispatch({
       type: LOG_OUT_REQUEST,
     });
   }, [dispatch, me?.id, socket]);
 
-  const handleGoHome = useCallback(() => {
+  const onGoHome = useCallback(() => {
     dispatch({
       type: "REFRESH",
     });
@@ -86,13 +86,13 @@ const Header = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, [dispatch, navigator, paginate]);
 
-  const goToChat = () => {
+  const onGoToChat = () => {
     navigator("/chat");
   };
 
   return (
     <HeaderWrapper>
-      <HeaderLogoBtn onClick={handleGoHome}>TMS</HeaderLogoBtn>
+      <HeaderLogoBtn onClick={onGoHome}>TMS</HeaderLogoBtn>
       <Nickname>{me && me.nickname.slice(0, 5) + "님 환영합니다"}</Nickname>
       <Search />
       <SignList>
@@ -109,10 +109,10 @@ const Header = () => {
         {isLoggedIn && (
           <>
             <li>
-              <Button onClick={handleLogout}>로그아웃</Button>
+              <Button onClick={onLogout}>로그아웃</Button>
             </li>
             <li>
-              <Button onClick={goToChat}>채팅</Button>
+              <Button onClick={onGoToChat}>채팅</Button>
             </li>
           </>
         )}

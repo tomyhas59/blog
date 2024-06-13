@@ -11,7 +11,7 @@ const Pagination = ({ totalPosts }: { totalPosts: number }) => {
     pageNumbers.push(i);
   }
 
-  const handlePageClick = (number: number) => {
+  const onPageClick = (number: number) => {
     paginate(number);
     dispatch({
       type: "REFRESH", //새로 고침
@@ -24,7 +24,7 @@ const Pagination = ({ totalPosts }: { totalPosts: number }) => {
       <ul>
         {pageNumbers.map((number) => (
           <PageItem key={number} isActive={number === currentPage}>
-            <PageButton onClick={() => handlePageClick(number)}>
+            <PageButton onClick={() => onPageClick(number)}>
               {number}
             </PageButton>
           </PageItem>

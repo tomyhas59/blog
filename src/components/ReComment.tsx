@@ -30,14 +30,14 @@ const ReComment = ({
     [key: number]: boolean;
   }>({});
 
-  const [content, contentOnChane, setContent] = useInput();
+  const [content, onChangeContent, setContent] = useInput();
   const textRef = useRef(null);
   //현재 열려 있는 대댓글의 id추적하기 위한 상태 변수
   const [currentReCommentId, setCurrentReCommentId] = useState<number | null>(
     null
   );
 
-  const editReCommentHandler = useCallback(
+  const onEditReCommentForm = useCallback(
     (recommentId: number, item: ReCommentType) => {
       // 기존 대댓글 닫기
       if (currentReCommentId !== null) {
@@ -59,7 +59,7 @@ const ReComment = ({
   );
 
   // "취소" 버튼을 누를 때 호출되는 함수
-  const cancelEdit = useCallback(() => {
+  const onCancelEditReComment = useCallback(() => {
     setEditReComment((prev) => ({
       ...prev,
       [currentReCommentId as number]: false,
@@ -68,7 +68,7 @@ const ReComment = ({
     setContent(""); // "Text" 영역 초기화
   }, [currentReCommentId, setContent]);
 
-  const modifyReComment = useCallback(
+  const onModifyReComment = useCallback(
     (reCommentId: number) => {
       dispatch({
         type: UPDATE_RECOMMENT_REQUEST,
@@ -85,17 +85,17 @@ const ReComment = ({
     },
     [comment.id, content, dispatch, post.id, setContent]
   );
-  const Enter = useCallback(
+  const onEnterKeyPress = useCallback(
     (e: React.KeyboardEvent<HTMLInputElement>, reCommentId: number) => {
       if (e.key === "Enter") {
-        modifyReComment(reCommentId);
+        onModifyReComment(reCommentId);
       }
     },
-    [modifyReComment]
+    [onModifyReComment]
   );
 
   //---대댓글 삭제----------------------------------------
-  const removeReComment = useCallback(
+  const onRemoveReComment = useCallback(
     (reCommentId: number) => {
       if (!window.confirm("삭제하시겠습니까?")) return false;
       dispatch({
@@ -127,15 +127,15 @@ const ReComment = ({
                 <>
                   <Text
                     value={content}
-                    onChange={contentOnChane}
+                    onChange={onChangeContent}
                     ref={textRef}
-                    onKeyUp={(e) => Enter(e, reComment.id)}
+                    onKeyUp={(e) => onEnterKeyPress(e, reComment.id)}
                   />
                   <EndFlex>
-                    <Button onClick={() => modifyReComment(reComment.id)}>
+                    <Button onClick={() => onModifyReComment(reComment.id)}>
                       수정
                     </Button>
-                    <Button onClick={cancelEdit}>취소</Button>
+                    <Button onClick={onCancelEditReComment}>취소</Button>
                   </EndFlex>
                 </>
               ) : (
@@ -146,14 +146,14 @@ const ReComment = ({
                   <>
                     <Toggle
                       onClick={() =>
-                        editReCommentHandler(reComment.id, reComment)
+                        onEditReCommentForm(reComment.id, reComment)
                       }
                     >
                       <FontAwesomeIcon icon={faPen} />
                     </Toggle>
                     <Toggle
                       onClick={() =>
-                        removeReComment(
+                        onRemoveReComment(
                           reComment.id /*매개변수를 위의 함수로 전달*/
                         )
                       }

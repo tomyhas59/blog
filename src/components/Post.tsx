@@ -38,7 +38,7 @@ const Post = ({
   const [editPost, setEditPost] = useState(false);
   const [content, setContent] = useState("");
 
-  const contentOnChange = useCallback(
+  const onChanegeContent = useCallback(
     (e: ChangeEvent<HTMLTextAreaElement>) => {
       setContent(e.target.value);
     },
@@ -54,15 +54,14 @@ const Post = ({
 
   //---닉네임 클릭 정보 보기-------------------------------------
   const [showInfo, setShowInfo] = useState(false);
-  const handleShowInfo = useCallback(() => {
+  const toggleShowInfo = useCallback(() => {
     setShowInfo((prevShowInfo) => !prevShowInfo);
   }, []);
 
   //---게시글 수정, 삭제 토글-------------------------------------
-
-  const [showPopup, setShowPopup] = useState(false);
-  const handlePopupToggle = useCallback(() => {
-    setShowPopup((prevShowPopup) => !prevShowPopup);
+  const [showOptions, setShowOptions] = useState(false);
+  const toggleShowOptions = useCallback(() => {
+    setShowOptions((prevShowOptions) => !prevShowOptions);
   }, []);
 
   //OutsideClick----------------------------------------------
@@ -70,7 +69,7 @@ const Post = ({
   const popupMenuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
+    const onClickOutside = (event: MouseEvent) => {
       if (
         infoMenuRef.current &&
         !infoMenuRef.current.contains(event.target as Node)
@@ -81,16 +80,16 @@ const Post = ({
         popupMenuRef.current &&
         !popupMenuRef.current.contains(event.target as Node)
       )
-        setShowPopup(false);
+        setShowOptions(false);
     };
-    document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener("mousedown", onClickOutside);
     return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("mousedown", onClickOutside);
     };
   }, []);
 
-  //-----게시글 수정-------------------------
-  const onEditPostHandler = useCallback(() => {
+  //-----게시글 수정 및 취소-------------------------
+  const toggleEditPostForm = useCallback(() => {
     setEditPost((prev) => {
       if (!prev) {
         setContent(post.content);
@@ -129,9 +128,9 @@ const Post = ({
     }
   }, [editPost]);
 
-  //댓글 창, 기존 폼 닫고 새로운 폼 엶--------------
+  //댓글 창, 기존 폼 닫고 새로운 폼 열고 닫기--------------
   const [addComment, setAddComment] = useState<Record<number, boolean>>({});
-  const onAddCommentHandler = useCallback(
+  const toggleAddCommentForm = useCallback(
     (postId: number) => {
       if (!id) {
         alert("로그인이 필요합니다");
@@ -148,7 +147,7 @@ const Post = ({
     [id]
   );
 
-  const handleDeletePost = useCallback(() => {
+  const onDeletePost = useCallback(() => {
     if (!window.confirm("삭제하시겠습니까?")) return false;
     dispatch({
       type: REMOVE_POST_REQUEST,
@@ -159,7 +158,7 @@ const Post = ({
   const createdAtDate = moment(post.createdAt);
   const formattedDate = createdAtDate.format("l");
 
-  const handleSearch = useCallback(() => {
+  const onSearch = useCallback(() => {
     dispatch({
       type: SEARCH_NICKNAME_REQUEST,
       query: post.User.nickname,
@@ -223,7 +222,7 @@ const Post = ({
     [dispatch]
   );
 
-  const handleModifyPost = useCallback(
+  const onModifyPost = useCallback(
     (e: SyntheticEvent, postId: number) => {
       e.preventDefault();
 
@@ -247,12 +246,12 @@ const Post = ({
         <PostWrapper>
           <PostHeaderFlex>
             <PostHeader>
-              <NicknameButton onClick={handleShowInfo}>
+              <NicknameButton onClick={toggleShowInfo}>
                 {post.User.nickname.slice(0, 5)}
               </NicknameButton>
               {showInfo && (
                 <InfoMenu ref={infoMenuRef}>
-                  <Button onClick={handleSearch}>작성 글 보기</Button>
+                  <Button onClick={onSearch}>작성 글 보기</Button>
                 </InfoMenu>
               )}
               <Date>{formattedDate}</Date>
@@ -271,12 +270,12 @@ const Post = ({
               <>
                 <Form
                   encType="multipart/form-data"
-                  onSubmit={(e) => handleModifyPost(e, post.id)}
+                  onSubmit={(e) => onModifyPost(e, post.id)}
                 >
                   <TextArea
                     placeholder="Content"
                     value={content}
-                    onChange={contentOnChange}
+                    onChange={onChanegeContent}
                     ref={editPostRef}
                   ></TextArea>
                   {/*     <input
@@ -319,7 +318,7 @@ const Post = ({
                     ))}
                   </ImageGrid>
                   <Button type="submit">적용</Button>
-                  <Button onClick={onEditPostHandler}>취소</Button>
+                  <Button onClick={toggleEditPostForm}>취소</Button>
                 </Form>
                 <EndFlex></EndFlex>
               </>
@@ -343,12 +342,12 @@ const Post = ({
             {id === post.User.id || nickname === "admin" ? (
               <div>
                 {!editPost && (
-                  <EditToggle onClick={handlePopupToggle}>
+                  <EditToggle onClick={toggleShowOptions}>
                     ⋮
-                    {showPopup && (
+                    {showOptions && (
                       <PopupMenu ref={popupMenuRef}>
-                        <Button onClick={onEditPostHandler}>수정</Button>
-                        <Button onClick={handleDeletePost}>삭제</Button>
+                        <Button onClick={toggleEditPostForm}>수정</Button>
+                        <Button onClick={onDeletePost}>삭제</Button>
                       </PopupMenu>
                     )}
                   </EditToggle>
@@ -360,7 +359,7 @@ const Post = ({
         <CommentContainer>
           <PostHeaderFlex>
             <CommentNum>댓글 {post.Comments.length}개</CommentNum>
-            <Button onClick={() => onAddCommentHandler(post.id)}>
+            <Button onClick={() => toggleAddCommentForm(post.id)}>
               댓글 달기
             </Button>
           </PostHeaderFlex>

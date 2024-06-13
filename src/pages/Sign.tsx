@@ -14,8 +14,8 @@ import { RootState } from "../reducer";
 
 const Sign = () => {
   const [nickname, nickNameOnChange] = useInput();
-  const [email, emailOnChange] = useInput();
-  const [password, passwordOnChange] = useInput();
+  const [email, onChangeEmail] = useInput();
+  const [password, onChagngePassword] = useInput();
   const [passwordConfirm, setpasswordConfirm] = useState("");
   const [passwordError, setpasswordError] = useState(false);
   const dispatch = useDispatch();
@@ -41,7 +41,7 @@ const Sign = () => {
     }
   }, [signUpDone, navigator, dispatch]);
 
-  const handleSubmit = useCallback(
+  const onSubmit = useCallback(
     (e: SyntheticEvent) => {
       e.preventDefault();
       if (!email || !nickname || !password || !passwordConfirm) {
@@ -61,13 +61,13 @@ const Sign = () => {
 
   return (
     <RegistrationContainer>
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={onSubmit}>
         <FormGroup>
           <Label>Email:</Label>
           <Input
             type="email"
             value={email}
-            onChange={emailOnChange}
+            onChange={onChangeEmail}
             placeholder="형식 aa@aa.com"
           />
         </FormGroup>
@@ -77,7 +77,11 @@ const Sign = () => {
         </FormGroup>
         <FormGroup>
           <Label>비밀번호:</Label>
-          <Input type="password" value={password} onChange={passwordOnChange} />
+          <Input
+            type="password"
+            value={password}
+            onChange={onChagngePassword}
+          />
         </FormGroup>
         <FormGroup>
           <Label>비밀번호 확인:</Label>

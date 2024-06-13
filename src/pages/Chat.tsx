@@ -68,7 +68,7 @@ const Chat = () => {
     };
   }, []);
 
-  const handleMessageSubmit = (e: SyntheticEvent) => {
+  const onMessageSubmit = (e: SyntheticEvent) => {
     e.preventDefault();
     if (inputValue.trim() !== "") {
       const newMessage = {
@@ -87,11 +87,11 @@ const Chat = () => {
     }
   };
 
-  const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
+  const onInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     setInputValue(e.target.value);
   };
 
-  const handleDeleteAllMessages = useCallback(() => {
+  const onDeleteAllMessages = useCallback(() => {
     dispatch({
       type: DELETE_ALL_CHAT_REQUEST,
     });
@@ -102,7 +102,7 @@ const Chat = () => {
       <ChatWrapper>
         <ChatHeader>단체 채팅방</ChatHeader>
         {me?.nickname === "admin" && (
-          <button onClick={handleDeleteAllMessages}>모든 대화 삭제</button>
+          <button onClick={onDeleteAllMessages}>모든 대화 삭제</button>
         )}
         <MessageList>
           {messages.map((message, i) => (
@@ -131,13 +131,13 @@ const Chat = () => {
             </React.Fragment>
           ))}
         </MessageList>
-        <MessageForm onSubmit={handleMessageSubmit}>
+        <MessageForm onSubmit={onMessageSubmit}>
           <MessageInput
             type="text"
             placeholder="메시지를 입력해주세요"
             value={inputValue}
             ref={messageRef}
-            onChange={handleInputChange}
+            onChange={onInputChange}
           />
           <MessageButton type="submit">전송</MessageButton>
         </MessageForm>

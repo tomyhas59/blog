@@ -12,7 +12,7 @@ const Search = () => {
   const dispatch = useDispatch();
   const { searchPostsError } = useSelector((state: RootState) => state.post);
 
-  const handleSearch = useCallback(() => {
+  const onSearch = useCallback(() => {
     if (!searchText) {
       alert("찾을 단어를 입력해 주세요");
     }
@@ -34,13 +34,13 @@ const Search = () => {
     }
   }, [searchPostsError]);
 
-  const Enter = useCallback(
+  const onEnterKeyPress = useCallback(
     (e: KeyboardEvent<HTMLInputElement>) => {
       if (e.key === "Enter") {
-        handleSearch();
+        onSearch();
       }
     },
-    [handleSearch]
+    [onSearch]
   );
 
   return (
@@ -58,9 +58,9 @@ const Search = () => {
         type="text"
         value={searchText}
         onChange={(e) => setSearchText(e.target.value)}
-        onKeyUp={(e) => Enter(e)}
+        onKeyUp={(e) => onEnterKeyPress(e)}
       />
-      <SearchButton onClick={handleSearch}>
+      <SearchButton onClick={onSearch}>
         <FontAwesomeIcon icon={faMagnifyingGlass} />
       </SearchButton>
     </Container>
