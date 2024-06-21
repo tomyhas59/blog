@@ -187,7 +187,6 @@ const Comment = ({ post }: { post: PostType }) => {
                 </Author>
                 <Date>({formattedDate})</Date>
               </AuthorWrapper>
-
               <ContentWrapper>
                 {isEditing && currentCommentId === comment.id ? (
                   <>
@@ -208,14 +207,10 @@ const Comment = ({ post }: { post: PostType }) => {
                   <Content>{comment.content}</Content>
                 )}
                 <CommentOptions>
-                  {id ? (
+                  {id && (
                     <Toggle onClick={() => onAddReCommentForm(comment.id)}>
                       <FontAwesomeIcon icon={faComment} />
                     </Toggle>
-                  ) : (
-                    <NotLoggedIn>
-                      <FontAwesomeIcon icon={faComment} />
-                    </NotLoggedIn>
                   )}
                   {id === comment.User.id || nickname === "admin" ? (
                     <>
@@ -236,16 +231,7 @@ const Comment = ({ post }: { post: PostType }) => {
                         <FontAwesomeIcon icon={faTrash} />
                       </Toggle>
                     </>
-                  ) : (
-                    <>
-                      <NotLoggedIn>
-                        <FontAwesomeIcon icon={faPen} />
-                      </NotLoggedIn>
-                      <NotLoggedIn>
-                        <FontAwesomeIcon icon={faTrash} />
-                      </NotLoggedIn>
-                    </>
-                  )}
+                  ) : null}
                 </CommentOptions>
               </ContentWrapper>
               {addReComment[comment.id] ? (
@@ -276,12 +262,6 @@ const AuthorWrapper = styled.div`
   margin-top: 15px;
 `;
 
-const ContentWrapper = styled.div`
-  display: flex;
-  padding: 5px;
-  justify-content: space-between;
-`;
-
 const Author = styled.button`
   font-weight: bold;
   text-align: center;
@@ -289,9 +269,13 @@ const Author = styled.button`
   color: ${(props) => props.theme.mainColor};
 `;
 
+const ContentWrapper = styled.div`
+  display: flex;
+  padding: 5px;
+  justify-content: space-between;
+`;
+
 const Content = styled.div`
-  width: 90%;
-  margin: 0 auto;
   /**내용 수직 정렬용 */
   display: flex;
   align-items: center;
@@ -316,12 +300,6 @@ const Date = styled.span`
     font-size: 7px;
     width: 20%;
   }
-`;
-
-const NotLoggedIn = styled.button`
-  font-weight: bold;
-  color: gray;
-  cursor: default;
 `;
 
 const Button = styled.button`
