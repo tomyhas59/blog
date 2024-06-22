@@ -95,28 +95,26 @@ const Header = () => {
       <HeaderLogoBtn onClick={onGoHome}>TMS</HeaderLogoBtn>
       <Nickname>{me && me.nickname.slice(0, 5) + "님 환영합니다"}</Nickname>
       <Search />
-      <SignList>
-        {!isLoggedIn && (
-          <>
-            <SignButton>
-              <Link to="/signup">회원가입</Link>
-            </SignButton>
-            <SignButton>
-              <Link to="/login">로그인</Link>
-            </SignButton>
-          </>
-        )}
-        {isLoggedIn && (
-          <>
-            <li>
-              <Button onClick={onLogout}>로그아웃</Button>
-            </li>
-            <li>
-              <Button onClick={onGoToChat}>채팅</Button>
-            </li>
-          </>
-        )}
-      </SignList>
+      {!isLoggedIn && (
+        <SignList>
+          <li>
+            <Link to="/signup">회원가입</Link>
+          </li>
+          <li>
+            <Link to="/login">로그인</Link>
+          </li>
+        </SignList>
+      )}
+      {isLoggedIn && (
+        <SignList>
+          <li>
+            <button onClick={onLogout}>로그아웃</button>
+          </li>
+          <li>
+            <button onClick={onGoToChat}>채팅</button>
+          </li>
+        </SignList>
+      )}
     </HeaderWrapper>
   );
 };
@@ -155,7 +153,9 @@ export const HeaderLogoBtn = styled.button`
   margin-left: 100px;
   width: 10rem;
   height: 3rem;
+  transition: transform 0.3s ease, color 0.3s ease;
   &:hover {
+    transform: translateY(-2px);
     color: ${(props) => props.theme.charColor};
   }
   @media (max-width: 480px) {
@@ -174,37 +174,15 @@ const Nickname = styled.div`
   }
 `;
 
-const Button = styled.button`
-  background-color: ${(props) => props.theme.mainColor};
-  padding: 5px;
-  color: #fff;
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: 1rem;
-  margin: 5px;
-  font-weight: bold;
-  transition: transform 0.3s ease, color 0.3s ease;
-  &:hover {
-    transform: translateY(-2px);
-    color: ${(props) => props.theme.subColor};
-  }
-  @media (max-width: 780px) {
-    width: 100px;
-  }
-
-  @media (max-width: 480px) {
-    width: 100px;
-  }
-`;
-
 export const SignList = styled.ul`
   display: flex;
   margin-left: 5px;
   color: #fff;
-  border-radius: 8px;
-  align-items: center;
-  height: 2.5rem;
-  & > li {
+  > li {
+    background-color: ${(props) => props.theme.mainColor};
+    text-align: center;
+    padding: 10px;
+    border-radius: 5px;
     cursor: pointer;
     margin-left: 3px;
     font-size: 1rem;
@@ -214,16 +192,14 @@ export const SignList = styled.ul`
       transform: translateY(-2px);
       color: ${(props) => props.theme.charColor};
     }
+    @media (max-width: 480px) {
+      font-size: 10px;
+      padding: 5px;
+      width: 100px;
+      margin-top: 3px;
+    }
   }
   @media (max-width: 480px) {
     flex-direction: column;
-    transform: scale(0.7) translateX(-100px) translateY(-10px);
   }
-`;
-
-const SignButton = styled.li`
-  background-color: ${(props) => props.theme.mainColor};
-  padding: 5px;
-  color: #fff;
-  border-radius: 8px;
 `;

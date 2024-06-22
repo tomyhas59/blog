@@ -96,8 +96,9 @@ export const FooterRight = styled.div`
     font-size: 1.3rem;
     color: #ffffff;
     cursor: pointer;
-
+    transition: transform 0.3s ease, color 0.3s ease;
     &:hover {
+      transform: translateY(-2px);
       color: ${(props) => props.theme.charColor};
     }
   }

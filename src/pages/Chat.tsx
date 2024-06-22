@@ -180,7 +180,7 @@ const UserList = styled.div`
     }
   }
   @media (max-width: 480px) {
-    display: none;
+    position: absolute;
   }
 `;
 
@@ -242,6 +242,9 @@ const MessageTime = styled.span`
 const MessageForm = styled.form`
   display: flex;
   margin-top: 10px;
+  @media (max-width: 480px) {
+    height: 50px;
+  }
 `;
 
 const MessageInput = styled.input`
@@ -260,6 +263,9 @@ const MessageButton = styled.button`
   border: none;
   border-radius: 0 4px 4px 0;
   cursor: pointer;
+  @media (max-width: 480px) {
+    font-size: 12px;
+  }
 `;
 
 const DateSeparator = styled.div`

@@ -218,8 +218,10 @@ const Button = styled.button`
   padding: 6px;
   border-radius: 6px;
   cursor: pointer;
-  :hover {
-    opacity: 0.7;
+  transition: transform 0.3s ease, color 0.3s ease;
+  &:hover {
+    transform: translateY(-2px);
+    color: ${(props) => props.theme.charColor};
   }
 `;
 

@@ -245,8 +245,9 @@ const SubmitButton = styled.button`
   border-radius: 8px;
   cursor: pointer;
   font-weight: bold;
-
+  transition: transform 0.3s ease, color 0.3s ease;
   &:hover {
-    background-color: ${(props) => props.theme.subColor};
+    transform: translateY(-2px);
+    color: ${(props) => props.theme.charColor};
   }
 `;

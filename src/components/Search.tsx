@@ -76,7 +76,7 @@ const Select = styled.select`
 const Container = styled.div`
   display: grid;
   height: 50px;
-  grid-template-columns: 30% 50% 20%;
+  grid-template-columns: 30% 60% 10%;
   & > select {
     text-align: center;
   }
@@ -95,13 +95,15 @@ const Input = styled.input`
 `;
 
 const SearchButton = styled.button`
-  padding: 10px 15px;
   background-color: ${(props) => props.theme.mainColor};
   color: #fff;
-  border: none;
   border-radius: 0 4px 4px 0;
   cursor: pointer;
-  &:hover {
-    color: ${(props) => props.theme.charColor};
+  * {
+    transition: transform 0.3s ease, color 0.3s ease;
+    &:hover {
+      transform: translateY(-2px);
+      color: ${(props) => props.theme.charColor};
+    }
   }
 `;

@@ -22,7 +22,7 @@ import {
 } from "../reducer/post";
 import moment from "moment";
 import "moment/locale/ko";
-import { Form, TextArea, FileButton } from "./PostForm";
+import { Form, TextArea } from "./PostForm";
 import { PostType } from "../types";
 import { RootState } from "../reducer";
 import { baseURL } from "../config";
@@ -412,8 +412,10 @@ const Button = styled.button`
   border-radius: 6px;
   text-align: center;
   cursor: pointer;
-  :hover {
-    opacity: 0.7;
+  transition: transform 0.3s ease, color 0.3s ease;
+  &:hover {
+    transform: translateY(-2px);
+    color: #000;
   }
 `;
 
@@ -423,6 +425,10 @@ const Liked = styled.span`
   padding: 6px;
   border-radius: 6px;
   text-align: center;
+  &:hover {
+    transform: translateY(-2px);
+    color: ${(props) => props.theme.charColor};
+  }
 `;
 
 const PostHeaderFlex = styled.div`
@@ -475,6 +481,11 @@ const NicknameButton = styled.button`
   width: 50px;
   text-align: center;
   color: #fff;
+  transition: transform 0.3s ease, color 0.3s ease;
+  &:hover {
+    transform: translateY(-2px);
+    color: ${(props) => props.theme.charColor};
+  }
 `;
 
 const PostHeader = styled.div`

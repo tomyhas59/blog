@@ -177,14 +177,14 @@ const Comment = ({ post }: { post: PostType }) => {
                 <Author onClick={() => toggleShowInfo(comment.id)}>
                   <FontAwesomeIcon icon={faUser} />
                   <span>{comment.User.nickname.slice(0, 5)}</span>
-                  {showInfo[comment.id] ? (
-                    <PopupMenu ref={popupRef}>
-                      <Button onClick={() => onSearch(comment.User.nickname)}>
-                        작성 글 보기
-                      </Button>
-                    </PopupMenu>
-                  ) : null}
                 </Author>
+                {showInfo[comment.id] ? (
+                  <PopupMenu ref={popupRef}>
+                    <Button onClick={() => onSearch(comment.User.nickname)}>
+                      작성 글 보기
+                    </Button>
+                  </PopupMenu>
+                ) : null}
                 <Date>({formattedDate})</Date>
               </AuthorWrapper>
               <ContentWrapper>
@@ -267,6 +267,11 @@ const Author = styled.button`
   text-align: center;
   margin-right: 10px;
   color: ${(props) => props.theme.mainColor};
+  transition: transform 0.3s ease, color 0.3s ease;
+  &:hover {
+    transform: translateY(-2px);
+    color: ${(props) => props.theme.charColor};
+  }
 `;
 
 const ContentWrapper = styled.div`
@@ -305,12 +310,15 @@ const Date = styled.span`
 const Button = styled.button`
   background-color: ${(props) => props.theme.mainColor};
   margin: 2px;
+  font-size: 12px;
   color: #fff;
   padding: 6px;
   border-radius: 6px;
   cursor: pointer;
-  :hover {
-    opacity: 0.7;
+  transition: transform 0.3s ease, color 0.3s ease;
+  &:hover {
+    transform: translateY(-2px);
+    color: ${(props) => props.theme.charColor};
   }
 `;
 
@@ -326,6 +334,11 @@ const EndFlex = styled.div`
 
 const PopupMenu = styled.div`
   position: absolute;
-  top: 70%;
-  left: 5%;
+  top: 30px;
+  left: 0;
+  transition: transform 0.3s ease, color 0.3s ease;
+  &:hover {
+    transform: translateY(-2px);
+    color: ${(props) => props.theme.charColor};
+  }
 `;
