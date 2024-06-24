@@ -9,7 +9,6 @@ import Search from "../../components/Search";
 import { usePagination } from "../PaginationProvider";
 import { RootState } from "../../reducer";
 import io from "socket.io-client";
-import axios from "axios";
 
 const Header = () => {
   const dispatch = useDispatch();
@@ -21,26 +20,6 @@ const Header = () => {
     process.env.NODE_ENV === "production"
       ? io("https://quarrelsome-laura-tomyhas59-09167dc6.koyeb.app")
       : io("http://localhost:3075");
-
-  //새로고침 로그인 유지
-  useEffect(() => {
-    const getUserData = async () => {
-      try {
-        const response = await axios.get("/user/setUser");
-        const userData = response.data;
-        dispatch({
-          type: "SET_USER",
-          data: userData,
-        });
-      } catch (error) {
-        console.error(error);
-      }
-
-      if (isLoggedIn && !me) {
-        getUserData();
-      }
-    };
-  }, [dispatch]);
 
   useEffect(() => {
     if (logInError) {

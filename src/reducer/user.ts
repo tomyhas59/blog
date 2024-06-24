@@ -85,10 +85,7 @@ const user = (
         draft.signUpError = action.error;
         break;
       //----------------------------------------------
-      case "SET_USER":
-        draft.me = action.data;
-        draft.isLoggedIn = true;
-        break;
+
       case "INITIALIZE_STATE":
         return initialState; // 초기 상태로 리셋
     }
