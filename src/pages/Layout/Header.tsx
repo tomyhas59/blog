@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { useCallback, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { LOG_OUT_REQUEST, REFRESH_TOKEN_REQUEST } from "../../reducer/user";
+import { LOG_OUT_REQUEST } from "../../reducer/user";
 import Search from "../../components/Search";
 import { usePagination } from "../PaginationProvider";
 import { RootState } from "../../reducer";
@@ -24,16 +24,9 @@ const Header = () => {
 
   //새로고침 로그인 유지
   useEffect(() => {
-    const accessToken = localStorage.getItem("accessToken");
-    const refreshToken = localStorage.getItem("refreshToken");
-
     const getUserData = async () => {
       try {
-        const response = await axios.get("/user/setUser", {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        });
+        const response = await axios.get("/user/setUser");
         const userData = response.data;
         dispatch({
           type: "SET_USER",
@@ -42,15 +35,11 @@ const Header = () => {
       } catch (error) {
         console.error(error);
       }
+
+      if (isLoggedIn && !me) {
+        getUserData();
+      }
     };
-
-    if (accessToken) {
-      getUserData();
-    }
-
-    if (!accessToken && refreshToken) {
-      dispatch({ type: REFRESH_TOKEN_REQUEST });
-    }
   }, [dispatch]);
 
   useEffect(() => {
