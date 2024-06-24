@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useState, useRef, useCallback } from "react";
 import useInput from "../hooks/useInput";
 import { useSelector, useDispatch } from "react-redux";
@@ -26,12 +26,13 @@ const ReComment = ({
 
   //------------------대댓글 수정----------------------------
 
-  const [editReComment, setEditReComment] = useState<{
-    [key: number]: boolean;
-  }>({});
+  const [editReComment, setEditReComment] = useState<Record<number, boolean>>(
+    {}
+  );
 
   const [content, onChangeContent, setContent] = useInput();
-  const textRef = useRef(null);
+  const editReCommentRef = useRef<HTMLInputElement>(null);
+
   //현재 열려 있는 대댓글의 id추적하기 위한 상태 변수
   const [currentReCommentId, setCurrentReCommentId] = useState<number | null>(
     null
@@ -57,6 +58,12 @@ const ReComment = ({
     },
     [currentReCommentId, setContent]
   );
+
+  useEffect(() => {
+    if (editReComment[currentReCommentId!] && editReCommentRef.current) {
+      editReCommentRef.current.focus();
+    }
+  }, [editReComment, currentReCommentId]);
 
   // "취소" 버튼을 누를 때 호출되는 함수
   const onCancelEditReComment = useCallback(() => {
@@ -125,10 +132,10 @@ const ReComment = ({
             <ContentWrapper>
               {isEditing && currentReCommentId === reComment.id ? (
                 <>
-                  <Text
+                  <Input
                     value={content}
                     onChange={onChangeContent}
-                    ref={textRef}
+                    ref={editReCommentRef}
                     onKeyUp={(e) => onEnterKeyPress(e, reComment.id)}
                   />
                   <EndFlex>
@@ -180,7 +187,7 @@ const ReCommentWrapper = styled.div`
   padding: 5px;
   margin: 0 auto;
   border-top: 1px solid silver;
-  background-color: #e4f8fc;
+  background-color: #edf7f9;
 `;
 
 const AuthorWrapper = styled.div`
@@ -200,7 +207,7 @@ const ContentWrapper = styled.div`
 `;
 
 const Content = styled.div`
-  width: 77%;
+  width: 90%;
   /**내용 수직 정렬용 */
   display: flex;
   align-items: center;
@@ -225,8 +232,11 @@ const Button = styled.button`
   }
 `;
 
-const Text = styled.input`
+const Input = styled.input`
   width: 77%;
+  @media (max-width: 480px) {
+    width: 50%;
+  }
 `;
 
 const EndFlex = styled.div`

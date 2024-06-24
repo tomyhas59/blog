@@ -54,7 +54,7 @@ const Comment = ({ post }: { post: PostType }) => {
 
   const [editComment, setEditComment] = useState<Record<number, boolean>>({});
   const [content, onChangeContent, setContent] = useInput();
-  const textRef = useRef(null);
+  const editCommentRef = useRef<HTMLInputElement>(null);
 
   // 현재 열려 있는 댓글의 id추적하기 위한 상태 변수
   const [currentCommentId, setCurrentCommentId] = useState<number | null>(null);
@@ -79,6 +79,12 @@ const Comment = ({ post }: { post: PostType }) => {
     },
     [currentCommentId, setContent]
   );
+
+  useEffect(() => {
+    if (editComment[currentCommentId!] && editCommentRef.current) {
+      editCommentRef.current.focus();
+    }
+  }, [editComment, currentCommentId]);
 
   // "취소" 버튼을 누를 때 호출되는 함수
   const onCancelEditComment = useCallback(() => {
@@ -193,8 +199,8 @@ const Comment = ({ post }: { post: PostType }) => {
                     <Input
                       value={content}
                       onChange={onChangeContent}
-                      ref={textRef}
                       onKeyUp={(e) => onEnterKeyPress(e, comment.id)}
+                      ref={editCommentRef}
                     />
                     <EndFlex>
                       <Button onClick={() => onModifytComment(comment.id)}>
@@ -282,8 +288,9 @@ const ContentWrapper = styled.div`
 
 const Content = styled.div`
   /**내용 수직 정렬용 */
+  width: 90%;
+  font-size: 0.8rem;
   display: flex;
-  align-items: center;
   word-break: break-word; /**텍스트 줄바꿈 */
 `;
 
@@ -325,6 +332,9 @@ const Button = styled.button`
 const Input = styled.input`
   width: 77%;
   margin: 0 auto;
+  @media (max-width: 480px) {
+    width: 55%;
+  }
 `;
 
 const EndFlex = styled.div`
