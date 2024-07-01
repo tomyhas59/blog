@@ -44,34 +44,32 @@ const Footer = () => {
 export default Footer;
 
 export const FooterWrapper = styled.footer`
-  width: 100%;
-  height: 140px;
-  bottom: 0;
-  z-index: 1000;
-  position: relative;
+  height: 120px;
   background-color: ${(props) => props.theme.subColor};
 `;
 
 export const FooterTamplate = styled.div`
-  width: 100%;
-  margin: 0 auto;
   padding: 1rem;
   display: flex;
-  justify-content: space-around;
+  justify-content: center;
   align-items: center;
-  @media (max-width: 480px) {
-    width: 400px;
-  }
 `;
 
 export const Footertxt = styled.div`
-  width: 70%;
+  width: 30%;
   color: #fff;
-  & p {
+  p {
     font-weight: auto;
     color: auto;
     font-size: 0.7rem;
     margin-top: 5px;
+  }
+  @media (max-width: 480px) {
+    width: 50%;
+
+    p {
+      font-size: 9px;
+    }
   }
 `;
 
@@ -81,13 +79,10 @@ export const FooterRight = styled.div`
   & > ul {
     display: flex;
     align-items: center;
-    padding: 0 2rem;
+    padding: 3px 10px;
     background-color: ${(props) => props.theme.mainColor};
     border-radius: 0.5rem;
     list-style: none;
-    @media (max-width: 480px) {
-      transform: scale(0.7) translateX(-120px);
-    }
   }
 
   & > ul > li {

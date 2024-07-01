@@ -189,6 +189,7 @@ const post = (state = initialState, action: any) => {
         draft.addPostDone = true;
         draft.allPosts.unshift(action.data);
         draft.imagePaths = [];
+
         break;
       case ADD_POST_FAILURE:
         draft.addPostLoading = false;

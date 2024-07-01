@@ -8,6 +8,7 @@ import { useNavigate } from "react-router-dom";
 import { usePagination } from "./PaginationProvider";
 import { RootState } from "../reducer";
 import { PostType } from "../types";
+import Spinner from "../components/Spinner";
 
 const Main = () => {
   const dispatch = useDispatch();
@@ -19,6 +20,7 @@ const Main = () => {
     searchNicknameError,
     imagePaths,
     addPostDone,
+    allPostsLoading,
   } = useSelector((state: RootState) => state.post);
   const { currentPage, postsPerPage, paginate } = usePagination();
 
@@ -55,7 +57,9 @@ const Main = () => {
   return (
     <div>
       <PostForm />
-      {searchPosts.length > 0 ? (
+      {allPostsLoading ? (
+        <Spinner />
+      ) : searchPosts.length > 0 ? (
         <div>
           {searchPosts.map((post: PostType) => (
             <div key={post.id}>
