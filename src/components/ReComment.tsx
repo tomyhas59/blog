@@ -9,7 +9,11 @@ import {
 import styled from "styled-components";
 import moment from "moment";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCircleXmark, faPen } from "@fortawesome/free-solid-svg-icons";
+import {
+  faCircleXmark,
+  faPen,
+  faComment,
+} from "@fortawesome/free-solid-svg-icons";
 import { CommentType, PostType, ReCommentType } from "../types";
 import { RootState } from "../reducer";
 
@@ -166,6 +170,9 @@ const ReComment = ({
                       }
                     >
                       <FontAwesomeIcon icon={faCircleXmark} />
+                    </Toggle>
+                    <Toggle>
+                      <FontAwesomeIcon icon={faComment} />
                     </Toggle>
                   </>
                 ) : (

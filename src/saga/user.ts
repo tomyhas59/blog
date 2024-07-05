@@ -55,8 +55,8 @@ function logInAPI(data: any) {
 function* logIn(action: { data: any }): SagaIterator {
   try {
     const result = yield call(logInAPI, action.data);
-    localStorage.setItem("accessToken", result.data.accessToken);
-    localStorage.setItem("refreshToken", result.data.refreshToken);
+    sessionStorage.setItem("accessToken", result.data.accessToken);
+    sessionStorage.setItem("refreshToken", result.data.refreshToken);
     yield put({
       //put은 dipatch
       type: LOG_IN_SUCCESS,
@@ -76,7 +76,7 @@ function* watchLogin() {
 //--------------------------------------------------------
 
 function refreshTokenAPI() {
-  const refreshToken = localStorage.getItem("refreshToken");
+  const refreshToken = sessionStorage.getItem("refreshToken");
   return axios.post("/user/refreshToken", { refreshToken });
 }
 
@@ -108,8 +108,8 @@ function logOutAPI() {
 function* logOut() {
   try {
     yield call(logOutAPI);
-    localStorage.removeItem("accessToken");
-    localStorage.removeItem("refreshToken");
+    sessionStorage.removeItem("accessToken");
+    sessionStorage.removeItem("refreshToken");
     yield put({
       //put은 dipatch
       type: LOG_OUT_SUCCESS,

@@ -23,8 +23,8 @@ const Header = () => {
 
   //새로고침 로그인 유지
   useEffect(() => {
-    const accessToken = localStorage.getItem("accessToken");
-    const refreshToken = localStorage.getItem("refreshToken");
+    const accessToken = sessionStorage.getItem("accessToken");
+    const refreshToken = sessionStorage.getItem("refreshToken");
 
     const getUserData = async () => {
       try {
