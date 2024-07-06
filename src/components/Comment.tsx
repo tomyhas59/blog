@@ -244,6 +244,7 @@ const Comment = ({ post }: { post: PostType }) => {
                 <ReCommentForm
                   post={post}
                   comment={comment}
+                  reComment={null}
                   setAddReComment={setAddReComment}
                 />
               ) : null}

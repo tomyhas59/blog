@@ -16,6 +16,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { CommentType, PostType, ReCommentType } from "../types";
 import { RootState } from "../reducer";
+import ReCommentForm from "./ReCommentForm";
 
 const ReComment = ({
   post,
@@ -79,6 +80,20 @@ const ReComment = ({
     setContent(""); // "Text" 영역 초기화
   }, [currentReCommentId, setContent]);
 
+  //대댓글 쓰기 창,map 안에서 하나만 작동 및 폼 중복 방지 코드---------------------
+  const [addReComment, setAddReComment] = useState<Record<string, boolean>>({});
+
+  const onAddReCommentForm = useCallback((reCommentId: number) => {
+    setAddReComment((prev) => {
+      const newReCommentState: Record<string, boolean> = {};
+      Object.keys(prev).forEach((key) => {
+        newReCommentState[key] = false;
+      });
+      newReCommentState[reCommentId] = !prev[reCommentId];
+      return newReCommentState;
+    });
+  }, []);
+
   const onModifyReComment = useCallback(
     (reCommentId: number) => {
       dispatch({
@@ -127,60 +142,85 @@ const ReComment = ({
         const isEditing = editReComment[reComment.id];
         const createdAtCommentDate = moment(reComment.createdAt);
         const formattedCommentDate = createdAtCommentDate.format("l");
+
+        const regex = /@\w+/g;
+        const userNickname = reComment.content.match(regex);
+        const content = reComment.content.replace(regex, "");
+
         return (
-          <ReCommentWrapper key={reComment.id}>
-            <AuthorWrapper>
-              <Author>↪ {reComment.User.nickname.slice(0, 5)}</Author>
-              <Date>({formattedCommentDate})</Date>
-            </AuthorWrapper>
-            <ContentWrapper>
-              {isEditing && currentReCommentId === reComment.id ? (
-                <>
-                  <Input
-                    value={content}
-                    onChange={onChangeContent}
-                    ref={editReCommentRef}
-                    onKeyUp={(e) => onEnterKeyPress(e, reComment.id)}
-                  />
-                  <EndFlex>
-                    <Button onClick={() => onModifyReComment(reComment.id)}>
-                      수정
-                    </Button>
-                    <Button onClick={onCancelEditReComment}>취소</Button>
-                  </EndFlex>
-                </>
-              ) : (
-                <Content>{reComment.content}</Content>
-              )}
-              <ReCommentOptions>
-                {id === reComment.User.id || nickname === "admin" ? (
+          <>
+            <ReCommentWrapper key={reComment.id}>
+              <AuthorWrapper>
+                <Author>↪ {reComment.User.nickname.slice(0, 5)}</Author>
+                <Date>({formattedCommentDate})</Date>
+              </AuthorWrapper>
+              <ContentWrapper>
+                {isEditing && currentReCommentId === reComment.id ? (
                   <>
+                    <Input
+                      value={content}
+                      onChange={onChangeContent}
+                      ref={editReCommentRef}
+                      onKeyUp={(e) => onEnterKeyPress(e, reComment.id)}
+                    />
+                    <EndFlex>
+                      <Button onClick={() => onModifyReComment(reComment.id)}>
+                        수정
+                      </Button>
+                      <Button onClick={onCancelEditReComment}>취소</Button>
+                    </EndFlex>
+                  </>
+                ) : (
+                  <Content>
+                    <span>{userNickname}</span>&nbsp;
+                    {content}
+                  </Content>
+                )}
+                <ReCommentOptions>
+                  {id && (
                     <Toggle
                       onClick={() =>
-                        onEditReCommentForm(reComment.id, reComment)
-                      }
-                    >
-                      <FontAwesomeIcon icon={faPen} />
-                    </Toggle>
-                    <Toggle
-                      onClick={() =>
-                        onRemoveReComment(
+                        onAddReCommentForm(
                           reComment.id /*매개변수를 위의 함수로 전달*/
                         )
                       }
                     >
-                      <FontAwesomeIcon icon={faCircleXmark} />
-                    </Toggle>
-                    <Toggle>
                       <FontAwesomeIcon icon={faComment} />
                     </Toggle>
-                  </>
-                ) : (
-                  <>{null}</>
-                )}
-              </ReCommentOptions>
-            </ContentWrapper>
-          </ReCommentWrapper>
+                  )}
+
+                  {id === reComment.User.id || nickname === "admin" ? (
+                    <>
+                      <Toggle
+                        onClick={() =>
+                          onEditReCommentForm(reComment.id, reComment)
+                        }
+                      >
+                        <FontAwesomeIcon icon={faPen} />
+                      </Toggle>
+                      <Toggle
+                        onClick={() =>
+                          onRemoveReComment(
+                            reComment.id /*매개변수를 위의 함수로 전달*/
+                          )
+                        }
+                      >
+                        <FontAwesomeIcon icon={faCircleXmark} />
+                      </Toggle>
+                    </>
+                  ) : null}
+                </ReCommentOptions>
+              </ContentWrapper>
+            </ReCommentWrapper>
+            {addReComment[reComment.id] ? (
+              <ReCommentForm
+                post={post}
+                comment={comment}
+                reComment={reComment}
+                setAddReComment={setAddReComment}
+              />
+            ) : null}
+          </>
         );
       })}
     </>
@@ -219,6 +259,9 @@ const Content = styled.div`
   display: flex;
   align-items: center;
   word-break: break-word; /**텍스트 줄바꿈 */
+  & span {
+    color: #b3b0b0;
+  }
 `;
 
 const Toggle = styled.button`

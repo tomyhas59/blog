@@ -3,16 +3,18 @@ import styled from "styled-components";
 import { useDispatch, useSelector } from "react-redux";
 import { ADD_RECOMMENT_REQUEST } from "../reducer/post";
 import useInput from "../hooks/useInput";
-import { CommentType, PostType } from "../types";
+import { CommentType, PostType, ReCommentType } from "../types";
 import { RootState } from "../reducer";
 
 const ReCommentForm = ({
   post,
   comment,
+  reComment,
   setAddReComment,
 }: {
   post: PostType;
   comment: CommentType;
+  reComment: ReCommentType | null;
   setAddReComment: React.Dispatch<
     React.SetStateAction<Record<number, boolean>>
   >;
@@ -20,7 +22,7 @@ const ReCommentForm = ({
   const { addReCommentDone } = useSelector((state: RootState) => state.post);
   const editReCommentRef = useRef<HTMLInputElement>(null);
 
-  const [reComment, onChangeReComment, setReComment] = useInput();
+  const [reCommentContent, onChangeReComment, setReComment] = useInput();
   const dispatch = useDispatch();
   const id = useSelector((state: RootState) => state.user.me?.id);
 
@@ -36,24 +38,36 @@ const ReCommentForm = ({
   const onSubmitReComment = useCallback(
     (e: SyntheticEvent) => {
       e.preventDefault();
-      if (reComment === "") {
+      if (reCommentContent === "") {
         alert("댓글을 입력하세요");
         return;
       }
 
-      console.log(comment.id, reComment);
+      const content = reComment
+        ? `@${reComment.User.nickname} ${reCommentContent}`
+        : reCommentContent;
+
       dispatch({
         type: ADD_RECOMMENT_REQUEST,
         data: {
-          content: reComment,
+          content: content,
           postId: post.id,
           commentId: comment.id,
+          reComment: reComment?.id,
           userId: id,
         },
       });
       setAddReComment({ [comment.id]: false });
     },
-    [comment.id, reComment, dispatch, post.id, id]
+    [
+      reCommentContent,
+      comment.id,
+      reComment,
+      dispatch,
+      post.id,
+      id,
+      setAddReComment,
+    ]
   );
 
   return (
@@ -61,7 +75,7 @@ const ReCommentForm = ({
       <InputComment
         type="text"
         placeholder="ReComment"
-        value={reComment}
+        value={reCommentContent}
         onChange={onChangeReComment}
         ref={editReCommentRef}
       />
