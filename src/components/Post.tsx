@@ -39,7 +39,7 @@ const Post = ({
   const [editPost, setEditPost] = useState(false);
   const [content, setContent] = useState("");
 
-  const onChanegeContent = useCallback(
+  const onChangeContent = useCallback(
     (e: ChangeEvent<HTMLTextAreaElement>) => {
       setContent(e.target.value);
     },
@@ -47,7 +47,7 @@ const Post = ({
   );
 
   const editPostRef = useRef<HTMLTextAreaElement>(null);
-  const editCommentRef = useRef<HTMLInputElement>(null);
+
   const id = useSelector((state: RootState) => state.user.me?.id);
   const {
     searchPostsLoading,
@@ -140,6 +140,7 @@ const Post = ({
 
   //댓글 창, 기존 폼 닫고 새로운 폼 열고 닫기--------------
   const [addComment, setAddComment] = useState<Record<number, boolean>>({});
+
   const toggleAddCommentForm = useCallback(
     (postId: number) => {
       if (!id) {
@@ -236,11 +237,12 @@ const Post = ({
     (e: SyntheticEvent, postId: number) => {
       e.preventDefault();
 
+      const contentWithBreaks = content.replace(/\n/g, "<br>");
       dispatch({
         type: UPDATE_POST_REQUEST,
         data: {
           postId: postId,
-          content: content,
+          content: contentWithBreaks,
           imagePaths: imagePaths, //서버 데이터 req.body. key값
         },
       });
@@ -249,6 +251,8 @@ const Post = ({
     },
     [content, dispatch, imagePaths]
   );
+
+  const prevContent = content.replace(/<br\s*\/?>/gi, "\n");
 
   return (
     <>
@@ -293,8 +297,8 @@ const Post = ({
                 >
                   <TextArea
                     placeholder="Content"
-                    value={content}
-                    onChange={onChanegeContent}
+                    value={prevContent}
+                    onChange={onChangeContent}
                     ref={editPostRef}
                   ></TextArea>
                   {/*     <input
@@ -343,7 +347,7 @@ const Post = ({
               </>
             ) : (
               <ContentWrapper>
-                <div>{post.content}</div>
+                <div dangerouslySetInnerHTML={{ __html: post.content }} />
                 <ContentImgWrapper>
                   {post.Images.map((image) => (
                     <ContentImg
@@ -384,11 +388,7 @@ const Post = ({
           </PostHeaderFlex>
           {addComment[post.id] ? (
             <div>
-              <CommentForm
-                post={post}
-                editCommentRef={editCommentRef}
-                setAddComment={setAddComment}
-              />
+              <CommentForm post={post} setAddComment={setAddComment} />
             </div>
           ) : null}
           <Comment post={post} />

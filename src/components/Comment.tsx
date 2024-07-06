@@ -1,4 +1,10 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, {
+  ChangeEvent,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import styled from "styled-components";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -56,8 +62,23 @@ const Comment = ({ post }: { post: PostType }) => {
   //------------------댓글 수정--------------------------------
 
   const [editComment, setEditComment] = useState<Record<number, boolean>>({});
-  const [content, onChangeContent, setContent] = useInput();
-  const editCommentRef = useRef<HTMLInputElement>(null);
+  const [content, onChange, setContent] = useInput();
+
+  const onChangeContent = useCallback(
+    (e: ChangeEvent<HTMLTextAreaElement>) => {
+      setContent(e.target.value);
+    },
+    [setContent]
+  );
+
+  const editCommentRef = useRef<HTMLTextAreaElement>(null);
+
+  const updateTextareaHeight = () => {
+    if (editCommentRef.current) {
+      editCommentRef.current.style.height = "auto";
+      editCommentRef.current.style.height = `${editCommentRef.current.scrollHeight}px`;
+    }
+  };
 
   // 현재 열려 있는 댓글의 id추적하기 위한 상태 변수
   const [currentCommentId, setCurrentCommentId] = useState<number | null>(null);
@@ -79,6 +100,8 @@ const Comment = ({ post }: { post: PostType }) => {
         [commentId]: !prev[commentId],
       }));
       setContent(commentContent);
+
+      updateTextareaHeight();
     },
     [currentCommentId, setContent]
   );
@@ -86,6 +109,7 @@ const Comment = ({ post }: { post: PostType }) => {
   useEffect(() => {
     if (editComment[currentCommentId!] && editCommentRef.current) {
       editCommentRef.current.focus();
+      updateTextareaHeight();
     }
   }, [editComment, currentCommentId]);
 
@@ -101,12 +125,13 @@ const Comment = ({ post }: { post: PostType }) => {
 
   const onModifytComment = useCallback(
     (commentId: number) => {
+      const contentWithBreaks = content.replace(/\n/g, "<br>");
       dispatch({
         type: UPDATE_COMMENT_REQUEST,
         data: {
           postId: post.id,
           commentId: commentId,
-          content: content,
+          content: contentWithBreaks,
         },
       });
       setEditComment({});
@@ -116,14 +141,7 @@ const Comment = ({ post }: { post: PostType }) => {
     [content, dispatch, post.id, setContent]
   );
 
-  const onEnterKeyPress = useCallback(
-    (e: React.KeyboardEvent<HTMLInputElement>, commentId: number) => {
-      if (e.key === "Enter") {
-        onModifytComment(commentId);
-      }
-    },
-    [onModifytComment]
-  );
+  const prevContent = content.replace(/<br\s*\/?>/gi, "\n");
 
   //대댓글 쓰기 창,map 안에서 하나만 작동 및 폼 중복 방지 코드---------------------
   const [addReComment, setAddReComment] = useState<Record<string, boolean>>({});
@@ -202,10 +220,9 @@ const Comment = ({ post }: { post: PostType }) => {
               <ContentWrapper>
                 {isEditing && currentCommentId === comment.id ? (
                   <>
-                    <Input
-                      value={content}
+                    <Textarea
+                      value={prevContent}
                       onChange={onChangeContent}
-                      onKeyUp={(e) => onEnterKeyPress(e, comment.id)}
                       ref={editCommentRef}
                     />
                     <EndFlex>
@@ -216,7 +233,9 @@ const Comment = ({ post }: { post: PostType }) => {
                     </EndFlex>
                   </>
                 ) : (
-                  <Content>{comment.content}</Content>
+                  <Content
+                    dangerouslySetInnerHTML={{ __html: comment.content }}
+                  />
                 )}
                 <CommentOptions>
                   {id && (
@@ -336,7 +355,7 @@ const Button = styled.button`
   }
 `;
 
-const Input = styled.input`
+const Textarea = styled.textarea`
   width: 77%;
   margin: 0 auto;
   @media (max-width: 480px) {

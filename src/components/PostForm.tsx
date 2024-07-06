@@ -94,10 +94,11 @@ const PostForm = () => {
         return alert("게시글을 작성하세요.");
       }
       const formData = new FormData();
+      const contentWithBreaks = content.replace(/\n/g, "<br>");
       imagePaths.forEach((p) => {
         formData.append("image", p); //req.body.image
       });
-      formData.append("content", content); //req.body.content
+      formData.append("content", contentWithBreaks); //req.body.content
 
       setActive(false);
       dispatch({

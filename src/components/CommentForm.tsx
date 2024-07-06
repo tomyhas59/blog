@@ -1,4 +1,10 @@
-import React, { useEffect, useCallback, SyntheticEvent } from "react";
+import React, {
+  useEffect,
+  useCallback,
+  SyntheticEvent,
+  ChangeEvent,
+  useRef,
+} from "react";
 import styled from "styled-components";
 import { useDispatch, useSelector } from "react-redux";
 import useInput from "../hooks/useInput";
@@ -8,52 +14,59 @@ import { RootState } from "../reducer";
 
 const CommentForm = ({
   post,
-  editCommentRef,
   setAddComment,
 }: {
   post: PostType;
-  editCommentRef: React.RefObject<HTMLInputElement>;
   setAddComment: React.Dispatch<React.SetStateAction<Record<number, boolean>>>;
 }) => {
   const { addCommentDone } = useSelector((state: RootState) => state.post);
-  const [comment, onChangeComment, setComment] = useInput();
+  const [content, onChange, setContent] = useInput();
+
+  const onChangeContent = useCallback(
+    (e: ChangeEvent<HTMLTextAreaElement>) => {
+      setContent(e.target.value);
+    },
+    [setContent]
+  );
+
+  const editCommentRef = useRef<HTMLTextAreaElement>(null);
+
   const dispatch = useDispatch();
   const id = useSelector((state: RootState) => state.user.me?.id);
 
   useEffect(() => {
     if (addCommentDone) {
-      setComment("");
+      setContent("");
     }
     if (editCommentRef) {
       editCommentRef.current!.focus();
     }
-  }, [addCommentDone, editCommentRef, setComment]);
+  }, [addCommentDone, setContent]);
 
   const onSubmitComment = useCallback(
     (e: SyntheticEvent) => {
       e.preventDefault();
-      if (comment === "") {
+      if (content === "") {
         alert("댓글을 입력하세요");
         return;
       }
-      console.log(post.id, comment);
+      const contentWithBreaks = content.replace(/\n/g, "<br>");
       dispatch({
         type: ADD_COMMENT_REQUEST,
-        data: { content: comment, postId: post.id, userId: id },
+        data: { content: contentWithBreaks, postId: post.id, userId: id },
       });
       setAddComment({ [post.id]: false });
     },
-    [comment, dispatch, id, post.id]
+    [content, dispatch, id, post.id, setAddComment]
   );
 
   return (
     <CommentWrapper>
       <Form onSubmit={onSubmitComment}>
-        <InputComment
-          type="text"
+        <Textarea
           placeholder="Comment"
-          value={comment}
-          onChange={onChangeComment}
+          value={content}
+          onChange={onChangeContent}
           ref={editCommentRef}
         />
         <Button type="submit">등록</Button>
@@ -75,7 +88,7 @@ const Form = styled.form`
   text-align: center;
 `;
 
-const InputComment = styled.input`
+const Textarea = styled.textarea`
   width: 77%;
 `;
 
