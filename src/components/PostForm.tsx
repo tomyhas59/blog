@@ -14,10 +14,11 @@ import {
 } from "../reducer/post";
 import { useEffect } from "react";
 import { RootState } from "../reducer";
+import Spinner from "./Spinner";
 
 const PostForm = () => {
   const dispatch = useDispatch();
-  const { imagePaths, addPostDone, addPostError } = useSelector(
+  const { imagePaths, addPostDone, addPostError, addPostLoading } = useSelector(
     (state: RootState) => state.post
   );
   const { me } = useSelector((state: RootState) => state.user);
@@ -109,6 +110,7 @@ const PostForm = () => {
 
   return (
     <>
+      {addPostLoading ? <Spinner /> : null}
       {me ? (
         <FormWrapper>
           <Title>글쓰기</Title>

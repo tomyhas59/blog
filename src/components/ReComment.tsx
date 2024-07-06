@@ -17,6 +17,7 @@ import {
 import { CommentType, PostType, ReCommentType } from "../types";
 import { RootState } from "../reducer";
 import ReCommentForm from "./ReCommentForm";
+import Spinner from "./Spinner";
 
 const ReComment = ({
   post,
@@ -28,6 +29,9 @@ const ReComment = ({
   const dispatch = useDispatch();
   const id = useSelector((state: RootState) => state.user.me?.id);
   const nickname = useSelector((state: RootState) => state.user.me?.nickname);
+  const { removeReCommentLoading, updateReCommentLoading } = useSelector(
+    (state: RootState) => state.post
+  );
 
   //------------------대댓글 수정----------------------------
 
@@ -138,6 +142,7 @@ const ReComment = ({
 
   return (
     <>
+      {removeReCommentLoading || updateReCommentLoading ? <Spinner /> : null}
       {comment.ReComments.map((reComment) => {
         const isEditing = editReComment[reComment.id];
         const createdAtCommentDate = moment(reComment.createdAt);
@@ -145,7 +150,7 @@ const ReComment = ({
 
         const regex = /@\w+/g;
         const userNickname = reComment.content.match(regex);
-        const content = reComment.content.replace(regex, "");
+        const userContent = reComment.content.replace(regex, "");
 
         return (
           <>
@@ -160,8 +165,8 @@ const ReComment = ({
                     <Input
                       value={content}
                       onChange={onChangeContent}
-                      ref={editReCommentRef}
                       onKeyUp={(e) => onEnterKeyPress(e, reComment.id)}
+                      ref={editReCommentRef}
                     />
                     <EndFlex>
                       <Button onClick={() => onModifyReComment(reComment.id)}>
@@ -173,7 +178,7 @@ const ReComment = ({
                 ) : (
                   <Content>
                     <span>{userNickname}</span>&nbsp;
-                    {content}
+                    {userContent}
                   </Content>
                 )}
                 <ReCommentOptions>

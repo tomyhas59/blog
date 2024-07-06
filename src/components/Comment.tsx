@@ -19,10 +19,13 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { PostType } from "../types";
 import { RootState } from "../reducer";
+import Spinner from "./Spinner";
 const Comment = ({ post }: { post: PostType }) => {
   const dispatch = useDispatch();
   const id = useSelector((state: RootState) => state.user.me?.id);
   const nickname = useSelector((state: RootState) => state.user.me?.nickname);
+  const { removeCommentLoading, updateCommentLoading, addReCommentLoading } =
+    useSelector((state: RootState) => state.post);
 
   //---닉네임 클릭 정보 보기-------------------------------------
   const [showInfo, setShowinfo] = useState<Record<number, boolean>>({});
@@ -172,6 +175,9 @@ const Comment = ({ post }: { post: PostType }) => {
 
   return (
     <>
+      {removeCommentLoading || updateCommentLoading || addReCommentLoading ? (
+        <Spinner />
+      ) : null}
       {post.Comments.map((comment) => {
         const isEditing = editComment[comment.id];
         const createdAtDate = moment(comment.createdAt);

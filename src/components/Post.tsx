@@ -26,6 +26,7 @@ import { Form, TextArea } from "./PostForm";
 import { PostType } from "../types";
 import { RootState } from "../reducer";
 import { baseURL } from "../config";
+import Spinner from "./Spinner";
 
 const Post = ({
   post,
@@ -48,6 +49,13 @@ const Post = ({
   const editPostRef = useRef<HTMLTextAreaElement>(null);
   const editCommentRef = useRef<HTMLInputElement>(null);
   const id = useSelector((state: RootState) => state.user.me?.id);
+  const {
+    searchPostsLoading,
+    searchNicknameLoading,
+    removePostLoading,
+    updatePostLoading,
+    addCommentLoading,
+  } = useSelector((state: RootState) => state.post);
   const nickname = useSelector((state: RootState) => state.user.me?.nickname);
   const liked = post.Likers.find((v) => v.id === id);
   const imageInput = useRef<HTMLInputElement>(null);
@@ -242,6 +250,13 @@ const Post = ({
 
   return (
     <>
+      {removePostLoading ||
+      updatePostLoading ||
+      searchPostsLoading ||
+      searchNicknameLoading ||
+      addCommentLoading ? (
+        <Spinner />
+      ) : null}
       <FormWrapper>
         <PostWrapper>
           <PostHeaderFlex>

@@ -11,7 +11,7 @@ const Spinner: React.FC = () => {
 };
 
 const SpinnerContainer = styled.div`
-  position: absolute;
+  position: fixed;
   left: 50%;
   top: 50%;
 `;

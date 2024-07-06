@@ -7,6 +7,7 @@ import { useDispatch, useSelector } from "react-redux";
 
 import { usePagination } from "./PaginationProvider";
 import { RootState } from "../reducer";
+import Spinner from "../components/Spinner";
 
 function Login() {
   const dispatch = useDispatch();
@@ -16,7 +17,9 @@ function Login() {
   const [email, onChangeEmail] = useInput();
   const [password, onChangePassword] = useInput();
 
-  const { logInDone } = useSelector((state: RootState) => state.user);
+  const { logInLoading, logInDone } = useSelector(
+    (state: RootState) => state.user
+  );
 
   useEffect(() => {
     if (logInDone) {
@@ -56,30 +59,33 @@ function Login() {
     [onLogin]
   );
   return (
-    <LoginContainer>
-      <form onSubmit={onLogin}>
-        <InputGroup>
-          <Label>이메일:</Label>
-          <Input
-            type="text"
-            value={email}
-            onChange={onChangeEmail}
-            placeholder="이메일을 입력해주세요"
-          />
-        </InputGroup>
-        <InputGroup>
-          <Label>비밀번호:</Label>
-          <Input
-            type="password"
-            value={password}
-            onChange={onChangePassword}
-            placeholder="비밀번호를 입력해주세요"
-            onKeyUp={onEnterKeyPress}
-          />
-        </InputGroup>
-        <Button type="submit">로그인</Button>
-      </form>
-    </LoginContainer>
+    <>
+      {logInLoading ? <Spinner /> : null}
+      <LoginContainer>
+        <form onSubmit={onLogin}>
+          <InputGroup>
+            <Label>이메일:</Label>
+            <Input
+              type="text"
+              value={email}
+              onChange={onChangeEmail}
+              placeholder="이메일을 입력해주세요"
+            />
+          </InputGroup>
+          <InputGroup>
+            <Label>비밀번호:</Label>
+            <Input
+              type="password"
+              value={password}
+              onChange={onChangePassword}
+              placeholder="비밀번호를 입력해주세요"
+              onKeyUp={onEnterKeyPress}
+            />
+          </InputGroup>
+          <Button type="submit">로그인</Button>
+        </form>
+      </LoginContainer>
+    </>
   );
 }
 export default Login;
