@@ -55,6 +55,8 @@ const Post = ({
     removePostLoading,
     updatePostLoading,
     addCommentLoading,
+    likePostLoading,
+    unLikePostLoading,
   } = useSelector((state: RootState) => state.post);
   const nickname = useSelector((state: RootState) => state.user.me?.nickname);
   const liked = post.Likers.find((v) => v.id === id);
@@ -254,7 +256,9 @@ const Post = ({
       updatePostLoading ||
       searchPostsLoading ||
       searchNicknameLoading ||
-      addCommentLoading ? (
+      addCommentLoading ||
+      likePostLoading ||
+      unLikePostLoading ? (
         <Spinner />
       ) : null}
       <FormWrapper>
