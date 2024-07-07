@@ -133,7 +133,6 @@ export default function* userSaga() {
     fork(watchSignUp),
     fork(watchRefreshToken),
   ]);
-  yield all([fork(watchLogin), fork(watchLogOut), fork(watchSignUp)]);
   //fork:  함수의 비동기적인 호출 사용
   //call과 달리 순서 상관없이 실행할 때 사용
   //보통은 이벤트 리스너 함수를 실행할 때 사용
