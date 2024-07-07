@@ -27,6 +27,7 @@ import { PostType } from "../types";
 import { RootState } from "../reducer";
 import { baseURL } from "../config";
 import Spinner from "./Spinner";
+import ContentRenderer from "./ContentRenderer";
 
 const Post = ({
   post,
@@ -347,7 +348,7 @@ const Post = ({
               </>
             ) : (
               <ContentWrapper>
-                <div dangerouslySetInnerHTML={{ __html: post.content }} />
+                <ContentRenderer content={post.content} />
                 <ContentImgWrapper>
                   {post.Images.map((image) => (
                     <ContentImg

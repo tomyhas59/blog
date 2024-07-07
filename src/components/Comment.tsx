@@ -26,6 +26,7 @@ import {
 import { PostType } from "../types";
 import { RootState } from "../reducer";
 import Spinner from "./Spinner";
+import ContentRenderer from "./ContentRenderer";
 const Comment = ({ post }: { post: PostType }) => {
   const dispatch = useDispatch();
   const id = useSelector((state: RootState) => state.user.me?.id);
@@ -59,10 +60,29 @@ const Comment = ({ post }: { post: PostType }) => {
     [dispatch]
   );
 
+  //OutsideClick----------------------------------------------
+  const popupRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const onClickOutside = (event: MouseEvent) => {
+      if (
+        popupRef.current &&
+        !popupRef.current.contains(event.target as Node)
+      ) {
+        setShowinfo({});
+      }
+    };
+
+    document.addEventListener("mousedown", onClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", onClickOutside);
+    };
+  }, [popupRef]);
+
   //------------------댓글 수정--------------------------------
 
   const [editComment, setEditComment] = useState<Record<number, boolean>>({});
-  const [content, onChange, setContent] = useInput();
+  const [content, , setContent] = useInput();
 
   const onChangeContent = useCallback(
     (e: ChangeEvent<HTMLTextAreaElement>) => {
@@ -172,25 +192,6 @@ const Comment = ({ post }: { post: PostType }) => {
     [dispatch, post.id]
   );
 
-  //OutsideClick----------------------------------------------
-  const popupRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const onClickOutside = (event: MouseEvent) => {
-      if (
-        popupRef.current &&
-        !popupRef.current.contains(event.target as Node)
-      ) {
-        setShowinfo({});
-      }
-    };
-
-    document.addEventListener("mousedown", onClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", onClickOutside);
-    };
-  }, [popupRef]);
-
   return (
     <>
       {removeCommentLoading || updateCommentLoading || addReCommentLoading ? (
@@ -233,9 +234,9 @@ const Comment = ({ post }: { post: PostType }) => {
                     </EndFlex>
                   </>
                 ) : (
-                  <Content
-                    dangerouslySetInnerHTML={{ __html: comment.content }}
-                  />
+                  <Content>
+                    <ContentRenderer content={comment.content} />
+                  </Content>
                 )}
                 <CommentOptions>
                   {id && (
@@ -335,7 +336,6 @@ const Date = styled.span`
   color: gray;
   font-size: 12px;
   @media (max-width: 480px) {
-    font-size: 7px;
     width: 20%;
   }
 `;
@@ -359,6 +359,7 @@ const Textarea = styled.textarea`
   width: 77%;
   margin: 0 auto;
   @media (max-width: 480px) {
+    font-size: 0.8rem;
     width: 55%;
   }
 `;

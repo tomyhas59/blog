@@ -109,6 +109,12 @@ const PostForm = () => {
     [content, imagePaths, dispatch]
   );
 
+  const onSubmiEnterKey = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      onSubmit(e);
+    }
+  };
+
   return (
     <>
       {addPostLoading ? <Spinner /> : null}
@@ -117,9 +123,10 @@ const PostForm = () => {
           <Title>글쓰기</Title>
           <Form encType="multipart/form-data" onSubmit={onSubmit}>
             <TextArea
-              placeholder="Content"
+              placeholder="Shift+Enter로 줄바꿈"
               value={content}
               onChange={onChangeContent}
+              onKeyUp={onSubmiEnterKey}
             ></TextArea>
             <input
               type="file"

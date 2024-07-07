@@ -1,4 +1,10 @@
-import React, { useEffect, useCallback, useRef, SyntheticEvent } from "react";
+import React, {
+  useEffect,
+  useCallback,
+  useRef,
+  SyntheticEvent,
+  ChangeEvent,
+} from "react";
 import styled from "styled-components";
 import { useDispatch, useSelector } from "react-redux";
 import { ADD_RECOMMENT_REQUEST } from "../reducer/post";
@@ -20,20 +26,27 @@ const ReCommentForm = ({
   >;
 }) => {
   const { addReCommentDone } = useSelector((state: RootState) => state.post);
-  const editReCommentRef = useRef<HTMLInputElement>(null);
+  const editReCommentRef = useRef<HTMLTextAreaElement>(null);
 
-  const [reCommentContent, onChangeReComment, setReComment] = useInput();
+  const [reCommentContent, , setContent] = useInput();
+  const onChangeContent = useCallback(
+    (e: ChangeEvent<HTMLTextAreaElement>) => {
+      setContent(e.target.value);
+    },
+    [setContent]
+  );
+
   const dispatch = useDispatch();
   const id = useSelector((state: RootState) => state.user.me?.id);
 
   useEffect(() => {
     if (addReCommentDone) {
-      setReComment("");
+      setContent("");
     }
     if (editReCommentRef) {
       editReCommentRef.current!.focus();
     }
-  }, [addReCommentDone, editReCommentRef, setReComment]);
+  }, [addReCommentDone, editReCommentRef, setContent]);
 
   const onSubmitReComment = useCallback(
     (e: SyntheticEvent) => {
@@ -47,10 +60,11 @@ const ReCommentForm = ({
         ? `@${reComment.User.nickname} ${reCommentContent}`
         : reCommentContent;
 
+      const contentWithBreaks = content.replace(/\n/g, "<br>");
       dispatch({
         type: ADD_RECOMMENT_REQUEST,
         data: {
-          content: content,
+          content: contentWithBreaks,
           postId: post.id,
           commentId: comment.id,
           reComment: reComment?.id,
@@ -70,14 +84,20 @@ const ReCommentForm = ({
     ]
   );
 
+  const onSubmiEnterKey = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      onSubmitReComment(e);
+    }
+  };
+
   return (
     <Form onSubmit={onSubmitReComment}>
-      <InputComment
-        type="text"
-        placeholder="ReComment"
+      <Textarea
+        placeholder="Shift+Enter로 줄바꿈"
         value={reCommentContent}
-        onChange={onChangeReComment}
+        onChange={onChangeContent}
         ref={editReCommentRef}
+        onKeyUp={onSubmiEnterKey}
       />
       <Button type="submit">등록</Button>
     </Form>
@@ -91,7 +111,7 @@ const Form = styled.form`
   text-align: center;
 `;
 
-const InputComment = styled.input`
+const Textarea = styled.textarea`
   width: 70%;
 `;
 

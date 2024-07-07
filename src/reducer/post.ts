@@ -275,6 +275,7 @@ const post = (state = initialState, action: any) => {
         draft.searchPostsError = null;
         break;
       case SEARCH_POSTS_SUCCESS:
+        draft.searchPostsLoading = false;
         draft.searchPostsError = null;
         draft.searchPostsDone = true;
         draft.searchPosts = action.data;
@@ -290,6 +291,7 @@ const post = (state = initialState, action: any) => {
         draft.searchNicknameError = null;
         break;
       case SEARCH_NICKNAME_SUCCESS:
+        draft.searchNicknameLoading = false;
         draft.searchNicknameError = null;
         draft.searchNicknameDone = true;
         draft.searchPosts = action.data;

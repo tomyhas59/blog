@@ -57,7 +57,7 @@ const Main = () => {
   return (
     <div>
       <PostForm />
-      {allPostsLoading ? (
+      {allPostsLoading  ? (
         <Spinner />
       ) : searchPosts.length > 0 ? (
         <div>

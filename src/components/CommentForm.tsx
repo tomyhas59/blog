@@ -20,7 +20,7 @@ const CommentForm = ({
   setAddComment: React.Dispatch<React.SetStateAction<Record<number, boolean>>>;
 }) => {
   const { addCommentDone } = useSelector((state: RootState) => state.post);
-  const [content, onChange, setContent] = useInput();
+  const [content, , setContent] = useInput();
 
   const onChangeContent = useCallback(
     (e: ChangeEvent<HTMLTextAreaElement>) => {
@@ -60,14 +60,21 @@ const CommentForm = ({
     [content, dispatch, id, post.id, setAddComment]
   );
 
+  const onSubmiEnterKey = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      onSubmitComment(e);
+    }
+  };
+
   return (
     <CommentWrapper>
       <Form onSubmit={onSubmitComment}>
         <Textarea
-          placeholder="Comment"
+          placeholder="Shift+Enter로 줄바꿈"
           value={content}
           onChange={onChangeContent}
           ref={editCommentRef}
+          onKeyUp={onSubmiEnterKey}
         />
         <Button type="submit">등록</Button>
       </Form>
