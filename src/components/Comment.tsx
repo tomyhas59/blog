@@ -27,6 +27,7 @@ import { PostType } from "../types";
 import { RootState } from "../reducer";
 import Spinner from "./Spinner";
 import ContentRenderer from "./ContentRenderer";
+import useOutsideClick from "../hooks/useOutsideClick";
 const Comment = ({ post }: { post: PostType }) => {
   const dispatch = useDispatch();
   const id = useSelector((state: RootState) => state.user.me?.id);
@@ -59,26 +60,6 @@ const Comment = ({ post }: { post: PostType }) => {
     },
     [dispatch]
   );
-
-  //OutsideClick----------------------------------------------
-  const popupRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const onClickOutside = (event: MouseEvent) => {
-      if (
-        popupRef.current &&
-        !popupRef.current.contains(event.target as Node)
-      ) {
-        setShowinfo({});
-      }
-    };
-
-    document.addEventListener("mousedown", onClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", onClickOutside);
-    };
-  }, [popupRef]);
-
   //------------------댓글 수정--------------------------------
 
   const [editComment, setEditComment] = useState<Record<number, boolean>>({});
@@ -192,6 +173,16 @@ const Comment = ({ post }: { post: PostType }) => {
     [dispatch, post.id]
   );
 
+  //OutsideClick----------------------------------------------
+  const popupRef = useRef<HTMLDivElement>(null);
+  const reCommentFormRef = useRef<HTMLDivElement>(null);
+
+  useOutsideClick([popupRef, reCommentFormRef, editCommentRef], () => {
+    setShowinfo({});
+    setAddReComment({});
+    setEditComment({});
+  });
+
   return (
     <>
       {removeCommentLoading || updateCommentLoading || addReCommentLoading ? (
@@ -266,14 +257,16 @@ const Comment = ({ post }: { post: PostType }) => {
                   ) : null}
                 </CommentOptions>
               </ContentWrapper>
-              {addReComment[comment.id] ? (
-                <ReCommentForm
-                  post={post}
-                  comment={comment}
-                  reComment={null}
-                  setAddReComment={setAddReComment}
-                />
-              ) : null}
+              {addReComment[comment.id] && (
+                <div ref={reCommentFormRef}>
+                  <ReCommentForm
+                    post={post}
+                    comment={comment}
+                    reComment={null}
+                    setAddReComment={setAddReComment}
+                  />
+                </div>
+              )}
               <ReComment post={post} comment={comment} />
             </FullCommentWrapper>
           </div>

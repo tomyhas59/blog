@@ -28,6 +28,7 @@ import { RootState } from "../reducer";
 import { baseURL } from "../config";
 import Spinner from "./Spinner";
 import ContentRenderer from "./ContentRenderer";
+import useOutsideClick from "../hooks/useOutsideClick";
 
 const Post = ({
   post,
@@ -47,8 +48,6 @@ const Post = ({
     [setContent]
   );
 
-  const editPostRef = useRef<HTMLTextAreaElement>(null);
-
   const id = useSelector((state: RootState) => state.user.me?.id);
   const {
     searchPostsLoading,
@@ -62,6 +61,7 @@ const Post = ({
   const nickname = useSelector((state: RootState) => state.user.me?.nickname);
   const liked = post.Likers.find((v) => v.id === id);
   const imageInput = useRef<HTMLInputElement>(null);
+  const editPostRef = useRef<HTMLTextAreaElement>(null);
 
   //---닉네임 클릭 정보 보기-------------------------------------
   const [showInfo, setShowInfo] = useState(false);
@@ -78,26 +78,17 @@ const Post = ({
   //OutsideClick----------------------------------------------
   const infoMenuRef = useRef<HTMLDivElement>(null);
   const popupMenuRef = useRef<HTMLDivElement>(null);
+  const commentFormRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    const onClickOutside = (event: MouseEvent) => {
-      if (
-        infoMenuRef.current &&
-        !infoMenuRef.current.contains(event.target as Node)
-      )
-        setShowInfo(false);
-
-      if (
-        popupMenuRef.current &&
-        !popupMenuRef.current.contains(event.target as Node)
-      )
-        setShowOptions(false);
-    };
-    document.addEventListener("mousedown", onClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", onClickOutside);
-    };
-  }, []);
+  useOutsideClick(
+    [infoMenuRef, popupMenuRef, editPostRef, commentFormRef],
+    () => {
+      setShowOptions(false);
+      setShowInfo(false);
+      setAddComment({});
+      setEditPost(false);
+    }
+  );
 
   //-----게시글 수정 및 취소-------------------------
   const toggleEditPostForm = useCallback(() => {
@@ -387,11 +378,11 @@ const Post = ({
               댓글 달기
             </Button>
           </PostHeaderFlex>
-          {addComment[post.id] ? (
-            <div>
+          {addComment[post.id] && (
+            <div ref={commentFormRef}>
               <CommentForm post={post} setAddComment={setAddComment} />
             </div>
-          ) : null}
+          )}
           <Comment post={post} />
         </CommentContainer>
       </FormWrapper>

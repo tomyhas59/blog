@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef } from "react";
 import { useState, useCallback } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { REMOVE_RECOMMENT_REQUEST } from "../reducer/post";
@@ -11,6 +11,7 @@ import { RootState } from "../reducer";
 import ReCommentForm from "./ReCommentForm";
 import Spinner from "./Spinner";
 import ContentRenderer from "./ContentRenderer";
+import useOutsideClick from "../hooks/useOutsideClick";
 
 const ReComment = ({
   post,
@@ -56,6 +57,14 @@ const ReComment = ({
     [comment.id, dispatch, post.id]
   );
 
+  //OutsideClick----------------------------------------------
+
+  const reCommentFormRef = useRef<HTMLDivElement>(null);
+
+  useOutsideClick([reCommentFormRef], () => {
+    setAddReComment({});
+  });
+
   return (
     <>
       {removeReCommentLoading || updateReCommentLoading ? <Spinner /> : null}
@@ -93,14 +102,16 @@ const ReComment = ({
                 ) : null}
               </ReCommentOptions>
             </ContentWrapper>
-            {addReComment[reComment.id] ? (
-              <ReCommentForm
-                post={post}
-                comment={comment}
-                reComment={reComment}
-                setAddReComment={setAddReComment}
-              />
-            ) : null}
+            {addReComment[reComment.id] && (
+              <div ref={reCommentFormRef}>
+                <ReCommentForm
+                  post={post}
+                  comment={comment}
+                  reComment={reComment}
+                  setAddReComment={setAddReComment}
+                />
+              </div>
+            )}
           </ReCommentWrapper>
         );
       })}
