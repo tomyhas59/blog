@@ -112,11 +112,6 @@ const CommentItem = styled.li`
   }
 `;
 
-const CommentContent = styled.button`
-  margin: 0;
-  font-size: 16px;
-`;
-
 const Heading = styled.h2`
   font-size: 24px;
   color: ${(props) => props.theme.mainColor};
