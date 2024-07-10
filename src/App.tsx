@@ -8,6 +8,7 @@ import GlobalStyle from "./style/global";
 import { PaginationProvider } from "./pages/PaginationProvider";
 import React from "react";
 import Chat from "./pages/Chat";
+import Info from "./pages/Info";
 function App() {
   useEffect(() => {
     console.log(`기본 지원 모드:${process.env.NODE_ENV}`);
@@ -23,6 +24,7 @@ function App() {
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
             <Route path="/chat" element={<Chat />} />
+            <Route path="/info" element={<Info />} />
           </Routes>
         </AppLayout>
       </PaginationProvider>

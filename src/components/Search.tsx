@@ -5,25 +5,30 @@ import { SEARCH_POSTS_REQUEST } from "../reducer/post";
 import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { RootState } from "../reducer";
+import { useNavigate } from "react-router-dom";
 
 const Search = () => {
   const [searchOption, setSearchOption] = useState("author");
   const [searchText, setSearchText] = useState("");
   const dispatch = useDispatch();
   const { searchPostsError } = useSelector((state: RootState) => state.post);
+  const navigator = useNavigate();
 
   const onSearch = useCallback(() => {
     if (!searchText) {
       alert("찾을 단어를 입력해 주세요");
     }
+
     if (searchText.trim() !== "") {
+      navigator("/");
       dispatch({
         type: SEARCH_POSTS_REQUEST,
         query: searchText,
         searchOption,
       });
-    } // 검색 액션을 디스패치
+    }
     setSearchText("");
+
     window.scrollTo({ top: 0, behavior: "auto" }); // 페이지 맨 위로 스크롤
   }, [dispatch, searchOption, searchText]);
 
@@ -51,7 +56,7 @@ const Search = () => {
       >
         <option value="author">글쓴이</option>
         <option value="content">내용</option>
-        <option value="both">글쓴이+내용</option>
+        <option value="all">전체</option>
       </Select>
       <Input
         placeholder="검색"
@@ -69,20 +74,21 @@ const Search = () => {
 
 export default Search;
 
-const Select = styled.select`
-  border-radius: 4px;
-`;
-
 const Container = styled.div`
   display: grid;
   height: 50px;
   grid-template-columns: 30% 60% 10%;
-  & > select {
+  @media (max-width: 480px) {
+    width: 250px;
     text-align: center;
   }
-  @media (max-width: 680px) {
-    width: 250px;
-    height: 4px;
+`;
+
+const Select = styled.select`
+  text-align: center;
+  border-radius: 4px;
+  @media (max-width: 480px) {
+    height: 30px;
   }
 `;
 
@@ -92,6 +98,9 @@ const Input = styled.input`
   font-size: 16px;
   border: 1px solid #ccc;
   border-radius: 4px 0 0 4px;
+  @media (max-width: 480px) {
+    height: 30px;
+  }
 `;
 
 const SearchButton = styled.button`
@@ -105,5 +114,8 @@ const SearchButton = styled.button`
       transform: translateY(-2px);
       color: ${(props) => props.theme.charColor};
     }
+  }
+  @media (max-width: 480px) {
+    height: 30px;
   }
 `;

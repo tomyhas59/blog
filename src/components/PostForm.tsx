@@ -167,7 +167,7 @@ export default PostForm;
 
 const FormWrapper = styled.div`
   max-width: 800px;
-  margin: 10px auto;
+  margin: 0 auto;
   min-height: 220px;
   padding: 20px;
   border: 1px solid silver;

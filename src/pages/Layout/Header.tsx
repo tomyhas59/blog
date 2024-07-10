@@ -86,8 +86,15 @@ const Header = () => {
   return (
     <HeaderWrapper>
       <HeaderLogoBtn onClick={onGoHome}>TMS</HeaderLogoBtn>
-      <Nickname>{me && me.nickname.slice(0, 5) + "님 환영합니다"}</Nickname>
-      <Search />
+      {isLoggedIn && (
+        <Nickname>
+          <MyInfo to="/info">{me && me.nickname.slice(0, 5)} 정보</MyInfo>
+        </Nickname>
+      )}
+
+      <div className="search">
+        <Search />
+      </div>
       {!isLoggedIn && (
         <SignList>
           <li>
@@ -112,6 +119,7 @@ const Header = () => {
   );
 };
 export default Header;
+
 export const HeaderWrapper = styled.header`
   width: 100%;
   height: 5rem;
@@ -120,25 +128,29 @@ export const HeaderWrapper = styled.header`
   z-index: 1000;
   position: fixed;
   background-color: ${(props) => props.theme.subColor};
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  @media (max-width: 780px) {
-    height: 9rem;
-    grid-template-columns: repeat(2, 500px);
-  }
+  display: flex;
+  justify-content: center;
+  gap: 10px;
   @media (max-width: 480px) {
-    height: 9rem;
-    grid-template-columns: repeat(2, 1fr);
+    display: grid;
+    gap: 5px;
+    grid-template-areas:
+      "a b c"
+      "d d c";
+    padding: 10px;
+    .search {
+      grid-area: d;
+    }
   }
 `;
+
 export const HeaderLogoBtn = styled.button`
   cursor: pointer;
-  font-size: 1.5rem;
+  font-size: 2rem;
   color: #ffffff;
   background-color: ${(props) => props.theme.mainColor};
   border-radius: 8px;
   border: 1px solid;
-  margin-left: 100px;
   width: 10rem;
   height: 3rem;
   transition: transform 0.3s ease, color 0.3s ease;
@@ -147,22 +159,43 @@ export const HeaderLogoBtn = styled.button`
     color: ${(props) => props.theme.charColor};
   }
   @media (max-width: 480px) {
-    margin-left: 10px;
-    margin-bottom: 10px;
+    font-size: 1rem;
+    width: 7rem;
+    height: 1.5rem;
+    grid-area: a;
   }
 `;
 const Nickname = styled.div`
-  width: 15rem;
+  cursor: pointer;
   font-size: 1.5rem;
-  font-weight: bold;
-  color: #fff;
+  color: #ffffff;
+  background-color: ${(props) => props.theme.mainColor};
+  border-radius: 8px;
+  border: 1px solid;
+  width: 10rem;
+  height: 3rem;
+  transition: transform 0.3s ease, color 0.3s ease;
+  text-align: center;
+  line-height: 3rem;
+  &:hover {
+    transform: translateY(-2px);
+    color: ${(props) => props.theme.charColor};
+  }
   @media (max-width: 480px) {
-    transform: scale(0.5) translateX(-200px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 8rem;
+    height: 1.5rem;
+    font-size: 1rem;
+    grid-area: b;
   }
 `;
+
+const MyInfo = styled(Link)``;
+
 export const SignList = styled.ul`
   display: flex;
-  margin-left: 5px;
   color: #fff;
   > li {
     background-color: ${(props) => props.theme.mainColor};
@@ -178,14 +211,15 @@ export const SignList = styled.ul`
       transform: translateY(-2px);
       color: ${(props) => props.theme.charColor};
     }
-    @media (max-width: 480px) {
-      font-size: 10px;
-      padding: 5px;
-      width: 100px;
-      margin-top: 3px;
-    }
   }
   @media (max-width: 480px) {
     flex-direction: column;
+    grid-area: c;
+    > li {
+      margin-top: 1px;
+      width: 60px;
+      height: 30px;
+      font-size: 0.6rem;
+    }
   }
 `;

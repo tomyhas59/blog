@@ -49,7 +49,7 @@ export const FooterWrapper = styled.footer`
 `;
 
 export const FooterTamplate = styled.div`
-  padding: 1rem;
+  padding: 14px 40px;
   display: flex;
   justify-content: center;
   align-items: center;

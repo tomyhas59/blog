@@ -26,6 +26,7 @@ const ContentWrapper = styled.div`
   margin-top: 100px;
   overflow-y: auto;
   @media (max-width: 480px) {
+    margin-top: 0;
     transform: scale(0.9);
   }
 `;
