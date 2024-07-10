@@ -17,7 +17,6 @@ const LayoutWrapper = styled.div`
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  margin-top: 3rem;
   overflow: hidden;
 `;
 
@@ -26,7 +25,6 @@ const ContentWrapper = styled.div`
   margin-top: 100px;
   overflow-y: auto;
   @media (max-width: 480px) {
-    margin-top: 0;
     transform: scale(0.9);
   }
 `;

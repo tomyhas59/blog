@@ -164,6 +164,16 @@ const ChatContainer = styled.div`
   }
 `;
 
+const ChatWrapper = styled.div`
+  width: 600px;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  @media (max-width: 480px) {
+    width: 340px;
+  }
+`;
+
 const UserList = styled.div`
   color: ${(props) => props.theme.mainColor};
   font-size: 24px;
@@ -180,17 +190,11 @@ const UserList = styled.div`
     }
   }
   @media (max-width: 480px) {
+    font-size: 12px;
     position: absolute;
-  }
-`;
-
-const ChatWrapper = styled.div`
-  width: 600px;
-  padding: 20px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  @media (max-width: 480px) {
-    width: 380px;
+    > ul {
+      flex-direction: row;
+    }
   }
 `;
 

@@ -14,7 +14,8 @@ const Info = () => {
 
   useEffect(() => {
     if (!me) navigator("/");
-  });
+  }, [me, navigator]);
+
   const renderSection = () => {
     switch (activeSection) {
       case "myInfo":
@@ -34,17 +35,17 @@ const Info = () => {
         <NavList>
           <NavItem>
             <NavLink onClick={() => setActiveSection("myInfo")}>
-              내 정보
+              ▮내 정보
             </NavLink>
           </NavItem>
           <NavItem>
             <NavLink onClick={() => setActiveSection("myPosts")}>
-              내가 쓴 글
+              ▮내가 쓴 글
             </NavLink>
           </NavItem>
           <NavItem>
             <NavLink onClick={() => setActiveSection("myComments")}>
-              내가 쓴 댓글
+              ▮내가 쓴 댓글
             </NavLink>
           </NavItem>
         </NavList>
@@ -58,6 +59,10 @@ const Container = styled.div`
   width: 70%;
   margin: 0 auto;
   display: flex;
+  @media (max-width: 480px) {
+    flex-direction: column;
+    width: 90%;
+  }
 `;
 
 const Nav = styled.nav`
@@ -65,15 +70,26 @@ const Nav = styled.nav`
   max-width: 200px;
   padding: 20px;
   border-right: 1px solid #ddd;
+  @media (max-width: 480px) {
+    max-width: 100%;
+    border-right: none;
+    border-bottom: 1px solid #ddd;
+  }
 `;
 
 const NavList = styled.ul`
   list-style: none;
   padding: 0;
+  @media (max-width: 480px) {
+    display: flex;
+  }
 `;
 
 const NavItem = styled.li`
   margin-bottom: 10px;
+  @media (max-width: 480px) {
+    margin-left: 10px;
+  }
 `;
 
 const NavLink = styled.a`
@@ -89,6 +105,9 @@ const NavLink = styled.a`
 const SectionWrapper = styled.div`
   flex: 3;
   padding: 20px;
+  @media (max-width: 480px) {
+    padding: 10px;
+  }
 `;
 
 export default Info;

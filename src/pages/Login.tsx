@@ -92,7 +92,7 @@ export default Login;
 
 const LoginContainer = styled.div`
   max-width: 400px;
-  margin: 0 auto;
+  margin: 150px auto;
   padding: 20px;
   border: 1px solid #ccc;
   border-radius: 4px;

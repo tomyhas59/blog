@@ -113,8 +113,7 @@ export default Sign;
 
 const RegistrationContainer = styled.form`
   max-width: 400px;
-  margin: 0 auto;
-  margin-bottom: 20px;
+  margin: 100px auto;
   padding: 20px;
   border: 1px solid #ccc;
   border-radius: 4px;
