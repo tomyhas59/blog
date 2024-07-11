@@ -60,21 +60,14 @@ const CommentForm = ({
     [content, dispatch, id, post.id, setAddComment]
   );
 
-  const onSubmiEnterKey = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    if (e.key === "Enter" && !e.shiftKey) {
-      onSubmitComment(e);
-    }
-  };
-
   return (
     <CommentWrapper>
       <Form onSubmit={onSubmitComment}>
         <Textarea
-          placeholder="Shift+Enter로 줄바꿈"
+          placeholder="내용을 입력해주세요"
           value={content}
           onChange={onChangeContent}
           ref={editCommentRef}
-          onKeyUp={onSubmiEnterKey}
         />
         <Button type="submit">등록</Button>
       </Form>

@@ -84,20 +84,13 @@ const ReCommentForm = ({
     ]
   );
 
-  const onSubmiEnterKey = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    if (e.key === "Enter" && !e.shiftKey) {
-      onSubmitReComment(e);
-    }
-  };
-
   return (
     <Form onSubmit={onSubmitReComment}>
       <Textarea
-        placeholder="Shift+Enter로 줄바꿈"
+        placeholder="내용을 입력해주세요"
         value={reCommentContent}
         onChange={onChangeContent}
         ref={editReCommentRef}
-        onKeyUp={onSubmiEnterKey}
       />
       <Button type="submit">등록</Button>
     </Form>
