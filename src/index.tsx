@@ -5,6 +5,7 @@ import { ThemeProvider } from "styled-components";
 import { theme } from "./style/theme";
 import { Provider } from "react-redux";
 import configureStore from "./store/store";
+import { Analytics } from "@vercel/analytics/react";
 
 const store = configureStore();
 
@@ -17,6 +18,7 @@ if (rootElement !== null) {
       <ThemeProvider theme={theme}>
         <React.StrictMode>
           <App />
+          <Analytics />
         </React.StrictMode>
       </ThemeProvider>
     </Provider>
