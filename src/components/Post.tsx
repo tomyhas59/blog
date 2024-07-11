@@ -22,13 +22,13 @@ import {
 } from "../reducer/post";
 import moment from "moment";
 import "moment/locale/ko";
-import { Form, TextArea } from "./PostForm";
 import { PostType } from "../types";
 import { RootState } from "../reducer";
 import { baseURL } from "../config";
 import Spinner from "./Spinner";
-import ContentRenderer from "./ContentRenderer";
+import ContentRenderer from "./renderer/ContentRenderer";
 import useOutsideClick from "../hooks/useOutsideClick";
+import useTextareaAutoHeight from "../hooks/useTextareaAutoHeight";
 
 const Post = ({
   post,
@@ -75,20 +75,21 @@ const Post = ({
     setShowOptions((prevShowOptions) => !prevShowOptions);
   }, []);
 
+  //수정 시 높이 조정
+  useTextareaAutoHeight(editPostRef, editPost);
+
   //OutsideClick----------------------------------------------
   const infoMenuRef = useRef<HTMLDivElement>(null);
   const popupMenuRef = useRef<HTMLDivElement>(null);
   const commentFormRef = useRef<HTMLDivElement>(null);
+  const formRef = useRef<HTMLFormElement>(null);
 
-  useOutsideClick(
-    [infoMenuRef, popupMenuRef, editPostRef, commentFormRef],
-    () => {
-      setShowOptions(false);
-      setShowInfo(false);
-      setAddComment({});
-      setEditPost(false);
-    }
-  );
+  useOutsideClick([infoMenuRef, popupMenuRef, formRef, commentFormRef], () => {
+    setShowOptions(false);
+    setShowInfo(false);
+    setAddComment({});
+    setEditPost(false);
+  });
 
   //-----게시글 수정 및 취소-------------------------
   const toggleEditPostForm = useCallback(() => {
@@ -103,6 +104,7 @@ const Post = ({
       return !prev;
     });
   }, [dispatch, post.content, setContent]);
+
   //---------------------------------------------
   const onLike = useCallback(() => {
     if (!id) {
@@ -123,12 +125,6 @@ const Post = ({
       data: post.id,
     });
   }, [dispatch, id, post.id]);
-
-  useEffect(() => {
-    if (editPost) {
-      editPostRef.current!.focus();
-    }
-  }, [editPost]);
 
   //댓글 창, 기존 폼 닫고 새로운 폼 열고 닫기--------------
   const [addComment, setAddComment] = useState<Record<number, boolean>>({});
@@ -157,9 +153,6 @@ const Post = ({
       data: post.id,
     });
   }, [dispatch, post.id]);
-
-  const createdAtDate = moment(post.createdAt);
-  const formattedDate = createdAtDate.format("l");
 
   const onSearch = useCallback(() => {
     dispatch({
@@ -269,7 +262,7 @@ const Post = ({
                   <Button onClick={onSearch}>작성 글 보기</Button>
                 </InfoMenu>
               )}
-              <Date>{formattedDate}</Date>
+              <Date>{moment(post.createdAt).format("l")}</Date>
             </PostHeader>
             <div>
               <Liked>좋아요 {post.Likers.length}개</Liked>
@@ -286,13 +279,14 @@ const Post = ({
                 <Form
                   encType="multipart/form-data"
                   onSubmit={(e) => onModifyPost(e, post.id)}
+                  ref={formRef}
                 >
                   <TextArea
-                    placeholder="Content"
+                    placeholder="입력해주세요"
                     value={prevContent}
                     onChange={onChangeContent}
                     ref={editPostRef}
-                  ></TextArea>
+                  />
                   {/*     <input
                     type="file"
                     name="image"
@@ -335,7 +329,6 @@ const Post = ({
                   <Button type="submit">적용</Button>
                   <Button onClick={toggleEditPostForm}>취소</Button>
                 </Form>
-                <EndFlex></EndFlex>
               </>
             ) : (
               <ContentWrapper>
@@ -411,6 +404,16 @@ const InPostWrapper = styled.div`
   padding: 10px;
   display: flex;
   justify-content: space-between;
+`;
+
+const TextArea = styled.textarea`
+  max-width: 100%;
+  min-width: 100%;
+  padding: 12px;
+  font-size: 16px;
+  border: 2px solid #ccc;
+  border-radius: 8px;
+  margin-bottom: 10px;
 `;
 
 const Button = styled.button`
@@ -553,4 +556,9 @@ const EditToggle = styled.div`
   position: relative;
   font-size: 19px;
   cursor: pointer;
+`;
+
+const Form = styled.form`
+  width: 100%;
+  text-align: center;
 `;

@@ -15,6 +15,7 @@ import {
 import { useEffect } from "react";
 import { RootState } from "../reducer";
 import Spinner from "./Spinner";
+import useTextareaAutoHeight from "../hooks/useTextareaAutoHeight";
 
 const PostForm = () => {
   const dispatch = useDispatch();
@@ -99,15 +100,21 @@ const PostForm = () => {
         formData.append("image", p); //req.body.image
       });
       formData.append("content", contentWithBreaks); //req.body.content
-
       setActive(false);
       dispatch({
         type: ADD_POST_REQUEST,
         data: formData,
       });
+      if (textareaRef.current) textareaRef.current.style.height = "auto";
     },
+
     [content, imagePaths, dispatch]
   );
+
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+  //입력 시 textarea높이 조정
+  useTextareaAutoHeight(textareaRef, null);
 
   return (
     <>
@@ -120,6 +127,7 @@ const PostForm = () => {
               placeholder="내용을 입력해주세요"
               value={content}
               onChange={onChangeContent}
+              ref={textareaRef}
             ></TextArea>
             <input
               type="file"
@@ -175,12 +183,12 @@ const Title = styled.h2`
   color: #333;
 `;
 
-export const Form = styled.form`
+const Form = styled.form`
   width: 100%;
   text-align: center;
 `;
 
-export const TextArea = styled.textarea`
+const TextArea = styled.textarea`
   max-width: 100%;
   min-width: 100%;
   padding: 12px;

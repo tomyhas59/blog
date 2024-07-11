@@ -11,6 +11,7 @@ import useInput from "../hooks/useInput";
 import { ADD_COMMENT_REQUEST } from "../reducer/post";
 import { PostType } from "../types";
 import { RootState } from "../reducer";
+import useTextareaAutoHeight from "../hooks/useTextareaAutoHeight";
 
 const CommentForm = ({
   post,
@@ -30,6 +31,9 @@ const CommentForm = ({
   );
 
   const editCommentRef = useRef<HTMLTextAreaElement>(null);
+
+  //입력 시 textarea높이 조정
+  useTextareaAutoHeight(editCommentRef, null);
 
   const dispatch = useDispatch();
   const id = useSelector((state: RootState) => state.user.me?.id);

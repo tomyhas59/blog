@@ -7,7 +7,8 @@ import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { SEARCH_POSTS_REQUEST } from "../../reducer/post";
-import ContentRenderer from "../../components/ContentRenderer";
+import ContentRenderer from "../../components/renderer/ContentRenderer";
+import ListRenderer from "../../components/renderer/ListRenderer";
 
 const MyComments: React.FC = () => {
   const [comments, setComments] = useState<CommentType[]>([]);
@@ -52,38 +53,18 @@ const MyComments: React.FC = () => {
       <Heading>◈내가 쓴 댓글◈</Heading>
       <CommentList>
         <Heading>댓글</Heading>
-        {comments.length > 0 ? (
-          <ul>
-            {comments.map((comment) => (
-              <CommentItem
-                key={comment.id}
-                onClick={() => onSearch(comment.content)}
-              >
-                <ContentRenderer content={comment.content} />
-              </CommentItem>
-            ))}
-          </ul>
-        ) : (
-          <p>작성한 댓글이 없습니다.</p>
-        )}
+        <ListRenderer
+          items={comments}
+          onItemClick={(content) => onSearch(content)}
+        />
       </CommentList>
 
       <CommentList>
         <Heading>대댓글</Heading>
-        {reComments.length > 0 ? (
-          <ul>
-            {reComments.map((reComment) => (
-              <CommentItem
-                key={reComment.id}
-                onClick={() => onSearch(reComment.content)}
-              >
-                <ContentRenderer content={reComment.content} />
-              </CommentItem>
-            ))}
-          </ul>
-        ) : (
-          <p>작성한 대댓글이 없습니다.</p>
-        )}
+        <ListRenderer
+          items={reComments}
+          onItemClick={(content) => onSearch(content)}
+        />
       </CommentList>
     </CommentsContainer>
   );
@@ -101,19 +82,11 @@ const CommentList = styled.div`
   margin-bottom: 20px;
 `;
 
-const CommentItem = styled.li`
-  background-color: #f0f0f0;
-  border-radius: 8px;
-  margin-bottom: 12px;
-  padding: 16px;
-  cursor: pointer;
-  &:hover {
-    background-color: ${(props) => props.theme.mainColor};
-  }
-`;
-
 const Heading = styled.h2`
   font-size: 24px;
   color: ${(props) => props.theme.mainColor};
   margin-bottom: 16px;
+  @media (max-width: 480px) {
+    font-size: 15px;
+  }
 `;

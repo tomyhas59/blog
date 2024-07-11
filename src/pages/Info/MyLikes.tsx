@@ -10,25 +10,33 @@ import { SEARCH_POSTS_REQUEST } from "../../reducer/post";
 import ContentRenderer from "../../components/renderer/ContentRenderer";
 import ListRenderer from "../../components/renderer/ListRenderer";
 
-const MyPosts: React.FC = () => {
+const MyLikes: React.FC = () => {
   const [posts, setPosts] = useState<PostType[]>([]);
   const { me } = useSelector((state: RootState) => state.user);
   const navigator = useNavigate();
   const dispatch = useDispatch();
   const searchOption = "content";
+
   useEffect(() => {
-    const getUserPosts = async () => {
+    const getUserLikes = async () => {
       try {
         if (me?.id) {
-          const response = await axios.get(`/post?userId=${me.id}`);
+          const response = await axios.get(`/post/likers?userId=${me.id}`);
+          const posts = response.data.map(
+            (item: { id: number; content: string; createdAt: string }) => ({
+              id: item.id,
+              content: item.content,
+              createdAt: item.createdAt,
+            })
+          );
           console.log(response.data);
-          setPosts(response.data);
+          setPosts(posts);
         }
       } catch (error) {
         console.error(error);
       }
     };
-    getUserPosts();
+    getUserLikes();
   }, [me]);
 
   const onSearch = useCallback(
@@ -47,7 +55,7 @@ const MyPosts: React.FC = () => {
 
   return (
     <PostsContainer>
-      <Heading>◈내가 쓴 글◈</Heading>
+      <Heading>◈좋아요 한 글◈</Heading>
       <ListRenderer
         items={posts}
         onItemClick={(content) => onSearch(content)}
@@ -56,7 +64,7 @@ const MyPosts: React.FC = () => {
   );
 };
 
-export default MyPosts;
+export default MyLikes;
 
 const PostsContainer = styled.div`
   max-width: 800px;

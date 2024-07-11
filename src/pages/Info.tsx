@@ -6,6 +6,7 @@ import styled from "styled-components";
 import { useSelector } from "react-redux";
 import { RootState } from "../reducer";
 import { useNavigate } from "react-router-dom";
+import MyLikes from "./Info/MyLikes";
 
 const Info = () => {
   const [activeSection, setActiveSection] = useState("myInfo");
@@ -24,6 +25,8 @@ const Info = () => {
         return <MyPosts />;
       case "myComments":
         return <MyComments />;
+      case "myLikes":
+        return <MyLikes />;
       default:
         return <MyInfo />;
     }
@@ -46,6 +49,11 @@ const Info = () => {
           <NavItem>
             <NavLink onClick={() => setActiveSection("myComments")}>
               ▮내가 쓴 댓글
+            </NavLink>
+          </NavItem>
+          <NavItem>
+            <NavLink onClick={() => setActiveSection("myLikes")}>
+              ▮좋아요 글
             </NavLink>
           </NavItem>
         </NavList>
@@ -100,6 +108,9 @@ const NavLink = styled.a`
   &:hover {
     color: darkblue;
   }
+  @media (max-width: 480px) {
+    font-size: 0.7rem;
+  }
 `;
 
 const SectionWrapper = styled.div`
@@ -107,6 +118,7 @@ const SectionWrapper = styled.div`
   padding: 20px;
   @media (max-width: 480px) {
     padding: 10px;
+    font-size: 0.8rem;
   }
 `;
 

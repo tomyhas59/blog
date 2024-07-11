@@ -10,7 +10,7 @@ import { CommentType, PostType } from "../types";
 import { RootState } from "../reducer";
 import ReCommentForm from "./ReCommentForm";
 import Spinner from "./Spinner";
-import ContentRenderer from "./ContentRenderer";
+import ContentRenderer from "./renderer/ContentRenderer";
 import useOutsideClick from "../hooks/useOutsideClick";
 
 const ReComment = ({
@@ -69,9 +69,6 @@ const ReComment = ({
     <>
       {removeReCommentLoading || updateReCommentLoading ? <Spinner /> : null}
       {comment.ReComments.map((reComment) => {
-        const createdAtCommentDate = moment(reComment.createdAt);
-        const formattedCommentDate = createdAtCommentDate.format("l");
-
         const regex = /@\w+/g;
         const regexNickname = reComment.content.match(regex);
         const userNickname = regexNickname && regexNickname[0].replace("@", "");
@@ -81,7 +78,7 @@ const ReComment = ({
           <ReCommentWrapper key={reComment.id}>
             <AuthorWrapper>
               <Author>↪ {reComment.User.nickname.slice(0, 5)}</Author>
-              <Date>({formattedCommentDate})</Date>
+              <Date>({moment(reComment.createdAt).format("l")})</Date>
             </AuthorWrapper>
             <ContentWrapper>
               <Content>
@@ -148,6 +145,7 @@ const Content = styled.div`
   width: 90%;
   /**내용 수직 정렬용 */
   word-break: break-word; /**텍스트 줄바꿈 */
+  font-size: 0.8rem;
   & span {
     color: #b3b0b0;
   }

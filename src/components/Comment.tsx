@@ -26,8 +26,9 @@ import {
 import { PostType } from "../types";
 import { RootState } from "../reducer";
 import Spinner from "./Spinner";
-import ContentRenderer from "./ContentRenderer";
+import ContentRenderer from "./renderer/ContentRenderer";
 import useOutsideClick from "../hooks/useOutsideClick";
+import useTextareaAutoHeight from "../hooks/useTextareaAutoHeight";
 const Comment = ({ post }: { post: PostType }) => {
   const dispatch = useDispatch();
   const id = useSelector((state: RootState) => state.user.me?.id);
@@ -74,13 +75,6 @@ const Comment = ({ post }: { post: PostType }) => {
 
   const editCommentRef = useRef<HTMLTextAreaElement>(null);
 
-  const updateTextareaHeight = () => {
-    if (editCommentRef.current) {
-      editCommentRef.current.style.height = "auto";
-      editCommentRef.current.style.height = `${editCommentRef.current.scrollHeight}px`;
-    }
-  };
-
   // 현재 열려 있는 댓글의 id추적하기 위한 상태 변수
   const [currentCommentId, setCurrentCommentId] = useState<number | null>(null);
 
@@ -101,18 +95,12 @@ const Comment = ({ post }: { post: PostType }) => {
         [commentId]: !prev[commentId],
       }));
       setContent(commentContent);
-
-      updateTextareaHeight();
     },
     [currentCommentId, setContent]
   );
 
-  useEffect(() => {
-    if (editComment[currentCommentId!] && editCommentRef.current) {
-      editCommentRef.current.focus();
-      updateTextareaHeight();
-    }
-  }, [editComment, currentCommentId]);
+  //수정 시 높이 조정
+  useTextareaAutoHeight(editCommentRef, editComment);
 
   // "취소" 버튼을 누를 때 호출되는 함수
   const onCancelEditComment = useCallback(() => {
@@ -190,8 +178,6 @@ const Comment = ({ post }: { post: PostType }) => {
       ) : null}
       {post.Comments.map((comment) => {
         const isEditing = editComment[comment.id];
-        const createdAtDate = moment(comment.createdAt);
-        const formattedDate = createdAtDate.format("l");
         return (
           <div key={comment.id}>
             <FullCommentWrapper key={comment.id}>
@@ -202,12 +188,12 @@ const Comment = ({ post }: { post: PostType }) => {
                 </Author>
                 {showInfo[comment.id] ? (
                   <PopupMenu ref={popupRef}>
-                    <Button onClick={() => onSearch(comment.User.nickname)}>
+                    <BlueButton onClick={() => onSearch(comment.User.nickname)}>
                       작성 글 보기
-                    </Button>
+                    </BlueButton>
                   </PopupMenu>
                 ) : null}
-                <Date>({formattedDate})</Date>
+                <Date>({moment(comment.createdAt).format("l")})</Date>
               </AuthorWrapper>
               <ContentWrapper>
                 {isEditing && currentCommentId === comment.id ? (
@@ -217,12 +203,14 @@ const Comment = ({ post }: { post: PostType }) => {
                       onChange={onChangeContent}
                       ref={editCommentRef}
                     />
-                    <EndFlex>
-                      <Button onClick={() => onModifytComment(comment.id)}>
+                    <ButtonContainer>
+                      <BlueButton onClick={() => onModifytComment(comment.id)}>
                         수정
-                      </Button>
-                      <Button onClick={onCancelEditComment}>취소</Button>
-                    </EndFlex>
+                      </BlueButton>
+                      <BlueButton onClick={onCancelEditComment}>
+                        취소
+                      </BlueButton>
+                    </ButtonContainer>
                   </>
                 ) : (
                   <Content>
@@ -231,20 +219,20 @@ const Comment = ({ post }: { post: PostType }) => {
                 )}
                 <CommentOptions>
                   {id && (
-                    <Toggle onClick={() => onAddReCommentForm(comment.id)}>
+                    <Button onClick={() => onAddReCommentForm(comment.id)}>
                       <FontAwesomeIcon icon={faComment} />
-                    </Toggle>
+                    </Button>
                   )}
                   {id === comment.User.id || nickname === "admin" ? (
                     <>
-                      <Toggle
+                      <Button
                         onClick={() =>
                           onEditCommentForm(comment.id, comment.content)
                         }
                       >
                         <FontAwesomeIcon icon={faPen} />
-                      </Toggle>
-                      <Toggle
+                      </Button>
+                      <Button
                         onClick={() =>
                           onRemoveComment(
                             comment.id /*매개변수를 위의 함수로 전달*/
@@ -252,7 +240,7 @@ const Comment = ({ post }: { post: PostType }) => {
                         }
                       >
                         <FontAwesomeIcon icon={faTrash} />
-                      </Toggle>
+                      </Button>
                     </>
                   ) : null}
                 </CommentOptions>
@@ -304,6 +292,7 @@ const ContentWrapper = styled.div`
   display: flex;
   padding: 5px;
   justify-content: space-between;
+  align-items: end;
 `;
 
 const Content = styled.div`
@@ -314,12 +303,13 @@ const Content = styled.div`
   word-break: break-word; /**텍스트 줄바꿈 */
 `;
 
-const Toggle = styled.button`
+const Button = styled.button`
   font-weight: bold;
 `;
 
 const CommentOptions = styled.div`
   display: flex;
+  height: 30px;
   & * {
     margin-left: 2px;
   }
@@ -333,7 +323,10 @@ const Date = styled.span`
   }
 `;
 
-const Button = styled.button`
+const ButtonContainer = styled.div`
+  height: 30px;
+`;
+const BlueButton = styled.button`
   background-color: ${(props) => props.theme.mainColor};
   margin: 2px;
   font-size: 12px;
@@ -349,17 +342,15 @@ const Button = styled.button`
 `;
 
 const Textarea = styled.textarea`
-  width: 77%;
+  max-width: 80%;
+  min-width: 80%;
   margin: 0 auto;
+  padding: 12px;
+  font-size: 0.8rem;
   @media (max-width: 480px) {
     font-size: 0.8rem;
     width: 55%;
   }
-`;
-
-const EndFlex = styled.div`
-  display: flex;
-  justify-content: end;
 `;
 
 const PopupMenu = styled.div`
