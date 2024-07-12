@@ -607,7 +607,10 @@ const post = (state = initialState, action: any) => {
       case LIKE_POST_SUCCESS: {
         const post = draft.allPosts.find((v) => v.id === action.data.PostId);
         if (post) {
-          post.Likers.push({ id: action.data.UserId });
+          post.Likers.push({
+            id: action.data.UserId,
+            nickname: action.data.nickname,
+          });
         }
         draft.likePostLoading = false;
         draft.likePostDone = true;

@@ -58,6 +58,7 @@ const Header = () => {
     }
   }, [logInError]);
   const { paginate } = usePagination();
+
   useEffect(() => {
     if (logOutDone) {
       dispatch({
@@ -66,12 +67,14 @@ const Header = () => {
       navigator("/login");
     }
   }, [dispatch, logOutDone, navigator]);
+
   const onLogout = useCallback(() => {
     socket.emit("logoutUser", me?.id);
     dispatch({
       type: LOG_OUT_REQUEST,
     });
   }, [dispatch, me?.id, socket]);
+
   const onGoHome = useCallback(() => {
     dispatch({
       type: "REFRESH",
@@ -80,9 +83,11 @@ const Header = () => {
     navigator("/");
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, [dispatch, navigator, paginate]);
+
   const onGoToChat = () => {
     navigator("/chat");
   };
+
   return (
     <HeaderWrapper>
       <HeaderLogoBtn onClick={onGoHome}>TMS</HeaderLogoBtn>

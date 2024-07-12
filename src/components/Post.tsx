@@ -49,6 +49,8 @@ const Post = ({
   );
 
   const id = useSelector((state: RootState) => state.user.me?.id);
+  const nickname = useSelector((state: RootState) => state.user.me?.nickname);
+
   const {
     searchPostsLoading,
     searchNicknameLoading,
@@ -58,7 +60,6 @@ const Post = ({
     likePostLoading,
     unLikePostLoading,
   } = useSelector((state: RootState) => state.post);
-  const nickname = useSelector((state: RootState) => state.user.me?.nickname);
   const liked = post.Likers.find((v) => v.id === id);
   const imageInput = useRef<HTMLInputElement>(null);
   const editPostRef = useRef<HTMLTextAreaElement>(null);
@@ -105,26 +106,46 @@ const Post = ({
     });
   }, [dispatch, post.content, setContent]);
 
-  //---------------------------------------------
+  //좋아요 누른 유저-------------------------
+  const [showLikers, setShowLikers] = useState(false);
+  const [likers, setLikers] = useState<string[]>(
+    post.Likers.map((liker) => liker.nickname)
+  );
+
   const onLike = useCallback(() => {
     if (!id) {
       return alert("로그인이 필요합니다");
     }
-    return dispatch({
+    dispatch({
       type: LIKE_POST_REQUEST,
       data: post.id,
     });
-  }, [dispatch, id, post.id]);
+    setLikers((prevLikers) => {
+      if (!nickname || prevLikers.includes(nickname)) {
+        return prevLikers;
+      }
+      return [...prevLikers, nickname];
+    });
+  }, [dispatch, id, post.id, nickname]);
 
   const onUnLike = useCallback(() => {
     if (!id) {
       return alert("로그인이 필요합니다");
     }
-    return dispatch({
+    dispatch({
       type: UNLIKE_POST_REQUEST,
       data: post.id,
     });
-  }, [dispatch, id, post.id]);
+    setLikers((prevLikers) => prevLikers.filter((liker) => liker !== nickname));
+  }, [dispatch, id, post.id, nickname]);
+
+  const handleMouseEnter = () => {
+    setShowLikers(true);
+  };
+
+  const handleMouseLeave = () => {
+    setShowLikers(false);
+  };
 
   //댓글 창, 기존 폼 닫고 새로운 폼 열고 닫기--------------
   const [addComment, setAddComment] = useState<Record<number, boolean>>({});
@@ -264,14 +285,33 @@ const Post = ({
               )}
               <Date>{moment(post.createdAt).format("l")}</Date>
             </PostHeader>
-            <div>
+            <LikeContainer>
               <Liked>좋아요 {post.Likers.length}개</Liked>
-              {id === post.User.id ? null : liked ? (
-                <Button onClick={onUnLike}>♥</Button>
+              {liked ? (
+                <Button
+                  onClick={onUnLike}
+                  onMouseEnter={handleMouseEnter}
+                  onMouseLeave={handleMouseLeave}
+                >
+                  ♥
+                </Button>
               ) : (
-                <Button onClick={onLike}>♡</Button>
+                <Button
+                  onClick={onLike}
+                  onMouseEnter={handleMouseEnter}
+                  onMouseLeave={handleMouseLeave}
+                >
+                  ♡
+                </Button>
               )}
-            </div>
+              {showLikers && likers.length > 0 && (
+                <LikersList>
+                  {likers.map((liker, index) => (
+                    <LikersListItem key={index}>{liker}</LikersListItem>
+                  ))}
+                </LikersList>
+              )}
+            </LikeContainer>
           </PostHeaderFlex>
           <InPostWrapper>
             {editPost ? (
@@ -450,9 +490,22 @@ const PostHeaderFlex = styled.div`
   justify-content: space-between;
 `;
 
-const EndFlex = styled.div`
-  display: flex;
-  justify-content: end;
+const LikeContainer = styled.div`
+  position: relative;
+`;
+const LikersList = styled.ul`
+  position: absolute;
+  top: 2rem;
+  right: 0;
+  list-style-type: none;
+  padding: 0.5rem;
+  background-color: #ffffff;
+  border: 1px solid #ccc;
+  z-index: 99;
+`;
+
+const LikersListItem = styled.li`
+  color: ${(props) => props.theme.mainColor};
 `;
 const ContentWrapper = styled.div`
   width: 97%;

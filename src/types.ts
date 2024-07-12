@@ -21,6 +21,7 @@ export type UserType = {
 
 export type LikeType = {
   id: number;
+  nickname: string;
 };
 
 export type CommentType = {

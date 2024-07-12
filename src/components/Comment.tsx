@@ -197,25 +197,23 @@ const Comment = ({ post }: { post: PostType }) => {
               </AuthorWrapper>
               <ContentWrapper>
                 {isEditing && currentCommentId === comment.id ? (
-                  <>
-                    <Textarea
-                      value={prevContent}
-                      onChange={onChangeContent}
-                      ref={editCommentRef}
-                    />
-                    <ButtonContainer>
-                      <BlueButton onClick={() => onModifytComment(comment.id)}>
-                        수정
-                      </BlueButton>
-                      <BlueButton onClick={onCancelEditComment}>
-                        취소
-                      </BlueButton>
-                    </ButtonContainer>
-                  </>
+                  <Textarea
+                    value={prevContent}
+                    onChange={onChangeContent}
+                    ref={editCommentRef}
+                  />
                 ) : (
                   <Content>
                     <ContentRenderer content={comment.content} />
                   </Content>
+                )}
+                {isEditing && currentCommentId === comment.id && (
+                  <ButtonContainer>
+                    <BlueButton onClick={() => onModifytComment(comment.id)}>
+                      수정
+                    </BlueButton>
+                    <BlueButton onClick={onCancelEditComment}>취소</BlueButton>
+                  </ButtonContainer>
                 )}
                 <CommentOptions>
                   {id && (
@@ -289,7 +287,6 @@ const Author = styled.button`
 `;
 
 const ContentWrapper = styled.div`
-  display: flex;
   padding: 5px;
   justify-content: space-between;
   align-items: end;
@@ -303,16 +300,30 @@ const Content = styled.div`
   word-break: break-word; /**텍스트 줄바꿈 */
 `;
 
-const Button = styled.button`
-  font-weight: bold;
+const Textarea = styled.textarea`
+  max-width: 100%;
+  min-width: 100%;
+  margin: 0 auto;
+  padding: 12px;
+  font-size: 0.8rem;
 `;
 
+const ButtonContainer = styled.div`
+  height: 30px;
+  text-align: center;
+`;
 const CommentOptions = styled.div`
   display: flex;
+
   height: 30px;
+  justify-content: flex-end;
   & * {
     margin-left: 2px;
   }
+`;
+
+const Button = styled.button`
+  font-weight: bold;
 `;
 
 const Date = styled.span`
@@ -323,9 +334,6 @@ const Date = styled.span`
   }
 `;
 
-const ButtonContainer = styled.div`
-  height: 30px;
-`;
 const BlueButton = styled.button`
   background-color: ${(props) => props.theme.mainColor};
   margin: 2px;
@@ -338,18 +346,6 @@ const BlueButton = styled.button`
   &:hover {
     transform: translateY(-2px);
     color: ${(props) => props.theme.charColor};
-  }
-`;
-
-const Textarea = styled.textarea`
-  max-width: 80%;
-  min-width: 80%;
-  margin: 0 auto;
-  padding: 12px;
-  font-size: 0.8rem;
-  @media (max-width: 480px) {
-    font-size: 0.8rem;
-    width: 55%;
   }
 `;
 
