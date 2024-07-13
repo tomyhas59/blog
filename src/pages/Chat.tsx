@@ -226,19 +226,18 @@ const Chat = () => {
   return (
     <ChatContainer>
       <RoomList>
-        <RoomItem>
-          <button onClick={() => setActiveRoom("allChat")}>전체 채팅방</button>
+        <RoomItem onClick={() => setActiveRoom("allChat")}>
+          전체 채팅방
         </RoomItem>
         {roomList.map((room) => (
-          <RoomItem>
-            <button
-              onClick={() => {
-                setSelectedUser(room);
-                setActiveRoom(room);
-              }}
-            >
-              {room}방
-            </button>
+          <RoomItem
+            key={room}
+            onClick={() => {
+              setSelectedUser(room);
+              setActiveRoom(room);
+            }}
+          >
+            {room}방
           </RoomItem>
         ))}
       </RoomList>
@@ -282,18 +281,30 @@ const ChatContainer = styled.div`
   }
 `;
 
-const RoomList = styled.div`
-  width: 200px;
+const RoomList = styled.ul`
+  width: 150px;
   padding: 10px;
-  background-color: #f0f0f0;
   margin-right: 20px;
   text-align: center;
 `;
 
-const RoomItem = styled.div`
-  padding: 5px;
-  margin-bottom: 5px;
-  background-color: #ccc;
+const RoomItem = styled.button`
+  min-width: 100px;
+  padding: 10px;
+  margin-bottom: 10px;
+  background-color: ${(props) => props.theme.mainColor};
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  list-style: none;
+  font-size: 16px;
+  color: #fff;
+  cursor: pointer;
+  transition: transform 0.3s ease, color 0.3s ease;
+  &:hover {
+    transform: translateY(-2px);
+    color: ${(props) => props.theme.charColor};
+  }
 `;
 
 const ChatWrapper = styled.div`

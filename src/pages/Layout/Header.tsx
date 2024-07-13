@@ -92,9 +92,7 @@ const Header = () => {
     <HeaderWrapper>
       <HeaderLogoBtn onClick={onGoHome}>TMS</HeaderLogoBtn>
       {isLoggedIn && (
-        <Nickname>
-          <MyInfo to="/info">{me && me.nickname.slice(0, 5)} 정보</MyInfo>
-        </Nickname>
+        <MyInfo to="/info">{me && me.nickname.slice(0, 5)} 정보</MyInfo>
       )}
 
       <div className="search">
@@ -170,7 +168,8 @@ export const HeaderLogoBtn = styled.button`
     grid-area: a;
   }
 `;
-const Nickname = styled.div`
+
+const MyInfo = styled(Link)`
   cursor: pointer;
   font-size: 1.5rem;
   color: #ffffff;
@@ -196,8 +195,6 @@ const Nickname = styled.div`
     grid-area: b;
   }
 `;
-
-const MyInfo = styled(Link)``;
 
 export const SignList = styled.ul`
   display: flex;
