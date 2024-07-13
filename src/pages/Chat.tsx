@@ -164,7 +164,7 @@ const Chat = () => {
   const [userOption, setUserOption] = useState<boolean>(false);
 
   const onUserOption = (nickname: string) => {
-    setSelectedUser(nickname); // Set selected user's nickname
+    setSelectedUser(nickname);
     setUserOption((prev) => !prev);
   };
 
@@ -220,7 +220,14 @@ const Chat = () => {
         </RoomItem>
         {roomList.map((room) => (
           <RoomItem>
-            <button onClick={() => setActiveRoom(room)}>{room}방</button>
+            <button
+              onClick={() => {
+                setSelectedUser(room);
+                setActiveRoom(room);
+              }}
+            >
+              {room}방
+            </button>
           </RoomItem>
         ))}
       </RoomList>
@@ -240,7 +247,12 @@ const Chat = () => {
                     onClick={() => {
                       setActiveRoom(user.nickname);
                       setUserOption(false);
-                      setRoomList((prev) => [...prev, user.nickname]);
+                      setRoomList((prev) => {
+                        if (!prev.includes(user.nickname)) {
+                          return [...prev, user.nickname];
+                        }
+                        return prev;
+                      });
                     }}
                   >
                     1:1 채팅하기
