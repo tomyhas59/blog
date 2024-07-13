@@ -240,19 +240,19 @@ const Chat = () => {
               <button onClick={onUserOption}>
                 {user.nickname.slice(0, 5)}
               </button>
-              {userOption && selectedUser === user.nickname && (
+              {userOption && (
                 <UserOption ref={userOptoinRef}>
                   <button
                     onClick={() => {
-                      setActiveRoom(user.nickname);
                       setSelectedUser(user.nickname);
-                      setUserOption(false);
+                      setActiveRoom(user.nickname);
                       setRoomList((prev) => {
                         if (!prev.includes(user.nickname)) {
                           return [...prev, user.nickname];
                         }
                         return prev;
                       });
+                      setUserOption(false);
                     }}
                   >
                     1:1 채팅하기
