@@ -161,16 +161,28 @@ const Chat = () => {
     });
   }, [dispatch]);
 
-  const [userOption, setUserOption] = useState<boolean>(false);
+  const [activeUserOption, setActiveUserOption] = useState<string | null>(null);
 
-  const onUserOption = () => {
-    setUserOption((prev) => !prev);
-  };
+  const onUserOptionClick = useCallback((nickname: string) => {
+    setActiveUserOption((prev) => (prev === nickname ? null : nickname));
+  }, []);
+
+  const onChatClick = useCallback((nickname: string) => {
+    setSelectedUser(nickname);
+    setActiveRoom(nickname);
+    setRoomList((prev) => {
+      if (!prev.includes(nickname)) {
+        return [...prev, nickname];
+      }
+      return prev;
+    });
+    setActiveUserOption(null);
+  }, []);
 
   const userOptoinRef = useRef<HTMLDivElement>(null);
 
   useOutsideClick([userOptoinRef], () => {
-    setUserOption(false);
+    setActiveUserOption(null);
   });
 
   const [activeRoom, setActiveRoom] = useState("allChat");
@@ -237,22 +249,14 @@ const Chat = () => {
         <ul>
           {userList?.map((user) => (
             <li key={user.id}>
-              <button onClick={onUserOption}>
+              <button onClick={() => onUserOptionClick(user.nickname)}>
                 {user.nickname.slice(0, 5)}
               </button>
-              {userOption && (
+              {activeUserOption === user.nickname && (
                 <UserOption ref={userOptoinRef}>
                   <button
                     onClick={() => {
-                      setSelectedUser(user.nickname);
-                      setActiveRoom(user.nickname);
-                      setRoomList((prev) => {
-                        if (!prev.includes(user.nickname)) {
-                          return [...prev, user.nickname];
-                        }
-                        return prev;
-                      });
-                      setUserOption(false);
+                      onChatClick(user.nickname);
                     }}
                   >
                     1:1 채팅하기
