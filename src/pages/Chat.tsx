@@ -163,8 +163,7 @@ const Chat = () => {
 
   const [userOption, setUserOption] = useState<boolean>(false);
 
-  const onUserOption = (nickname: string) => {
-    setSelectedUser(nickname);
+  const onUserOption = () => {
     setUserOption((prev) => !prev);
   };
 
@@ -238,7 +237,7 @@ const Chat = () => {
         <ul>
           {userList?.map((user) => (
             <li key={user.id}>
-              <button onClick={() => onUserOption(user.nickname)}>
+              <button onClick={onUserOption}>
                 {user.nickname.slice(0, 5)}
               </button>
               {userOption && selectedUser === user.nickname && (
@@ -246,6 +245,7 @@ const Chat = () => {
                   <button
                     onClick={() => {
                       setActiveRoom(user.nickname);
+                      setSelectedUser(user.nickname);
                       setUserOption(false);
                       setRoomList((prev) => {
                         if (!prev.includes(user.nickname)) {
