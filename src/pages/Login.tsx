@@ -92,13 +92,13 @@ export default Login;
 
 const LoginContainer = styled.div`
   max-width: 400px;
-  margin: 150px auto;
+  margin: 30px auto;
   padding: 20px;
   border: 1px solid #ccc;
   border-radius: 4px;
   background-color: #f8f8f8;
   @media (max-width: 480px) {
-    transform: scale(0.7) translateY(-50px);
+    transform: scale(0.7);
   }
 `;
 

@@ -113,13 +113,15 @@ export default Sign;
 
 const RegistrationContainer = styled.form`
   max-width: 400px;
-  margin: 100px auto;
+  margin: 50px auto;
   padding: 20px;
   border: 1px solid #ccc;
   border-radius: 4px;
   background-color: #f8f8f8;
+
   @media (max-width: 480px) {
-    transform: scale(0.7) translateY(-50px);
+    margin-top: -50px;
+    transform: scale(0.7);
   }
 `;
 

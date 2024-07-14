@@ -18,7 +18,6 @@ const useTextareaAutoHeight = (
     };
 
     if (textareaRef.current) {
-      textareaRef.current.focus();
       onResize();
       textareaRef.current.addEventListener("input", onResize);
     }
