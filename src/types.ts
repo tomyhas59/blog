@@ -65,7 +65,9 @@ export type Data = {
 
 export type Message = {
   id: number;
-  sender: string;
   content: string;
+  UserId: number;
+  ChatRoomId: number;
+  User: UserType;
   createdAt: string;
 };

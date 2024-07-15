@@ -20,14 +20,25 @@ import {
   READ_CHAT_REQUEST,
 } from "../reducer/post";
 import useOutsideClick from "../hooks/useOutsideClick";
+import axios from "axios";
 
 const socket =
   process.env.NODE_ENV === "production"
     ? io("https://quarrelsome-laura-tomyhas59-09167dc6.koyeb.app")
     : io("http://localhost:3075");
 
+const createOneOnOneChatRoom = async (user2Id: number) => {
+  try {
+    const response = await axios.post("/post/chatRoom", { user2Id });
+    console.log("user2Id", response);
+    return response.data;
+  } catch (error) {
+    console.error("Error creating 1:1 chat room:", error);
+    return null;
+  }
+};
+
 interface AllChatRoomType {
-  messages: Message[];
   me: UserType | null;
   onDeleteAllMessages: () => void;
   onMessageSubmit: (e: SyntheticEvent) => void;
@@ -36,77 +47,176 @@ interface AllChatRoomType {
   onInputChange: (e: ChangeEvent<HTMLInputElement>) => void;
 }
 
+interface OneOnOneChatRoomType {
+  me: UserType | null;
+  onDeleteAllMessages: () => void;
+  onMessageSubmit: (e: SyntheticEvent) => void;
+  inputValue: string;
+  messageRef: RefObject<HTMLInputElement>;
+  onInputChange: (e: ChangeEvent<HTMLInputElement>) => void;
+  selectedUser: UserType | null;
+}
+
 const AllChatRoom = ({
-  messages,
   me,
   onDeleteAllMessages,
   onMessageSubmit,
   inputValue,
   messageRef,
   onInputChange,
-}: AllChatRoomType) => (
-  <>
-    <ChatHeader>단체 채팅방</ChatHeader>
-    {me?.nickname === "admin" && (
-      <button onClick={onDeleteAllMessages}>모든 대화 삭제</button>
-    )}
-    <MessageList>
-      {messages.map((message, i) => (
-        <React.Fragment key={message.id}>
-          {i === 0 ||
-          moment(message.createdAt).isAfter(
-            messages[i - 1].createdAt,
-            "day"
-          ) ? (
-            <DateSeparator>
-              {moment(message.createdAt).format("YYYY-MM-DD")}
-            </DateSeparator>
-          ) : null}
-          <MessageItem key={message.id} isMe={message.sender === me?.nickname}>
-            <MessageSender>{message.sender.slice(0, 5)}</MessageSender>
-            <MessageText isMe={message.sender === me?.nickname}>
-              {message.content}
-            </MessageText>
-            <MessageTime>
-              {moment(message.createdAt).format("HH:mm")}
-            </MessageTime>
-          </MessageItem>
-        </React.Fragment>
-      ))}
-    </MessageList>
-    <MessageForm onSubmit={onMessageSubmit}>
-      <MessageInput
-        type="text"
-        placeholder="메시지를 입력해주세요"
-        value={inputValue}
-        ref={messageRef}
-        onChange={onInputChange}
-      />
-      <MessageButton type="submit">전송</MessageButton>
-    </MessageForm>
-  </>
-);
-
-const Chat = () => {
+}: AllChatRoomType) => {
   const [messages, setMessages] = useState<Message[]>([]);
-  const [inputValue, setInputValue] = useState<string>("");
+
+  return (
+    <>
+      <ChatHeader>단체 채팅방</ChatHeader>
+      {me?.nickname === "admin" && (
+        <button onClick={onDeleteAllMessages}>모든 대화 삭제</button>
+      )}
+      <MessageList>
+        {messages.map((message, i) => (
+          <React.Fragment key={message.id}>
+            {i === 0 ||
+            moment(message.createdAt).isAfter(
+              messages[i - 1].createdAt,
+              "day"
+            ) ? (
+              <DateSeparator>
+                {moment(message.createdAt).format("YYYY-MM-DD")}
+              </DateSeparator>
+            ) : null}
+            <MessageItem
+              key={message.id}
+              isMe={message.User.nickname === me?.nickname}
+            >
+              <MessageSender>{message.User.nickname.slice(0, 5)}</MessageSender>
+              <MessageText isMe={message.User.nickname === me?.nickname}>
+                {message.content}
+              </MessageText>
+              <MessageTime>
+                {moment(message.createdAt).format("HH:mm")}
+              </MessageTime>
+            </MessageItem>
+          </React.Fragment>
+        ))}
+      </MessageList>
+      <MessageForm onSubmit={onMessageSubmit}>
+        <MessageInput
+          type="text"
+          placeholder="메시지를 입력해주세요"
+          value={inputValue}
+          ref={messageRef}
+          onChange={onInputChange}
+        />
+        <MessageButton type="submit">전송</MessageButton>
+      </MessageForm>
+    </>
+  );
+};
+
+const OneOnOneChatRoom = ({
+  me,
+  onMessageSubmit,
+  inputValue,
+  messageRef,
+  onInputChange,
+  selectedUser,
+}: OneOnOneChatRoomType) => {
+  const [messages, setMessages] = useState<Message[]>([]);
   const { chatMessages } = useSelector((state: RootState) => state.post);
-  const { me } = useSelector((state: RootState) => state.user);
-  const [userList, setUserList] = useState<UserType[] | null>(null);
-  const [selectedUser, setSelectedUser] = useState<string | null>(null);
-  const messageRef = useRef<HTMLInputElement>(null);
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch({
-      type: READ_CHAT_REQUEST,
-    });
-  }, [dispatch]);
+    if (me && selectedUser) {
+      dispatch({
+        type: READ_CHAT_REQUEST,
+        data: selectedUser.id,
+      });
+    }
+  }, [dispatch, me, selectedUser, selectedUser?.id]);
 
   useEffect(() => {
     setMessages(chatMessages);
   }, [chatMessages]);
 
+  console.log(chatMessages);
+
+  useEffect(() => {
+    socket.on("receiveMessage", (message) => {
+      setMessages((prevMessages: Message[]) => [...prevMessages, message]);
+    });
+
+    return () => {
+      socket.off("receiveMessage");
+    };
+  }, []);
+
+  return (
+    <>
+      <ChatHeader>{selectedUser?.nickname}님과의 1:1 채팅방</ChatHeader>
+      <MessageList>
+        {messages.length < 1 ? (
+          <div>메시지가 없습니다</div>
+        ) : (
+          messages.map((message, i) => (
+            <React.Fragment key={message.id}>
+              {i === 0 ||
+              moment(message.createdAt).isAfter(
+                messages[i - 1].createdAt,
+                "day"
+              ) ? (
+                <DateSeparator>
+                  {moment(message.createdAt).format("YYYY-MM-DD")}
+                </DateSeparator>
+              ) : null}
+              <MessageItem key={message.id} isMe={message.UserId === me?.id}>
+                <MessageSender>
+                  {message.User.nickname.slice(0, 5)}
+                </MessageSender>
+                <MessageText isMe={message.UserId === me?.id}>
+                  {message.content}
+                </MessageText>
+                <MessageTime>
+                  {moment(message.createdAt).format("HH:mm")}
+                </MessageTime>
+              </MessageItem>
+            </React.Fragment>
+          ))
+        )}
+      </MessageList>
+      <MessageForm onSubmit={onMessageSubmit}>
+        <MessageInput
+          type="text"
+          placeholder="메시지를 입력해주세요"
+          value={inputValue}
+          ref={messageRef}
+          onChange={onInputChange}
+        />
+        <MessageButton type="submit">전송</MessageButton>
+      </MessageForm>
+    </>
+  );
+};
+
+const Chat = () => {
+  const [inputValue, setInputValue] = useState<string>("");
+  const { me } = useSelector((state: RootState) => state.user);
+  const [userList, setUserList] = useState<UserType[] | null>(null);
+  const [selectedUser, setSelectedUser] = useState<UserType | null>(null);
+  const messageRef = useRef<HTMLInputElement>(null);
+  const [roomId, setRoomId] = useState<number>();
+  const dispatch = useDispatch();
+  const [activeUserOption, setActiveUserOption] = useState<string | null>(null);
+  const [activeRoom, setActiveRoom] = useState("allChat");
+  const [userRoomList, setUserRoomList] = useState<UserType[]>([]);
+
+
+  
+  const onUserOptionClick = useCallback((nickname: string) => {
+    setActiveUserOption((prev) => (prev === nickname ? null : nickname));
+  }, []);
+
+  const userOptoinRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
     if (me) {
       const userInfo = { id: me.id, nickname: me.nickname };
@@ -122,22 +232,12 @@ const Chat = () => {
     };
   }, []);
 
-  useEffect(() => {
-    socket.on("receiveMessage", (message) => {
-      setMessages((prevMessages: Message[]) => [...prevMessages, message]);
-    });
-
-    return () => {
-      socket.off("receiveMessage");
-    };
-  }, []);
-
   const onMessageSubmit = (e: SyntheticEvent) => {
     e.preventDefault();
     if (inputValue.trim() !== "") {
       const newMessage = {
         id: new Date().getTime(),
-        sender: me?.nickname || null,
+        User: me || null,
         content: inputValue,
         createdAt: new Date().getTime(),
       };
@@ -146,7 +246,10 @@ const Chat = () => {
       messageRef.current?.focus();
       dispatch({
         type: ADD_CHAT_MESSAGE_REQUEST,
-        data: { content: inputValue, sender: me!.nickname },
+        data: {
+          content: inputValue,
+          roomId: activeRoom === "allChat" ? null : roomId,
+        },
       });
     }
   };
@@ -161,39 +264,34 @@ const Chat = () => {
     });
   }, [dispatch]);
 
-  const [activeUserOption, setActiveUserOption] = useState<string | null>(null);
-
-  const onUserOptionClick = useCallback((nickname: string) => {
-    setActiveUserOption((prev) => (prev === nickname ? null : nickname));
-  }, []);
-
-  const onChatClick = useCallback((nickname: string) => {
-    setSelectedUser(nickname);
-    setActiveRoom(nickname);
-    setRoomList((prev) => {
-      if (!prev.includes(nickname)) {
-        return [...prev, nickname];
+  const onUserClick = useCallback(
+    async (user: UserType) => {
+      if (me && user.id !== me.id) {
+        const chatRoom = await createOneOnOneChatRoom(user.id);
+        setRoomId(chatRoom?.id);
+        setSelectedUser(user);
+        setActiveRoom(user.nickname);
+        setUserRoomList((prev) => {
+          if (!prev.some((existingUser) => existingUser.id === user.id)) {
+            return [...prev, user];
+          }
+          return prev;
+        });
+        setActiveUserOption(null);
       }
-      return prev;
-    });
-    setActiveUserOption(null);
-  }, []);
-
-  const userOptoinRef = useRef<HTMLDivElement>(null);
+    },
+    [me]
+  );
 
   useOutsideClick([userOptoinRef], () => {
     setActiveUserOption(null);
   });
-
-  const [activeRoom, setActiveRoom] = useState("allChat");
-  const [roomList, setRoomList] = useState<string[]>([]);
 
   const renderRoom = () => {
     switch (activeRoom) {
       case "allChat":
         return (
           <AllChatRoom
-            messages={messages}
             me={me}
             onDeleteAllMessages={onDeleteAllMessages}
             onMessageSubmit={onMessageSubmit}
@@ -202,16 +300,35 @@ const Chat = () => {
             onInputChange={onInputChange}
           />
         );
-      case selectedUser:
+      case selectedUser?.nickname:
         return (
           <>
-            <ChatHeader>{selectedUser}님과의 1:1 채팅방</ChatHeader>
+            <OneOnOneChatRoom
+              me={me}
+              onDeleteAllMessages={onDeleteAllMessages}
+              onMessageSubmit={onMessageSubmit}
+              inputValue={inputValue}
+              messageRef={messageRef}
+              onInputChange={onInputChange}
+              selectedUser={selectedUser}
+            />
           </>
         );
       default:
         return (
+          <>
+            <OneOnOneChatRoom
+              me={me}
+              onDeleteAllMessages={onDeleteAllMessages}
+              onMessageSubmit={onMessageSubmit}
+              inputValue={inputValue}
+              messageRef={messageRef}
+              onInputChange={onInputChange}
+              selectedUser={selectedUser}
+            />
+          </>
+        ); /* (
           <AllChatRoom
-            messages={messages}
             me={me}
             onDeleteAllMessages={onDeleteAllMessages}
             onMessageSubmit={onMessageSubmit}
@@ -219,7 +336,7 @@ const Chat = () => {
             messageRef={messageRef}
             onInputChange={onInputChange}
           />
-        );
+        ); */
     }
   };
 
@@ -229,15 +346,15 @@ const Chat = () => {
         <RoomItem onClick={() => setActiveRoom("allChat")}>
           전체 채팅방
         </RoomItem>
-        {roomList.map((room) => (
+        {userRoomList.map((userRoom) => (
           <RoomItem
-            key={room}
+            key={userRoom.id}
             onClick={() => {
-              setSelectedUser(room);
-              setActiveRoom(room);
+              setSelectedUser(userRoom);
+              setActiveRoom(userRoom.nickname);
             }}
           >
-            {room}방
+            {userRoom.nickname}방
           </RoomItem>
         ))}
       </RoomList>
@@ -255,7 +372,7 @@ const Chat = () => {
                 <UserOption ref={userOptoinRef}>
                   <button
                     onClick={() => {
-                      onChatClick(user.nickname);
+                      onUserClick(user);
                     }}
                   >
                     1:1 채팅하기
@@ -393,7 +510,7 @@ const MessageText = styled.p<MessageTextProps>`
   margin: 5px 0;
   padding: 5px 10px;
   background-color: ${(props) => (props.isMe ? "#f0f0f0" : "#ccc")};
-  color: ${(props) => (props.isMe ? "#000" : "#000")};
+  color: "#000";
   border-radius: 8px;
   max-width: 70%;
 `;

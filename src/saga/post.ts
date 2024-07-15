@@ -504,7 +504,7 @@ function* watchUnLikePost() {
 //---------------------------------------------------------
 
 function addChatMessageAPI(data: any) {
-  return axios.post(`/post/chat`, data);
+  return axios.post(`/post/chatMessage`, data);
 }
 
 function* addChatMessage(action: { data: any }): SagaIterator {
@@ -529,13 +529,13 @@ function* watchAddChatMessage() {
 }
 //-----------------------------------------------------
 
-function readChatApi() {
-  return axios.get("/post/allChat");
+function readChatApi(user2Id: number) {
+  return axios.post("`/post/readChat", user2Id);
 }
 
 function* readChat(action: { data: any }): SagaIterator {
   try {
-    const result = yield call(readChatApi);
+    const result = yield call(readChatApi, action.data);
     yield put({
       type: READ_CHAT_SUCCESS,
       data: result.data,
@@ -548,7 +548,7 @@ function* readChat(action: { data: any }): SagaIterator {
     });
   }
 }
-function* watchreadChat() {
+function* watchReadChat() {
   yield takeLatest<any>(READ_CHAT_REQUEST, readChat);
 }
 
@@ -597,7 +597,7 @@ export default function* postSaga() {
     fork(watchSearchNickname),
     fork(watchDeleteImages),
     fork(watchAddChatMessage),
-    fork(watchreadChat),
+    fork(watchReadChat),
     fork(watchDeleteAllChat),
   ]);
 }
