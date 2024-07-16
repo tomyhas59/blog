@@ -504,7 +504,7 @@ function* watchUnLikePost() {
 //---------------------------------------------------------
 
 function addChatMessageAPI(data: any) {
-  return axios.post(`/post/chatMessage`, data);
+  return axios.post("/post/chatMessage", data);
 }
 
 function* addChatMessage(action: { data: any }): SagaIterator {
@@ -529,8 +529,8 @@ function* watchAddChatMessage() {
 }
 //-----------------------------------------------------
 
-function readChatApi(user2Id: number) {
-  return axios.post("`/post/readChat", user2Id);
+function readChatApi(roomId: number) {
+  return axios.get(`/post/readChat?roomId=${roomId}`);
 }
 
 function* readChat(action: { data: any }): SagaIterator {
