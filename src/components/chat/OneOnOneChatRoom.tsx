@@ -86,8 +86,11 @@ const OneOnOneChatRoom = ({
       socket.current?.emit("leaveRoom", roomId, me?.nickname);
       socket.current?.off("receiveMessage");
       socket.current?.off("systemMessage");
+      dispatch({
+        type: "RESET_CHAT_MESSAGES",
+      });
     };
-  }, [me?.nickname, roomId, selectedUser?.id]);
+  }, [dispatch, me?.nickname, roomId, selectedUser?.id]);
 
   useEffect(() => {
     if (roomId) {
@@ -103,11 +106,6 @@ const OneOnOneChatRoom = ({
         {room && room.User1?.nickname}, {room && room.User2?.nickname}의 방
       </ChatHeader>
       <MessageList>
-        {systemMessages.map((message, index) => (
-          <li key={index} style={{ color: "gray" }}>
-            {message.content}
-          </li>
-        ))}
         {messages.length < 1 ? (
           <div>메시지가 없습니다</div>
         ) : (

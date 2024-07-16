@@ -178,6 +178,9 @@ const post = (state = initialState, action: any) => {
       case "CANCEL_MODIFY":
         draft.imagePaths = [];
         break;
+      case "RESET_CHAT_MESSAGES":
+        draft.chatMessages = [];
+        break;
       //-----------------------------------------------------
       case ADD_POST_REQUEST:
         draft.addPostLoading = true;
