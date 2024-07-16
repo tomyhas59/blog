@@ -189,6 +189,7 @@ const Chat = () => {
 
   return (
     <ChatContainer>
+      <ConnectUsers>{userList?.length || 0}명 접속 중</ConnectUsers>
       <RoomList>
         {userRoomList.map((userRoom) => (
           <RoomItem
@@ -204,7 +205,6 @@ const Chat = () => {
       </RoomList>
       <ChatWrapper>{renderRoom()}</ChatWrapper>
       <UserList>
-        <div>{userList?.length || 0}명 접속 중</div>
         <ul>
           {userList?.map((user) => (
             <li key={user.id}>
@@ -241,11 +241,20 @@ const ChatContainer = styled.div`
   }
 `;
 
+const ConnectUsers = styled.div`
+  color: ${(props) => props.theme.mainColor};
+`;
+
 const RoomList = styled.ul`
   width: 150px;
   padding: 10px;
   margin-right: 20px;
   text-align: center;
+  @media (max-width: 480px) {
+    width: 350px;
+    display: flex;
+    overflow-x: auto;
+  }
 `;
 
 const RoomItem = styled.button`
@@ -264,6 +273,10 @@ const RoomItem = styled.button`
   &:hover {
     transform: translateY(-2px);
     color: ${(props) => props.theme.charColor};
+  }
+  @media (max-width: 480px) {
+    font-size: 10px;
+    min-width: 50px;
   }
 `;
 
