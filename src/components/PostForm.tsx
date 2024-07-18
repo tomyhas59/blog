@@ -16,6 +16,7 @@ import { useEffect } from "react";
 import { RootState } from "../reducer";
 import Spinner from "./Spinner";
 import useTextareaAutoHeight from "../hooks/useTextareaAutoHeight";
+import { baseURL } from "../config";
 
 const PostForm = () => {
   const dispatch = useDispatch();
@@ -137,24 +138,25 @@ const PostForm = () => {
               ref={imageInput}
               onChange={onChangeImages}
             />
-            {/*      {<FileButton onClick={onClickFileUpload}>파일 첨부</FileButton>
-            <ImageGrid>
-              {active &&
-                imagePaths.map((filename, index) => (
-                  <ImageContainer key={index}>
-                    <Image
-                      src={`http://localhost:3075/${filename}`}
-                      alt="img"
-                    />
-                    <RemoveButton
-                      type="button"
-                      onClick={onRemoveImage(filename)}
-                    >
-                      x
-                    </RemoveButton>
-                  </ImageContainer>
-                ))}
-            </ImageGrid>} */}
+            {
+              <>
+                <FileButton onClick={onClickFileUpload}>파일 첨부</FileButton>
+                <ImageGrid>
+                  {active &&
+                    imagePaths.map((filename, index) => (
+                      <ImageContainer key={index}>
+                        <Image src={`${baseURL}/${filename}`} alt="img" />
+                        <RemoveButton
+                          type="button"
+                          onClick={onRemoveImage(filename)}
+                        >
+                          x
+                        </RemoveButton>
+                      </ImageContainer>
+                    ))}
+                </ImageGrid>
+              </>
+            }
 
             <SubmitButton type="submit">등록</SubmitButton>
           </Form>
@@ -211,6 +213,11 @@ export const FileButton = styled.div`
 
   &:hover {
     background-color: ${(props) => props.theme.subColor};
+  }
+  @media (max-width: 480px) {
+    width: 70px;
+    font-size: 12px;
+    padding: 5px;
   }
 `;
 

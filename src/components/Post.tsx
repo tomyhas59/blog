@@ -29,6 +29,7 @@ import Spinner from "./Spinner";
 import ContentRenderer from "./renderer/ContentRenderer";
 import useOutsideClick from "../hooks/useOutsideClick";
 import useTextareaAutoHeight from "../hooks/useTextareaAutoHeight";
+import { FileButton } from "./PostForm";
 
 const Post = ({
   post,
@@ -327,16 +328,21 @@ const Post = ({
                     onChange={onChangeContent}
                     ref={editPostRef}
                   />
-                  {/*     <input
-                    type="file"
-                    name="image"
-                    multiple
-                    hidden
-                    ref={imageInput}
-                    onChange={onChangeImages}
-                  />
-                  <FileButton onClick={onClickFileUpload}>파일 첨부</FileButton>
- */}
+                  {
+                    <>
+                      <input
+                        type="file"
+                        name="image"
+                        multiple
+                        hidden
+                        ref={imageInput}
+                        onChange={onChangeImages}
+                      />
+                      <FileButton onClick={onClickFileUpload}>
+                        파일 첨부
+                      </FileButton>
+                    </>
+                  }
                   <ImageGrid>
                     {/**기존 이미지 */}
                     {post.Images.map((image, index) => (
