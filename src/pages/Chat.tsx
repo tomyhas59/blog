@@ -189,7 +189,28 @@ const Chat = () => {
 
   return (
     <ChatContainer>
-      <ConnectUsers>{userList?.length || 0}명 접속 중</ConnectUsers>
+      <UserList>
+        <ConnectedUsers>{userList?.length || 0}명 접속 중</ConnectedUsers>
+        {userList?.map((user) => (
+          <li key={user.id}>
+            <button onClick={() => onUserOptionClick(user.nickname)}>
+              {user.nickname.slice(0, 5)}
+            </button>
+            {user.id !== me?.id && activeUserOption === user.nickname && (
+              <UserOption ref={userOptoinRef}>
+                <button
+                  onClick={() => {
+                    onUserClick(user);
+                  }}
+                >
+                  1:1 채팅하기
+                </button>
+                <button>팔로우</button>
+              </UserOption>
+            )}
+          </li>
+        ))}
+      </UserList>
       <RoomList>
         {userRoomList.map((userRoom) => (
           <RoomItem
@@ -203,30 +224,7 @@ const Chat = () => {
           </RoomItem>
         ))}
       </RoomList>
-      <ChatWrapper>{renderRoom()}</ChatWrapper>
-      <UserList>
-        <ul>
-          {userList?.map((user) => (
-            <li key={user.id}>
-              <button onClick={() => onUserOptionClick(user.nickname)}>
-                {user.nickname.slice(0, 5)}
-              </button>
-              {user.id !== me?.id && activeUserOption === user.nickname && (
-                <UserOption ref={userOptoinRef}>
-                  <button
-                    onClick={() => {
-                      onUserClick(user);
-                    }}
-                  >
-                    1:1 채팅하기
-                  </button>
-                  <button>팔로우</button>
-                </UserOption>
-              )}
-            </li>
-          ))}
-        </ul>
-      </UserList>
+      <ContentWrapper>{renderRoom()}</ContentWrapper>
     </ChatContainer>
   );
 };
@@ -238,11 +236,43 @@ const ChatContainer = styled.div`
   justify-content: center;
   @media (max-width: 480px) {
     display: block;
+    text-align: center;
   }
 `;
 
-const ConnectUsers = styled.div`
+const UserList = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  border-radius: 5px;
+  background-color: #c0e2f6;
+  > li {
+    font-size: 20px;
+    color: #757272;
+    list-style: none;
+    position: relative;
+    &:hover {
+      color: #040303;
+      cursor: pointer;
+      text-decoration: underline;
+    }
+  }
+  @media (max-width: 480px) {
+    width: 300px;
+    padding: 10px;
+    flex-direction: row;
+    overflow-x: auto;
+  }
+`;
+
+const ConnectedUsers = styled.div`
   color: ${(props) => props.theme.mainColor};
+  font-weight: bold;
+  margin: 1px;
+  @media (max-width: 480px) {
+    font-size: 12px;
+  }
 `;
 
 const RoomList = styled.ul`
@@ -251,7 +281,7 @@ const RoomList = styled.ul`
   margin-right: 20px;
   text-align: center;
   @media (max-width: 480px) {
-    width: 350px;
+    width: 300px;
     display: flex;
     overflow-x: auto;
   }
@@ -280,38 +310,14 @@ const RoomItem = styled.button`
   }
 `;
 
-const ChatWrapper = styled.div`
+const ContentWrapper = styled.div`
   width: 600px;
   padding: 20px;
   border: 1px solid #ccc;
   border-radius: 4px;
+  overflow-y: auto;
   @media (max-width: 480px) {
-    width: 340px;
-  }
-`;
-
-const UserList = styled.div`
-  color: ${(props) => props.theme.mainColor};
-  font-size: 24px;
-  margin-left: 20px;
-  > ul {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    > li {
-      position: relative;
-      &:hover {
-        cursor: pointer;
-        text-decoration: underline;
-      }
-    }
-  }
-  @media (max-width: 480px) {
-    font-size: 12px;
-    position: absolute;
-    > ul {
-      flex-direction: row;
-    }
+    width: 310px;
   }
 `;
 

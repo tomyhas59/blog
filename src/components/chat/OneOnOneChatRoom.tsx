@@ -47,7 +47,7 @@ const OneOnOneChatRoom = ({
   const dispatch = useDispatch();
   const roomId = room?.id;
   const socket = useRef<Socket | null>(null);
-
+  const messageListContainerRef = useRef<HTMLDivElement | null>(null);
   useEffect(() => {
     socket.current =
       process.env.NODE_ENV === "production"
@@ -100,41 +100,51 @@ const OneOnOneChatRoom = ({
     }
   }, [chatMessages, roomId]);
 
+  useEffect(() => {
+    // 스크롤을 메시지 리스트의 마지막으로 이동
+    if (messageListContainerRef.current) {
+      messageListContainerRef.current.scrollTop =
+        messageListContainerRef.current.scrollHeight;
+    }
+  }, [messages]);
+
   return (
     <>
-      <ChatHeader>
+      <RoomName>
         {room && room.User1?.nickname}, {room && room.User2?.nickname}의 방
-      </ChatHeader>
-      <MessageList>
-        {messages.length < 1 ? (
-          <div>메시지가 없습니다</div>
-        ) : (
-          messages.map((message, i) => (
-            <React.Fragment key={message.id}>
-              {i === 0 ||
-              moment(message.createdAt).isAfter(
-                messages[i - 1].createdAt,
-                "day"
-              ) ? (
-                <DateSeparator>
-                  {moment(message.createdAt).format("YYYY-MM-DD")}
-                </DateSeparator>
-              ) : null}
-              <MessageItem key={message.id} isMe={message.User.id === me?.id}>
-                <MessageSender>
-                  {message.User.nickname.slice(0, 5)}
-                </MessageSender>
-                <MessageText isMe={message.User.id === me?.id}>
-                  {message.content}
-                </MessageText>
-                <MessageTime>
-                  {moment(message.createdAt).format("HH:mm")}
-                </MessageTime>
-              </MessageItem>
-            </React.Fragment>
-          ))
-        )}
-      </MessageList>
+      </RoomName>
+      <MessageListContainer ref={messageListContainerRef}>
+        <MessageList>
+          {messages.length < 1 ? (
+            <div>메시지가 없습니다</div>
+          ) : (
+            messages.map((message, i) => (
+              <React.Fragment key={message.id}>
+                {i === 0 ||
+                moment(message.createdAt).isAfter(
+                  messages[i - 1].createdAt,
+                  "day"
+                ) ? (
+                  <DateSeparator>
+                    {moment(message.createdAt).format("YYYY-MM-DD")}
+                  </DateSeparator>
+                ) : null}
+                <MessageItem key={message.id} isMe={message.User.id === me?.id}>
+                  <MessageSender>
+                    {message.User.nickname.slice(0, 5)}
+                  </MessageSender>
+                  <MessageText isMe={message.User.id === me?.id}>
+                    {message.content}
+                  </MessageText>
+                  <MessageTime>
+                    {moment(message.createdAt).format("HH:mm")}
+                  </MessageTime>
+                </MessageItem>
+              </React.Fragment>
+            ))
+          )}
+        </MessageList>
+      </MessageListContainer>
       <MessageForm onSubmit={onMessageSubmit}>
         <MessageInput
           type="text"
@@ -151,7 +161,11 @@ const OneOnOneChatRoom = ({
 
 export default OneOnOneChatRoom;
 
-export const ChatHeader = styled.h2`
+export const MessageListContainer = styled.div`
+  max-height: 50vh;
+  overflow-y: auto;
+`;
+export const RoomName = styled.h2`
   color: ${(props) => props.theme.mainColor};
   font-size: 24px;
   margin-bottom: 10px;
@@ -160,6 +174,8 @@ export const ChatHeader = styled.h2`
 export const MessageList = styled.ul`
   list-style-type: none;
   padding: 0;
+  height: 50vh;
+  font-size: 12px;
 `;
 
 export interface MessageItemProps {
