@@ -187,6 +187,9 @@ const Chat = () => {
     }
   };
 
+  const roomName =
+    room?.User1.id === me?.id ? room?.User2.nickname : room?.User1.nickname;
+
   return (
     <ChatContainer>
       <UserList>
@@ -220,7 +223,10 @@ const Chat = () => {
               setActiveRoom(userRoom);
             }}
           >
-            {userRoom.User1.nickname}, {userRoom.User2.nickname}의 방
+            {userRoom.User1.id === me?.id
+              ? userRoom.User2.nickname
+              : userRoom.User1.nickname}
+            님과 채팅
           </RoomItem>
         ))}
       </RoomList>

@@ -108,11 +108,12 @@ const OneOnOneChatRoom = ({
     }
   }, [messages]);
 
+  const roomName =
+    room?.User1.id === me?.id ? room?.User2.nickname : room?.User1.nickname;
+
   return (
     <>
-      <RoomName>
-        {room && room.User1?.nickname}, {room && room.User2?.nickname}의 방
-      </RoomName>
+      <RoomName>{roomName}님과의 채팅</RoomName>
       <MessageListContainer ref={messageListContainerRef}>
         <MessageList>
           {messages.length < 1 ? (
