@@ -99,6 +99,22 @@ const Chat = () => {
       setUserRoomList((prev) => [...prev, newRoom]);
     });
 
+    socket.current?.on("leaveRoomUserId", (leaveRoomUserId) => {
+      setUserRoomList((prev) => {
+        const leaveUserIndex = prev.findIndex(
+          (room) =>
+            room.User1.id === leaveRoomUserId ||
+            room.User2.id === leaveRoomUserId
+        );
+        if (leaveUserIndex !== 1) {
+          const newUserRoomList = [...prev];
+          newUserRoomList.splice(leaveUserIndex, 1);
+          return newUserRoomList;
+        }
+        return prev;
+      });
+    });
+
     return () => {
       socket.current?.off("updateUserList");
     };
@@ -180,15 +196,13 @@ const Chat = () => {
           onInputChange={onInputChange}
           room={room}
           selectedUser={selectedUser}
+          setActiveRoom={setActiveRoom}
         />
       );
     } else {
       return <ChatContainer>1:1 채팅방</ChatContainer>;
     }
   };
-
-  const roomName =
-    room?.User1.id === me?.id ? room?.User2.nickname : room?.User1.nickname;
 
   return (
     <ChatContainer>
@@ -251,6 +265,7 @@ const UserList = styled.div`
   flex-direction: column;
   align-items: center;
   padding: 20px;
+  height: 60vh;
   border-radius: 5px;
   background-color: #c0e2f6;
   > li {
@@ -317,11 +332,8 @@ const RoomItem = styled.button`
 `;
 
 const ContentWrapper = styled.div`
+  position: relative;
   width: 600px;
-  padding: 20px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  overflow-y: auto;
   @media (max-width: 480px) {
     width: 310px;
   }

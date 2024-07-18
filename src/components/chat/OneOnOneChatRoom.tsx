@@ -25,11 +25,7 @@ interface OneOnOneChatRoomType {
   onInputChange: (e: ChangeEvent<HTMLInputElement>) => void;
   selectedUser: UserType | null;
   room: UserRoomList | null;
-}
-interface SystemMessage {
-  content: string;
-  type: string;
-  createdAt: Date;
+  setActiveRoom: (room: UserRoomList | null) => void;
 }
 
 const OneOnOneChatRoom = ({
@@ -40,9 +36,9 @@ const OneOnOneChatRoom = ({
   onInputChange,
   room,
   selectedUser,
+  setActiveRoom,
 }: OneOnOneChatRoomType) => {
   const [messages, setMessages] = useState<Message[]>([]);
-  const [systemMessages, setSystemMessages] = useState<SystemMessage[]>([]);
   const { chatMessages } = useSelector((state: RootState) => state.post);
   const dispatch = useDispatch();
   const roomId = room?.id;
@@ -75,17 +71,9 @@ const OneOnOneChatRoom = ({
       setMessages((prevMessages: Message[]) => [...prevMessages, message]);
     });
 
-    socket.current?.on("systemMessage", (message: SystemMessage) => {
-      setSystemMessages((prevSystemMessages: SystemMessage[]) => [
-        ...prevSystemMessages,
-        message,
-      ]);
-    });
-
     return () => {
       socket.current?.emit("leaveRoom", roomId, me?.nickname);
       socket.current?.off("receiveMessage");
-      socket.current?.off("systemMessage");
       dispatch({
         type: "RESET_CHAT_MESSAGES",
       });
@@ -108,12 +96,23 @@ const OneOnOneChatRoom = ({
     }
   }, [messages]);
 
+  const handleExit = () => {
+    const isConfirmed = window.confirm(
+      "다시 들어올 수 없습니다, 정말 나가겠습니까?"
+    );
+    if (isConfirmed) {
+      socket.current?.emit("leaveRoom", roomId, me?.id);
+      setActiveRoom(null);
+    }
+  };
+
   const roomName =
     room?.User1.id === me?.id ? room?.User2.nickname : room?.User1.nickname;
 
   return (
-    <>
+    <ChatRoomContainer>
       <RoomName>{roomName}님과의 채팅</RoomName>
+      <ExitButton onClick={handleExit}>나가기</ExitButton>
       <MessageListContainer ref={messageListContainerRef}>
         <MessageList>
           {messages.length < 1 ? (
@@ -156,15 +155,39 @@ const OneOnOneChatRoom = ({
         />
         <MessageButton type="submit">전송</MessageButton>
       </MessageForm>
-    </>
+    </ChatRoomContainer>
   );
 };
 
 export default OneOnOneChatRoom;
 
+export const ChatRoomContainer = styled.div`
+  width: 600px;
+  padding: 20px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  @media (max-width: 480px) {
+    width: 310px;
+  }
+`;
+
 export const MessageListContainer = styled.div`
   max-height: 50vh;
   overflow-y: auto;
+`;
+export const ExitButton = styled.button`
+  position: absolute;
+  border-radius: 5px;
+  padding: 5px;
+  right: 2%;
+  top: 2%;
+  background-color: ${(props) => props.theme.mainColor};
+  color: #fff;
+  transition: transform 0.3s ease, color 0.3s ease;
+  &:hover {
+    transform: translateY(-2px);
+    color: ${(props) => props.theme.charColor};
+  }
 `;
 export const RoomName = styled.h2`
   color: ${(props) => props.theme.mainColor};
@@ -238,6 +261,11 @@ export const MessageButton = styled.button`
   border: none;
   border-radius: 0 4px 4px 0;
   cursor: pointer;
+  transition: transform 0.3s ease, color 0.3s ease;
+  &:hover {
+    transform: translateY(-2px);
+    color: ${(props) => props.theme.charColor};
+  }
   @media (max-width: 480px) {
     font-size: 12px;
   }
@@ -251,3 +279,6 @@ export const DateSeparator = styled.div`
   margin: 10px 0;
   text-align: center;
 `;
+function confirm(arg0: string) {
+  throw new Error("Function not implemented.");
+}
