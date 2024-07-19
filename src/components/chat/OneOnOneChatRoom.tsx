@@ -72,7 +72,6 @@ const OneOnOneChatRoom = ({
     });
 
     return () => {
-      socket.current?.emit("leaveRoom", roomId, me?.nickname);
       socket.current?.off("receiveMessage");
       dispatch({
         type: "RESET_CHAT_MESSAGES",
@@ -172,7 +171,6 @@ export const ChatRoomContainer = styled.div`
 `;
 
 export const MessageListContainer = styled.div`
-  max-height: 50vh;
   overflow-y: auto;
 `;
 export const ExitButton = styled.button`
@@ -196,6 +194,7 @@ export const RoomName = styled.h2`
 `;
 
 export const MessageList = styled.ul`
+  width: 530px;
   list-style-type: none;
   padding: 0;
   height: 50vh;
@@ -279,6 +278,3 @@ export const DateSeparator = styled.div`
   margin: 10px 0;
   text-align: center;
 `;
-function confirm(arg0: string) {
-  throw new Error("Function not implemented.");
-}

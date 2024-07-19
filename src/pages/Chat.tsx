@@ -25,6 +25,8 @@ export interface UserRoomList {
   id: number;
   User1: { id: number; nickname: string };
   User2: { id: number; nickname: string };
+  User1Join: boolean;
+  User2Join: boolean;
 }
 
 const Chat = () => {
@@ -56,16 +58,18 @@ const Chat = () => {
     const fetchUserChatRooms = async () => {
       try {
         const response = await axios.get(`/post/findChat?userId=${me?.id}`);
+        console.log(response.data);
 
         setUserRoomList(response.data);
       } catch (error) {
         console.error("Error fetching user chat rooms:", error);
       }
     };
+    fetchUserChatRooms();
 
-    if (me) {
+    socket.current?.on("updateUserRoomList", () => {
       fetchUserChatRooms();
-    }
+    });
   }, [dispatch, me]);
 
   const createOneOnOneChatRoom = async (user2Id: number) => {
@@ -158,6 +162,7 @@ const Chat = () => {
       try {
         if (me && user.id !== me.id) {
           const chatRoom = await createOneOnOneChatRoom(user.id);
+          console.log(chatRoom);
           if (chatRoom) {
             setRoom(chatRoom);
             setSelectedUser(user);
@@ -166,6 +171,8 @@ const Chat = () => {
               id: chatRoom?.id,
               User1: { id: me.id, nickname: me.nickname },
               User2: { id: user.id, nickname: user.nickname },
+              User1Join: true,
+              User2Join: true,
             };
             if (!userRoomList.some((room) => room.id === chatRoom.id)) {
               socket.current?.emit("createRoom", newRoom);
@@ -229,20 +236,22 @@ const Chat = () => {
         ))}
       </UserList>
       <RoomList>
-        {userRoomList.map((userRoom) => (
-          <RoomItem
-            key={userRoom.id}
-            onClick={() => {
-              setRoom(userRoom);
-              setActiveRoom(userRoom);
-            }}
-          >
-            {userRoom.User1.id === me?.id
-              ? userRoom.User2.nickname
-              : userRoom.User1.nickname}
-            님과 채팅
-          </RoomItem>
-        ))}
+        {userRoomList.map((userRoom) => {
+          return (
+            <RoomItem
+              key={userRoom.id}
+              onClick={() => {
+                setRoom(userRoom);
+                setActiveRoom(userRoom);
+              }}
+            >
+              {userRoom.User1.id === me?.id
+                ? userRoom.User2.nickname
+                : userRoom.User1.nickname}
+              님과 채팅
+            </RoomItem>
+          );
+        })}
       </RoomList>
       <ContentWrapper>{renderRoom()}</ContentWrapper>
     </ChatContainer>
