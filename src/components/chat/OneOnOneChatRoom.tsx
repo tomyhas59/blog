@@ -44,6 +44,7 @@ const OneOnOneChatRoom = ({
   const roomId = room?.id;
   const socket = useRef<Socket | null>(null);
   const messageListContainerRef = useRef<HTMLDivElement | null>(null);
+
   useEffect(() => {
     socket.current =
       process.env.NODE_ENV === "production"
@@ -69,6 +70,13 @@ const OneOnOneChatRoom = ({
 
     socket.current?.on("receiveMessage", (message) => {
       setMessages((prevMessages: Message[]) => [...prevMessages, message]);
+    });
+
+    socket.current?.on("systemMessage", (systemMessage) => {
+      setMessages((prevMessages: Message[]) => [
+        ...prevMessages,
+        systemMessage,
+      ]);
     });
 
     return () => {
@@ -100,13 +108,13 @@ const OneOnOneChatRoom = ({
       "다시 들어올 수 없습니다, 정말 나가겠습니까?"
     );
     if (isConfirmed) {
-      socket.current?.emit("leaveRoom", roomId, me?.id);
+      socket.current?.emit("leaveRoom", roomId, me);
       setActiveRoom(null);
     }
   };
 
   const roomName =
-    room?.User1.id === me?.id ? room?.User2.nickname : room?.User1.nickname;
+    room?.User1?.id === me?.id ? room?.User2?.nickname : room?.User1?.nickname;
 
   return (
     <ChatRoomContainer>
@@ -117,30 +125,43 @@ const OneOnOneChatRoom = ({
           {messages.length < 1 ? (
             <div>메시지가 없습니다</div>
           ) : (
-            messages.map((message, i) => (
-              <React.Fragment key={message.id}>
-                {i === 0 ||
-                moment(message.createdAt).isAfter(
-                  messages[i - 1].createdAt,
-                  "day"
-                ) ? (
-                  <DateSeparator>
-                    {moment(message.createdAt).format("YYYY-MM-DD")}
-                  </DateSeparator>
-                ) : null}
-                <MessageItem key={message.id} isMe={message.User.id === me?.id}>
-                  <MessageSender>
-                    {message.User.nickname.slice(0, 5)}
-                  </MessageSender>
-                  <MessageText isMe={message.User.id === me?.id}>
-                    {message.content}
-                  </MessageText>
-                  <MessageTime>
-                    {moment(message.createdAt).format("HH:mm")}
-                  </MessageTime>
-                </MessageItem>
-              </React.Fragment>
-            ))
+            messages.map((message, i) => {
+              const isSystemMessage = message.content.endsWith("systemMessage");
+              const messageContent = isSystemMessage
+                ? message.content.replace("systemMessage", "")
+                : message.content;
+              return (
+                <React.Fragment key={message.id}>
+                  {i === 0 ||
+                  moment(message.createdAt).isAfter(
+                    messages[i - 1].createdAt,
+                    "day"
+                  ) ? (
+                    <DateSeparator>
+                      {moment(message.createdAt).format("YYYY-MM-DD")}
+                    </DateSeparator>
+                  ) : null}
+                  <MessageItem
+                    key={message.id}
+                    isMe={message.User.id === me?.id}
+                    isSystemMessage={isSystemMessage}
+                  >
+                    <MessageSender>
+                      {message.User.nickname.slice(0, 5)}
+                    </MessageSender>
+                    <MessageText
+                      isMe={message.User.id === me?.id}
+                      isSystemMessage={isSystemMessage}
+                    >
+                      {messageContent}
+                    </MessageText>
+                    <MessageTime>
+                      {moment(message.createdAt).format("HH:mm")}
+                    </MessageTime>
+                  </MessageItem>
+                </React.Fragment>
+              );
+            })
           )}
         </MessageList>
       </MessageListContainer>
@@ -203,6 +224,7 @@ export const MessageList = styled.ul`
 
 export interface MessageItemProps {
   isMe: boolean;
+  isSystemMessage: boolean;
 }
 
 export const MessageItem = styled.li<MessageItemProps>`
@@ -210,10 +232,14 @@ export const MessageItem = styled.li<MessageItemProps>`
   display: flex;
   flex-direction: ${(props) => (props.isMe ? "row" : "row-reverse")};
   align-items: flex-start;
+  padding: ${(props) => (props.isSystemMessage ? "10px 0" : "10px")};
+  background-color: ${(props) =>
+    props.isSystemMessage ? "#f9f9f9" : "transparent"};
 `;
 
 export interface MessageTextProps {
   isMe: boolean;
+  isSystemMessage: boolean;
 }
 
 export const MessageSender = styled.span`
@@ -224,10 +250,12 @@ export const MessageSender = styled.span`
 export const MessageText = styled.p<MessageTextProps>`
   margin: 5px 0;
   padding: 5px 10px;
-  background-color: ${(props) => (props.isMe ? "#f0f0f0" : "#ccc")};
-  color: "#000";
+  background-color: ${(props) =>
+    props.isSystemMessage ? "#e0e0e0" : props.isMe ? "#f0f0f0" : "#ccc"};
+  color: ${(props) => (props.isSystemMessage ? "#666" : "#000")};
   border-radius: 8px;
   max-width: 70%;
+  font-style: ${(props) => (props.isSystemMessage ? "italic" : "normal")};
 `;
 
 export const MessageTime = styled.span`

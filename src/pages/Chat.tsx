@@ -100,7 +100,13 @@ const Chat = () => {
     });
 
     socket.current?.on("newRoom", (newRoom: UserRoomList) => {
-      setUserRoomList((prev) => [...prev, newRoom]);
+      setUserRoomList((prev) => {
+        const roomExists = prev.find((room) => room.id === newRoom.id);
+        if (!roomExists) {
+          return [...prev, newRoom];
+        }
+        return prev;
+      });
     });
 
     socket.current?.on("leaveRoomUserId", (leaveRoomUserId) => {
