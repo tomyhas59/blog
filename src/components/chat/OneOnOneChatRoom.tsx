@@ -146,7 +146,7 @@ const OneOnOneChatRoom = ({
                     isMe={message.User.id === me?.id}
                     isSystemMessage={isSystemMessage}
                   >
-                    <MessageSender>
+                    <MessageSender isSystemMessage={isSystemMessage}>
                       {message.User.nickname.slice(0, 5)}
                     </MessageSender>
                     <MessageText
@@ -155,7 +155,7 @@ const OneOnOneChatRoom = ({
                     >
                       {messageContent}
                     </MessageText>
-                    <MessageTime>
+                    <MessageTime isSystemMessage={isSystemMessage}>
                       {moment(message.createdAt).format("HH:mm")}
                     </MessageTime>
                   </MessageItem>
@@ -231,34 +231,32 @@ export const MessageItem = styled.li<MessageItemProps>`
   margin-bottom: 10px;
   display: flex;
   flex-direction: ${(props) => (props.isMe ? "row" : "row-reverse")};
-  align-items: flex-start;
-  padding: ${(props) => (props.isSystemMessage ? "10px 0" : "10px")};
-  background-color: ${(props) =>
-    props.isSystemMessage ? "#f9f9f9" : "transparent"};
+  justify-content: ${(props) =>
+    props.isSystemMessage ? "center" : "flex-start"};
 `;
 
-export interface MessageTextProps {
-  isMe: boolean;
-  isSystemMessage: boolean;
-}
-
-export const MessageSender = styled.span`
+export const MessageSender = styled.span<
+  Pick<MessageItemProps, "isSystemMessage">
+>`
+  display: ${(props) => (props.isSystemMessage ? "none" : "inline")};
   font-weight: bold;
   line-height: 250%;
 `;
 
-export const MessageText = styled.p<MessageTextProps>`
+export const MessageText = styled.p<MessageItemProps>`
   margin: 5px 0;
   padding: 5px 10px;
   background-color: ${(props) =>
-    props.isSystemMessage ? "#e0e0e0" : props.isMe ? "#f0f0f0" : "#ccc"};
-  color: ${(props) => (props.isSystemMessage ? "#666" : "#000")};
+    props.isSystemMessage ? "none" : props.isMe ? "#f0f0f0" : "#ccc"};
+  color: ${(props) => (props.isSystemMessage ? "red" : "#000")};
   border-radius: 8px;
   max-width: 70%;
-  font-style: ${(props) => (props.isSystemMessage ? "italic" : "normal")};
 `;
 
-export const MessageTime = styled.span`
+export const MessageTime = styled.span<
+  Pick<MessageItemProps, "isSystemMessage">
+>`
+  display: ${(props) => (props.isSystemMessage ? "none" : "inline")};
   font-size: 12px;
   color: #999;
   align-self: end;
