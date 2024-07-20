@@ -2,12 +2,15 @@ import { produce } from "immer";
 import { UserType } from "../types";
 export const initialState = {
   isLoggedIn: false,
+
   logInLoading: false,
   logInDone: false,
   logInError: null,
+
   logOutLoading: false,
   logOutDone: false,
   logOutError: null,
+
   signUpLoading: false,
   signUpDone: false,
   signUpError: null,
@@ -15,6 +18,18 @@ export const initialState = {
   refreshTokenLoading: false,
   refreshTokenDone: false,
   refreshTokenError: null,
+
+  followLoading: false,
+  followDone: false,
+  followError: null,
+
+  removeFollowerLoading: false,
+  removeFollowerDone: false,
+  removeFollowerError: null,
+
+  unFollowLoading: false,
+  unFollowDone: false,
+  unFollowError: null,
 
   me: null as UserType | null,
 };
@@ -34,6 +49,18 @@ export const SIGN_UP_SUCCESS = "SIGN_UP_SUCCESS";
 export const REFRESH_TOKEN_FAILURE = "REFRESH_TOKEN_FAILURE";
 export const REFRESH_TOKEN_REQUEST = "REFRESH_TOKEN_REQUEST";
 export const REFRESH_TOKEN_SUCCESS = "REFRESH_TOKEN_SUCCESS";
+
+export const FOLLOW_FAILURE = "FOLLOW_FAILURE";
+export const FOLLOW_REQUEST = "FOLLOW_REQUEST";
+export const FOLLOW_SUCCESS = "FOLLOW_SUCCESS";
+
+export const REMOVE_FOLLOWER_SUCCESS = "REMOVE_FOLLOWER_SUCCESS";
+export const REMOVE_FOLLOWER_REQUEST = "REMOVE_FOLLOWER_REQUEST";
+export const REMOVE_FOLLOWER_FAILURE = "REMOVE_FOLLOWER_FAILURE";
+
+export const UNFOLLOW_FAILURE = "UNFOLLOW_FAILURE";
+export const UNFOLLOW_REQUEST = "UNFOLLOW_REQUEST";
+export const UNFOLLOW_SUCCESS = "UNFOLLOW_SUCCESS";
 
 const user = (
   state = initialState,
