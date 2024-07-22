@@ -7,7 +7,6 @@ import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { SEARCH_POSTS_REQUEST } from "../../reducer/post";
-import ContentRenderer from "../../components/renderer/ContentRenderer";
 import ListRenderer from "../../components/renderer/ListRenderer";
 
 const MyLikes: React.FC = () => {
@@ -50,7 +49,7 @@ const MyLikes: React.FC = () => {
 
       window.scrollTo({ top: 0, behavior: "auto" });
     },
-    [dispatch]
+    [dispatch, navigator]
   );
 
   return (

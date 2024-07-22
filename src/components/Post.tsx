@@ -30,6 +30,7 @@ import ContentRenderer from "./renderer/ContentRenderer";
 import useOutsideClick from "../hooks/useOutsideClick";
 import useTextareaAutoHeight from "../hooks/useTextareaAutoHeight";
 import { FileButton } from "./PostForm";
+import { FOLLOW_REQUEST } from "../reducer/user";
 
 const Post = ({
   post,
@@ -49,7 +50,9 @@ const Post = ({
     [setContent]
   );
 
-  const id = useSelector((state: RootState) => state.user.me?.id);
+  const me = useSelector((state: RootState) => state.user.me);
+
+  const id = me?.id;
   const nickname = useSelector((state: RootState) => state.user.me?.nickname);
 
   const {
@@ -151,23 +154,20 @@ const Post = ({
   //댓글 창, 기존 폼 닫고 새로운 폼 열고 닫기--------------
   const [addComment, setAddComment] = useState<Record<number, boolean>>({});
 
-  const toggleAddCommentForm = useCallback(
-    (postId: number) => {
-      if (!id) {
-        alert("로그인이 필요합니다");
-      } else
-        setAddComment((prev) => {
-          const newCommentState: Record<string, boolean> = {};
-          Object.keys(prev).forEach((key) => {
-            newCommentState[key] = false;
-          });
-          newCommentState[postId] = !prev[postId];
-          return newCommentState;
+  const toggleAddCommentForm = useCallback(() => {
+    if (!id) {
+      alert("로그인이 필요합니다");
+    } else
+      setAddComment((prev) => {
+        const newCommentState: Record<string, boolean> = {};
+        Object.keys(prev).forEach((key) => {
+          newCommentState[key] = false;
         });
-    },
-    [id]
-  );
-
+        newCommentState[post.id] = !prev[post.id];
+        return newCommentState;
+      });
+  }, [id, post.id]);
+  //작성 글 보기
   const onDeletePost = useCallback(() => {
     if (!window.confirm("삭제하시겠습니까?")) return false;
     dispatch({
@@ -195,6 +195,21 @@ const Post = ({
     },
     [dispatch]
   );
+  //팔로우
+  const onFollow = useCallback(() => {
+    dispatch({
+      type: FOLLOW_REQUEST,
+      data: post.User.id,
+    });
+  }, [dispatch, post.User.id]);
+  //언팔로우
+  const onUnFollow = useCallback(() => {
+    dispatch({
+      type: FOLLOW_REQUEST,
+      data: post.User.id,
+    });
+  }, [dispatch, post.User.id]);
+
   const onDeleteImage = useCallback(
     (filename: string) => () => {
       if (filename) {
@@ -241,14 +256,14 @@ const Post = ({
   );
 
   const onModifyPost = useCallback(
-    (e: SyntheticEvent, postId: number) => {
+    (e: SyntheticEvent) => {
       e.preventDefault();
 
       const contentWithBreaks = content.replace(/\n/g, "<br>");
       dispatch({
         type: UPDATE_POST_REQUEST,
         data: {
-          postId: postId,
+          postId: post.id,
           content: contentWithBreaks,
           imagePaths: imagePaths, //서버 데이터 req.body. key값
         },
@@ -256,7 +271,7 @@ const Post = ({
 
       setEditPost(false);
     },
-    [content, dispatch, imagePaths]
+    [content, dispatch, imagePaths, post.id]
   );
 
   const prevContent = content.replace(/<br\s*\/?>/gi, "\n");
@@ -282,6 +297,13 @@ const Post = ({
               {showInfo && (
                 <InfoMenu ref={infoMenuRef}>
                   <Button onClick={onSearch}>작성 글 보기</Button>
+                  {me?.Followings.some(
+                    (following) => following.id === post.id
+                  ) ? (
+                    <Button onClick={onUnFollow}>언팔로우</Button>
+                  ) : (
+                    <Button onClick={onFollow}>팔로우</Button>
+                  )}
                 </InfoMenu>
               )}
               <Date>{moment(post.createdAt).format("l")}</Date>
@@ -319,7 +341,7 @@ const Post = ({
               <>
                 <Form
                   encType="multipart/form-data"
-                  onSubmit={(e) => onModifyPost(e, post.id)}
+                  onSubmit={(e) => onModifyPost(e)}
                   ref={formRef}
                 >
                   <TextArea
@@ -413,9 +435,7 @@ const Post = ({
         <CommentContainer>
           <PostHeaderFlex>
             <CommentNum>댓글 {post.Comments.length}개</CommentNum>
-            <Button onClick={() => toggleAddCommentForm(post.id)}>
-              댓글 달기
-            </Button>
+            <Button onClick={toggleAddCommentForm}>댓글 달기</Button>
           </PostHeaderFlex>
           {addComment[post.id] && (
             <div ref={commentFormRef}>
@@ -466,7 +486,6 @@ const Button = styled.button`
   background-color: ${(props) => props.theme.mainColor};
   height: 30px;
   font-size: 12px;
-  margin: 2px;
   color: #fff;
   padding: 6px;
   border-radius: 6px;
@@ -568,6 +587,8 @@ const InfoMenu = styled.div`
   position: absolute;
   top: 30px;
   left: 0;
+  display: flex;
+  flex-direction: column;
 `;
 
 const PopupMenu = styled.div`

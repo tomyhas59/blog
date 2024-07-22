@@ -17,6 +17,8 @@ export type UserType = {
   password: string;
   createdAt: string;
   updatedAt: string;
+  Followings: { id: number; nickname: string }[];
+  Followers: { id: number; nickname: string }[];
 };
 
 export type LikeType = {

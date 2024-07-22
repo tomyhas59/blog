@@ -7,11 +7,14 @@ import { useSelector } from "react-redux";
 import { RootState } from "../reducer";
 import { useNavigate } from "react-router-dom";
 import MyLikes from "./Info/MyLikes";
+import MyFollow from "./Info/MyFollow";
 
 const Info = () => {
   const [activeSection, setActiveSection] = useState("myInfo");
   const { me } = useSelector((state: RootState) => state.user);
   const navigator = useNavigate();
+
+  console.log("me", me);
 
   useEffect(() => {
     if (!me) navigator("/");
@@ -27,6 +30,8 @@ const Info = () => {
         return <MyComments />;
       case "myLikes":
         return <MyLikes />;
+      case "myfollow":
+        return <MyFollow />;
       default:
         return <MyInfo />;
     }
@@ -54,6 +59,11 @@ const Info = () => {
           <NavItem>
             <NavLink onClick={() => setActiveSection("myLikes")}>
               ▮좋아요 글
+            </NavLink>
+          </NavItem>
+          <NavItem>
+            <NavLink onClick={() => setActiveSection("myfollow")}>
+              ▮팔로우
             </NavLink>
           </NavItem>
         </NavList>

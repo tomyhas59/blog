@@ -62,10 +62,13 @@ export const UNFOLLOW_FAILURE = "UNFOLLOW_FAILURE";
 export const UNFOLLOW_REQUEST = "UNFOLLOW_REQUEST";
 export const UNFOLLOW_SUCCESS = "UNFOLLOW_SUCCESS";
 
-const user = (
-  state = initialState,
-  action: { type: any; data: null; error: null }
-) => {
+interface Action<T = any> {
+  type: string;
+  data?: T;
+  error?: any;
+}
+
+const user = (state = initialState, action: Action) => {
   return produce(state, (draft) => {
     /*draft 안에 불변성이 지켜진 채로 존재*/
     switch (action.type) {
@@ -130,6 +133,24 @@ const user = (
       case REFRESH_TOKEN_FAILURE:
         draft.refreshTokenLoading = false;
         draft.refreshTokenError = action.error;
+        break;
+      //--------------------------------------------
+      case FOLLOW_REQUEST:
+        draft.followError = null;
+        draft.followLoading = true;
+        draft.followDone = false;
+        break;
+      case FOLLOW_SUCCESS:
+        draft.followLoading = false;
+        draft.followDone = true;
+        draft.me!.Followings.push({
+          id: action.data.UserId,
+          nickname: action.data.Nickname,
+        });
+        break;
+      case FOLLOW_FAILURE:
+        draft.followLoading = false;
+        draft.followError = action.error;
         break;
       //----------------------------------------------
       case "SET_USER":

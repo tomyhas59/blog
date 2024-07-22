@@ -11,7 +11,7 @@ const MyInfo: React.FC = () => {
     return <div>사용자 정보를 불러오는 중입니다...</div>;
   }
   const createdAt = me.createdAt;
-  console.log("me", me);
+
   const createdAtDate = moment(createdAt);
   const formattedDate = createdAtDate.format("l");
 
