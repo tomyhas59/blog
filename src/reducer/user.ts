@@ -152,6 +152,30 @@ const user = (state = initialState, action: Action) => {
         draft.followLoading = false;
         draft.followError = action.error;
         break;
+
+      //--------------------------------------------
+      case UNFOLLOW_REQUEST:
+        draft.unFollowError = null;
+        draft.unFollowLoading = true;
+        draft.unFollowDone = false;
+        break;
+      case UNFOLLOW_SUCCESS: {
+        draft.unFollowLoading = false;
+        draft.unFollowDone = true;
+        if (draft.me?.Followings) {
+          const unFollowIndex = draft.me?.Followings.findIndex(
+            (v) => v.id === action.data.UserId
+          );
+          if (unFollowIndex > -1) {
+            draft.me?.Followings.splice(unFollowIndex, 1);
+          }
+        }
+        break;
+      }
+      case UNFOLLOW_FAILURE:
+        draft.unFollowLoading = false;
+        draft.unFollowError = action.error;
+        break;
       //----------------------------------------------
       case "SET_USER":
         draft.me = action.data;

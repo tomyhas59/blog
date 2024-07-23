@@ -30,7 +30,8 @@ import ContentRenderer from "./renderer/ContentRenderer";
 import useOutsideClick from "../hooks/useOutsideClick";
 import useTextareaAutoHeight from "../hooks/useTextareaAutoHeight";
 import { FileButton } from "./PostForm";
-import { FOLLOW_REQUEST } from "../reducer/user";
+import { FOLLOW_REQUEST, UNFOLLOW_REQUEST } from "../reducer/user";
+import FollowButton from "./FollowButton";
 
 const Post = ({
   post,
@@ -51,7 +52,7 @@ const Post = ({
   );
 
   const me = useSelector((state: RootState) => state.user.me);
-
+  console.log("팔로우 여부", me?.Followings);
   const id = me?.id;
   const nickname = useSelector((state: RootState) => state.user.me?.nickname);
 
@@ -69,7 +70,7 @@ const Post = ({
   const editPostRef = useRef<HTMLTextAreaElement>(null);
 
   //---닉네임 클릭 정보 보기-------------------------------------
-  const [showInfo, setShowInfo] = useState(false);
+  const [showInfo, setShowInfo] = useState<boolean>(false);
   const toggleShowInfo = useCallback(() => {
     setShowInfo((prevShowInfo) => !prevShowInfo);
   }, []);
@@ -195,20 +196,6 @@ const Post = ({
     },
     [dispatch]
   );
-  //팔로우
-  const onFollow = useCallback(() => {
-    dispatch({
-      type: FOLLOW_REQUEST,
-      data: post.User.id,
-    });
-  }, [dispatch, post.User.id]);
-  //언팔로우
-  const onUnFollow = useCallback(() => {
-    dispatch({
-      type: FOLLOW_REQUEST,
-      data: post.User.id,
-    });
-  }, [dispatch, post.User.id]);
 
   const onDeleteImage = useCallback(
     (filename: string) => () => {
@@ -297,12 +284,11 @@ const Post = ({
               {showInfo && (
                 <InfoMenu ref={infoMenuRef}>
                   <Button onClick={onSearch}>작성 글 보기</Button>
-                  {me?.Followings.some(
-                    (following) => following.id === post.id
-                  ) ? (
-                    <Button onClick={onUnFollow}>언팔로우</Button>
-                  ) : (
-                    <Button onClick={onFollow}>팔로우</Button>
+                  {id !== post.User.id && (
+                    <FollowButton
+                      userId={post.User.id}
+                      setShowInfo={setShowInfo}
+                    />
                   )}
                 </InfoMenu>
               )}

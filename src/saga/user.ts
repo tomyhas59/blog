@@ -4,6 +4,9 @@ import {
   FOLLOW_SUCCESS,
   REFRESH_TOKEN_FAILURE,
   REFRESH_TOKEN_REQUEST,
+  UNFOLLOW_FAILURE,
+  UNFOLLOW_REQUEST,
+  UNFOLLOW_SUCCESS,
 } from "./../reducer/user";
 import {
   LOG_IN_FAILURE,
@@ -154,6 +157,32 @@ function* watchFollow() {
   yield takeEvery<any>(FOLLOW_REQUEST, follow);
 }
 
+//-------------------------------------------------------------------
+
+function unFollowAPI(data: number) {
+  return axios.delete(`/user/${data}/follow`);
+}
+
+function* unFollow(action: { data: number }): SagaIterator {
+  try {
+    const result = yield call(unFollowAPI, action.data);
+
+    yield put({
+      type: UNFOLLOW_SUCCESS,
+      data: result.data,
+    });
+  } catch (err: any) {
+    console.error(err);
+    yield put({
+      type: UNFOLLOW_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+function* watchUnFollow() {
+  yield takeEvery<any>(UNFOLLOW_REQUEST, unFollow);
+}
+
 export default function* userSaga() {
   yield all([
     fork(watchLogin),
@@ -161,6 +190,7 @@ export default function* userSaga() {
     fork(watchSignUp),
     fork(watchRefreshToken),
     fork(watchFollow),
+    fork(watchUnFollow),
   ]);
   //fork:  함수의 비동기적인 호출 사용
   //call과 달리 순서 상관없이 실행할 때 사용

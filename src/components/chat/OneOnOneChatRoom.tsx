@@ -104,9 +104,7 @@ const OneOnOneChatRoom = ({
   }, [messages]);
 
   const handleExit = () => {
-    const isConfirmed = window.confirm(
-      "다시 들어올 수 없습니다, 정말 나가겠습니까?"
-    );
+    const isConfirmed = window.confirm("정말 나가겠습니까?");
     if (isConfirmed) {
       socket.current?.emit("leaveRoom", roomId, me);
       setActiveRoom(null);
@@ -118,8 +116,10 @@ const OneOnOneChatRoom = ({
 
   return (
     <ChatRoomContainer>
-      <RoomName>{roomName}님과의 채팅</RoomName>
-      <ExitButton onClick={handleExit}>나가기</ExitButton>
+      <RoomHeader>
+        <RoomName>{roomName}님과의 채팅</RoomName>
+        <ExitButton onClick={handleExit}>나가기</ExitButton>
+      </RoomHeader>
       <MessageListContainer ref={messageListContainerRef}>
         <MessageList>
           {messages.length < 1 ? (
@@ -181,53 +181,75 @@ const OneOnOneChatRoom = ({
 
 export default OneOnOneChatRoom;
 
-export const ChatRoomContainer = styled.div`
-  width: 600px;
+const ChatRoomContainer = styled.div`
   padding: 20px;
   border-radius: 4px;
   border: 1px solid #ccc;
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+
   @media (max-width: 480px) {
-    width: 310px;
+    padding: 10px;
+    width: 100%;
   }
 `;
 
-export const MessageListContainer = styled.div`
-  overflow-y: auto;
+const RoomHeader = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
 `;
-export const ExitButton = styled.button`
-  position: absolute;
+
+const RoomName = styled.h2`
+  color: ${(props) => props.theme.mainColor};
+  font-size: 24px;
+
+  @media (max-width: 480px) {
+    font-size: 18px;
+  }
+`;
+
+const ExitButton = styled.button`
   border-radius: 5px;
   padding: 5px;
-  right: 2%;
-  top: 2%;
   background-color: ${(props) => props.theme.mainColor};
   color: #fff;
   transition: transform 0.3s ease, color 0.3s ease;
+
   &:hover {
     transform: translateY(-2px);
     color: ${(props) => props.theme.charColor};
   }
-`;
-export const RoomName = styled.h2`
-  color: ${(props) => props.theme.mainColor};
-  font-size: 24px;
-  margin-bottom: 10px;
+
+  @media (max-width: 480px) {
+    padding: 3px;
+    font-size: 12px;
+  }
 `;
 
-export const MessageList = styled.ul`
-  width: 530px;
+const MessageListContainer = styled.div`
+  overflow-y: auto;
+  height: 60vh;
+
+  @media (max-width: 480px) {
+    height: 40vh;
+  }
+`;
+
+const MessageList = styled.ul`
   list-style-type: none;
   padding: 0;
-  height: 50vh;
-  font-size: 12px;
 `;
 
-export interface MessageItemProps {
+interface MessageItemProps {
   isMe: boolean;
   isSystemMessage: boolean;
 }
 
-export const MessageItem = styled.li<MessageItemProps>`
+const MessageItem = styled.li<MessageItemProps>`
   margin-bottom: 10px;
   display: flex;
   flex-direction: ${(props) => (props.isMe ? "row" : "row-reverse")};
@@ -235,51 +257,62 @@ export const MessageItem = styled.li<MessageItemProps>`
     props.isSystemMessage ? "center" : "flex-start"};
 `;
 
-export const MessageSender = styled.span<
-  Pick<MessageItemProps, "isSystemMessage">
->`
+const MessageSender = styled.span<Pick<MessageItemProps, "isSystemMessage">>`
   display: ${(props) => (props.isSystemMessage ? "none" : "inline")};
   font-weight: bold;
-  line-height: 250%;
+  line-height: 1.5;
 `;
 
-export const MessageText = styled.p<MessageItemProps>`
+const MessageText = styled.p<MessageItemProps>`
   margin: 5px 0;
   padding: 5px 10px;
   background-color: ${(props) =>
-    props.isSystemMessage ? "none" : props.isMe ? "#f0f0f0" : "#ccc"};
+    props.isSystemMessage ? "transparent" : props.isMe ? "#d4f1f4" : "#f0f0f0"};
   color: ${(props) => (props.isSystemMessage ? "red" : "#000")};
   border-radius: 8px;
   max-width: 70%;
-`;
+  word-break: break-word;
 
-export const MessageTime = styled.span<
-  Pick<MessageItemProps, "isSystemMessage">
->`
-  display: ${(props) => (props.isSystemMessage ? "none" : "inline")};
-  font-size: 12px;
-  color: #999;
-  align-self: end;
-`;
-
-export const MessageForm = styled.form`
-  display: flex;
-  margin-top: 10px;
   @media (max-width: 480px) {
-    height: 50px;
+    font-size: 14px;
   }
 `;
 
-export const MessageInput = styled.input`
+const MessageTime = styled.span<Pick<MessageItemProps, "isSystemMessage">>`
+  display: ${(props) => (props.isSystemMessage ? "none" : "inline")};
+  font-size: 12px;
+  color: #999;
+  align-self: flex-end;
+  margin-left: 5px;
+
+  @media (max-width: 480px) {
+    font-size: 10px;
+  }
+`;
+
+const MessageForm = styled.form`
+  display: flex;
+  margin-top: 10px;
+
+  @media (max-width: 480px) {
+    margin-top: 5px;
+  }
+`;
+
+const MessageInput = styled.input`
   flex: 1;
   padding: 10px;
   font-size: 16px;
   border: 1px solid #ccc;
   border-radius: 4px 0 0 4px;
+
+  @media (max-width: 480px) {
+    padding: 8px;
+    font-size: 14px;
+  }
 `;
 
-export const MessageButton = styled.button`
-  flex: 0.1;
+const MessageButton = styled.button`
   padding: 10px 15px;
   background-color: ${(props) => props.theme.mainColor};
   color: #fff;
@@ -287,20 +320,28 @@ export const MessageButton = styled.button`
   border-radius: 0 4px 4px 0;
   cursor: pointer;
   transition: transform 0.3s ease, color 0.3s ease;
+
   &:hover {
     transform: translateY(-2px);
     color: ${(props) => props.theme.charColor};
   }
+
   @media (max-width: 480px) {
     font-size: 12px;
+    padding: 8px;
   }
 `;
 
-export const DateSeparator = styled.div`
+const DateSeparator = styled.div`
   width: 100%;
   font-size: 10px;
   color: #ccc;
   border-bottom: 1px solid #ccc;
   margin: 10px 0;
   text-align: center;
+
+  @media (max-width: 480px) {
+    font-size: 8px;
+    margin: 5px 0;
+  }
 `;

@@ -20,6 +20,7 @@ import {
 import useOutsideClick from "../hooks/useOutsideClick";
 import axios from "axios";
 import OneOnOneChatRoom from "../components/chat/OneOnOneChatRoom";
+import FollowButton from "../components/FollowButton";
 
 export interface UserRoomList {
   id: number;
@@ -213,7 +214,7 @@ const Chat = () => {
         />
       );
     } else {
-      return <ChatContainer>1:1 채팅방</ChatContainer>;
+      return <ChatPlaceholder>1:1 채팅방을 선택하세요</ChatPlaceholder>;
     }
   };
 
@@ -221,43 +222,46 @@ const Chat = () => {
     <ChatContainer>
       <UserList>
         <ConnectedUsers>{userList?.length || 0}명 접속 중</ConnectedUsers>
-        {userList?.map((user) => (
-          <li key={user.id}>
-            <button onClick={() => onUserOptionClick(user.nickname)}>
-              {user.nickname.slice(0, 5)}
-            </button>
-            {user.id !== me?.id && activeUserOption === user.nickname && (
-              <UserOption ref={userOptoinRef}>
-                <button
-                  onClick={() => {
-                    onUserClick(user);
-                  }}
-                >
-                  1:1 채팅하기
-                </button>
-                <button>팔로우</button>
-              </UserOption>
-            )}
-          </li>
-        ))}
+        <ul>
+          {userList?.map((user) => (
+            <li key={user.id}>
+              <button onClick={() => onUserOptionClick(user.nickname)}>
+                {user.nickname.slice(0, 5)}
+              </button>
+              {user.id !== me?.id && activeUserOption === user.nickname && (
+                <UserOption ref={userOptoinRef}>
+                  <button
+                    onClick={() => {
+                      onUserClick(user);
+                    }}
+                  >
+                    1:1 채팅하기
+                  </button>
+                  <FollowButton
+                    userId={user.id}
+                    setActiveUserOption={setActiveUserOption}
+                  />
+                </UserOption>
+              )}
+            </li>
+          ))}
+        </ul>
       </UserList>
       <RoomList>
-        {userRoomList.map((userRoom) => {
-          return (
-            <RoomItem
-              key={userRoom.id}
-              onClick={() => {
-                setRoom(userRoom);
-                setActiveRoom(userRoom);
-              }}
-            >
-              {userRoom.User1.id === me?.id
-                ? userRoom.User2.nickname
-                : userRoom.User1.nickname}
-              님과 채팅
-            </RoomItem>
-          );
-        })}
+        {userRoomList.map((userRoom) => (
+          <RoomItem
+            key={userRoom.id}
+            onClick={() => {
+              setRoom(userRoom);
+              setActiveRoom(userRoom);
+            }}
+          >
+            {userRoom.User1.id === me?.id
+              ? userRoom.User2.nickname
+              : userRoom.User1.nickname}
+            님과 채팅
+          </RoomItem>
+        ))}
       </RoomList>
       <ContentWrapper>{renderRoom()}</ContentWrapper>
     </ChatContainer>
@@ -268,10 +272,17 @@ export default Chat;
 
 const ChatContainer = styled.div`
   display: flex;
-  justify-content: center;
+  width: 70%;
+  margin: 0 auto;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 20px;
+  background-color: #f4f4f9;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   @media (max-width: 480px) {
+    width: 100%;
     display: block;
-    text-align: center;
   }
 `;
 
@@ -280,34 +291,43 @@ const UserList = styled.div`
   flex-direction: column;
   align-items: center;
   padding: 20px;
-  height: 60vh;
-  border-radius: 5px;
-  background-color: #c0e2f6;
-  > li {
-    font-size: 20px;
-    color: #757272;
+  margin-right: 20px;
+  border-radius: 8px;
+  background-color: #fff;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  ul > li {
+    font-size: 18px;
+    color: #333;
     list-style: none;
+    margin-bottom: 10px;
     position: relative;
     &:hover {
-      color: #040303;
+      color: ${(props) => props.theme.mainColor};
       cursor: pointer;
       text-decoration: underline;
     }
   }
   @media (max-width: 480px) {
-    width: 300px;
+    width: 100%;
     padding: 10px;
-    flex-direction: row;
     overflow-x: auto;
+    ul {
+      width: 100%;
+      display: flex;
+      > li {
+        margin-left: 5px;
+      }
+    }
   }
 `;
 
 const ConnectedUsers = styled.div`
-  color: ${(props) => props.theme.mainColor};
+  color: #333;
   font-weight: bold;
-  margin: 1px;
+  margin-bottom: 20px;
   @media (max-width: 480px) {
     font-size: 12px;
+    margin-bottom: 0;
   }
 `;
 
@@ -315,25 +335,25 @@ const RoomList = styled.ul`
   width: 150px;
   padding: 10px;
   margin-right: 20px;
-  text-align: center;
+  border-radius: 8px;
+  background-color: #fff;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  text-align: left;
   @media (max-width: 480px) {
-    width: 300px;
+    width: 100%;
     display: flex;
     overflow-x: auto;
   }
 `;
 
-const RoomItem = styled.button`
-  min-width: 100px;
+const RoomItem = styled.li`
   padding: 10px;
   margin-bottom: 10px;
+  text-align: center;
   background-color: ${(props) => props.theme.mainColor};
-  border: 1px solid #ddd;
   border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  list-style: none;
-  font-size: 16px;
   color: #fff;
+  list-style: none;
   cursor: pointer;
   transition: transform 0.3s ease, color 0.3s ease;
   &:hover {
@@ -341,32 +361,55 @@ const RoomItem = styled.button`
     color: ${(props) => props.theme.charColor};
   }
   @media (max-width: 480px) {
-    font-size: 10px;
-    min-width: 50px;
+    font-size: 12px;
+    padding: 8px;
   }
 `;
 
 const ContentWrapper = styled.div`
-  position: relative;
-  width: 600px;
+  flex: 1;
+  padding: 20px;
+  border-radius: 8px;
+  background-color: #fff;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+
   @media (max-width: 480px) {
-    width: 310px;
+    padding: 10px;
   }
 `;
 
 const UserOption = styled.div`
-  left: 20px;
-  font-size: 12px;
   position: absolute;
+  top: 20px;
+  left: 20px;
+  width: 80px;
+  display: flex;
+  flex-direction: column;
   background-color: ${(props) => props.theme.mainColor};
-  border-radius: 5px;
+  border-radius: 8px;
+  padding: 5px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  font-size: 12px;
   color: #fff;
-  text-align: center;
   & button {
-    width: 70px;
-    margin: 10px;
+    margin: 5px 0;
+    cursor: pointer;
+    transition: transform 0.3s ease, color 0.3s ease;
     &:hover {
+      transform: translateY(-2px);
       color: ${(props) => props.theme.charColor};
     }
+  }
+`;
+
+const ChatPlaceholder = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  color: #aaa;
+  font-size: 24px;
+  @media (max-width: 480px) {
+    font-size: 18px;
   }
 `;
