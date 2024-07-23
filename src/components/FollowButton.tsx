@@ -1,5 +1,5 @@
 // FollowButton.tsx
-import React, { useCallback, useEffect } from "react";
+import React, { useCallback } from "react";
 import styled from "styled-components";
 import { FOLLOW_REQUEST, UNFOLLOW_REQUEST } from "../reducer/user";
 import { useDispatch, useSelector } from "react-redux";

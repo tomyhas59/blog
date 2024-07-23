@@ -2,7 +2,6 @@ import React, {
   ChangeEvent,
   SyntheticEvent,
   useCallback,
-  useEffect,
   useRef,
   useState,
 } from "react";
@@ -30,7 +29,6 @@ import ContentRenderer from "./renderer/ContentRenderer";
 import useOutsideClick from "../hooks/useOutsideClick";
 import useTextareaAutoHeight from "../hooks/useTextareaAutoHeight";
 import { FileButton } from "./PostForm";
-import { FOLLOW_REQUEST, UNFOLLOW_REQUEST } from "../reducer/user";
 import FollowButton from "./FollowButton";
 
 const Post = ({
