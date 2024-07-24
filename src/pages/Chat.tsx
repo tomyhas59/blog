@@ -214,7 +214,12 @@ const Chat = () => {
         />
       );
     } else {
-      return <ChatPlaceholder>1:1 채팅방을 선택하세요</ChatPlaceholder>;
+      return (
+        <ChatPlaceholder>
+          1:1 채팅방을
+          {userRoomList?.length < 1 ? "만들어 보세요" : "선택하세요"}
+        </ChatPlaceholder>
+      );
     }
   };
 
@@ -248,6 +253,7 @@ const Chat = () => {
         </ul>
       </UserList>
       <RoomList>
+        <h1>채팅방 목록</h1>
         {userRoomList.map((userRoom) => (
           <RoomItem
             key={userRoom.id}
@@ -290,7 +296,7 @@ const UserList = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 20px;
+  padding: 10px;
   margin-right: 20px;
   border-radius: 8px;
   background-color: #fff;
@@ -324,7 +330,7 @@ const UserList = styled.div`
 const ConnectedUsers = styled.div`
   color: #333;
   font-weight: bold;
-  margin-bottom: 20px;
+  margin-bottom: 10px;
   @media (max-width: 480px) {
     font-size: 12px;
     margin-bottom: 0;
@@ -332,13 +338,17 @@ const ConnectedUsers = styled.div`
 `;
 
 const RoomList = styled.ul`
-  width: 150px;
   padding: 10px;
   margin-right: 20px;
   border-radius: 8px;
   background-color: #fff;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   text-align: left;
+  > h1 {
+    color: #333;
+    font-weight: bold;
+    text-align: center;
+  }
   @media (max-width: 480px) {
     width: 100%;
     display: flex;

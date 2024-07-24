@@ -66,7 +66,7 @@ const OneOnOneChatRoom = ({
   }, [dispatch, roomId]);
 
   useEffect(() => {
-    socket.current?.emit("joinRoom", roomId, me?.nickname, selectedUser?.id);
+    socket.current?.emit("joinRoom", roomId, me);
 
     socket.current?.on("receiveMessage", (message) => {
       setMessages((prevMessages: Message[]) => [...prevMessages, message]);
@@ -85,7 +85,7 @@ const OneOnOneChatRoom = ({
         type: "RESET_CHAT_MESSAGES",
       });
     };
-  }, [dispatch, me?.nickname, roomId, selectedUser?.id]);
+  }, [dispatch, me, roomId]);
 
   useEffect(() => {
     if (roomId) {

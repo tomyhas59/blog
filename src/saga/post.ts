@@ -530,7 +530,7 @@ function* watchAddChatMessage() {
 //-----------------------------------------------------
 
 function readChatApi(roomId: number) {
-  return axios.get(`/post/readChat?roomId=${roomId}`);
+  return axios.get(`/post/getChat?roomId=${roomId}`);
 }
 
 function* readChat(action: { data: any }): SagaIterator {
