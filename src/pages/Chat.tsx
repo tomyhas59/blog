@@ -59,8 +59,6 @@ const Chat = () => {
     const fetchUserChatRooms = async () => {
       try {
         const response = await axios.get(`/post/findChat?userId=${me?.id}`);
-        console.log(response.data);
-
         setUserRoomList(response.data);
       } catch (error) {
         console.error("Error fetching user chat rooms:", error);
@@ -174,15 +172,9 @@ const Chat = () => {
             setRoom(chatRoom);
             setSelectedUser(user);
             setActiveRoom(chatRoom);
-            const newRoom = {
-              id: chatRoom?.id,
-              User1: { id: me.id, nickname: me.nickname },
-              User2: { id: user.id, nickname: user.nickname },
-              User1Join: true,
-              User2Join: true,
-            };
+
             if (!userRoomList.some((room) => room.id === chatRoom.id)) {
-              socket.current?.emit("createRoom", newRoom);
+              socket.current?.emit("createRoom", chatRoom.id, me);
             }
             setActiveUserOption(null);
           }
