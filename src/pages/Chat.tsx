@@ -1,11 +1,4 @@
-import React, {
-  useState,
-  useEffect,
-  SyntheticEvent,
-  ChangeEvent,
-  useRef,
-  useCallback,
-} from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import { useSelector } from "react-redux";
 import styled from "styled-components";
 import io, { Socket } from "socket.io-client";
@@ -13,10 +6,6 @@ import io, { Socket } from "socket.io-client";
 import { RootState } from "../reducer";
 import { UserType } from "../types";
 import { useDispatch } from "react-redux";
-import {
-  ADD_CHAT_MESSAGE_REQUEST,
-  DELETE_ALL_CHAT_REQUEST,
-} from "../reducer/post";
 import useOutsideClick from "../hooks/useOutsideClick";
 import axios from "axios";
 import OneOnOneChatRoom from "../components/chat/OneOnOneChatRoom";
@@ -31,17 +20,15 @@ export interface UserRoomList {
 }
 
 const Chat = () => {
-  const [inputValue, setInputValue] = useState<string>("");
   const { me } = useSelector((state: RootState) => state.user);
   const [userList, setUserList] = useState<UserType[] | null>(null);
-  const [selectedUser, setSelectedUser] = useState<UserType | null>(null);
+  const [selectedUserId, setSelectedUserId] = useState<number | null>(null);
   const [activeRoom, setActiveRoom] = useState<UserRoomList | null>(null);
-  const messageRef = useRef<HTMLInputElement>(null);
+
   const dispatch = useDispatch();
   const [activeUserOption, setActiveUserOption] = useState<string | null>(null);
   const [userRoomList, setUserRoomList] = useState<UserRoomList[]>([]);
   const [room, setRoom] = useState<UserRoomList | null>(null);
-  const roomId = room?.id;
   const socket = useRef<Socket | null>(null);
 
   useEffect(() => {
@@ -127,40 +114,7 @@ const Chat = () => {
     return () => {
       socket.current?.off("updateUserList");
     };
-  }, [me]);
-
-  const onMessageSubmit = (e: SyntheticEvent) => {
-    e.preventDefault();
-    if (inputValue.trim() !== "") {
-      const newMessage = {
-        id: new Date().getTime(),
-        User: me || null,
-        content: inputValue,
-        createdAt: new Date().getTime(),
-        roomId: roomId,
-      };
-      socket.current?.emit("sendMessage", newMessage);
-      dispatch({
-        type: ADD_CHAT_MESSAGE_REQUEST,
-        data: {
-          content: inputValue,
-          ChatRoomId: roomId,
-        },
-      });
-      setInputValue("");
-      messageRef.current?.focus();
-    }
-  };
-
-  const onInputChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setInputValue(e.target.value);
-  };
-
-  const onDeleteAllMessages = useCallback(() => {
-    dispatch({
-      type: DELETE_ALL_CHAT_REQUEST,
-    });
-  }, [dispatch]);
+  }, [me, room?.id]);
 
   const onUserClick = useCallback(
     async (user: UserType) => {
@@ -170,9 +124,8 @@ const Chat = () => {
           console.log(chatRoom);
           if (chatRoom) {
             setRoom(chatRoom);
-            setSelectedUser(user);
             setActiveRoom(chatRoom);
-
+            setSelectedUserId(user.id);
             if (!userRoomList.some((room) => room.id === chatRoom.id)) {
               socket.current?.emit("createRoom", chatRoom.id, me);
             }
@@ -195,13 +148,8 @@ const Chat = () => {
       return (
         <OneOnOneChatRoom
           me={me}
-          onDeleteAllMessages={onDeleteAllMessages}
-          onMessageSubmit={onMessageSubmit}
-          inputValue={inputValue}
-          messageRef={messageRef}
-          onInputChange={onInputChange}
           room={room}
-          selectedUser={selectedUser}
+          selectedUserId={selectedUserId}
           setActiveRoom={setActiveRoom}
         />
       );
@@ -246,20 +194,27 @@ const Chat = () => {
       </UserList>
       <RoomList>
         <h1>채팅방 목록</h1>
-        {userRoomList.map((userRoom) => (
-          <RoomItem
-            key={userRoom.id}
-            onClick={() => {
-              setRoom(userRoom);
-              setActiveRoom(userRoom);
-            }}
-          >
-            {userRoom.User1.id === me?.id
-              ? userRoom.User2.nickname
-              : userRoom.User1.nickname}
-            님과 채팅
-          </RoomItem>
-        ))}
+        {userRoomList.map((userRoom) => {
+          const seletedUserId =
+            userRoom.User1.id === me?.id
+              ? userRoom.User2.id
+              : userRoom.User1.id;
+          return (
+            <RoomItem
+              key={userRoom.id}
+              onClick={() => {
+                setSelectedUserId(seletedUserId);
+                setRoom(userRoom);
+                setActiveRoom(userRoom);
+              }}
+            >
+              {userRoom.User1.id === me?.id
+                ? userRoom.User2.nickname
+                : userRoom.User1.nickname}
+              님과 채팅
+            </RoomItem>
+          );
+        })}
       </RoomList>
       <ContentWrapper>{renderRoom()}</ContentWrapper>
     </ChatContainer>

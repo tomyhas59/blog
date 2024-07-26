@@ -76,17 +76,9 @@ const initialState = {
   unLikePostDone: false,
   unLikePostError: null,
 
-  addChatMessageLoading: false,
-  addChatMessageDone: false,
-  addChatMessageError: null,
-
   readChatLoading: false,
   readChatDone: false,
   readChatError: null,
-
-  deleteAllChatLoading: false,
-  deleteAllChatDone: false,
-  deleteAllChatError: null,
 };
 
 //action명
@@ -157,10 +149,6 @@ export const SEARCH_POSTS_FAILURE = "SEARCH_POSTS_FAILURE";
 export const SEARCH_NICKNAME_REQUEST = "SEARCH_NICKNAME_REQUEST";
 export const SEARCH_NICKNAME_SUCCESS = "SEARCH_NICKNAME_SUCCESS";
 export const SEARCH_NICKNAME_FAILURE = "SEARCH_NICKNAME_FAILURE";
-
-export const ADD_CHAT_MESSAGE_REQUEST = "ADD_CHAT_MESSAGE_REQUEST";
-export const ADD_CHAT_MESSAGE_SUCCESS = "ADD_CHAT_MESSAGE_SUCCESS";
-export const ADD_CHAT_MESSAGE_FAILURE = "ADD_CHAT_MESSAGE_FAILURE";
 
 export const READ_CHAT_REQUEST = "READ_CHAT_REQUEST";
 export const READ_CHAT_SUCCESS = "READ_CHAT_SUCCESS";
@@ -645,22 +633,6 @@ const post = (state = initialState, action: any) => {
         break;
 
       //-------------------------------------------------------
-      case ADD_CHAT_MESSAGE_REQUEST:
-        draft.addChatMessageLoading = true;
-        draft.addChatMessageDone = false;
-        draft.addChatMessageError = null;
-        break;
-      case ADD_CHAT_MESSAGE_SUCCESS: {
-        draft.addChatMessageLoading = false;
-        draft.addChatMessageDone = true;
-        break;
-      }
-      case ADD_CHAT_MESSAGE_FAILURE:
-        draft.addChatMessageLoading = false;
-        draft.addChatMessageError = action.error;
-        break;
-
-      //-------------------------------------------------------
       case READ_CHAT_REQUEST:
         draft.readChatLoading = true;
         draft.readChatDone = false;
@@ -676,22 +648,7 @@ const post = (state = initialState, action: any) => {
         draft.readChatLoading = false;
         draft.readChatError = action.error;
         break;
-      //-------------------------------------------------------
-      case DELETE_ALL_CHAT_REQUEST:
-        draft.deleteAllChatLoading = true;
-        draft.deleteAllChatDone = false;
-        draft.deleteAllChatError = null;
-        break;
-      case DELETE_ALL_CHAT_SUCCESS: {
-        draft.deleteAllChatLoading = false;
-        draft.deleteAllChatDone = true;
-        draft.chatMessages = [];
-        break;
-      }
-      case DELETE_ALL_CHAT_FAILURE:
-        draft.deleteAllChatLoading = false;
-        draft.deleteAllChatError = action.error;
-        break;
+
       default:
         return;
     }

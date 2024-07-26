@@ -18,24 +18,15 @@ import { UserRoomList } from "../../pages/Chat";
 
 interface OneOnOneChatRoomType {
   me: UserType | null;
-  onDeleteAllMessages: () => void;
-  onMessageSubmit: (e: SyntheticEvent) => void;
-  inputValue: string;
-  messageRef: RefObject<HTMLInputElement>;
-  onInputChange: (e: ChangeEvent<HTMLInputElement>) => void;
-  selectedUser: UserType | null;
+  selectedUserId: number | null;
   room: UserRoomList | null;
   setActiveRoom: (room: UserRoomList | null) => void;
 }
 
 const OneOnOneChatRoom = ({
   me,
-  onMessageSubmit,
-  inputValue,
-  messageRef,
-  onInputChange,
   room,
-  selectedUser,
+  selectedUserId,
   setActiveRoom,
 }: OneOnOneChatRoomType) => {
   const [messages, setMessages] = useState<Message[]>([]);
@@ -44,6 +35,8 @@ const OneOnOneChatRoom = ({
   const roomId = room?.id;
   const socket = useRef<Socket | null>(null);
   const messageListContainerRef = useRef<HTMLDivElement | null>(null);
+  const [inputValue, setInputValue] = useState<string>("");
+  const messageRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     socket.current =
@@ -69,6 +62,7 @@ const OneOnOneChatRoom = ({
     socket.current?.emit("joinRoom", roomId, me);
 
     socket.current?.on("receiveMessage", (message) => {
+      console.log(message);
       setMessages((prevMessages: Message[]) => [...prevMessages, message]);
     });
 
@@ -84,6 +78,7 @@ const OneOnOneChatRoom = ({
       dispatch({
         type: "RESET_CHAT_MESSAGES",
       });
+      socket.current?.emit("leaveRoom", roomId, me);
     };
   }, [dispatch, me, roomId]);
 
@@ -103,10 +98,28 @@ const OneOnOneChatRoom = ({
     }
   }, [messages]);
 
+  const onMessageSubmit = (e: SyntheticEvent) => {
+    e.preventDefault();
+    if (inputValue.trim() !== "") {
+      const messageData = {
+        content: inputValue,
+        roomId: roomId,
+        userId: me?.id,
+      };
+      socket.current?.emit("sendMessage", messageData, selectedUserId);
+      setInputValue("");
+      messageRef.current?.focus();
+    }
+  };
+
+  const onInputChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setInputValue(e.target.value);
+  };
+
   const handleExit = () => {
     const isConfirmed = window.confirm("정말 나가겠습니까?");
     if (isConfirmed) {
-      socket.current?.emit("leaveRoom", roomId, me);
+      socket.current?.emit("outRoom", roomId, me);
       setActiveRoom(null);
     }
   };
