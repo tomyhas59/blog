@@ -4,8 +4,7 @@ import styled from "styled-components";
 import io, { Socket } from "socket.io-client";
 
 import { RootState } from "../reducer";
-import { Message, UserType } from "../types";
-import { useDispatch } from "react-redux";
+import { Message } from "../types";
 import useOutsideClick from "../hooks/useOutsideClick";
 import axios from "axios";
 import OneOnOneChatRoom from "../components/chat/OneOnOneChatRoom";
@@ -22,11 +21,8 @@ export interface UserRoomList {
 
 const Chat = () => {
   const { me } = useSelector((state: RootState) => state.user);
-  const [userList, setUserList] = useState<UserType[] | null>(null);
   const [selectedUserId, setSelectedUserId] = useState<number | null>(null);
   const [activeRoom, setActiveRoom] = useState<UserRoomList | null>(null);
-
-  const dispatch = useDispatch();
   const [activeUserOption, setActiveUserOption] = useState<string | null>(null);
   const [userRoomList, setUserRoomList] = useState<UserRoomList[]>([]);
   const [room, setRoom] = useState<UserRoomList | null>(null);
@@ -38,10 +34,15 @@ const Chat = () => {
         ? io("https://quarrelsome-laura-tomyhas59-09167dc6.koyeb.app")
         : io("http://localhost:3075");
 
+    if (me) {
+      const userInfo = { id: me.id, nickname: me.nickname };
+      socket.current.emit("loginUser", userInfo);
+    }
+
     return () => {
       socket.current?.disconnect();
     };
-  }, []);
+  }, [me]);
 
   useEffect(() => {
     const fetchUserChatRooms = async () => {
@@ -57,7 +58,9 @@ const Chat = () => {
     socket.current?.on("updateUserRoomList", () => {
       fetchUserChatRooms();
     });
-  }, [dispatch, me]);
+  }, [me?.id]);
+
+  console.log(userRoomList);
 
   const createOneOnOneChatRoom = async (user2Id: number) => {
     try {
@@ -77,15 +80,6 @@ const Chat = () => {
   const userOptoinRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (me && socket.current) {
-      const userInfo = { id: me.id, nickname: me.nickname };
-      socket.current.emit("loginUser", userInfo);
-    }
-
-    socket.current?.on("updateUserList", (updatedUserList: UserType[]) => {
-      setUserList(updatedUserList);
-    });
-
     socket.current?.on("newRoom", (newRoom: UserRoomList) => {
       setUserRoomList((prev) => {
         const roomExists = prev.find((room) => room.id === newRoom.id);
@@ -112,10 +106,10 @@ const Chat = () => {
       socket.current?.off("updateUserList");
       socket.current?.off("unReadMessages");
     };
-  }, [me, room?.id, userRoomList]);
+  }, []);
 
   const onUserClick = useCallback(
-    async (user: UserType) => {
+    async (user: { id: number; nickname: string }) => {
       try {
         if (me && user.id !== me.id) {
           const chatRoom = await createOneOnOneChatRoom(user.id);
@@ -156,72 +150,81 @@ const Chat = () => {
       return (
         <ChatPlaceholder>
           1:1 채팅방을
-          {userRoomList?.length < 1 ? "만들어 보세요" : "선택하세요"}
+          {userRoomList?.length < 1 ? " 만들어 보세요" : " 선택하세요"}
         </ChatPlaceholder>
       );
     }
   };
 
+  const followers = me?.Followers || [];
+  const followings = me?.Followings || [];
+
+  const mutualUsers = followers.filter((follower) =>
+    followings.some((following) => following.id === follower.id)
+  );
+
   return (
     <ChatContainer>
-      <UserList>
-        <ConnectedUsers>{userList?.length || 0}명 접속 중</ConnectedUsers>
-        <ul>
-          {userList?.map((user) => (
-            <li key={user.id}>
-              <button onClick={() => onUserOptionClick(user.nickname)}>
-                {user.nickname.slice(0, 5)}
-              </button>
-              {user.id !== me?.id && activeUserOption === user.nickname && (
-                <UserOption ref={userOptoinRef}>
-                  <button
-                    onClick={() => {
-                      onUserClick(user);
-                    }}
-                  >
-                    1:1 채팅하기
-                  </button>
-                  <FollowButton
-                    userId={user.id}
-                    setActiveUserOption={setActiveUserOption}
-                  />
-                </UserOption>
-              )}
-            </li>
-          ))}
-        </ul>
-      </UserList>
-      <RoomList>
-        <h1>채팅방 목록</h1>
-        {userRoomList.map((userRoom) => {
-          const currentUserId = me?.id;
-          const seletedUserId =
-            userRoom.User1.id === currentUserId
-              ? userRoom.User2.id
-              : userRoom.User1.id;
-          const count: number = Array.isArray(userRoom.UnReadMessages)
-            ? userRoom.UnReadMessages.filter(
-                (unReadMessage) => unReadMessage.UserId !== currentUserId
-              ).length
-            : 0;
-          return (
-            <RoomItem
-              key={userRoom.id}
-              onClick={() => {
-                setSelectedUserId(seletedUserId);
-                setRoom(userRoom);
-                setActiveRoom(userRoom);
-              }}
-            >
-              <UnReadMessageCount count={count}>{count}</UnReadMessageCount>
-              {userRoom.User1.id === me?.id
-                ? userRoom.User2.nickname
-                : userRoom.User1.nickname}
-              님과 채팅
-            </RoomItem>
-          );
-        })}
-      </RoomList>
+      <ListContainer>
+        <FollowList>
+          <h1>친구 목록</h1>
+          <ul>
+            {mutualUsers.map((user) => (
+              <li key={user.id}>
+                <button onClick={() => onUserOptionClick(user.nickname)}>
+                  {user.nickname.slice(0, 5)}
+                </button>
+                {user.id !== me?.id && activeUserOption === user.nickname && (
+                  <UserOption ref={userOptoinRef}>
+                    <button
+                      onClick={() => {
+                        onUserClick(user);
+                      }}
+                    >
+                      1:1 채팅하기
+                    </button>
+                    <FollowButton
+                      userId={user.id}
+                      setActiveUserOption={setActiveUserOption}
+                    />
+                  </UserOption>
+                )}
+              </li>
+            ))}
+          </ul>
+        </FollowList>
+        <RoomList>
+          <h1>채팅방 목록</h1>
+          {userRoomList.map((userRoom) => {
+            const currentUserId = me?.id;
+            const seletedUserId =
+              userRoom.User1.id === currentUserId
+                ? userRoom.User2.id
+                : userRoom.User1.id;
+            const count: number = Array.isArray(userRoom.UnReadMessages)
+              ? userRoom.UnReadMessages.filter(
+                  (unReadMessage) => unReadMessage.UserId !== currentUserId
+                ).length
+              : 0;
+            return (
+              <RoomItem
+                key={userRoom.id}
+                onClick={() => {
+                  setSelectedUserId(seletedUserId);
+                  setRoom(userRoom);
+                  setActiveRoom(userRoom);
+                }}
+              >
+                <UnReadMessageCount count={count}>{count}</UnReadMessageCount>
+                {userRoom.User1.id === me?.id
+                  ? userRoom.User2.nickname
+                  : userRoom.User1.nickname}
+                님과 채팅
+              </RoomItem>
+            );
+          })}
+        </RoomList>
+      </ListContainer>
       <ContentWrapper>{renderRoom()}</ContentWrapper>
     </ChatContainer>
   );
@@ -230,12 +233,18 @@ const Chat = () => {
 export default Chat;
 
 const ChatContainer = styled.div`
-  display: flex;
   width: 70%;
   margin: 0 auto;
-  justify-content: space-between;
+  display: flex;
+  justify-content: center;
+`;
+
+const ListContainer = styled.div`
+  display: flex;
+  justify-content: space-around;
+  gap: 40px;
   align-items: flex-start;
-  padding: 20px;
+  padding: 10px;
   background-color: #f4f4f9;
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -245,15 +254,19 @@ const ChatContainer = styled.div`
   }
 `;
 
-const UserList = styled.div`
+const FollowList = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
   padding: 10px;
-  margin-right: 20px;
   border-radius: 8px;
   background-color: #fff;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  > h1 {
+    color: #333;
+    font-weight: bold;
+    text-align: center;
+  }
   ul > li {
     font-size: 18px;
     color: #333;
@@ -263,7 +276,6 @@ const UserList = styled.div`
     &:hover {
       color: ${(props) => props.theme.mainColor};
       cursor: pointer;
-      text-decoration: underline;
     }
   }
   @media (max-width: 480px) {
@@ -280,19 +292,8 @@ const UserList = styled.div`
   }
 `;
 
-const ConnectedUsers = styled.div`
-  color: #333;
-  font-weight: bold;
-  margin-bottom: 10px;
-  @media (max-width: 480px) {
-    font-size: 12px;
-    margin-bottom: 0;
-  }
-`;
-
 const RoomList = styled.ul`
   padding: 10px;
-  margin-right: 20px;
   border-radius: 8px;
   background-color: #fff;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -340,10 +341,12 @@ const UnReadMessageCount = styled.div<MyComponentProps>`
   color: #fff;
   right: -10px;
   top: -5px;
-  width: 20px;
+  width: ${(props) => `${8 + props.count.toString().length * 12}px`};
   height: 20px;
   border-radius: 50%;
-  display: ${(props) => (props.count === 0 ? "none" : "inline")};
+  display: ${(props) => (props.count === 0 ? "none" : "flex")};
+  align-items: center;
+  justify-content: center;
 `;
 
 const ContentWrapper = styled.div`
@@ -352,7 +355,6 @@ const ContentWrapper = styled.div`
   border-radius: 8px;
   background-color: #fff;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-
   @media (max-width: 480px) {
     padding: 10px;
   }

@@ -27,6 +27,7 @@ const FollowButton: React.FC<FollowButtonProps> = ({
     if (setActiveUserOption) {
       setActiveUserOption(null);
     }
+    alert("팔로우 완료");
   }, [dispatch, setActiveUserOption, setShowInfo, userId]);
 
   const onUnFollow = useCallback(() => {
@@ -37,6 +38,7 @@ const FollowButton: React.FC<FollowButtonProps> = ({
     if (setActiveUserOption) {
       setActiveUserOption(null);
     }
+    alert("언팔로우 완료");
   }, [dispatch, setActiveUserOption, setShowInfo, userId]);
 
   if (!me) return null;
