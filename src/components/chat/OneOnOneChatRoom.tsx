@@ -38,6 +38,7 @@ const OneOnOneChatRoom = ({
   const messageListContainerRef = useRef<HTMLDivElement | null>(null);
   const [inputValue, setInputValue] = useState<string>("");
   const messageRef = useRef<HTMLInputElement>(null);
+  const [chatdisable, setChatDisable] = useState<boolean>();
 
   useEffect(() => {
     socket.current =
@@ -73,6 +74,9 @@ const OneOnOneChatRoom = ({
         systemMessage,
       ]);
     });
+
+    socket.current?.on("outRoom", () => setChatDisable(true));
+    socket.current?.on("joinRoom", () => setChatDisable(false));
 
     socket.current?.on("resetRead", (roomId) => {
       if (roomId !== undefined) {
@@ -196,12 +200,17 @@ const OneOnOneChatRoom = ({
       <MessageForm onSubmit={onMessageSubmit}>
         <MessageInput
           type="text"
-          placeholder="메시지를 입력해주세요"
+          placeholder={
+            chatdisable ? "상대방이 나갔습니다" : "메시지를 입력해주세요"
+          }
           value={inputValue}
           ref={messageRef}
           onChange={onInputChange}
+          disabled={chatdisable}
         />
-        <MessageButton type="submit">전송</MessageButton>
+        <MessageButton type="submit" disabled={chatdisable}>
+          전송
+        </MessageButton>
       </MessageForm>
     </ChatRoomContainer>
   );
