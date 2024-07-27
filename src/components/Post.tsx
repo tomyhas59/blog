@@ -50,7 +50,7 @@ const Post = ({
   );
 
   const me = useSelector((state: RootState) => state.user.me);
-  console.log("팔로우 여부", me?.Followings);
+
   const id = me?.id;
   const nickname = useSelector((state: RootState) => state.user.me?.nickname);
 

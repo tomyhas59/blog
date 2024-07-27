@@ -4,7 +4,7 @@ import styled from "styled-components";
 import io, { Socket } from "socket.io-client";
 
 import { RootState } from "../reducer";
-import { UserType } from "../types";
+import { Message, UserType } from "../types";
 import { useDispatch } from "react-redux";
 import useOutsideClick from "../hooks/useOutsideClick";
 import axios from "axios";
@@ -17,6 +17,7 @@ export interface UserRoomList {
   User2: { id: number; nickname: string };
   User1Join: boolean;
   User2Join: boolean;
+  UnReadMessages: Message[];
 }
 
 const Chat = () => {
@@ -95,26 +96,23 @@ const Chat = () => {
       });
     });
 
-    socket.current?.on("leaveRoomUserId", (leaveRoomUserId) => {
-      setUserRoomList((prev) => {
-        const leaveUserIndex = prev.findIndex(
-          (room) =>
-            room.User1.id === leaveRoomUserId ||
-            room.User2.id === leaveRoomUserId
+    socket.current?.on("unReadMessages", ({ unReadMessages, roomId }) => {
+      if (roomId !== undefined) {
+        setUserRoomList((prev) =>
+          prev.map((room) =>
+            room.id === roomId
+              ? { ...room, UnReadMessages: unReadMessages }
+              : room
+          )
         );
-        if (leaveUserIndex !== 1) {
-          const newUserRoomList = [...prev];
-          newUserRoomList.splice(leaveUserIndex, 1);
-          return newUserRoomList;
-        }
-        return prev;
-      });
+      }
     });
 
     return () => {
       socket.current?.off("updateUserList");
+      socket.current?.off("unReadMessages");
     };
-  }, [me, room?.id]);
+  }, [me, room?.id, userRoomList]);
 
   const onUserClick = useCallback(
     async (user: UserType) => {
@@ -151,6 +149,7 @@ const Chat = () => {
           room={room}
           selectedUserId={selectedUserId}
           setActiveRoom={setActiveRoom}
+          setUserRoomList={setUserRoomList}
         />
       );
     } else {
@@ -195,10 +194,16 @@ const Chat = () => {
       <RoomList>
         <h1>채팅방 목록</h1>
         {userRoomList.map((userRoom) => {
+          const currentUserId = me?.id;
           const seletedUserId =
-            userRoom.User1.id === me?.id
+            userRoom.User1.id === currentUserId
               ? userRoom.User2.id
               : userRoom.User1.id;
+          const count: number = Array.isArray(userRoom.UnReadMessages)
+            ? userRoom.UnReadMessages.filter(
+                (unReadMessage) => unReadMessage.UserId !== currentUserId
+              ).length
+            : 0;
           return (
             <RoomItem
               key={userRoom.id}
@@ -208,6 +213,7 @@ const Chat = () => {
                 setActiveRoom(userRoom);
               }}
             >
+              <UnReadMessageCount count={count}>{count}</UnReadMessageCount>
               {userRoom.User1.id === me?.id
                 ? userRoom.User2.nickname
                 : userRoom.User1.nickname}
@@ -304,6 +310,7 @@ const RoomList = styled.ul`
 `;
 
 const RoomItem = styled.li`
+  position: relative;
   padding: 10px;
   margin-bottom: 10px;
   text-align: center;
@@ -321,6 +328,22 @@ const RoomItem = styled.li`
     font-size: 12px;
     padding: 8px;
   }
+`;
+
+interface MyComponentProps {
+  count: number;
+}
+
+const UnReadMessageCount = styled.div<MyComponentProps>`
+  position: absolute;
+  background-color: red;
+  color: #fff;
+  right: -10px;
+  top: -5px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  display: ${(props) => (props.count === 0 ? "none" : "inline")};
 `;
 
 const ContentWrapper = styled.div`

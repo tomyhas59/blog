@@ -72,4 +72,5 @@ export type Message = {
   ChatRoomId: number;
   User: UserType;
   createdAt: string;
+  isRead: boolean;
 };

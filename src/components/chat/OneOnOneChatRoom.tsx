@@ -3,7 +3,6 @@ import React, {
   useEffect,
   SyntheticEvent,
   ChangeEvent,
-  RefObject,
   useRef,
 } from "react";
 import { useSelector } from "react-redux";
@@ -21,6 +20,7 @@ interface OneOnOneChatRoomType {
   selectedUserId: number | null;
   room: UserRoomList | null;
   setActiveRoom: (room: UserRoomList | null) => void;
+  setUserRoomList: React.Dispatch<React.SetStateAction<UserRoomList[]>>;
 }
 
 const OneOnOneChatRoom = ({
@@ -28,11 +28,12 @@ const OneOnOneChatRoom = ({
   room,
   selectedUserId,
   setActiveRoom,
+  setUserRoomList,
 }: OneOnOneChatRoomType) => {
   const [messages, setMessages] = useState<Message[]>([]);
   const { chatMessages } = useSelector((state: RootState) => state.post);
   const dispatch = useDispatch();
-  const roomId = room?.id;
+  const currentRoomId = room?.id;
   const socket = useRef<Socket | null>(null);
   const messageListContainerRef = useRef<HTMLDivElement | null>(null);
   const [inputValue, setInputValue] = useState<string>("");
@@ -50,20 +51,20 @@ const OneOnOneChatRoom = ({
   }, []);
 
   useEffect(() => {
-    if (roomId) {
+    if (currentRoomId) {
       dispatch({
         type: READ_CHAT_REQUEST,
-        data: roomId,
+        data: currentRoomId,
       });
     }
-  }, [dispatch, roomId]);
+  }, [dispatch, currentRoomId]);
 
   useEffect(() => {
-    socket.current?.emit("joinRoom", roomId, me);
+    socket.current?.emit("joinRoom", currentRoomId, me);
 
     socket.current?.on("receiveMessage", (message) => {
-      console.log(message);
-      setMessages((prevMessages: Message[]) => [...prevMessages, message]);
+      if (message.ChatRoomId === currentRoomId)
+        setMessages((prevMessages: Message[]) => [...prevMessages, message]);
     });
 
     socket.current?.on("systemMessage", (systemMessage) => {
@@ -73,22 +74,34 @@ const OneOnOneChatRoom = ({
       ]);
     });
 
+    socket.current?.on("resetRead", (roomId) => {
+      if (roomId !== undefined) {
+        setUserRoomList((prev: UserRoomList[]) =>
+          prev.map((room) =>
+            room.id === roomId ? { ...room, UnReadMessages: [] } : room
+          )
+        );
+      }
+    });
+
     return () => {
-      socket.current?.off("receiveMessage");
       dispatch({
         type: "RESET_CHAT_MESSAGES",
       });
-      socket.current?.emit("leaveRoom", roomId, me);
+      socket.current?.off("receiveMessage");
+      socket.current?.off("systemMessage");
+
+      socket.current?.emit("leaveRoom", currentRoomId, me);
     };
-  }, [dispatch, me, roomId]);
+  }, [dispatch, me, currentRoomId, setUserRoomList]);
 
   useEffect(() => {
-    if (roomId) {
+    if (currentRoomId) {
       setMessages(
-        chatMessages.filter((message) => message.ChatRoomId === roomId)
+        chatMessages.filter((message) => message.ChatRoomId === currentRoomId)
       );
     }
-  }, [chatMessages, roomId]);
+  }, [chatMessages, currentRoomId]);
 
   useEffect(() => {
     // 스크롤을 메시지 리스트의 마지막으로 이동
@@ -103,7 +116,7 @@ const OneOnOneChatRoom = ({
     if (inputValue.trim() !== "") {
       const messageData = {
         content: inputValue,
-        roomId: roomId,
+        roomId: currentRoomId,
         userId: me?.id,
       };
       socket.current?.emit("sendMessage", messageData, selectedUserId);
@@ -116,10 +129,10 @@ const OneOnOneChatRoom = ({
     setInputValue(e.target.value);
   };
 
-  const handleExit = () => {
+  const oneExit = () => {
     const isConfirmed = window.confirm("정말 나가겠습니까?");
     if (isConfirmed) {
-      socket.current?.emit("outRoom", roomId, me);
+      socket.current?.emit("outRoom", currentRoomId, me);
       setActiveRoom(null);
     }
   };
@@ -131,7 +144,7 @@ const OneOnOneChatRoom = ({
     <ChatRoomContainer>
       <RoomHeader>
         <RoomName>{roomName}님과의 채팅</RoomName>
-        <ExitButton onClick={handleExit}>나가기</ExitButton>
+        <ExitButton onClick={oneExit}>나가기</ExitButton>
       </RoomHeader>
       <MessageListContainer ref={messageListContainerRef}>
         <MessageList>
@@ -139,10 +152,12 @@ const OneOnOneChatRoom = ({
             <div>메시지가 없습니다</div>
           ) : (
             messages.map((message, i) => {
-              const isSystemMessage = message.content.endsWith("systemMessage");
+              const isSystemMessage =
+                typeof message?.content === "string" &&
+                message.content.endsWith("systemMessage");
               const messageContent = isSystemMessage
-                ? message.content.replace("systemMessage", "")
-                : message.content;
+                ? message?.content.replace("systemMessage", "")
+                : message?.content;
               return (
                 <React.Fragment key={message.id}>
                   {i === 0 ||
@@ -156,14 +171,14 @@ const OneOnOneChatRoom = ({
                   ) : null}
                   <MessageItem
                     key={message.id}
-                    isMe={message.User.id === me?.id}
+                    isMe={message.User?.id === me?.id}
                     isSystemMessage={isSystemMessage}
                   >
                     <MessageSender isSystemMessage={isSystemMessage}>
-                      {message.User.nickname.slice(0, 5)}
+                      {message.User?.nickname.slice(0, 5)}
                     </MessageSender>
                     <MessageText
-                      isMe={message.User.id === me?.id}
+                      isMe={message.User?.id === me?.id}
                       isSystemMessage={isSystemMessage}
                     >
                       {messageContent}
