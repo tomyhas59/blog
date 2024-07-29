@@ -39,6 +39,9 @@ const OneOnOneChatRoom = ({
   const [inputValue, setInputValue] = useState<string>("");
   const messageRef = useRef<HTMLInputElement>(null);
   const [chatdisable, setChatDisable] = useState<boolean>();
+  const [selectedMessageId, setSelectedMessageId] = useState<number | null>(
+    null
+  );
 
   useEffect(() => {
     socket.current =
@@ -94,7 +97,6 @@ const OneOnOneChatRoom = ({
       });
       socket.current?.off("receiveMessage");
       socket.current?.off("systemMessage");
-
       socket.current?.emit("leaveRoom", currentRoomId, me);
     };
   }, [dispatch, me, currentRoomId, setUserRoomList]);
@@ -141,6 +143,22 @@ const OneOnOneChatRoom = ({
     }
   };
 
+  const onMessageClick = (messageId: number) => {
+    setSelectedMessageId(selectedMessageId === messageId ? null : messageId);
+  };
+
+  const onDeleteMessage = (messageId: number, message: string) => {
+    setMessages((prev) =>
+      prev.map((message) =>
+        message.id === messageId
+          ? { ...message, content: `${message} deletedMessage` }
+          : message
+      )
+    );
+    socket.current?.emit("deletedMessage", messageId, currentRoomId, message);
+    setSelectedMessageId(null);
+  };
+
   const roomName =
     room?.User1?.id === me?.id ? room?.User2?.nickname : room?.User1?.nickname;
 
@@ -156,12 +174,14 @@ const OneOnOneChatRoom = ({
             <div>메시지가 없습니다</div>
           ) : (
             messages.map((message, i) => {
-              const isSystemMessage =
-                typeof message?.content === "string" &&
-                message.content.endsWith("systemMessage");
+              const isSystemMessage = message.content.endsWith("systemMessage");
+              const isDeletedMessage =
+                message.content.endsWith("deletedMessage");
               const messageContent = isSystemMessage
-                ? message?.content.replace("systemMessage", "")
-                : message?.content;
+                ? message.content.replace("systemMessage", "")
+                : isDeletedMessage
+                ? "삭제된 메시지입니다"
+                : message.content;
               return (
                 <React.Fragment key={message.id}>
                   {i === 0 ||
@@ -184,12 +204,23 @@ const OneOnOneChatRoom = ({
                     <MessageText
                       isMe={message.User?.id === me?.id}
                       isSystemMessage={isSystemMessage}
+                      onClick={() => onMessageClick(message.id)}
                     >
                       {messageContent}
                     </MessageText>
                     <MessageTime isSystemMessage={isSystemMessage}>
                       {moment(message.createdAt).format("HH:mm")}
                     </MessageTime>
+                    {message.UserId === me?.id &&
+                      selectedMessageId === message.id && (
+                        <DeleteMessage
+                          onClick={() =>
+                            onDeleteMessage(message.id, message.content)
+                          }
+                        >
+                          삭제
+                        </DeleteMessage>
+                      )}
                   </MessageItem>
                 </React.Fragment>
               );
@@ -309,6 +340,7 @@ const MessageText = styled.p<MessageItemProps>`
   border-radius: 8px;
   max-width: 70%;
   word-break: break-word;
+  cursor: pointer;
 
   @media (max-width: 480px) {
     font-size: 14px;
@@ -367,6 +399,13 @@ const MessageButton = styled.button`
     font-size: 12px;
     padding: 8px;
   }
+`;
+
+const DeleteMessage = styled.button`
+  background: transparent;
+  border: none;
+  color: red;
+  cursor: pointer;
 `;
 
 const DateSeparator = styled.div`
