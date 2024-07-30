@@ -57,15 +57,11 @@ export default MyFollow;
 const FollowContainer = styled.div`
   padding: 20px;
   display: flex;
-  flex-direction: column;
+  justify-content: space-around;
   gap: 20px;
   background-color: #f9f9f9;
   border-radius: 10px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-
-  @media (min-width: 481px) {
-    flex-direction: row;
-  }
 `;
 
 const FollowList = styled.div`
@@ -144,8 +140,8 @@ const UserOption = styled.div`
   @media (max-width: 480px) {
     z-index: 999;
     width: 80px;
-    top: 60%;
-    right: 10px;
+    top: 30px;
+    left: 50px;
     padding: 2px;
     font-size: 10px;
   }

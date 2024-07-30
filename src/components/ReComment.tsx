@@ -12,6 +12,8 @@ import ReCommentForm from "./ReCommentForm";
 import Spinner from "./Spinner";
 import ContentRenderer from "./renderer/ContentRenderer";
 import useOutsideClick from "../hooks/useOutsideClick";
+import { baseURL } from "../config";
+import { DEFAULT_PROFILE_IMAGE } from "../pages/Info/MyInfo";
 
 const ReComment = ({
   post,
@@ -77,7 +79,18 @@ const ReComment = ({
         return (
           <ReCommentWrapper key={reComment.id}>
             <AuthorWrapper>
-              <Author>↪ {reComment.User.nickname.slice(0, 5)}</Author>
+              <Author>
+                ↪
+                <img
+                  src={
+                    post.User.Image
+                      ? `${baseURL}/${post.User.Image.src}`
+                      : `${DEFAULT_PROFILE_IMAGE}`
+                  }
+                  alt="유저 이미지"
+                />
+                {reComment.User.nickname.slice(0, 5)}
+              </Author>
               <Date>({moment(reComment.createdAt).format("l")})</Date>
             </AuthorWrapper>
             <ContentWrapper>
@@ -133,6 +146,12 @@ const Author = styled.span`
   text-align: center;
   margin-right: 10px;
   color: ${(props) => props.theme.mainColor};
+  img {
+    display: inline;
+    border-radius: 50%;
+    width: 15px;
+    height: 15px;
+  }
 `;
 
 const ContentWrapper = styled.div`

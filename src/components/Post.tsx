@@ -507,6 +507,11 @@ const Liked = styled.span`
 const PostHeaderFlex = styled.div`
   display: flex;
   justify-content: space-between;
+  position: relative;
+`;
+
+const PostHeader = styled.div`
+  display: flex;
 `;
 
 const LikeContainer = styled.div`
@@ -563,12 +568,11 @@ const ContentImgWrapper = styled.div`
 const NicknameButton = styled.button`
   display: flex;
   justify-content: space-around;
-  background-color: ${(props) => props.theme.mainColor};
   border-radius: 30%;
-
   align-items: center;
   min-width: 70px;
-  color: #fff;
+  color: ${(props) => props.theme.mainColor};
+  font-weight: bold;
   transition: transform 0.3s ease, color 0.3s ease;
   img {
     display: inline;
@@ -582,13 +586,10 @@ const NicknameButton = styled.button`
   }
 `;
 
-const PostHeader = styled.div`
-  position: relative;
-`;
 const InfoMenu = styled.div`
   position: absolute;
   top: 30px;
-  left: 0;
+  left: 50px;
   display: flex;
   flex-direction: column;
 `;

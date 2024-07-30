@@ -29,6 +29,8 @@ import Spinner from "./Spinner";
 import ContentRenderer from "./renderer/ContentRenderer";
 import useOutsideClick from "../hooks/useOutsideClick";
 import useTextareaAutoHeight from "../hooks/useTextareaAutoHeight";
+import { baseURL } from "../config";
+import { DEFAULT_PROFILE_IMAGE } from "../pages/Info/MyInfo";
 const Comment = ({ post }: { post: PostType }) => {
   const dispatch = useDispatch();
   const id = useSelector((state: RootState) => state.user.me?.id);
@@ -183,7 +185,14 @@ const Comment = ({ post }: { post: PostType }) => {
             <FullCommentWrapper key={comment.id}>
               <AuthorWrapper>
                 <Author onClick={() => toggleShowInfo(comment.id)}>
-                  <FontAwesomeIcon icon={faUser} />
+                  <img
+                    src={
+                      post.User.Image
+                        ? `${baseURL}/${post.User.Image.src}`
+                        : `${DEFAULT_PROFILE_IMAGE}`
+                    }
+                    alt="유저 이미지"
+                  />
                   <span>{comment.User.nickname.slice(0, 5)}</span>
                 </Author>
                 {showInfo[comment.id] ? (
@@ -280,6 +289,13 @@ const Author = styled.button`
   margin-right: 10px;
   color: ${(props) => props.theme.mainColor};
   transition: transform 0.3s ease, color 0.3s ease;
+  img {
+    display: inline;
+    border-radius: 50%;
+    width: 15px;
+    height: 15px;
+  }
+
   &:hover {
     transform: translateY(-2px);
     color: ${(props) => props.theme.charColor};
