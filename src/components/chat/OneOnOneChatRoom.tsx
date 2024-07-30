@@ -15,7 +15,7 @@ import { READ_CHAT_REQUEST } from "../../reducer/post";
 import styled from "styled-components";
 import { UserRoomList } from "../../pages/Chat";
 
-interface OneOnOneChatRoomType {
+interface OneOnOneChatRoomProps {
   me: UserType | null;
   selectedUserId: number | null;
   room: UserRoomList | null;
@@ -29,7 +29,7 @@ const OneOnOneChatRoom = ({
   selectedUserId,
   setActiveRoom,
   setUserRoomList,
-}: OneOnOneChatRoomType) => {
+}: OneOnOneChatRoomProps) => {
   const [messages, setMessages] = useState<Message[]>([]);
   const { chatMessages } = useSelector((state: RootState) => state.post);
   const dispatch = useDispatch();
@@ -38,16 +38,17 @@ const OneOnOneChatRoom = ({
   const messageListContainerRef = useRef<HTMLDivElement | null>(null);
   const [inputValue, setInputValue] = useState<string>("");
   const messageRef = useRef<HTMLInputElement>(null);
-  const [chatdisable, setChatDisable] = useState<boolean>();
+  const [chatDisable, setChatDisable] = useState<boolean>(false);
   const [selectedMessageId, setSelectedMessageId] = useState<number | null>(
     null
   );
 
   useEffect(() => {
-    socket.current =
+    socket.current = io(
       process.env.NODE_ENV === "production"
-        ? io("https://quarrelsome-laura-tomyhas59-09167dc6.koyeb.app")
-        : io("http://localhost:3075");
+        ? "https://quarrelsome-laura-tomyhas59-09167dc6.koyeb.app"
+        : "http://localhost:3075"
+    );
 
     return () => {
       socket.current?.disconnect();
@@ -67,15 +68,13 @@ const OneOnOneChatRoom = ({
     socket.current?.emit("joinRoom", currentRoomId, me);
 
     socket.current?.on("receiveMessage", (message) => {
-      if (message.ChatRoomId === currentRoomId)
-        setMessages((prevMessages: Message[]) => [...prevMessages, message]);
+      if (message.ChatRoomId === currentRoomId) {
+        setMessages((prevMessages) => [...prevMessages, message]);
+      }
     });
 
     socket.current?.on("systemMessage", (systemMessage) => {
-      setMessages((prevMessages: Message[]) => [
-        ...prevMessages,
-        systemMessage,
-      ]);
+      setMessages((prevMessages) => [...prevMessages, systemMessage]);
     });
 
     socket.current?.on("outRoom", () => setChatDisable(true));
@@ -83,7 +82,7 @@ const OneOnOneChatRoom = ({
 
     socket.current?.on("resetRead", (roomId) => {
       if (roomId !== undefined) {
-        setUserRoomList((prev: UserRoomList[]) =>
+        setUserRoomList((prev) =>
           prev.map((room) =>
             room.id === roomId ? { ...room, UnReadMessages: [] } : room
           )
@@ -92,9 +91,7 @@ const OneOnOneChatRoom = ({
     });
 
     return () => {
-      dispatch({
-        type: "RESET_CHAT_MESSAGES",
-      });
+      dispatch({ type: "RESET_CHAT_MESSAGES" });
       socket.current?.off("receiveMessage");
       socket.current?.off("systemMessage");
       socket.current?.emit("leaveRoom", currentRoomId, me);
@@ -110,7 +107,6 @@ const OneOnOneChatRoom = ({
   }, [chatMessages, currentRoomId]);
 
   useEffect(() => {
-    // 스크롤을 메시지 리스트의 마지막으로 이동
     if (messageListContainerRef.current) {
       messageListContainerRef.current.scrollTop =
         messageListContainerRef.current.scrollHeight;
@@ -136,8 +132,7 @@ const OneOnOneChatRoom = ({
   };
 
   const oneExit = () => {
-    const isConfirmed = window.confirm("정말 나가겠습니까?");
-    if (isConfirmed) {
+    if (window.confirm("정말 나가겠습니까?")) {
       socket.current?.emit("outRoom", currentRoomId, me);
       setActiveRoom(null);
     }
@@ -149,10 +144,8 @@ const OneOnOneChatRoom = ({
 
   const onDeleteMessage = (messageId: number, message: string) => {
     setMessages((prev) =>
-      prev.map((message) =>
-        message.id === messageId
-          ? { ...message, content: `${message} deletedMessage` }
-          : message
+      prev.map((msg) =>
+        msg.id === messageId ? { ...msg, content: "삭제된 메시지입니다" } : msg
       )
     );
     socket.current?.emit("deletedMessage", messageId, currentRoomId, message);
@@ -170,18 +163,19 @@ const OneOnOneChatRoom = ({
       </RoomHeader>
       <MessageListContainer ref={messageListContainerRef}>
         <MessageList>
-          {messages.length < 1 ? (
-            <div>메시지가 없습니다</div>
+          {messages.length === 0 ? (
+            <Placeholder>메시지가 없습니다</Placeholder>
           ) : (
             messages.map((message, i) => {
-              const isSystemMessage = message.content.endsWith("systemMessage");
+              const isSystemMessage = message.content.includes("systemMessage");
               const isDeletedMessage =
-                message.content.endsWith("deletedMessage");
+                message.content.includes("deletedMessage");
               const messageContent = isSystemMessage
                 ? message.content.replace("systemMessage", "")
                 : isDeletedMessage
                 ? "삭제된 메시지입니다"
                 : message.content;
+
               return (
                 <React.Fragment key={message.id}>
                   {i === 0 ||
@@ -194,7 +188,6 @@ const OneOnOneChatRoom = ({
                     </DateSeparator>
                   ) : null}
                   <MessageItem
-                    key={message.id}
                     isMe={message.User?.id === me?.id}
                     isSystemMessage={isSystemMessage}
                   >
@@ -232,14 +225,14 @@ const OneOnOneChatRoom = ({
         <MessageInput
           type="text"
           placeholder={
-            chatdisable ? "상대방이 나갔습니다" : "메시지를 입력해주세요"
+            chatDisable ? "상대방이 나갔습니다" : "메시지를 입력해주세요"
           }
           value={inputValue}
           ref={messageRef}
           onChange={onInputChange}
-          disabled={chatdisable}
+          disabled={chatDisable}
         />
-        <MessageButton type="submit" disabled={chatdisable}>
+        <MessageButton type="submit" disabled={chatDisable}>
           전송
         </MessageButton>
       </MessageForm>
@@ -420,4 +413,11 @@ const DateSeparator = styled.div`
     font-size: 8px;
     margin: 5px 0;
   }
+`;
+
+const Placeholder = styled.div`
+  text-align: center;
+  color: #999;
+  font-size: 16px;
+  padding: 20px;
 `;

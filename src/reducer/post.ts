@@ -603,6 +603,18 @@ const post = (state = initialState, action: any) => {
             nickname: action.data.nickname,
           });
         }
+        //search
+        if (draft.searchPosts.length > 0) {
+          const searchPost = draft.searchPosts.find(
+            (v) => v.id === action.data.PostId //백엔드의 json의 PostId
+          );
+          if (searchPost) {
+            searchPost.Likers.push({
+              id: action.data.UserId,
+              nickname: action.data.nickname,
+            });
+          }
+        }
         draft.likePostLoading = false;
         draft.likePostDone = true;
         break;
@@ -623,6 +635,16 @@ const post = (state = initialState, action: any) => {
         post!.Likers = post!.Likers.filter(
           (v: { id: any }) => v.id !== action.data.UserId
         );
+
+        //search
+        if (draft.searchPosts.length > 0) {
+          const searchPost = draft.searchPosts.find(
+            (v) => v.id === action.data.PostId
+          );
+          searchPost!.Likers = searchPost!.Likers.filter(
+            (v: { id: any }) => v.id !== action.data.UserId
+          );
+        }
         draft.unLikePostLoading = false;
         draft.unLikePostDone = true;
         break;

@@ -2,7 +2,6 @@ import React, { useState, useEffect, useRef, useCallback } from "react";
 import { useSelector } from "react-redux";
 import styled from "styled-components";
 import io, { Socket } from "socket.io-client";
-
 import { RootState } from "../reducer";
 import { Message } from "../types";
 import useOutsideClick from "../hooks/useOutsideClick";
@@ -237,6 +236,11 @@ const ChatContainer = styled.div`
   margin: 0 auto;
   display: flex;
   justify-content: center;
+  @media (max-width: 480px) {
+    width: 100%;
+    flex-direction: column;
+    align-items: stretch;
+  }
 `;
 
 const ListContainer = styled.div`
@@ -249,8 +253,8 @@ const ListContainer = styled.div`
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   @media (max-width: 480px) {
-    width: 100%;
-    display: block;
+    width: 50%;
+    gap: 20px;
   }
 `;
 
@@ -267,24 +271,35 @@ const FollowList = styled.div`
     font-weight: bold;
     text-align: center;
   }
-  ul > li {
-    font-size: 18px;
-    color: #333;
+  ul {
+    width: 100%;
+    padding: 0;
+    margin: 0;
     list-style: none;
-    margin-bottom: 10px;
-    position: relative;
-    &:hover {
-      color: ${(props) => props.theme.mainColor};
-      cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    > li {
+      font-size: 18px;
+      color: #333;
+      position: relative;
+      &:hover {
+        color: ${(props) => props.theme.mainColor};
+        cursor: pointer;
+      }
+      > button {
+        width: 100%;
+        text-align: left;
+        background: none;
+        border: none;
+        padding: 10px;
+      }
     }
   }
   @media (max-width: 480px) {
     width: 100%;
-    padding: 10px;
-    overflow-x: auto;
     ul {
-      width: 100%;
       display: flex;
+      overflow-y: auto;
       > li {
         margin-left: 5px;
       }
@@ -306,7 +321,8 @@ const RoomList = styled.ul`
   @media (max-width: 480px) {
     width: 100%;
     display: flex;
-    overflow-x: auto;
+    flex-direction: column;
+    overflow-y: auto;
   }
 `;
 
@@ -380,6 +396,16 @@ const UserOption = styled.div`
     &:hover {
       transform: translateY(-2px);
       color: ${(props) => props.theme.charColor};
+    }
+  }
+  @media (max-width: 480px) {
+    z-index: 999;
+    width: 70px;
+    top: 30px;
+    left: 40px;
+    padding: 2px;
+    & button {
+      font-size: 10px;
     }
   }
 `;

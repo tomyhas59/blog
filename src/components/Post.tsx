@@ -30,6 +30,7 @@ import useOutsideClick from "../hooks/useOutsideClick";
 import useTextareaAutoHeight from "../hooks/useTextareaAutoHeight";
 import { FileButton } from "./PostForm";
 import FollowButton from "./FollowButton";
+import { DEFAULT_PROFILE_IMAGE } from "../pages/Info/MyInfo";
 
 const Post = ({
   post,
@@ -279,7 +280,11 @@ const Post = ({
             <PostHeader>
               <NicknameButton onClick={toggleShowInfo}>
                 <img
-                  src={`${baseURL}/${post.User.Image?.src}`}
+                  src={
+                    post.User.Image
+                      ? `${baseURL}/${post.User.Image.src}`
+                      : `${DEFAULT_PROFILE_IMAGE}`
+                  }
                   alt="유저 이미지"
                 />
                 {post.User.nickname.slice(0, 5)}
@@ -556,13 +561,21 @@ const ContentImgWrapper = styled.div`
   flex-wrap: wrap;
 `;
 const NicknameButton = styled.button`
-  display: inline-block;
+  display: flex;
+  justify-content: space-around;
   background-color: ${(props) => props.theme.mainColor};
   border-radius: 30%;
-  width: 50px;
-  text-align: center;
+
+  align-items: center;
+  min-width: 70px;
   color: #fff;
   transition: transform 0.3s ease, color 0.3s ease;
+  img {
+    display: inline;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+  }
   &:hover {
     transform: translateY(-2px);
     color: ${(props) => props.theme.charColor};

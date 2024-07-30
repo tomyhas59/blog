@@ -7,7 +7,6 @@ import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { SEARCH_POSTS_REQUEST } from "../../reducer/post";
-
 import ListRenderer from "../../components/renderer/ListRenderer";
 
 const MyPosts: React.FC = () => {
@@ -16,6 +15,7 @@ const MyPosts: React.FC = () => {
   const navigator = useNavigate();
   const dispatch = useDispatch();
   const searchOption = "content";
+
   useEffect(() => {
     const getUserPosts = async () => {
       try {
@@ -62,13 +62,20 @@ const PostsContainer = styled.div`
   max-width: 800px;
   margin: 0 auto;
   padding: 20px;
+
+  @media (max-width: 480px) {
+    padding: 10px;
+    width: 100%;
+  }
 `;
 
 const Heading = styled.h2`
   font-size: 24px;
   color: ${(props) => props.theme.mainColor};
   margin-bottom: 16px;
+
   @media (max-width: 480px) {
-    font-size: 15px;
+    font-size: 18px;
+    margin-bottom: 12px;
   }
 `;

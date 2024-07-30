@@ -2,23 +2,21 @@ import React, { useEffect, useState } from "react";
 import MyInfo from "./Info/MyInfo";
 import MyPosts from "./Info/MyPosts";
 import MyComments from "./Info/MyComments";
+import MyLikes from "./Info/MyLikes";
+import MyFollow from "./Info/MyFollow";
 import styled from "styled-components";
 import { useSelector } from "react-redux";
 import { RootState } from "../reducer";
 import { useNavigate } from "react-router-dom";
-import MyLikes from "./Info/MyLikes";
-import MyFollow from "./Info/MyFollow";
 
 const Info = () => {
   const [activeSection, setActiveSection] = useState("myInfo");
   const { me } = useSelector((state: RootState) => state.user);
-  const navigator = useNavigate();
-
-  console.log("me", me);
+  const navigate = useNavigate();
 
   useEffect(() => {
-    if (!me) navigator("/");
-  }, [me, navigator]);
+    if (!me) navigate("/");
+  }, [me, navigate]);
 
   const renderSection = () => {
     switch (activeSection) {
@@ -30,7 +28,7 @@ const Info = () => {
         return <MyComments />;
       case "myLikes":
         return <MyLikes />;
-      case "myfollow":
+      case "myFollow":
         return <MyFollow />;
       default:
         return <MyInfo />;
@@ -62,7 +60,7 @@ const Info = () => {
             </NavLink>
           </NavItem>
           <NavItem>
-            <NavLink onClick={() => setActiveSection("myfollow")}>
+            <NavLink onClick={() => setActiveSection("myFollow")}>
               ▮팔로우
             </NavLink>
           </NavItem>
@@ -92,6 +90,7 @@ const Nav = styled.nav`
     max-width: 100%;
     border-right: none;
     border-bottom: 1px solid #ddd;
+    padding: 10px;
   }
 `;
 
@@ -100,13 +99,15 @@ const NavList = styled.ul`
   padding: 0;
   @media (max-width: 480px) {
     display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
   }
 `;
 
 const NavItem = styled.li`
   margin-bottom: 10px;
   @media (max-width: 480px) {
-    margin-left: 10px;
+    margin-bottom: 5px;
   }
 `;
 
@@ -119,7 +120,8 @@ const NavLink = styled.a`
     color: darkblue;
   }
   @media (max-width: 480px) {
-    font-size: 0.7rem;
+    font-size: 0.8rem;
+    text-align: center;
   }
 `;
 
@@ -128,7 +130,7 @@ const SectionWrapper = styled.div`
   padding: 20px;
   @media (max-width: 480px) {
     padding: 10px;
-    font-size: 0.8rem;
+    font-size: 0.9rem;
   }
 `;
 

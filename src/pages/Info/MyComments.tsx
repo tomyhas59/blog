@@ -75,17 +75,27 @@ const CommentsContainer = styled.div`
   max-width: 800px;
   margin: 0 auto;
   padding: 20px;
+
+  @media (max-width: 480px) {
+    padding: 10px;
+  }
 `;
 
 const CommentList = styled.div`
   margin-bottom: 20px;
+
+  @media (max-width: 480px) {
+    margin-bottom: 15px;
+  }
 `;
 
 const Heading = styled.h2`
   font-size: 24px;
   color: ${(props) => props.theme.mainColor};
   margin-bottom: 16px;
+
   @media (max-width: 480px) {
-    font-size: 15px;
+    font-size: 18px;
+    margin-bottom: 12px;
   }
 `;
