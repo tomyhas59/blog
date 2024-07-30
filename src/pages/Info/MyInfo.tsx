@@ -1,33 +1,84 @@
-import React from "react";
+import React, { useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "../../reducer";
 import moment from "moment";
 import styled from "styled-components";
+import axios from "axios";
+import { baseURL } from "../../config";
+
 const MyInfo: React.FC = () => {
   const { me } = useSelector((state: RootState) => state.user);
+  const imageInput = useRef<HTMLInputElement>(null);
+  const [file, setFile] = useState<File | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string>("");
+  const [imageSrc, setImageSrc] = useState<string>(me?.Image?.src || "");
 
   if (!me) {
     return <div>사용자 정보를 불러오는 중입니다...</div>;
   }
 
   const createdAt = me.createdAt;
-  const profileImageUrl = "";
-
   const createdAtDate = moment(createdAt);
   const formattedDate = createdAtDate.format("l");
+
+  const onClickFileUpload = () => {
+    if (imageInput.current) {
+      imageInput.current.click();
+    }
+  };
+
+  const onChangeImages = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const selectedFile = e.target.files?.[0];
+    if (selectedFile) {
+      setFile(selectedFile);
+      setPreviewUrl(URL.createObjectURL(selectedFile));
+    }
+  };
+
+  const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    if (!file || !me) return;
+
+    const formData = new FormData();
+    formData.append("profileImage", file);
+
+    try {
+      const response = await axios.post("/user/profileImage", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+
+      console.log(response.data);
+      const newImageUrl = response.data.src;
+      setImageSrc(newImageUrl);
+      setFile(null);
+      setPreviewUrl("");
+      if (imageInput.current) {
+        imageInput.current.value = "";
+      }
+    } catch (error) {
+      console.error("Error uploading image:", error);
+    }
+  };
 
   return (
     <InfoContainer>
       <ProfileSection>
-        {profileImageUrl ? (
+        <form encType="multipart/form-data" onSubmit={onSubmit}>
           <ProfileImage
-            src={profileImageUrl}
+            onClick={onClickFileUpload}
+            src={previewUrl || `${baseURL}/${imageSrc}`}
             alt={`${me.nickname}의 프로필 사진`}
           />
-        ) : (
-          <DefaultProfileEmoji>👤</DefaultProfileEmoji>
-        )}
-
+          <input
+            type="file"
+            name="image"
+            hidden
+            ref={imageInput}
+            onChange={onChangeImages}
+          />
+          <button type="submit">등록</button>
+        </form>
         <InfoText>
           <h1>내 정보</h1>
           <UserInfo>
@@ -58,7 +109,6 @@ const InfoContainer = styled.div`
 const ProfileSection = styled.div`
   display: flex;
   justify-content: space-around;
-
   align-items: center;
 `;
 
@@ -68,6 +118,7 @@ const ProfileImage = styled.img`
   border-radius: 50%;
   margin-right: 20px;
   object-fit: cover;
+  cursor: pointer; // Show cursor as pointer to indicate that image is clickable
 `;
 
 const InfoText = styled.div`
@@ -80,16 +131,4 @@ const InfoText = styled.div`
 
 const UserInfo = styled.p`
   margin: 10px 0;
-`;
-
-const DefaultProfileEmoji = styled.div`
-  width: 100px;
-  height: 100px;
-  border-radius: 50%;
-  background-color: #ddd;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 50px;
-  margin-right: 20px;
 `;

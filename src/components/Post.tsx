@@ -261,6 +261,7 @@ const Post = ({
 
   const prevContent = content.replace(/<br\s*\/?>/gi, "\n");
 
+  console.log(post.User);
   return (
     <>
       {removePostLoading ||
@@ -277,6 +278,10 @@ const Post = ({
           <PostHeaderFlex>
             <PostHeader>
               <NicknameButton onClick={toggleShowInfo}>
+                <img
+                  src={`${baseURL}/${post.User.Image?.src}`}
+                  alt="유저 이미지"
+                />
                 {post.User.nickname.slice(0, 5)}
               </NicknameButton>
               {showInfo && (

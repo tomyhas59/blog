@@ -19,6 +19,7 @@ export type UserType = {
   updatedAt: string;
   Followings: { id: number; nickname: string }[];
   Followers: { id: number; nickname: string }[];
+  Image: ImageType;
 };
 
 export type LikeType = {
@@ -52,7 +53,8 @@ export type ImageType = {
   src: string;
   createdAt: string;
   updatedAt: string;
-  PostId: number;
+  PostId: number | null;
+  UserId: number | null;
 };
 
 export type Data = {
