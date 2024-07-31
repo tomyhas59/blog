@@ -262,7 +262,6 @@ const Post = ({
 
   const prevContent = content.replace(/<br\s*\/?>/gi, "\n");
 
-  console.log(post.User);
   return (
     <>
       {removePostLoading ||

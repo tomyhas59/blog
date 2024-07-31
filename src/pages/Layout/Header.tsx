@@ -92,7 +92,9 @@ const Header = () => {
     <HeaderWrapper>
       <HeaderLogoBtn onClick={onGoHome}>TMS</HeaderLogoBtn>
       {isLoggedIn && (
-        <MyInfo to="/info">{me && me.nickname.slice(0, 5)} 정보</MyInfo>
+        <MyInfo>
+          <Link to="/info">{me && me.nickname.slice(0, 5)} 정보</Link>
+        </MyInfo>
       )}
 
       <div className="search">
@@ -169,7 +171,7 @@ export const HeaderLogoBtn = styled.button`
   }
 `;
 
-const MyInfo = styled(Link)`
+const MyInfo = styled.div`
   cursor: pointer;
   font-size: 1.5rem;
   color: #ffffff;

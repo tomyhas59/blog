@@ -148,8 +148,10 @@ const Chat = () => {
     } else {
       return (
         <ChatPlaceholder>
-          1:1 채팅방을
-          {userRoomList?.length < 1 ? " 만들어 보세요" : " 선택하세요"}
+          <div>
+            1:1 채팅방을
+            {userRoomList?.length < 1 ? " 만들어 보세요" : " 선택하세요"}
+          </div>
         </ChatPlaceholder>
       );
     }
@@ -236,6 +238,7 @@ const ChatContainer = styled.div`
   margin: 0 auto;
   display: flex;
   justify-content: center;
+  align-items: flex-start;
   @media (max-width: 480px) {
     width: 100%;
     flex-direction: column;
