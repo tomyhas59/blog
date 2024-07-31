@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
@@ -10,6 +10,7 @@ import { usePagination } from "../PaginationProvider";
 import { RootState } from "../../reducer";
 import io from "socket.io-client";
 import axios from "axios";
+import { UserRoomList } from "../Chat";
 const Header = () => {
   const dispatch = useDispatch();
   const navigator = useNavigate();
@@ -21,6 +22,7 @@ const Header = () => {
       ? io("https://quarrelsome-laura-tomyhas59-09167dc6.koyeb.app")
       : io("http://localhost:3075");
 
+  const [notification, setNotification] = useState<boolean>(false);
   //새로고침 로그인 유지
   useEffect(() => {
     const accessToken = sessionStorage.getItem("accessToken");
@@ -88,6 +90,38 @@ const Header = () => {
     navigator("/chat");
   };
 
+  useEffect(() => {
+    const fetchUserChatRooms = async () => {
+      try {
+        const response = await axios.get(`/post/findChat?userId=${me?.id}`);
+        const hasUnRead = response.data.some(
+          (room: UserRoomList) =>
+            room.UnReadMessages.filter((message) => message.UserId !== me?.id)
+              .length > 0
+        );
+
+        console.log("------------------", hasUnRead);
+        setNotification(hasUnRead);
+      } catch (error) {
+        console.error("Error fetching user chat rooms:", error);
+      }
+    };
+    fetchUserChatRooms();
+
+    socket.on("unReadMessages", () => {
+      fetchUserChatRooms();
+    });
+
+    socket.on("joinRoom", () => {
+      console.log("들어왔다");
+    });
+
+    return () => {
+      socket.off("unReadMessages");
+      socket.off("joinRoom");
+    };
+  }, [me?.id]);
+
   return (
     <HeaderWrapper>
       <HeaderLogoBtn onClick={onGoHome}>TMS</HeaderLogoBtn>
@@ -117,6 +151,7 @@ const Header = () => {
           </li>
           <li>
             <button onClick={onGoToChat}>채팅</button>
+            {notification && <Notification>🔔</Notification>}
           </li>
         </SignList>
       )}
@@ -202,6 +237,7 @@ export const SignList = styled.ul`
   display: flex;
   color: #fff;
   > li {
+    position: relative;
     background-color: ${(props) => props.theme.mainColor};
     text-align: center;
     padding: 10px;
@@ -226,4 +262,16 @@ export const SignList = styled.ul`
       font-size: 0.6rem;
     }
   }
+`;
+
+interface MyComponentProps {
+  notification: boolean;
+}
+
+const Notification = styled.div`
+  position: absolute;
+  color: #fff;
+  right: -10px;
+  top: -5px;
+  font-size: 1.2rem;
 `;

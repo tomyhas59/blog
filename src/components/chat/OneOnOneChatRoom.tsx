@@ -65,6 +65,10 @@ const OneOnOneChatRoom = ({
   }, [dispatch, currentRoomId]);
 
   useEffect(() => {
+    if (!room?.User1Join || !room.User2Join) setChatDisable(true);
+  }, []);
+
+  useEffect(() => {
     socket.current?.emit("joinRoom", currentRoomId, me);
 
     socket.current?.on("receiveMessage", (message) => {
@@ -77,8 +81,15 @@ const OneOnOneChatRoom = ({
       setMessages((prevMessages) => [...prevMessages, systemMessage]);
     });
 
-    socket.current?.on("outRoom", () => setChatDisable(true));
-    socket.current?.on("joinRoom", () => setChatDisable(false));
+    socket.current?.on("outRoom", (room) => {
+      const isUserOutRoom =
+        room.User1Join === false || room.User2Join === false;
+      setChatDisable(isUserOutRoom);
+    });
+    socket.current?.on("newRoom", (room) => {
+      const isUserInRoom = room.User1Join && room.User2Join;
+      setChatDisable(isUserInRoom && false);
+    });
 
     socket.current?.on("resetRead", (roomId) => {
       if (roomId !== undefined) {
