@@ -52,7 +52,9 @@ const Chat = () => {
         console.error("Error fetching user chat rooms:", error);
       }
     };
-    fetchUserChatRooms();
+    if (me) {
+      fetchUserChatRooms();
+    }
 
     socket.current?.on("updateUserRoomList", () => {
       fetchUserChatRooms();
@@ -61,7 +63,7 @@ const Chat = () => {
     return () => {
       socket.current?.off("updateUserRoomList");
     };
-  }, [me?.id]);
+  }, [me]);
 
   const createOneOnOneChatRoom = async (user2Id: number) => {
     try {
