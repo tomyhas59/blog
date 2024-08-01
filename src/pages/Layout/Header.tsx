@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
@@ -8,21 +8,31 @@ import { LOG_OUT_REQUEST, REFRESH_TOKEN_REQUEST } from "../../reducer/user";
 import Search from "../../components/Search";
 import { usePagination } from "../PaginationProvider";
 import { RootState } from "../../reducer";
-import io from "socket.io-client";
+import io, { Socket } from "socket.io-client";
 import axios from "axios";
 import { UserRoomList } from "../Chat";
+
 const Header = () => {
   const dispatch = useDispatch();
   const navigator = useNavigate();
   const { isLoggedIn, logOutDone, me, logInError } = useSelector(
     (state: RootState) => state.user
   );
-  const socket =
-    process.env.NODE_ENV === "production"
-      ? io("https://patient-marina-tomyhas59-8c3582f9.koyeb.app")
-      : io("http://localhost:3075");
 
   const [notification, setNotification] = useState<boolean>(false);
+  const socket = useRef<Socket | null>(null);
+
+  useEffect(() => {
+    socket.current =
+      process.env.NODE_ENV === "production"
+        ? io("https://patient-marina-tomyhas59-8c3582f9.koyeb.app")
+        : io("http://localhost:3075");
+
+    return () => {
+      socket.current?.disconnect();
+    };
+  }, [me]);
+
   //새로고침 로그인 유지
   useEffect(() => {
     const accessToken = sessionStorage.getItem("accessToken");
@@ -71,7 +81,7 @@ const Header = () => {
   }, [dispatch, logOutDone, navigator]);
 
   const onLogout = useCallback(() => {
-    socket.emit("logoutUser", me?.id);
+    socket.current?.emit("logoutUser", me?.id);
     dispatch({
       type: LOG_OUT_REQUEST,
     });
@@ -108,19 +118,19 @@ const Header = () => {
     };
     fetchUserChatRooms();
 
-    socket.on("unReadMessages", () => {
+    socket.current?.on("unReadMessages", () => {
       fetchUserChatRooms();
     });
 
-    socket.on("joinRoom", () => {
+    socket.current?.on("joinRoom", () => {
       console.log("들어왔다");
     });
 
     return () => {
-      socket.off("unReadMessages");
-      socket.off("joinRoom");
+      socket.current?.off("unReadMessages");
+      socket.current?.off("joinRoom");
     };
-  }, [me?.id]);
+  }, [me?.id, socket]);
 
   return (
     <HeaderWrapper>
