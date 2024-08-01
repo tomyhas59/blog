@@ -46,7 +46,7 @@ const OneOnOneChatRoom = ({
   useEffect(() => {
     socket.current = io(
       process.env.NODE_ENV === "production"
-        ? "https://quarrelsome-laura-tomyhas59-09167dc6.koyeb.app"
+        ? "https://patient-marina-tomyhas59-8c3582f9.koyeb.app"
         : "http://localhost:3075"
     );
 

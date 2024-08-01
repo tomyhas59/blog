@@ -30,7 +30,7 @@ const Chat = () => {
   useEffect(() => {
     socket.current =
       process.env.NODE_ENV === "production"
-        ? io("https://quarrelsome-laura-tomyhas59-09167dc6.koyeb.app")
+        ? io("https://patient-marina-tomyhas59-8c3582f9.koyeb.app")
         : io("http://localhost:3075");
 
     if (me) {
