@@ -116,7 +116,9 @@ const Header = () => {
         console.error("Error fetching user chat rooms:", error);
       }
     };
-    fetchUserChatRooms();
+    if (me) {
+      fetchUserChatRooms();
+    }
 
     socket.current?.on("unReadMessages", () => {
       fetchUserChatRooms();
@@ -130,7 +132,7 @@ const Header = () => {
       socket.current?.off("unReadMessages");
       socket.current?.off("joinRoom");
     };
-  }, [me?.id, socket]);
+  }, [me, socket]);
 
   return (
     <HeaderWrapper>
