@@ -1,4 +1,3 @@
-// FollowButton.tsx
 import React, { useCallback } from "react";
 import styled from "styled-components";
 import { FOLLOW_REQUEST, UNFOLLOW_REQUEST } from "../reducer/user";
