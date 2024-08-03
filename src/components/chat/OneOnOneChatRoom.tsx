@@ -51,9 +51,13 @@ const OneOnOneChatRoom = ({
     );
 
     return () => {
+      //페이지 떠날 시
+      if (currentRoomId && me) {
+        socket.current?.emit("leaveRoom", currentRoomId, me);
+      }
       socket.current?.disconnect();
     };
-  }, []);
+  }, [currentRoomId, me]);
 
   useEffect(() => {
     if (currentRoomId) {
@@ -102,10 +106,13 @@ const OneOnOneChatRoom = ({
     });
 
     return () => {
+      //다른 채팅방 클릭 시
+      if (currentRoomId && me) {
+        socket.current?.emit("leaveRoom", currentRoomId, me);
+      }
       dispatch({ type: "RESET_CHAT_MESSAGES" });
       socket.current?.off("receiveMessage");
       socket.current?.off("systemMessage");
-      socket.current?.emit("leaveRoom", currentRoomId, me);
     };
   }, [dispatch, me, currentRoomId, setUserRoomList]);
 

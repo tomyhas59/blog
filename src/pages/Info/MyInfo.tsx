@@ -286,25 +286,19 @@ const RemoveButton = styled.button`
   position: absolute;
   top: -10px;
   right: -10px;
-  background-color: #f44336;
-  color: white;
   width: 20px;
   height: 20px;
-  border-radius: 50%;
+  color: #888888;
   border: none;
   line-height: 100%;
   text-align: center;
   font-size: 1.2em;
-  font-weight: bold;
   cursor: pointer;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   transition: background-color 0.3s ease, transform 0.3s ease;
-
   &:hover {
-    background-color: #d32f2f;
     transform: scale(1.1);
+    font-weight: bold;
   }
-
   @media (max-width: 480px) {
     width: 15px;
     height: 15px;

@@ -102,15 +102,16 @@ const Header = () => {
 
   useEffect(() => {
     const fetchUserChatRooms = async () => {
+      if (!me) return;
+
       try {
-        const response = await axios.get(`/post/findChat?userId=${me?.id}`);
+        const response = await axios.get(`/post/findChat?userId=${me.id}`);
         const hasUnRead = response.data.some(
           (room: UserRoomList) =>
             room.UnReadMessages.filter((message) => message.UserId !== me?.id)
               .length > 0
         );
 
-        console.log("------------------", hasUnRead);
         setNotification(hasUnRead);
       } catch (error) {
         console.error("Error fetching user chat rooms:", error);
@@ -125,7 +126,7 @@ const Header = () => {
     });
 
     socket.current?.on("joinRoom", () => {
-      console.log("들어왔다");
+      fetchUserChatRooms();
     });
 
     return () => {
@@ -276,14 +277,10 @@ export const SignList = styled.ul`
   }
 `;
 
-interface MyComponentProps {
-  notification: boolean;
-}
-
 const Notification = styled.div`
   position: absolute;
   color: #fff;
   right: -10px;
-  top: -5px;
-  font-size: 1.2rem;
+  top: -10px;
+  font-size: 1rem;
 `;
