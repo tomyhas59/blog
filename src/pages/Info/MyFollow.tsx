@@ -22,7 +22,7 @@ const MyFollow: React.FC = () => {
   return (
     <FollowContainer>
       <FollowList>
-        <Heading>팔로워</Heading>
+        <Heading>팔로워 {me?.Followers.length}명</Heading>
         {me?.Followers.map((follower) => (
           <FollowItem key={follower.id}>
             <Nickname>{follower.nickname}</Nickname>
@@ -30,7 +30,7 @@ const MyFollow: React.FC = () => {
         ))}
       </FollowList>
       <FollowList>
-        <Heading>팔로잉</Heading>
+        <Heading>팔로잉 {me?.Followings.length}명</Heading>
         {me?.Followings.map((following) => (
           <FollowItem
             key={following.id}
