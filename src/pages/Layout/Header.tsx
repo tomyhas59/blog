@@ -97,6 +97,7 @@ const Header = () => {
   }, [dispatch, navigator, paginate]);
 
   const onGoToChat = () => {
+    if (!me) return alert("로그인이 필요합니다");
     navigator("/chat");
   };
 
@@ -137,16 +138,14 @@ const Header = () => {
 
   return (
     <HeaderWrapper>
-      <HeaderLogoBtn onClick={onGoHome}>TMS</HeaderLogoBtn>
-      {isLoggedIn && (
-        <MyInfo>
-          <Link to="/info">{me && me.nickname.slice(0, 5)} 정보</Link>
-        </MyInfo>
-      )}
-
-      <div className="search">
+      <LogoContainer>
+        <HeaderLogoBtn onClick={onGoHome}>TMS</HeaderLogoBtn>
+        <GoToChat>
+          <button onClick={onGoToChat}>채팅</button>
+          {notification && <Notification>🔔</Notification>}
+        </GoToChat>
         <Search />
-      </div>
+      </LogoContainer>
       {!isLoggedIn && (
         <SignList>
           <li>
@@ -157,14 +156,14 @@ const Header = () => {
           </li>
         </SignList>
       )}
+
       {isLoggedIn && (
         <SignList>
           <li>
-            <button onClick={onLogout}>로그아웃</button>
+            <Link to="/info">내 정보</Link>
           </li>
           <li>
-            <button onClick={onGoToChat}>채팅</button>
-            {notification && <Notification>🔔</Notification>}
+            <button onClick={onLogout}>로그아웃</button>
           </li>
         </SignList>
       )}
@@ -175,37 +174,39 @@ export default Header;
 
 export const HeaderWrapper = styled.header`
   width: 100%;
-  height: 5rem;
-  padding: 1rem;
+  height: 4rem;
+  padding: 5px;
   top: 0;
   z-index: 1000;
   position: fixed;
   background-color: ${(props) => props.theme.subColor};
   display: flex;
-  justify-content: center;
   gap: 10px;
+  justify-content: space-between;
+  align-items: center;
   @media (max-width: 480px) {
-    display: grid;
-    gap: 5px;
-    grid-template-areas:
-      "a b c"
-      "d d c";
-    padding: 10px;
-    .search {
-      grid-area: d;
-    }
+    height: 4.5rem;
   }
 `;
 
+const LogoContainer = styled.div`
+  display: flex;
+  justify-content: flex-start;
+  gap: 5px;
+  @media (max-width: 480px) {
+    width: 250px;
+    flex-wrap: wrap;
+  }
+`;
 export const HeaderLogoBtn = styled.button`
   cursor: pointer;
-  font-size: 2rem;
+  font-size: 1.5rem;
   color: #ffffff;
   background-color: ${(props) => props.theme.mainColor};
   border-radius: 8px;
   border: 1px solid;
   width: 10rem;
-  height: 3rem;
+  height: 2.5rem;
   transition: transform 0.3s ease, color 0.3s ease;
   &:hover {
     transform: translateY(-2px);
@@ -219,38 +220,15 @@ export const HeaderLogoBtn = styled.button`
   }
 `;
 
-const MyInfo = styled.div`
-  cursor: pointer;
-  font-size: 1.5rem;
-  color: #ffffff;
-  background-color: ${(props) => props.theme.mainColor};
-  border-radius: 8px;
-  border: 1px solid;
-  width: 10rem;
-  height: 3rem;
-  transition: transform 0.3s ease, color 0.3s ease;
-  text-align: center;
-  line-height: 3rem;
-  &:hover {
-    transform: translateY(-2px);
-    color: ${(props) => props.theme.charColor};
-  }
-  @media (max-width: 480px) {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 8rem;
-    height: 1.5rem;
-    font-size: 1rem;
-    grid-area: b;
-  }
+const GoToChat = styled(HeaderLogoBtn)`
+  position: relative;
 `;
 
 export const SignList = styled.ul`
   display: flex;
   color: #fff;
+
   > li {
-    position: relative;
     background-color: ${(props) => props.theme.mainColor};
     text-align: center;
     padding: 10px;
@@ -267,7 +245,6 @@ export const SignList = styled.ul`
   }
   @media (max-width: 480px) {
     flex-direction: column;
-    grid-area: c;
     > li {
       margin-top: 1px;
       width: 60px;
@@ -280,7 +257,7 @@ export const SignList = styled.ul`
 const Notification = styled.div`
   position: absolute;
   color: #fff;
-  right: -10px;
   top: -10px;
+  right: -10px;
   font-size: 1rem;
 `;

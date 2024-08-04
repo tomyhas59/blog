@@ -76,11 +76,13 @@ export default Search;
 
 const Container = styled.div`
   display: grid;
-  height: 50px;
-  grid-template-columns: 30% 60% 10%;
+  width: 700px;
+  height: 1.5rem;
+  grid-template-columns: 10% 65% 5%;
   @media (max-width: 480px) {
     width: 250px;
     text-align: center;
+    grid-template-columns: 30% 60% 10%;
   }
 `;
 
