@@ -230,6 +230,8 @@ const ImageGrid = styled.div`
 const ImageContainer = styled.div`
   position: relative;
   display: inline-block;
+  width: 200px;
+  height: 200px;
 `;
 
 const Image = styled.img`

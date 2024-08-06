@@ -609,19 +609,21 @@ const ImageGrid = styled.div`
 const ImageContainer = styled.div`
   position: relative;
   display: inline-block;
+  width: 200px;
+  height: 200px;
   margin: 2px;
 `;
 
 const ModifyImage = styled.img`
-  width: 200px;
-  height: 200px;
+  width: 100%;
+  height: 100%;
   border-radius: 8px;
 `;
 
 const RemoveButton = styled.button`
   position: absolute;
   top: 0;
-  right: 8px;
+  right: 0px;
   padding: 5px 10px;
   background-color: #e74c3c;
   color: white;
