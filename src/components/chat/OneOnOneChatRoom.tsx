@@ -175,6 +175,7 @@ const OneOnOneChatRoom = ({
 
   return (
     <ChatRoomContainer>
+      <CloseRoom onClick={() => setActiveRoom(null)}></CloseRoom>
       <RoomHeader>
         <RoomName>{roomName}님과의 채팅</RoomName>
         <ExitButton onClick={oneExit}>나가기</ExitButton>
@@ -261,18 +262,27 @@ const OneOnOneChatRoom = ({
 export default OneOnOneChatRoom;
 
 const ChatRoomContainer = styled.div`
+  position: relative;
   padding: 20px;
   border-radius: 4px;
+  background-color: #fff;
   border: 1px solid #ccc;
-  width: 100%;
-  max-width: 800px;
-  margin: 0 auto;
+  width: 400px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-
   @media (max-width: 480px) {
-    padding: 10px;
-    width: 100%;
+    width: 330px;
   }
+`;
+
+const CloseRoom = styled.button`
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: silver;
+  width: 100px;
+  height: 10px;
+  border-radius: 0 0 5px 5px;
 `;
 
 const RoomHeader = styled.div`
@@ -314,7 +324,7 @@ const MessageListContainer = styled.div`
   height: 60vh;
 
   @media (max-width: 480px) {
-    height: 40vh;
+    height: 50vh;
   }
 `;
 

@@ -238,10 +238,7 @@ const Chat = () => {
 export default Chat;
 
 const ChatContainer = styled.div`
-  width: 70%;
-  margin: 0 auto;
   display: flex;
-  justify-content: center;
   align-items: flex-start;
   @media (max-width: 480px) {
     width: 100%;
@@ -373,13 +370,10 @@ const UnReadMessageCount = styled.div<MyComponentProps>`
 `;
 
 const ContentWrapper = styled.div`
-  flex: 1;
-  padding: 20px;
-  border-radius: 8px;
-  background-color: #fff;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  margin-left: 20%;
   @media (max-width: 480px) {
-    padding: 10px;
+    left: -60px;
+    position: absolute;
   }
 `;
 

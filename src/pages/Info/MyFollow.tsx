@@ -21,33 +21,37 @@ const MyFollow: React.FC = () => {
 
   return (
     <FollowContainer>
-      <FollowList>
+      <Follower>
         <Heading>팔로워 {me?.Followers.length}명</Heading>
-        {me?.Followers.map((follower) => (
-          <FollowItem key={follower.id}>
-            <Nickname>{follower.nickname}</Nickname>
-          </FollowItem>
-        ))}
-      </FollowList>
-      <FollowList>
+        <FollowList>
+          {me?.Followers.map((follower) => (
+            <FollowItem key={follower.id}>
+              <Nickname>{follower.nickname}</Nickname>
+            </FollowItem>
+          ))}
+        </FollowList>
+      </Follower>
+      <Following>
         <Heading>팔로잉 {me?.Followings.length}명</Heading>
-        {me?.Followings.map((following) => (
-          <FollowItem
-            key={following.id}
-            onClick={() => onUserOptionClick(following.nickname)}
-          >
-            <Nickname>{following.nickname}</Nickname>
-            {activeUserOption === following.nickname && (
-              <UserOption ref={userOptionRef}>
-                <FollowButton
-                  userId={following.id}
-                  setActiveUserOption={setActiveUserOption}
-                />
-              </UserOption>
-            )}
-          </FollowItem>
-        ))}
-      </FollowList>
+        <FollowList>
+          {me?.Followings.map((following) => (
+            <FollowItem
+              key={following.id}
+              onClick={() => onUserOptionClick(following.nickname)}
+            >
+              <Nickname>{following.nickname}</Nickname>
+              {activeUserOption === following.nickname && (
+                <UserOption ref={userOptionRef}>
+                  <FollowButton
+                    userId={following.id}
+                    setActiveUserOption={setActiveUserOption}
+                  />
+                </UserOption>
+              )}
+            </FollowItem>
+          ))}
+        </FollowList>
+      </Following>
     </FollowContainer>
   );
 };
@@ -58,10 +62,21 @@ const FollowContainer = styled.div`
   padding: 20px;
   display: flex;
   justify-content: space-around;
-  gap: 20px;
+  gap: 10px;
   background-color: #f9f9f9;
   border-radius: 10px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+
+  @media (max-width: 480px) {
+    padding: 5px;
+  }
+`;
+
+const Follower = styled.div`
+  width: 150px;
+`;
+const Following = styled.div`
+  width: 150px;
 `;
 
 const FollowList = styled.div`
@@ -70,10 +85,9 @@ const FollowList = styled.div`
   background-color: #fff;
   border-radius: 10px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-
-  @media (min-width: 481px) {
-    width: 300px;
-  }
+  width: 100%;
+  height: 200px;
+  overflow-y: auto;
 `;
 
 const Heading = styled.h2`
@@ -85,7 +99,7 @@ const Heading = styled.h2`
   text-align: center;
 
   @media (max-width: 480px) {
-    font-size: 18px;
+    font-size: 20px;
     margin-bottom: 12px;
   }
 `;
@@ -97,6 +111,7 @@ const FollowItem = styled.div`
   border-bottom: 1px solid #eaeaea;
   position: relative;
   cursor: pointer;
+
   &:last-child {
     border-bottom: none;
   }
@@ -104,33 +119,34 @@ const FollowItem = styled.div`
   &:hover {
     background-color: #f1f1f1;
   }
+
+  @media (max-width: 480px) {
+    padding: 8px;
+  }
 `;
 
 const Nickname = styled.span`
   font-size: 18px;
   color: #333;
+
   @media (max-width: 480px) {
-    font-size: 15px;
+    font-size: 16px;
   }
 `;
 
 const UserOption = styled.div`
   position: absolute;
-  top: 50%;
   right: 0;
-  transform: translateY(-50%);
-  width: 100px;
   background-color: ${(props) => props.theme.mainColor};
   border-radius: 8px;
-  padding: 5px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   font-size: 12px;
   color: #fff;
-
+  z-index: 999;
   & button {
-    margin: 5px 0;
     cursor: pointer;
     transition: transform 0.3s ease, color 0.3s ease;
+
     &:hover {
       transform: translateY(-2px);
       color: ${(props) => props.theme.charColor};
@@ -138,11 +154,6 @@ const UserOption = styled.div`
   }
 
   @media (max-width: 480px) {
-    z-index: 999;
-    width: 80px;
-    top: 30px;
-    left: 50px;
-    padding: 2px;
-    font-size: 10px;
+    width: 60px;
   }
 `;
