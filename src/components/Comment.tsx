@@ -202,7 +202,7 @@ const Comment = ({ post }: { post: PostType }) => {
                     </BlueButton>
                   </PopupMenu>
                 ) : null}
-                <Date>({moment(comment.createdAt).format("l")})</Date>
+                <Date>{moment(comment.createdAt).format("l")}</Date>
               </AuthorWrapper>
               <ContentWrapper>
                 {isEditing && currentCommentId === comment.id ? (

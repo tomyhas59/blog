@@ -91,7 +91,7 @@ const ReComment = ({
                 />
                 {reComment.User.nickname.slice(0, 5)}
               </Author>
-              <Date>({moment(reComment.createdAt).format("l")})</Date>
+              <Date>{moment(reComment.createdAt).format("l")}</Date>
             </AuthorWrapper>
             <ContentWrapper>
               <Content>
