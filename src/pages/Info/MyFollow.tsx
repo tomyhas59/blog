@@ -21,8 +21,8 @@ const MyFollow: React.FC = () => {
 
   return (
     <FollowContainer>
-      <Follower>
-        <Heading>팔로워 {me?.Followers.length}명</Heading>
+      <FollowSection>
+        <SectionHeading>팔로워 ({me?.Followers.length})</SectionHeading>
         <FollowList>
           {me?.Followers.map((follower) => (
             <FollowItem
@@ -41,20 +41,17 @@ const MyFollow: React.FC = () => {
             </FollowItem>
           ))}
         </FollowList>
-      </Follower>
-      <Following>
-        <Heading>팔로잉 {me?.Followings.length}명</Heading>
+      </FollowSection>
+      <FollowSection>
+        <SectionHeading>팔로잉 ({me?.Followings.length})</SectionHeading>
         <FollowList>
           {me?.Followings.map((following) => (
-            <FollowItem
-              key={following.id}
-              onClick={() => onUserOptionClick(following.nickname)}
-            >
+            <FollowItem key={following.id}>
               <Nickname>{following.nickname}</Nickname>
             </FollowItem>
           ))}
         </FollowList>
-      </Following>
+      </FollowSection>
     </FollowContainer>
   );
 };
@@ -62,101 +59,106 @@ const MyFollow: React.FC = () => {
 export default MyFollow;
 
 const FollowContainer = styled.div`
-  padding: 20px;
   display: flex;
-  justify-content: space-around;
-  gap: 10px;
-  background-color: #f9f9f9;
-  border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  justify-content: space-between;
+  flex-wrap: wrap;
+  padding: 20px;
+  background-color: #f7f7f7;
+  border-radius: 12px;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+  gap: 20px;
 
-  @media (max-width: 480px) {
-    padding: 5px;
+  @media (max-width: 768px) {
+    flex-direction: column;
+    gap: 10px;
   }
 `;
 
-const Follower = styled.div`
-  width: 150px;
-`;
-const Following = styled.div`
-  width: 150px;
-`;
-
-const FollowList = styled.div`
-  position: relative;
-  padding: 20px;
+const FollowSection = styled.div`
+  flex: 1;
+  min-width: 280px;
   background-color: #fff;
   border-radius: 10px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  width: 100%;
-  height: 200px;
-  overflow-y: auto;
+  overflow: hidden;
 `;
 
-const Heading = styled.h2`
-  font-size: 24px;
-  color: ${(props) => props.theme.mainColor};
-  margin-bottom: 16px;
-  border-bottom: 2px solid ${(props) => props.theme.mainColor};
-  padding-bottom: 8px;
-  text-align: center;
+const FollowList = styled.div`
+  max-height: 300px;
+  overflow-y: auto;
+  padding: 15px;
+  border-top: 1px solid #eee;
+  background-color: #fff;
+`;
 
-  @media (max-width: 480px) {
-    font-size: 20px;
-    margin-bottom: 12px;
+const SectionHeading = styled.h2`
+  font-size: 1.5em;
+  color: ${(props) => props.theme.mainColor};
+  margin: 0;
+  padding: 15px;
+  background-color: ${(props) => props.theme.lightBg};
+  border-bottom: 2px solid ${(props) => props.theme.mainColor};
+  text-align: center;
+  font-weight: 600;
+
+  @media (max-width: 768px) {
+    font-size: 1.3em;
   }
 `;
 
 const FollowItem = styled.div`
   display: flex;
   align-items: center;
-  padding: 10px;
-  border-bottom: 1px solid #eaeaea;
-  position: relative;
+  padding: 12px;
+  border-bottom: 1px solid #e0e0e0;
   cursor: pointer;
-
-  &:last-child {
-    border-bottom: none;
-  }
+  position: relative;
+  transition: background-color 0.3s ease;
 
   &:hover {
-    background-color: #f1f1f1;
+    background-color: #f0f0f0;
   }
 
-  @media (max-width: 480px) {
-    padding: 8px;
+  @media (max-width: 768px) {
+    padding: 10px;
   }
 `;
 
 const Nickname = styled.span`
-  font-size: 18px;
+  font-size: 1em;
   color: #333;
 
-  @media (max-width: 480px) {
-    font-size: 16px;
+  @media (max-width: 768px) {
+    font-size: 0.9em;
   }
 `;
 
 const UserOption = styled.div`
   position: absolute;
-  right: 0;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
   background-color: ${(props) => props.theme.mainColor};
   border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  font-size: 12px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
   color: #fff;
-  z-index: 999;
+  font-size: 0.9em;
+  z-index: 1000;
+  padding: 5px;
+  display: flex;
+  align-items: center;
+
   & button {
     cursor: pointer;
     transition: transform 0.3s ease, color 0.3s ease;
 
     &:hover {
-      transform: translateY(-2px);
+      transform: scale(1.1);
       color: ${(props) => props.theme.charColor};
     }
   }
 
-  @media (max-width: 480px) {
-    width: 60px;
+  @media (max-width: 768px) {
+    width: 70px;
   }
 `;

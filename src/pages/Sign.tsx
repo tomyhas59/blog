@@ -14,38 +14,36 @@ import { RootState } from "../reducer";
 import Spinner from "../components/Spinner";
 
 const Sign = () => {
-  const [nickname, nickNameOnChange] = useInput();
+  const [nickname, onChangeNickname] = useInput();
   const [email, onChangeEmail] = useInput();
-  const [password, onChagngePassword] = useInput();
-  const [passwordConfirm, setpasswordConfirm] = useState("");
-  const [passwordError, setpasswordError] = useState(false);
+  const [password, onChangePassword] = useInput();
+  const [passwordConfirm, setPasswordConfirm] = useState("");
+  const [passwordError, setPasswordError] = useState(false);
 
   const dispatch = useDispatch();
-  const navigator = useNavigate();
+  const navigate = useNavigate();
 
   const { signUpDone, signUpLoading } = useSelector(
     (state: RootState) => state.user
   );
 
-  const PasswordConfirmOnChange = useCallback(
+  const handlePasswordConfirmChange = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
-      setpasswordConfirm(e.target.value);
-      setpasswordError(e.target.value !== password);
+      setPasswordConfirm(e.target.value);
+      setPasswordError(e.target.value !== password);
     },
-    [password, setpasswordConfirm]
+    [password]
   );
 
   useEffect(() => {
     if (signUpDone) {
       alert("회원가입이 완료되었습니다");
-      navigator("/login");
-      dispatch({
-        type: "INITIALIZE_STATE",
-      });
+      navigate("/login");
+      dispatch({ type: "INITIALIZE_STATE" });
     }
-  }, [signUpDone, navigator, dispatch]);
+  }, [signUpDone, navigate, dispatch]);
 
-  const onSubmit = useCallback(
+  const handleSubmit = useCallback(
     (e: SyntheticEvent) => {
       e.preventDefault();
       if (!email || !nickname || !password || !passwordConfirm) {
@@ -53,7 +51,7 @@ const Sign = () => {
         return;
       }
       if (password !== passwordConfirm) {
-        setpasswordError(true);
+        setPasswordError(true);
         return;
       }
       dispatch({
@@ -69,34 +67,46 @@ const Sign = () => {
       {signUpLoading ? (
         <Spinner />
       ) : (
-        <RegistrationContainer onSubmit={onSubmit}>
+        <RegistrationContainer onSubmit={handleSubmit}>
+          <Title>회원가입</Title>
           <FormGroup>
-            <Label>Email:</Label>
+            <Label>Email</Label>
             <Input
               type="email"
               value={email}
               onChange={onChangeEmail}
-              placeholder="형식 aa@aa.com"
+              placeholder="이메일을 입력해주세요"
+              autoComplete="email"
             />
           </FormGroup>
           <FormGroup>
-            <Label>닉네임:</Label>
-            <Input type="text" value={nickname} onChange={nickNameOnChange} />
+            <Label>닉네임</Label>
+            <Input
+              type="text"
+              value={nickname}
+              onChange={onChangeNickname}
+              placeholder="닉네임을 입력해주세요"
+              autoComplete="nickname"
+            />
           </FormGroup>
           <FormGroup>
-            <Label>비밀번호:</Label>
+            <Label>비밀번호</Label>
             <Input
               type="password"
               value={password}
-              onChange={onChagngePassword}
+              onChange={onChangePassword}
+              placeholder="비밀번호를 입력해주세요"
+              autoComplete="new-password"
             />
           </FormGroup>
           <FormGroup>
-            <Label>비밀번호 확인:</Label>
+            <Label>비밀번호 확인</Label>
             <Input
               type="password"
               value={passwordConfirm}
-              onChange={PasswordConfirmOnChange}
+              onChange={handlePasswordConfirmChange}
+              placeholder="비밀번호를 다시 입력해주세요"
+              autoComplete="new-password"
             />
           </FormGroup>
           {passwordError && (
@@ -113,16 +123,24 @@ export default Sign;
 
 const RegistrationContainer = styled.form`
   max-width: 400px;
-  margin: 50px auto;
+  width: 90%;
+  margin: 40px auto;
   padding: 20px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  background-color: #f8f8f8;
-
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  background-color: #fff;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   @media (max-width: 480px) {
-    margin-top: -50px;
-    transform: scale(0.7);
+    padding: 20px;
+    transform: scale(0.9);
   }
+`;
+
+const Title = styled.h2`
+  margin-bottom: 10px;
+  font-size: 1.8rem;
+  text-align: center;
+  color: ${(props) => props.theme.mainColor};
 `;
 
 const FormGroup = styled.div`
@@ -131,33 +149,46 @@ const FormGroup = styled.div`
 
 const Label = styled.label`
   display: block;
-  margin-bottom: 5px;
+  margin-bottom: 8px;
+  font-weight: 500;
+  color: ${(props) => props.theme.textColor};
 `;
 
 const Input = styled.input`
   width: 100%;
-  padding: 10px;
+  padding: 12px;
   font-size: 16px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-sizing: border-box;
+  transition: border-color 0.3s ease;
+
+  &:focus {
+    border-color: ${(props) => props.theme.mainColor};
+    outline: none;
+  }
 `;
 
 const Button = styled.button`
   width: 100%;
-  padding: 10px;
+  padding: 12px;
   font-size: 16px;
   background-color: ${(props) => props.theme.mainColor};
-  color: white;
+  color: #fff;
   border: none;
-  border-radius: 4px;
+  border-radius: 8px;
   cursor: pointer;
-  transition: transform 0.3s ease, color 0.3s ease;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+
   &:hover {
+    background-color: ${(props) => props.theme.hoverColor};
     transform: translateY(-2px);
-    color: ${(props) => props.theme.charColor};
   }
 `;
 
 const CheckMessage = styled.div`
   color: red;
+  margin-top: 10px;
+  text-align: center;
+  font-size: 14px;
 `;

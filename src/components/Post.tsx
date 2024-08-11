@@ -28,9 +28,9 @@ import Spinner from "./Spinner";
 import ContentRenderer from "./renderer/ContentRenderer";
 import useOutsideClick from "../hooks/useOutsideClick";
 import useTextareaAutoHeight from "../hooks/useTextareaAutoHeight";
-import { FileButton } from "./PostForm";
 import FollowButton from "./FollowButton";
 import { DEFAULT_PROFILE_IMAGE } from "../pages/Info/MyInfo";
+import { FileButton } from "./PostForm";
 
 const Post = ({
   post,
@@ -477,6 +477,7 @@ const TextArea = styled.textarea`
 
 const Button = styled.button`
   background-color: ${(props) => props.theme.mainColor};
+  margin: 2px;
   font-size: 12px;
   color: #fff;
   padding: 6px;
@@ -546,7 +547,6 @@ const CommentNum = styled.span`
 
 const CommentContainer = styled.div`
   padding: 10px;
-  border-top: 1px solid silver;
 `;
 
 const ContentImg = styled.img`

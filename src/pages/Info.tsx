@@ -40,28 +40,43 @@ const Info = () => {
       <Nav>
         <NavList>
           <NavItem>
-            <NavLink onClick={() => setActiveSection("myInfo")}>
-              ▮내 정보
+            <NavLink
+              onClick={() => setActiveSection("myInfo")}
+              active={activeSection === "myInfo"}
+            >
+              내 정보
             </NavLink>
           </NavItem>
           <NavItem>
-            <NavLink onClick={() => setActiveSection("myPosts")}>
-              ▮내가 쓴 글
+            <NavLink
+              onClick={() => setActiveSection("myPosts")}
+              active={activeSection === "myPosts"}
+            >
+              내가 쓴 글
             </NavLink>
           </NavItem>
           <NavItem>
-            <NavLink onClick={() => setActiveSection("myComments")}>
-              ▮내가 쓴 댓글
+            <NavLink
+              onClick={() => setActiveSection("myComments")}
+              active={activeSection === "myComments"}
+            >
+              내가 쓴 댓글
             </NavLink>
           </NavItem>
           <NavItem>
-            <NavLink onClick={() => setActiveSection("myLikes")}>
-              ▮좋아요 글
+            <NavLink
+              onClick={() => setActiveSection("myLikes")}
+              active={activeSection === "myLikes"}
+            >
+              좋아요 글
             </NavLink>
           </NavItem>
           <NavItem>
-            <NavLink onClick={() => setActiveSection("myFollow")}>
-              ▮팔로우
+            <NavLink
+              onClick={() => setActiveSection("myFollow")}
+              active={activeSection === "myFollow"}
+            >
+              팔로우
             </NavLink>
           </NavItem>
         </NavList>
@@ -71,56 +86,66 @@ const Info = () => {
   );
 };
 
+export default Info;
+
 const Container = styled.div`
-  width: 70%;
+  width: 80%;
+  max-width: 1200px;
   margin: 0 auto;
   display: flex;
-  @media (max-width: 480px) {
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  background-color: #fff;
+  @media (max-width: 768px) {
     flex-direction: column;
-    width: 90%;
+    width: 95%;
   }
 `;
 
 const Nav = styled.nav`
   flex: 1;
-  max-width: 200px;
+  max-width: 250px;
   padding: 20px;
-  border-right: 1px solid #ddd;
-  @media (max-width: 480px) {
+  border-right: 1px solid #eaeaea;
+  background-color: #f9f9f9;
+  @media (max-width: 768px) {
     max-width: 100%;
     border-right: none;
-    border-bottom: 1px solid #ddd;
-    padding: 10px;
+    border-bottom: 1px solid #eaeaea;
   }
 `;
 
 const NavList = styled.ul`
   list-style: none;
   padding: 0;
-  @media (max-width: 480px) {
+  @media (max-width: 768px) {
     display: flex;
     flex-wrap: wrap;
-    justify-content: space-around;
   }
 `;
 
 const NavItem = styled.li`
-  margin-bottom: 10px;
-  @media (max-width: 480px) {
-    margin-bottom: 5px;
-  }
+  margin-bottom: 15px;
 `;
-
-const NavLink = styled.a`
-  font-weight: bold;
-  cursor: pointer;
-  color: ${(props) => props.theme.mainColor};
+interface NavLinkProps {
+  active?: boolean;
+}
+const NavLink = styled.a<NavLinkProps>`
+  font-weight: 600;
+  font-size: 1rem;
+  color: ${(props) => (props.active ? "#007bff" : "#333")};
   text-decoration: none;
+  cursor: pointer;
+  transition: color 0.3s ease, background-color 0.3s ease;
+  padding: 10px;
+  border-radius: 4px;
   &:hover {
-    color: darkblue;
+    color: #0056b3;
+    background-color: #f1f1f1;
   }
-  @media (max-width: 480px) {
-    font-size: 0.8rem;
+  @media (max-width: 768px) {
+    font-size: 0.9rem;
     text-align: center;
   }
 `;
@@ -128,10 +153,8 @@ const NavLink = styled.a`
 const SectionWrapper = styled.div`
   flex: 3;
   padding: 20px;
-  @media (max-width: 480px) {
-    padding: 10px;
-    font-size: 0.9rem;
+  background-color: #fafafa;
+  @media (max-width: 768px) {
+    padding: 15px;
   }
 `;
-
-export default Info;

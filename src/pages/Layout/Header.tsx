@@ -205,7 +205,7 @@ export const HeaderLogoBtn = styled.button`
   background-color: ${(props) => props.theme.mainColor};
   border-radius: 8px;
   border: 1px solid;
-  width: 10rem;
+  width: 6rem;
   height: 2.5rem;
   transition: transform 0.3s ease, color 0.3s ease;
   &:hover {
