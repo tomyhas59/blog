@@ -1,7 +1,10 @@
 import React, { useRef } from "react";
 import { useState, useCallback } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { REMOVE_RECOMMENT_REQUEST } from "../reducer/post";
+import {
+  REMOVE_RECOMMENT_REQUEST,
+  SEARCH_NICKNAME_REQUEST,
+} from "../reducer/post";
 import styled from "styled-components";
 import moment from "moment";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -14,6 +17,7 @@ import ContentRenderer from "./renderer/ContentRenderer";
 import useOutsideClick from "../hooks/useOutsideClick";
 import { baseURL } from "../config";
 import { DEFAULT_PROFILE_IMAGE } from "../pages/Info/MyInfo";
+import FollowButton from "./FollowButton";
 
 const ReComment = ({
   post,
@@ -28,6 +32,18 @@ const ReComment = ({
   const { removeReCommentLoading, updateReCommentLoading } = useSelector(
     (state: RootState) => state.post
   );
+
+  const [showInfo, setShowInfo] = useState<Record<number, boolean>>({});
+  const toggleShowInfo = useCallback((ReCommentId: number) => {
+    setShowInfo((prev) => {
+      const updatedPopupState: Record<number, boolean> = { ...prev };
+      for (const key in updatedPopupState) {
+        updatedPopupState[key] = false;
+      }
+      updatedPopupState[ReCommentId] = !prev[ReCommentId];
+      return updatedPopupState;
+    });
+  }, []);
 
   //대댓글 쓰기 창,map 안에서 하나만 작동 및 폼 중복 방지 코드---------------------
   const [addReComment, setAddReComment] = useState<Record<string, boolean>>({});
@@ -59,11 +75,24 @@ const ReComment = ({
     [comment.id, dispatch, post.id]
   );
 
-  //OutsideClick----------------------------------------------
+  const onSearch = useCallback(
+    (userNickname: string) => {
+      dispatch({
+        type: SEARCH_NICKNAME_REQUEST,
+        query: userNickname,
+      });
+      setShowInfo({});
+      window.scrollTo({ top: 0, behavior: "auto" });
+    },
+    [dispatch]
+  );
 
+  //OutsideClick----------------------------------------------
+  const popupRef = useRef<HTMLDivElement>(null);
   const reCommentFormRef = useRef<HTMLDivElement>(null);
 
-  useOutsideClick([reCommentFormRef], () => {
+  useOutsideClick([popupRef, reCommentFormRef], () => {
+    setShowInfo({});
     setAddReComment({});
   });
 
@@ -79,7 +108,7 @@ const ReComment = ({
         return (
           <ReCommentWrapper key={reComment.id}>
             <AuthorWrapper>
-              <Author>
+              <Author onClick={() => toggleShowInfo(reComment.id)}>
                 ↪
                 <img
                   src={
@@ -91,6 +120,21 @@ const ReComment = ({
                 />
                 {reComment.User.nickname.slice(0, 5)}
               </Author>
+              {showInfo[reComment.id] ? (
+                <PopupMenu ref={popupRef}>
+                  <BlueButton onClick={() => onSearch(reComment.User.nickname)}>
+                    작성 글 보기
+                  </BlueButton>
+                  <FollowButton
+                    userId={reComment.User.id}
+                    setShowInfo={
+                      setShowInfo as React.Dispatch<
+                        React.SetStateAction<boolean | Record<number, boolean>>
+                      >
+                    }
+                  />
+                </PopupMenu>
+              ) : null}
               <Date>{moment(reComment.createdAt).format("l")}</Date>
             </AuthorWrapper>
             <ContentWrapper>
@@ -142,15 +186,22 @@ const AuthorWrapper = styled.div`
   position: relative;
 `;
 
-const Author = styled.span`
+const Author = styled.button`
+  font-weight: bold;
   text-align: center;
   margin-right: 10px;
   color: ${(props) => props.theme.mainColor};
+  transition: transform 0.3s ease, color 0.3s ease;
   img {
     display: inline;
     border-radius: 50%;
     width: 15px;
     height: 15px;
+  }
+
+  &:hover {
+    transform: translateY(-2px);
+    color: ${(props) => props.theme.charColor};
   }
 `;
 
@@ -189,5 +240,32 @@ const ReCommentOptions = styled.div`
   display: flex;
   & * {
     margin-left: 2px;
+  }
+`;
+
+const PopupMenu = styled.div`
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  top: 30px;
+  left: 0;
+  transition: transform 0.3s ease, color 0.3s ease;
+  &:hover {
+    transform: translateY(-2px);
+    color: ${(props) => props.theme.charColor};
+  }
+`;
+
+const BlueButton = styled.button`
+  background-color: ${(props) => props.theme.mainColor};
+  font-size: 12px;
+  color: #fff;
+  padding: 6px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: transform 0.3s ease, color 0.3s ease;
+  &:hover {
+    transform: translateY(-2px);
+    color: ${(props) => props.theme.charColor};
   }
 `;

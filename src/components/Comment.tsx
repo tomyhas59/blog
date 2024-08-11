@@ -31,6 +31,7 @@ import useOutsideClick from "../hooks/useOutsideClick";
 import useTextareaAutoHeight from "../hooks/useTextareaAutoHeight";
 import { baseURL } from "../config";
 import { DEFAULT_PROFILE_IMAGE } from "../pages/Info/MyInfo";
+import FollowButton from "./FollowButton";
 const Comment = ({ post }: { post: PostType }) => {
   const dispatch = useDispatch();
   const id = useSelector((state: RootState) => state.user.me?.id);
@@ -39,10 +40,10 @@ const Comment = ({ post }: { post: PostType }) => {
     useSelector((state: RootState) => state.post);
 
   //---닉네임 클릭 정보 보기-------------------------------------
-  const [showInfo, setShowinfo] = useState<Record<number, boolean>>({});
+  const [showInfo, setShowInfo] = useState<Record<number, boolean>>({});
 
   const toggleShowInfo = useCallback((commentId: number) => {
-    setShowinfo((prev) => {
+    setShowInfo((prev) => {
       const updatedPopupState: Record<number, boolean> = { ...prev };
       for (const key in updatedPopupState) {
         updatedPopupState[key] = false;
@@ -58,7 +59,7 @@ const Comment = ({ post }: { post: PostType }) => {
         type: SEARCH_NICKNAME_REQUEST,
         query: userNickname,
       });
-      setShowinfo({});
+      setShowInfo({});
       window.scrollTo({ top: 0, behavior: "auto" });
     },
     [dispatch]
@@ -168,7 +169,7 @@ const Comment = ({ post }: { post: PostType }) => {
   const reCommentFormRef = useRef<HTMLDivElement>(null);
 
   useOutsideClick([popupRef, reCommentFormRef, editCommentRef], () => {
-    setShowinfo({});
+    setShowInfo({});
     setAddReComment({});
     setEditComment({});
   });
@@ -200,6 +201,16 @@ const Comment = ({ post }: { post: PostType }) => {
                     <BlueButton onClick={() => onSearch(comment.User.nickname)}>
                       작성 글 보기
                     </BlueButton>
+                    <FollowButton
+                      userId={comment.User.id}
+                      setShowInfo={
+                        setShowInfo as React.Dispatch<
+                          React.SetStateAction<
+                            boolean | Record<number, boolean>
+                          >
+                        >
+                      }
+                    />
                   </PopupMenu>
                 ) : null}
                 <Date>{moment(comment.createdAt).format("l")}</Date>
@@ -352,7 +363,6 @@ const Date = styled.span`
 
 const BlueButton = styled.button`
   background-color: ${(props) => props.theme.mainColor};
-  margin: 2px;
   font-size: 12px;
   color: #fff;
   padding: 6px;
@@ -367,6 +377,8 @@ const BlueButton = styled.button`
 
 const PopupMenu = styled.div`
   position: absolute;
+  display: flex;
+  flex-direction: column;
   top: 30px;
   left: 0;
   transition: transform 0.3s ease, color 0.3s ease;

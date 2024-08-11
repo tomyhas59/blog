@@ -69,7 +69,7 @@ const Post = ({
   const editPostRef = useRef<HTMLTextAreaElement>(null);
 
   //---닉네임 클릭 정보 보기-------------------------------------
-  const [showInfo, setShowInfo] = useState<boolean>(false);
+  const [showInfo, setShowInfo] = useState<boolean | {}>(false);
   const toggleShowInfo = useCallback(() => {
     setShowInfo((prevShowInfo) => !prevShowInfo);
   }, []);
@@ -477,17 +477,15 @@ const TextArea = styled.textarea`
 
 const Button = styled.button`
   background-color: ${(props) => props.theme.mainColor};
-  height: 30px;
   font-size: 12px;
   color: #fff;
   padding: 6px;
   border-radius: 6px;
-  text-align: center;
   cursor: pointer;
   transition: transform 0.3s ease, color 0.3s ease;
   &:hover {
     transform: translateY(-2px);
-    color: #000;
+    color: ${(props) => props.theme.charColor};
   }
 `;
 

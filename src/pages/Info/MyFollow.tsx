@@ -25,8 +25,19 @@ const MyFollow: React.FC = () => {
         <Heading>팔로워 {me?.Followers.length}명</Heading>
         <FollowList>
           {me?.Followers.map((follower) => (
-            <FollowItem key={follower.id}>
+            <FollowItem
+              key={follower.id}
+              onClick={() => onUserOptionClick(follower.nickname)}
+            >
               <Nickname>{follower.nickname}</Nickname>
+              {activeUserOption === follower.nickname && (
+                <UserOption ref={userOptionRef}>
+                  <FollowButton
+                    userId={follower.id}
+                    setActiveUserOption={setActiveUserOption}
+                  />
+                </UserOption>
+              )}
             </FollowItem>
           ))}
         </FollowList>
@@ -40,14 +51,6 @@ const MyFollow: React.FC = () => {
               onClick={() => onUserOptionClick(following.nickname)}
             >
               <Nickname>{following.nickname}</Nickname>
-              {activeUserOption === following.nickname && (
-                <UserOption ref={userOptionRef}>
-                  <FollowButton
-                    userId={following.id}
-                    setActiveUserOption={setActiveUserOption}
-                  />
-                </UserOption>
-              )}
             </FollowItem>
           ))}
         </FollowList>

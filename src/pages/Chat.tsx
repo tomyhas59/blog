@@ -413,13 +413,11 @@ const UserOption = styled.div`
 `;
 
 const ChatPlaceholder = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100%;
   color: #aaa;
+  height: 200px;
+  line-height: 200px;
   font-size: 24px;
   @media (max-width: 480px) {
-    font-size: 18px;
+    display: none;
   }
 `;

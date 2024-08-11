@@ -6,7 +6,9 @@ import { RootState } from "../reducer";
 
 interface FollowButtonProps {
   userId: number;
-  setShowInfo?: React.Dispatch<React.SetStateAction<boolean>>;
+  setShowInfo?: React.Dispatch<
+    React.SetStateAction<boolean | Record<number, boolean>>
+  >;
   setActiveUserOption?: React.Dispatch<React.SetStateAction<string | null>>;
 }
 
@@ -21,7 +23,11 @@ const FollowButton: React.FC<FollowButtonProps> = ({
   const onFollow = useCallback(() => {
     dispatch({ type: FOLLOW_REQUEST, data: userId });
     if (setShowInfo) {
-      setShowInfo(false);
+      setShowInfo((prev) => {
+        if (typeof prev === "boolean") {
+          return false;
+        } else return {};
+      });
     }
     if (setActiveUserOption) {
       setActiveUserOption(null);
@@ -32,7 +38,11 @@ const FollowButton: React.FC<FollowButtonProps> = ({
   const onUnFollow = useCallback(() => {
     dispatch({ type: UNFOLLOW_REQUEST, data: userId });
     if (setShowInfo) {
-      setShowInfo(false);
+      setShowInfo((prev) => {
+        if (typeof prev === "boolean") {
+          return false;
+        } else return {};
+      });
     }
     if (setActiveUserOption) {
       setActiveUserOption(null);
@@ -55,17 +65,15 @@ const FollowButton: React.FC<FollowButtonProps> = ({
 
 const Button = styled.button`
   background-color: ${(props) => props.theme.mainColor};
-  height: 30px;
   font-size: 12px;
   color: #fff;
   padding: 6px;
   border-radius: 6px;
-  text-align: center;
   cursor: pointer;
   transition: transform 0.3s ease, color 0.3s ease;
   &:hover {
     transform: translateY(-2px);
-    color: #000;
+    color: ${(props) => props.theme.charColor};
   }
 `;
 
