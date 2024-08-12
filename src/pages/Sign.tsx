@@ -150,6 +150,7 @@ const FormGroup = styled.div`
 const Label = styled.label`
   display: block;
   margin-bottom: 8px;
+  font-weight: bold;
   font-weight: 500;
   color: ${(props) => props.theme.textColor};
 `;
