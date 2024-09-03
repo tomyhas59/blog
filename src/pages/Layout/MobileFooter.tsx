@@ -155,9 +155,7 @@ const MobileFooter = () => {
           </>
         )}
       </SignList>
-
       <MobileFooterLogoBtn onClick={onGoHome}>TMS</MobileFooterLogoBtn>
-
       <GoToChat onClick={onGoToChat}>
         채팅
         {notification && <Notification>🔔</Notification>}
@@ -186,11 +184,8 @@ export const MobileFooterWrapper = styled.footer`
 
 export const SignList = styled.ul`
   list-style: none;
-  display: flex;
-  gap: 5px;
-  li a,
-  li button {
-    font-size: 14px;
+  li {
+    font-size: 9px;
     text-decoration: none;
     background: none;
     border: none;
@@ -198,6 +193,12 @@ export const SignList = styled.ul`
     border: 1px solid;
     padding: 5px;
     border-radius: 10px;
+    text-align: center;
+    transition: transform 0.3s ease, color 0.3s ease;
+    &:hover {
+      transform: translateY(-2px);
+      color: ${(props) => props.theme.charColor};
+    }
   }
 `;
 
@@ -210,9 +211,6 @@ const Notification = styled.div`
 `;
 
 export const MobileFooterLogoBtn = styled.button`
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
   font-size: 18px;
   font-weight: bold;
   background: none;
@@ -222,6 +220,11 @@ export const MobileFooterLogoBtn = styled.button`
   border: 1px solid;
   padding: 5px;
   border-radius: 10px;
+  transition: transform 0.3s ease, color 0.3s ease;
+  &:hover {
+    transform: translateY(-2px);
+    color: ${(props) => props.theme.charColor};
+  }
 `;
 
 const GoToChat = styled.button`
@@ -234,4 +237,9 @@ const GoToChat = styled.button`
   border: 1px solid;
   padding: 5px;
   border-radius: 10px;
+  transition: transform 0.3s ease, color 0.3s ease;
+  &:hover {
+    transform: translateY(-2px);
+    color: ${(props) => props.theme.charColor};
+  }
 `;

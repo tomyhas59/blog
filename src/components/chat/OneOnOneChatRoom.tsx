@@ -106,7 +106,7 @@ const OneOnOneChatRoom = ({
     });
 
     return () => {
-      //다른 채팅방 클릭 시
+      //다른 채팅방 클릭 시 방 나가기
       if (currentRoomId && me) {
         socket.current?.emit("leaveRoom", currentRoomId, me);
       }
@@ -124,6 +124,7 @@ const OneOnOneChatRoom = ({
     }
   }, [chatMessages, currentRoomId]);
 
+  //메시지 등록 시 스크롤 맞춤
   useEffect(() => {
     if (messageListContainerRef.current) {
       messageListContainerRef.current.scrollTop =
@@ -267,11 +268,8 @@ const ChatRoomContainer = styled.div`
   border-radius: 4px;
   background-color: #fff;
   border: 1px solid #ccc;
-  width: 400px;
+  width: 100%;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  @media (max-width: 480px) {
-    width: 330px;
-  }
 `;
 
 const CloseRoom = styled.button`
@@ -322,9 +320,9 @@ const ExitButton = styled.button`
 const MessageListContainer = styled.div`
   overflow-y: auto;
   height: 60vh;
-
+  position: relative;
   @media (max-width: 480px) {
-    height: 50vh;
+    height: 77vh;
   }
 `;
 
@@ -382,11 +380,6 @@ const MessageTime = styled.span<Pick<MessageItemProps, "isSystemMessage">>`
 
 const MessageForm = styled.form`
   display: flex;
-  margin-top: 10px;
-
-  @media (max-width: 480px) {
-    margin-top: 5px;
-  }
 `;
 
 const MessageInput = styled.input`
