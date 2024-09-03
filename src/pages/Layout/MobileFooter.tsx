@@ -5,14 +5,12 @@ import { useDispatch, useSelector } from "react-redux";
 import { useCallback, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { LOG_OUT_REQUEST, REFRESH_TOKEN_REQUEST } from "../../reducer/user";
-import Search from "../../components/Search";
-import { usePagination } from "../PaginationProvider";
 import { RootState } from "../../reducer";
 import io, { Socket } from "socket.io-client";
 import axios from "axios";
 import { UserRoomList } from "../Chat";
 
-const Header = () => {
+const MobileFooter = () => {
   const dispatch = useDispatch();
   const navigator = useNavigate();
   const { isLoggedIn, logOutDone, me, logInError } = useSelector(
@@ -33,7 +31,6 @@ const Header = () => {
     };
   }, [me]);
 
-  //새로고침 로그인 유지
   useEffect(() => {
     const accessToken = sessionStorage.getItem("accessToken");
     const refreshToken = sessionStorage.getItem("refreshToken");
@@ -69,12 +66,11 @@ const Header = () => {
       alert(logInError);
     }
   }, [logInError]);
-  const { paginate } = usePagination();
 
   useEffect(() => {
     if (logOutDone) {
       dispatch({
-        type: "INITIALIZE_STATE", // 초기화 액션 타입
+        type: "INITIALIZE_STATE",
       });
       navigator("/login");
     }
@@ -91,10 +87,9 @@ const Header = () => {
     dispatch({
       type: "REFRESH",
     });
-    paginate(1);
     navigator("/");
     window.scrollTo({ top: 0, behavior: "smooth" });
-  }, [dispatch, navigator, paginate]);
+  }, [dispatch, navigator]);
 
   const onGoToChat = () => {
     if (!me) return alert("로그인이 필요합니다");
@@ -137,121 +132,72 @@ const Header = () => {
   }, [me, socket]);
 
   return (
-    <HeaderWrapper>
-      <LogoContainer>
-        <HeaderLogoBtn onClick={onGoHome}>TMS</HeaderLogoBtn>
-        <GoToChat>
-          <button onClick={onGoToChat}>채팅</button>
-          {notification && <Notification>🔔</Notification>}
-        </GoToChat>
-        <Search />
-      </LogoContainer>
-      {!isLoggedIn && (
-        <SignList>
-          <li>
-            <Link to="/signup">회원가입</Link>
-          </li>
-          <li>
-            <Link to="/login">로그인</Link>
-          </li>
-        </SignList>
-      )}
+    <MobileFooterWrapper>
+      <SignList>
+        {!isLoggedIn && (
+          <>
+            <li>
+              <Link to="/signup">회원가입</Link>
+            </li>
+            <li>
+              <Link to="/login">로그인</Link>
+            </li>
+          </>
+        )}
+        {isLoggedIn && (
+          <>
+            <li>
+              <Link to="/info">내 정보</Link>
+            </li>
+            <li>
+              <button onClick={onLogout}>로그아웃</button>
+            </li>
+          </>
+        )}
+      </SignList>
 
-      {isLoggedIn && (
-        <SignList>
-          <li>
-            <Link to="/info">내 정보</Link>
-          </li>
-          <li>
-            <button onClick={onLogout}>로그아웃</button>
-          </li>
-        </SignList>
-      )}
-    </HeaderWrapper>
+      <MobileFooterLogoBtn onClick={onGoHome}>TMS</MobileFooterLogoBtn>
+
+      <GoToChat onClick={onGoToChat}>
+        채팅
+        {notification && <Notification>🔔</Notification>}
+      </GoToChat>
+    </MobileFooterWrapper>
   );
 };
-export default Header;
 
-export const HeaderWrapper = styled.header`
-  width: 100%;
-  height: 4rem;
-  padding: 5px;
-  top: 0;
-  z-index: 1000;
-  position: fixed;
-  background-color: ${(props) => props.theme.subColor};
-  display: flex;
-  gap: 10px;
-  justify-content: space-between;
-  align-items: center;
-  @media (max-width: 480px) {
-    display: none;
-    height: 4.5rem;
-  }
-`;
+export default MobileFooter;
 
-const LogoContainer = styled.div`
-  display: flex;
-  justify-content: flex-start;
-  gap: 5px;
+export const MobileFooterWrapper = styled.footer`
+  display: none;
   @media (max-width: 480px) {
-    width: 250px;
-    flex-wrap: wrap;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    background-color: ${(props) => props.theme.subColor};
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    color: #fff;
+    z-index: 1000;
   }
-`;
-export const HeaderLogoBtn = styled.button`
-  cursor: pointer;
-  font-size: 1.5rem;
-  color: #ffffff;
-  background-color: ${(props) => props.theme.mainColor};
-  border-radius: 8px;
-  border: 1px solid;
-  width: 6rem;
-  height: 2.5rem;
-  transition: transform 0.3s ease, color 0.3s ease;
-  &:hover {
-    transform: translateY(-2px);
-    color: ${(props) => props.theme.charColor};
-  }
-  @media (max-width: 480px) {
-    font-size: 1rem;
-    width: 7rem;
-    height: 1.5rem;
-    grid-area: a;
-  }
-`;
-
-const GoToChat = styled(HeaderLogoBtn)`
-  position: relative;
 `;
 
 export const SignList = styled.ul`
+  list-style: none;
   display: flex;
-  color: #fff;
-
-  > li {
-    background-color: ${(props) => props.theme.mainColor};
-    text-align: center;
-    padding: 10px;
-    border-radius: 5px;
+  gap: 5px;
+  li a,
+  li button {
+    font-size: 14px;
+    text-decoration: none;
+    background: none;
+    border: none;
     cursor: pointer;
-    margin-left: 3px;
-    font-size: 1rem;
-    font-weight: bold;
-    transition: transform 0.3s ease, color 0.3s ease;
-    &:hover {
-      transform: translateY(-2px);
-      color: ${(props) => props.theme.charColor};
-    }
-  }
-  @media (max-width: 480px) {
-    flex-direction: column;
-    > li {
-      margin-top: 1px;
-      width: 60px;
-      height: 30px;
-      font-size: 0.6rem;
-    }
+    border: 1px solid;
+    padding: 5px;
+    border-radius: 10px;
   }
 `;
 
@@ -261,4 +207,31 @@ const Notification = styled.div`
   top: -10px;
   right: -10px;
   font-size: 1rem;
+`;
+
+export const MobileFooterLogoBtn = styled.button`
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 18px;
+  font-weight: bold;
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-align: center;
+  border: 1px solid;
+  padding: 5px;
+  border-radius: 10px;
+`;
+
+const GoToChat = styled.button`
+  font-size: 14px;
+  font-weight: bold;
+  background: none;
+  border: none;
+  cursor: pointer;
+  position: relative;
+  border: 1px solid;
+  padding: 5px;
+  border-radius: 10px;
 `;

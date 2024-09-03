@@ -46,6 +46,9 @@ export default Footer;
 export const FooterWrapper = styled.footer`
   height: 120px;
   background-color: ${(props) => props.theme.subColor};
+  @media (max-width: 480px) {
+    display: none;
+  }
 `;
 
 export const FooterTamplate = styled.div`
