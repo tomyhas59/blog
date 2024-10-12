@@ -67,13 +67,6 @@ export const Footertxt = styled.div`
     font-size: 0.7rem;
     margin-top: 5px;
   }
-  @media (max-width: 480px) {
-    width: 50%;
-
-    p {
-      font-size: 9px;
-    }
-  }
 `;
 
 export const FooterRight = styled.div`

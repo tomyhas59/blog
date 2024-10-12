@@ -3,7 +3,6 @@ import styled from "styled-components";
 import Header from "./Header";
 import Footer from "./Footer";
 import MobileFooter from "./MobileFooter";
-import Search from "../../components/Search";
 
 const AppLayout = ({ children }: any) => {
   return (
@@ -30,7 +29,7 @@ const ContentWrapper = styled.div`
   overflow-y: auto;
   @media (max-width: 480px) {
     transform: scale(0.9);
-    margin-top: 0;
+    margin-top: -40px;
   }
 `;
 

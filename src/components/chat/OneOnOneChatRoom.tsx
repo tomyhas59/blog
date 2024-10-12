@@ -264,11 +264,12 @@ export default OneOnOneChatRoom;
 
 const ChatRoomContainer = styled.div`
   position: relative;
-  padding: 20px;
+  padding: 15px;
   border-radius: 4px;
   background-color: #fff;
   border: 1px solid #ccc;
   width: 100%;
+
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 `;
 
@@ -322,7 +323,7 @@ const MessageListContainer = styled.div`
   height: 60vh;
   position: relative;
   @media (max-width: 480px) {
-    height: 77vh;
+    height: 90vh;
   }
 `;
 

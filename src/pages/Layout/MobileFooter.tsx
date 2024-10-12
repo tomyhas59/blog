@@ -133,28 +133,27 @@ const MobileFooter = () => {
 
   return (
     <MobileFooterWrapper>
-      <SignList>
-        {!isLoggedIn && (
-          <>
-            <li>
-              <Link to="/signup">회원가입</Link>
-            </li>
-            <li>
-              <Link to="/login">로그인</Link>
-            </li>
-          </>
-        )}
-        {isLoggedIn && (
-          <>
-            <li>
-              <Link to="/info">내 정보</Link>
-            </li>
-            <li>
-              <button onClick={onLogout}>로그아웃</button>
-            </li>
-          </>
-        )}
-      </SignList>
+      {!isLoggedIn && (
+        <>
+          <ListItem>
+            <Link to="/signup">회원가입</Link>
+          </ListItem>
+          <ListItem>
+            <Link to="/login">로그인</Link>
+          </ListItem>
+        </>
+      )}
+      {isLoggedIn && (
+        <>
+          <ListItem>
+            <Link to="/info">내 정보</Link>
+          </ListItem>
+          <ListItem>
+            <button onClick={onLogout}>로그아웃</button>
+          </ListItem>
+        </>
+      )}
+
       <MobileFooterLogoBtn onClick={onGoHome}>TMS</MobileFooterLogoBtn>
       <GoToChat onClick={onGoToChat}>
         채팅
@@ -182,26 +181,6 @@ export const MobileFooterWrapper = styled.footer`
   }
 `;
 
-export const SignList = styled.ul`
-  list-style: none;
-  li {
-    font-size: 9px;
-    text-decoration: none;
-    background: none;
-    border: none;
-    cursor: pointer;
-    border: 1px solid;
-    padding: 5px;
-    border-radius: 10px;
-    text-align: center;
-    transition: transform 0.3s ease, color 0.3s ease;
-    &:hover {
-      transform: translateY(-2px);
-      color: ${(props) => props.theme.charColor};
-    }
-  }
-`;
-
 const Notification = styled.div`
   position: absolute;
   color: #fff;
@@ -211,7 +190,7 @@ const Notification = styled.div`
 `;
 
 export const MobileFooterLogoBtn = styled.button`
-  font-size: 18px;
+  font-size: 14px;
   font-weight: bold;
   background: none;
   border: none;
@@ -230,6 +209,24 @@ export const MobileFooterLogoBtn = styled.button`
 const GoToChat = styled.button`
   font-size: 14px;
   font-weight: bold;
+  background: none;
+  border: none;
+  cursor: pointer;
+  position: relative;
+  border: 1px solid;
+  padding: 5px;
+  border-radius: 10px;
+  transition: transform 0.3s ease, color 0.3s ease;
+  &:hover {
+    transform: translateY(-2px);
+    color: ${(props) => props.theme.charColor};
+  }
+`;
+
+const ListItem = styled.li`
+  font-size: 14px;
+  font-weight: bold;
+  list-style: none;
   background: none;
   border: none;
   cursor: pointer;

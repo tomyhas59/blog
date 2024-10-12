@@ -186,7 +186,6 @@ export const HeaderWrapper = styled.header`
   align-items: center;
   @media (max-width: 480px) {
     display: none;
-    height: 4.5rem;
   }
 `;
 
