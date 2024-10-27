@@ -105,7 +105,8 @@ const Form = styled.form`
 `;
 
 const Textarea = styled.textarea`
-  width: 70%;
+  max-width: 90%;
+  min-width: 90%;
 `;
 
 const Button = styled.button`
