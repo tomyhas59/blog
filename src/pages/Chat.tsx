@@ -239,7 +239,9 @@ export default Chat;
 
 const ChatContainer = styled.div`
   display: flex;
+  justify-content: center;
   align-items: flex-start;
+  gap: 50px;
   @media (max-width: 480px) {
     width: 100%;
     flex-direction: column;
@@ -303,7 +305,6 @@ const FollowList = styled.div`
     width: 100%;
     ul {
       display: flex;
-      overflow-y: auto;
       > li {
         margin-left: 5px;
       }
@@ -370,7 +371,6 @@ const UnReadMessageCount = styled.div<MyComponentProps>`
 `;
 
 const ContentWrapper = styled.div`
-  margin-left: 10%;
   width: 500px;
   @media (max-width: 480px) {
     margin-left: 0;
