@@ -182,7 +182,7 @@ export const HeaderWrapper = styled.header`
   background-color: ${(props) => props.theme.subColor};
   display: flex;
   gap: 10px;
-  justify-content: space-between;
+  justify-content: space-around;
   align-items: center;
   @media (max-width: 480px) {
     display: none;
