@@ -163,12 +163,9 @@ const user = (state = initialState, action: Action) => {
         draft.unFollowLoading = false;
         draft.unFollowDone = true;
         if (draft.me?.Followings) {
-          const unFollowIndex = draft.me?.Followings.findIndex(
-            (v) => v.id === action.data.UserId
+          draft.me.Followings = draft.me.Followings.filter(
+            (v) => v.id !== action.data.UserId
           );
-          if (unFollowIndex > -1) {
-            draft.me?.Followings.splice(unFollowIndex, 1);
-          }
         }
         break;
       }

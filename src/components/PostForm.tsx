@@ -78,7 +78,7 @@ const PostForm = () => {
   );
 
   const onRemoveImage = useCallback(
-    (filename: string) => () => {
+    (filename: string) => {
       if (filename) {
         dispatch({
           type: REMOVE_IMAGE_REQUEST,
@@ -148,7 +148,7 @@ const PostForm = () => {
                         <Image src={`${baseURL}/${filename}`} alt="img" />
                         <RemoveButton
                           type="button"
-                          onClick={onRemoveImage(filename)}
+                          onClick={() => onRemoveImage(filename)}
                         >
                           x
                         </RemoveButton>

@@ -11,7 +11,7 @@ const store = configureStore();
 
 const rootElement = document.getElementById("root");
 
-if (rootElement !== null) {
+if (rootElement) {
   const root = ReactDOM.createRoot(rootElement);
   root.render(
     <Provider store={store}>
@@ -24,5 +24,12 @@ if (rootElement !== null) {
     </Provider>
   );
 } else {
+  const errorMessage = document.createElement("div");
+  errorMessage.innerText =
+    "앱을 초기화할 수 없습니다. 나중에 다시 시도해주세요.";
+  errorMessage.style.color = "red";
+  errorMessage.style.textAlign = "center";
+  errorMessage.style.marginTop = "50px";
+  document.body.appendChild(errorMessage);
   console.error("Root element with id 'root' not found.");
 }

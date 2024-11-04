@@ -230,12 +230,10 @@ const post = (state = initialState, action: any) => {
         const postIndex = draft.allPosts.findIndex(
           (v) => v.id === action.data.PostId //백엔드의 json의 PostId
         );
-        const imageIndex = draft.allPosts[postIndex].Images.findIndex(
-          (v: { src: any }) => v.src === action.data.filename
-        );
-        if (imageIndex > -1) {
-          draft.allPosts[postIndex].Images.splice(imageIndex, 1);
-        }
+        draft.allPosts[postIndex].Images = draft.allPosts[
+          postIndex
+        ].Images.filter((v) => v.src !== action.data.filename);
+
         draft.deleteImageDone = true;
         break;
       }
@@ -301,12 +299,9 @@ const post = (state = initialState, action: any) => {
       case REMOVE_POST_SUCCESS: {
         draft.removePostLoading = false;
         draft.removePostDone = true;
-        const postIndex = draft.allPosts.findIndex(
-          (v) => v.id === action.data.PostId //백엔드의 json의 PostId
+        draft.allPosts = draft.allPosts.filter(
+          (v) => v.id !== action.data.PostId
         );
-        if (postIndex > -1) {
-          draft.allPosts.splice(postIndex, 1);
-        }
         //search
         draft.searchPosts = draft.searchPosts.filter(
           (v) => v.id !== action.data.PostId
