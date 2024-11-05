@@ -8,12 +8,11 @@ import FollowButton from "../../components/FollowButton";
 const MyFollow: React.FC = () => {
   const { me } = useSelector((state: RootState) => state.user);
   const [activeUserOption, setActiveUserOption] = useState<string | null>(null);
+  const userOptionRef = useRef<HTMLDivElement>(null);
 
   const onUserOptionClick = useCallback((nickname: string) => {
     setActiveUserOption((prev) => (prev === nickname ? null : nickname));
   }, []);
-
-  const userOptionRef = useRef<HTMLDivElement>(null);
 
   useOutsideClick([userOptionRef], () => {
     setActiveUserOption(null);

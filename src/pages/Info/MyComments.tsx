@@ -44,7 +44,7 @@ const MyComments: React.FC = () => {
 
       window.scrollTo({ top: 0, behavior: "auto" });
     },
-    [dispatch, navigator]
+    [dispatch, navigator, searchOption]
   );
 
   return (

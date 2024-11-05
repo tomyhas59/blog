@@ -18,8 +18,8 @@ const MyLikes: React.FC = () => {
 
   useEffect(() => {
     const getUserLikes = async () => {
-      try {
-        if (me?.id) {
+      if (me?.id) {
+        try {
           const response = await axios.get(`/post/likers?userId=${me.id}`);
           const posts = response.data.map(
             (item: { id: number; content: string; createdAt: string }) => ({
@@ -30,9 +30,9 @@ const MyLikes: React.FC = () => {
           );
           console.log(response.data);
           setPosts(posts);
+        } catch (error) {
+          console.error(error);
         }
-      } catch (error) {
-        console.error(error);
       }
     };
     getUserLikes();

@@ -18,14 +18,14 @@ const MyPosts: React.FC = () => {
 
   useEffect(() => {
     const getUserPosts = async () => {
-      try {
-        if (me?.id) {
+      if (me?.id) {
+        try {
           const response = await axios.get(`/post?userId=${me.id}`);
           console.log(response.data);
           setPosts(response.data);
+        } catch (error) {
+          console.error(error);
         }
-      } catch (error) {
-        console.error(error);
       }
     };
     getUserPosts();
