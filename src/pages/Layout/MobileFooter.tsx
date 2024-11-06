@@ -31,35 +31,28 @@ const MobileFooter = () => {
     };
   }, [me]);
 
-  useEffect(() => {
+  const fetchUserData = useCallback(async () => {
     const accessToken = sessionStorage.getItem("accessToken");
     const refreshToken = sessionStorage.getItem("refreshToken");
 
-    const getUserData = async () => {
-      try {
-        const response = await axios.get("/user/setUser", {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        });
-        const userData = response.data;
-        dispatch({
-          type: "SET_USER",
-          data: userData,
-        });
-      } catch (error) {
-        console.error(error);
-      }
-    };
-
-    if (accessToken) {
-      getUserData();
-    }
-
     if (!accessToken && refreshToken) {
       dispatch({ type: REFRESH_TOKEN_REQUEST });
+      return;
+    }
+
+    try {
+      const response = await axios.get("/user/setUser", {
+        headers: { Authorization: `Bearer ${accessToken}` },
+      });
+      dispatch({ type: "SET_USER", data: response.data });
+    } catch (error) {
+      console.error(error);
     }
   }, [dispatch]);
+
+  useEffect(() => {
+    fetchUserData();
+  }, [fetchUserData]);
 
   useEffect(() => {
     if (logInError) {
@@ -129,7 +122,7 @@ const MobileFooter = () => {
       socket.current?.off("unReadMessages");
       socket.current?.off("joinRoom");
     };
-  }, [me, socket]);
+  }, [me]);
 
   return (
     <MobileFooterWrapper>
@@ -184,6 +177,8 @@ export const MobileFooterWrapper = styled.footer`
 const Notification = styled.div`
   position: absolute;
   color: #fff;
+  background-color: red;
+  border-radius: 50%;
   top: -10px;
   right: -10px;
   font-size: 1rem;
