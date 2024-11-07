@@ -250,6 +250,7 @@ const PopupMenu = styled.div`
   top: 30px;
   left: 0;
   transition: transform 0.3s ease, color 0.3s ease;
+  z-index: 999;
   &:hover {
     transform: translateY(-2px);
     color: ${(props) => props.theme.charColor};

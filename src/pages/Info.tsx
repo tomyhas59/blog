@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import MyInfo from "./Info/MyInfo";
 import MyPosts from "./Info/MyPosts";
 import MyComments from "./Info/MyComments";
@@ -18,7 +18,7 @@ const Info = () => {
     if (!me) navigate("/");
   }, [me, navigate]);
 
-  const renderSection = () => {
+  const renderSection = useMemo(() => {
     switch (activeSection) {
       case "myInfo":
         return <MyInfo />;
@@ -33,7 +33,7 @@ const Info = () => {
       default:
         return <MyInfo />;
     }
-  };
+  }, [activeSection]);
 
   return (
     <Container>
@@ -81,7 +81,7 @@ const Info = () => {
           </NavItem>
         </NavList>
       </Nav>
-      <SectionWrapper>{renderSection()}</SectionWrapper>
+      <SectionWrapper>{renderSection}</SectionWrapper>
     </Container>
   );
 };
@@ -131,7 +131,7 @@ const NavItem = styled.li`
 interface NavLinkProps {
   active?: boolean;
 }
-const NavLink = styled.a<NavLinkProps>`
+const NavLink = styled.button<NavLinkProps>`
   font-weight: 600;
   font-size: 1rem;
   color: ${(props) => (props.active ? "#007bff" : "#333")};

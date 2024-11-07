@@ -43,6 +43,7 @@ const Post = ({
   const [editPost, setEditPost] = useState(false);
   const [content, setContent] = useState("");
 
+  console.log("=========", post);
   const onChangeContent = useCallback(
     (e: ChangeEvent<HTMLTextAreaElement>) => {
       setContent(e.target.value);

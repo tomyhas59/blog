@@ -39,16 +39,16 @@ const Main = () => {
       navigator("/");
       window.scrollTo({ top: 0, behavior: "smooth" });
     }
-  });
+  }, [addPostDone, dispatch, paginate, navigator]);
 
   useEffect(() => {
-    if (allPosts.length === 0) {
-      // 초기 게시물 불러오기
+    //초기 게시물 불러오기
+    if (allPosts.length === 0 && !allPostsLoading) {
       dispatch({
         type: ALL_POSTS_REQUEST,
       });
     }
-  }, [allPosts.length, dispatch]);
+  }, [allPosts.length, allPostsLoading, dispatch]);
 
   const indexOfLastPost = currentPage * postsPerPage;
   const indexOfFirstPost = indexOfLastPost - postsPerPage;
