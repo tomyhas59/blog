@@ -11,12 +11,7 @@ import useInput from "../hooks/useInput";
 import ReCommentForm from "./ReCommentForm";
 import ReComment from "./ReComment";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faUser,
-  faComment,
-  faPen,
-  faTrash,
-} from "@fortawesome/free-solid-svg-icons";
+import { faComment, faPen, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { PostType } from "../types";
 import { RootState } from "../reducer";
 import Spinner from "./Spinner";
@@ -314,11 +309,9 @@ const ContentWrapper = styled.div`
 `;
 
 const Content = styled.div`
-  /**내용 수직 정렬용 */
   width: 90%;
   font-size: 0.8rem;
   display: flex;
-  word-break: break-word; /**텍스트 줄바꿈 */
 `;
 
 const Textarea = styled.textarea`

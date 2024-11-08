@@ -1,16 +1,23 @@
 import React from "react";
+import styled from "styled-components";
 
 const ContentRenderer = ({ content }: { content: string }) => {
-  const lines = content.split("<br>").map((line, index) => {
-    return (
-      <React.Fragment key={index}>
-        {line}
-        {index !== content.split("<br>").length - 1 && <br />}
-      </React.Fragment>
-    );
-  });
-
-  return <>{lines}</>;
+  const lines = content.split("<br>");
+  return (
+    <Content>
+      {lines.map((line, index) => (
+        <React.Fragment key={index}>
+          {line}
+          {index !== lines.length - 1 && <br />}
+        </React.Fragment>
+      ))}
+    </Content>
+  );
 };
 
 export default ContentRenderer;
+
+const Content = styled.div`
+  width: 100%;
+  word-break: keep-all;
+`;

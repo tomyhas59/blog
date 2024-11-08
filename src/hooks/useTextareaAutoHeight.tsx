@@ -1,6 +1,5 @@
 import { useEffect, RefObject } from "react";
 
-// 외부로 분리된 resizeTextarea 함수
 export const resizeTextarea = (textarea: HTMLTextAreaElement | null) => {
   if (textarea) {
     textarea.style.height = "auto";

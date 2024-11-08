@@ -213,8 +213,6 @@ const ContentWrapper = styled.div`
 
 const Content = styled.div`
   width: 90%;
-  /**내용 수직 정렬용 */
-  word-break: break-word; /**텍스트 줄바꿈 */
   font-size: 0.8rem;
   & span {
     color: #b3b0b0;

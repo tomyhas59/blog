@@ -1,17 +1,14 @@
-// ListRenderer.js
-
 import React from "react";
 import styled from "styled-components";
 import ContentRenderer from "./ContentRenderer";
 import moment from "moment";
 
-const ListRenderer = ({
-  items,
-  onItemClick,
-}: {
+interface ListRendererProps {
   items: { id: number; content: string; createdAt: string }[];
   onItemClick: (content: string) => void;
-}) => (
+}
+
+const ListRenderer: React.FC<ListRendererProps> = ({ items, onItemClick }) => (
   <>
     {items.length > 0 ? (
       <List>
@@ -36,8 +33,6 @@ const List = styled.ul`
 `;
 
 const ListItem = styled.li`
-  display: flex;
-  justify-content: space-between;
   align-items: center;
   padding: 1rem;
   border: 1px solid #ccc;

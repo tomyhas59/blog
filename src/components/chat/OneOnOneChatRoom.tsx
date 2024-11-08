@@ -42,7 +42,7 @@ const OneOnOneChatRoom = ({
   const [selectedMessageId, setSelectedMessageId] = useState<number | null>(
     null
   );
-
+  // 소켓 초기화 및 청소
   useEffect(() => {
     socket.current = io(
       process.env.NODE_ENV === "production"
@@ -59,6 +59,7 @@ const OneOnOneChatRoom = ({
     };
   }, [currentRoomId, me]);
 
+  // 채팅 메시지 초기화
   useEffect(() => {
     if (currentRoomId) {
       dispatch({
@@ -68,10 +69,12 @@ const OneOnOneChatRoom = ({
     }
   }, [dispatch, currentRoomId]);
 
+  // 채팅 방 상태 확인
   useEffect(() => {
     if (!room?.User1Join || !room.User2Join) setChatDisable(true);
-  }, []);
+  }, [room]);
 
+  // 소켓 이벤트 리스너
   useEffect(() => {
     socket.current?.emit("joinRoom", currentRoomId, me);
 
@@ -359,7 +362,7 @@ const MessageText = styled.p<MessageItemProps>`
   color: ${(props) => (props.isSystemMessage ? "red" : "#000")};
   border-radius: 8px;
   max-width: 70%;
-  word-break: break-word;
+  word-break: keep-all;
   cursor: pointer;
 
   @media (max-width: 480px) {
