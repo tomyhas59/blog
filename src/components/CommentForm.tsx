@@ -23,12 +23,9 @@ const CommentForm = ({
   const { addCommentDone } = useSelector((state: RootState) => state.post);
   const [content, , setContent] = useInput();
 
-  const onChangeContent = useCallback(
-    (e: ChangeEvent<HTMLTextAreaElement>) => {
-      setContent(e.target.value);
-    },
-    [setContent]
-  );
+  const onChangeContent = (e: ChangeEvent<HTMLTextAreaElement>) => {
+    setContent(e.target.value);
+  };
 
   const editCommentRef = useRef<HTMLTextAreaElement>(null);
 
@@ -42,7 +39,7 @@ const CommentForm = ({
     if (addCommentDone) {
       setContent("");
     }
-    if (editCommentRef) {
+    if (editCommentRef.current) {
       editCommentRef.current!.focus();
     }
   }, [addCommentDone, setContent]);

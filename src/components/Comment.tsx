@@ -58,12 +58,9 @@ const Comment = ({ post }: { post: PostType }) => {
   const [editComment, setEditComment] = useState<Record<number, boolean>>({});
   const [content, , setContent] = useInput();
 
-  const onChangeContent = useCallback(
-    (e: ChangeEvent<HTMLTextAreaElement>) => {
-      setContent(e.target.value);
-    },
-    [setContent]
-  );
+  const onChangeContent = (e: ChangeEvent<HTMLTextAreaElement>) => {
+    setContent(e.target.value);
+  };
 
   const editCommentRef = useRef<HTMLTextAreaElement>(null);
 
@@ -95,14 +92,11 @@ const Comment = ({ post }: { post: PostType }) => {
   useTextareaAutoHeight(editCommentRef, editComment);
 
   // "취소" 버튼을 누를 때 호출되는 함수
-  const onCancelEditComment = useCallback(() => {
-    setEditComment((prev) => ({
-      ...prev,
-      [currentCommentId as number]: false,
-    }));
+  const onCancelEditComment = () => {
+    setEditComment({});
     setCurrentCommentId(null);
     setContent(""); // "Text" 영역 초기화
-  }, [currentCommentId, setContent]);
+  };
 
   const onModifytComment = useCallback(
     (commentId: number) => {
@@ -165,9 +159,9 @@ const Comment = ({ post }: { post: PostType }) => {
 
   return (
     <>
-      {removeCommentLoading || updateCommentLoading || addReCommentLoading ? (
-        <Spinner />
-      ) : null}
+      {(removeCommentLoading ||
+        updateCommentLoading ||
+        addReCommentLoading) && <Spinner />}
       {post.Comments.map((comment) => {
         const isEditing = editComment[comment.id];
         return (

@@ -43,12 +43,12 @@ const Main = () => {
 
   useEffect(() => {
     //초기 게시물 불러오기
-    if (allPosts.length === 0 && !allPostsLoading) {
+    if (allPosts.length === 0) {
       dispatch({
         type: ALL_POSTS_REQUEST,
       });
     }
-  }, [allPosts.length, allPostsLoading, dispatch]);
+  }, [allPosts.length, dispatch]);
 
   const indexOfLastPost = currentPage * postsPerPage;
   const indexOfFirstPost = indexOfLastPost - postsPerPage;
