@@ -164,6 +164,7 @@ const Comment = ({ post }: { post: PostType }) => {
         addReCommentLoading) && <Spinner />}
       {post.Comments.map((comment) => {
         const isEditing = editComment[comment.id];
+        console.log("--------", comment);
         return (
           <div key={comment.id}>
             <FullCommentWrapper key={comment.id}>
@@ -171,8 +172,8 @@ const Comment = ({ post }: { post: PostType }) => {
                 <Author onClick={() => toggleShowInfo(comment.id)}>
                   <img
                     src={
-                      post.User.Image
-                        ? `${baseURL}/${post.User.Image.src}`
+                      comment.User.Image
+                        ? `${baseURL}/${comment.User.Image.src}`
                         : `${DEFAULT_PROFILE_IMAGE}`
                     }
                     alt="유저 이미지"

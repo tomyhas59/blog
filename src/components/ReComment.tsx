@@ -112,8 +112,8 @@ const ReComment = ({
                 ↪
                 <img
                   src={
-                    post.User.Image
-                      ? `${baseURL}/${post.User.Image.src}`
+                    reComment.User.Image
+                      ? `${baseURL}/${reComment.User.Image.src}`
                       : `${DEFAULT_PROFILE_IMAGE}`
                   }
                   alt="유저 이미지"

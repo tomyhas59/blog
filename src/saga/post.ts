@@ -1,4 +1,4 @@
-import axios, { AxiosRequestConfig } from "axios";
+import axios from "axios";
 import { fork, takeLatest, put, all, call } from "redux-saga/effects";
 import {
   ADD_COMMENT_FAILURE,
@@ -62,13 +62,13 @@ import {
 import { SagaIterator } from "redux-saga";
 //-----------------------------------------------------
 
-function allPostsApi(data: AxiosRequestConfig<any> | undefined) {
-  return axios.get("/post/all", data);
+function allPostsApi() {
+  return axios.get("/post/all");
 }
 
-function* loadPosts(action: { data: any }): SagaIterator {
+function* loadPosts(): SagaIterator {
   try {
-    const result = yield call(allPostsApi, action.data);
+    const result = yield call(allPostsApi);
     yield put({
       type: ALL_POSTS_SUCCESS,
       data: result.data,

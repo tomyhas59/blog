@@ -17,18 +17,16 @@ const MyInfo: React.FC = () => {
   const [imageSrc, setImageSrc] = useState<string>(me?.Image?.src || "");
 
   useEffect(() => {
-    if (!imageSrc) {
-      const fetchProfileImage = async () => {
-        try {
-          const response = await axios.get("/user/profileImage");
-          setImageSrc(response.data);
-        } catch (error) {
-          console.error("Error fetching profile image:", error);
-        }
-      };
+    const fetchProfileImage = async () => {
+      try {
+        const response = await axios.get("/user/profileImage");
+        setImageSrc(response.data);
+      } catch (error) {
+        console.error("Error fetching profile image:", error);
+      }
+    };
 
-      fetchProfileImage();
-    }
+    fetchProfileImage();
   }, [imageSrc]);
 
   if (!me) {
