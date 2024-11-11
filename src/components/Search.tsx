@@ -15,18 +15,16 @@ const Search = () => {
   const navigator = useNavigate();
 
   const onSearch = useCallback(() => {
-    if (!searchText) {
-      alert("찾을 단어를 입력해 주세요");
+    if (!searchText.trim()) {
+      return alert("찾을 단어를 입력해 주세요");
     }
 
-    if (searchText.trim() !== "") {
-      navigator("/");
-      dispatch({
-        type: SEARCH_POSTS_REQUEST,
-        query: searchText,
-        searchOption,
-      });
-    }
+    navigator("/");
+    dispatch({
+      type: SEARCH_POSTS_REQUEST,
+      query: searchText,
+      searchOption,
+    });
     setSearchText("");
 
     window.scrollTo({ top: 0, behavior: "auto" }); // 페이지 맨 위로 스크롤

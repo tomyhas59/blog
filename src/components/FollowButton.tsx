@@ -20,33 +20,24 @@ const FollowButton: React.FC<FollowButtonProps> = ({
   const dispatch = useDispatch();
   const me = useSelector((state: RootState) => state.user.me);
 
-  const onFollow = useCallback(() => {
-    dispatch({ type: FOLLOW_REQUEST, data: userId });
+  const resetInfoAndOption = useCallback(() => {
     if (setShowInfo) {
-      setShowInfo((prev) => {
-        if (typeof prev === "boolean") {
-          return false;
-        } else return {};
-      });
+      setShowInfo((prev) => (typeof prev === "boolean" ? false : {}));
     }
     if (setActiveUserOption) {
       setActiveUserOption(null);
     }
+  }, [setShowInfo, setActiveUserOption]);
+
+  const onFollow = useCallback(() => {
+    dispatch({ type: FOLLOW_REQUEST, data: userId });
+    resetInfoAndOption();
     alert("팔로우 완료");
   }, [dispatch, setActiveUserOption, setShowInfo, userId]);
 
   const onUnFollow = useCallback(() => {
     dispatch({ type: UNFOLLOW_REQUEST, data: userId });
-    if (setShowInfo) {
-      setShowInfo((prev) => {
-        if (typeof prev === "boolean") {
-          return false;
-        } else return {};
-      });
-    }
-    if (setActiveUserOption) {
-      setActiveUserOption(null);
-    }
+    resetInfoAndOption();
     alert("언팔로우 완료");
   }, [dispatch, setActiveUserOption, setShowInfo, userId]);
 
