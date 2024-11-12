@@ -177,6 +177,7 @@ export const HeaderWrapper = styled.header`
   gap: 10px;
   justify-content: space-around;
   align-items: center;
+
   @media (max-width: 480px) {
     display: none;
   }
@@ -186,6 +187,7 @@ const LogoContainer = styled.div`
   display: flex;
   justify-content: flex-start;
   gap: 5px;
+
   @media (max-width: 480px) {
     width: 250px;
     flex-wrap: wrap;

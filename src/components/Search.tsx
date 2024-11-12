@@ -74,9 +74,9 @@ export default Search;
 
 const Container = styled.div`
   display: grid;
-  width: 700px;
+  width: 500px;
   height: 1.5rem;
-  grid-template-columns: 10% 65% 5%;
+  grid-template-columns: 15% 75% 10%;
   @media (max-width: 480px) {
     width: 250px;
     text-align: center;
