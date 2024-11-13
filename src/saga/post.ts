@@ -317,7 +317,7 @@ function* removeComment(action: { data: any }): SagaIterator {
     console.log(result.data);
     yield put({
       type: REMOVE_COMMENT_SUCCESS,
-      data: result.data, //여기 바꿨더니 됨
+      data: result.data,
     });
   } catch (err: any) {
     console.log(err);

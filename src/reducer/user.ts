@@ -174,6 +174,11 @@ const user = (state = initialState, action: Action) => {
         draft.unFollowError = action.error;
         break;
       //----------------------------------------------
+      case "SET_USER_IMAGE":
+        if (draft.me) {
+          draft.me.Image.src = action.data.src;
+        }
+        break;
       case "SET_USER":
         draft.me = action.data;
         draft.isLoggedIn = true;

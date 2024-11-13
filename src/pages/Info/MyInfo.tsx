@@ -5,6 +5,7 @@ import moment from "moment";
 import styled from "styled-components";
 import axios from "axios";
 import { baseURL } from "../../config";
+import { useDispatch } from "react-redux";
 
 export const DEFAULT_PROFILE_IMAGE =
   "https://cdn.pixabay.com/photo/2023/04/12/01/47/cartoon-7918608_1280.png";
@@ -15,6 +16,8 @@ const MyInfo: React.FC = () => {
   const [file, setFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string>("");
   const [imageSrc, setImageSrc] = useState<string>(me?.Image?.src || "");
+
+  const dispatch = useDispatch();
 
   useEffect(() => {
     const fetchProfileImage = async () => {
@@ -87,6 +90,12 @@ const MyInfo: React.FC = () => {
       });
 
       const newImageUrl = response.data.src;
+
+      dispatch({
+        type: "SET_USER_IMAGE",
+        data: { src: newImageUrl },
+      });
+
       setImageSrc(newImageUrl);
       setFile(null);
       setPreviewUrl("");

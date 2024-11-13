@@ -11,6 +11,7 @@ import { RootState } from "../../reducer";
 import io, { Socket } from "socket.io-client";
 import axios from "axios";
 import { UserRoomList } from "../Chat";
+import { baseURL } from "../../config";
 
 const Header = () => {
   const dispatch = useDispatch();
@@ -19,6 +20,7 @@ const Header = () => {
     (state: RootState) => state.user
   );
 
+  console.log(me);
   const [notification, setNotification] = useState<boolean>(false);
   const socket = useRef<Socket | null>(null);
 
@@ -152,6 +154,7 @@ const Header = () => {
 
       {isLoggedIn && (
         <SignList>
+          <ProfileImage src={me?.Image.src && `${baseURL}/${me?.Image.src}`} />
           <li>
             <Link to="/info">내 정보</Link>
           </li>
@@ -223,6 +226,10 @@ export const SignList = styled.ul`
   display: flex;
   color: #fff;
 
+  > img {
+    width: 50px;
+  }
+
   > li {
     background-color: ${(props) => props.theme.mainColor};
     text-align: center;
@@ -233,6 +240,7 @@ export const SignList = styled.ul`
     font-size: 1rem;
     font-weight: bold;
     transition: transform 0.3s ease, color 0.3s ease;
+
     &:hover {
       transform: translateY(-2px);
       color: ${(props) => props.theme.charColor};
@@ -257,4 +265,10 @@ const Notification = styled.div`
   top: -10px;
   right: -10px;
   font-size: 1rem;
+`;
+
+const ProfileImage = styled.img`
+  width: 20px;
+  height: 40px;
+  border-radius: 50%;
 `;
