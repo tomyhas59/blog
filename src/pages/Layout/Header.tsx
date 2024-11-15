@@ -19,8 +19,6 @@ const Header = () => {
   const { isLoggedIn, logOutDone, me, logInError } = useSelector(
     (state: RootState) => state.user
   );
-
-  console.log(me);
   const [notification, setNotification] = useState<boolean>(false);
   const socket = useRef<Socket | null>(null);
 
@@ -154,7 +152,9 @@ const Header = () => {
 
       {isLoggedIn && (
         <SignList>
-          <ProfileImage src={me?.Image.src && `${baseURL}/${me?.Image.src}`} />
+          <ProfileImage
+            src={me?.Image?.src && `${baseURL}/${me?.Image?.src}`}
+          />
           <li>
             <Link to="/info">내 정보</Link>
           </li>

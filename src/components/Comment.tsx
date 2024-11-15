@@ -164,7 +164,6 @@ const Comment = ({ post }: { post: PostType }) => {
         addReCommentLoading) && <Spinner />}
       {post.Comments.map((comment) => {
         const isEditing = editComment[comment.id];
-        console.log("--------", comment);
         return (
           <div key={comment.id}>
             <FullCommentWrapper key={comment.id}>
