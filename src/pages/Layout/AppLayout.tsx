@@ -8,7 +8,6 @@ const AppLayout = ({ children }: any) => {
   return (
     <LayoutWrapper>
       <Header />
-
       <ContentWrapper>{children}</ContentWrapper>
       <Footer />
       <MobileFooter />

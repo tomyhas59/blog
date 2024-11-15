@@ -54,7 +54,7 @@ const Header = () => {
   }, [dispatch]);
 
   useEffect(() => {
-    fetchUserData();
+    if (me) fetchUserData();
   }, [fetchUserData]);
 
   useEffect(() => {
@@ -133,8 +133,8 @@ const Header = () => {
     <HeaderWrapper>
       <LogoContainer>
         <HeaderLogoBtn onClick={onGoHome}>TMS</HeaderLogoBtn>
-        <GoToChat>
-          <button onClick={onGoToChat}>채팅</button>
+        <GoToChat onClick={onGoToChat}>
+          <span>채팅</span>
           {notification && <Notification>🔔</Notification>}
         </GoToChat>
         <Search />
@@ -257,7 +257,7 @@ export const SignList = styled.ul`
   }
 `;
 
-const Notification = styled.div`
+const Notification = styled.span`
   position: absolute;
   background-color: red;
   border-radius: 50%;

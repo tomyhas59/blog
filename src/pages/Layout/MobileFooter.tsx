@@ -20,6 +20,9 @@ const MobileFooter = () => {
   const [notification, setNotification] = useState<boolean>(false);
   const socket = useRef<Socket | null>(null);
 
+  const accessToken = sessionStorage.getItem("accessToken");
+  const refreshToken = sessionStorage.getItem("refreshToken");
+
   useEffect(() => {
     socket.current =
       process.env.NODE_ENV === "production"
@@ -32,9 +35,6 @@ const MobileFooter = () => {
   }, [me]);
 
   const fetchUserData = useCallback(async () => {
-    const accessToken = sessionStorage.getItem("accessToken");
-    const refreshToken = sessionStorage.getItem("refreshToken");
-
     if (!accessToken && refreshToken) {
       dispatch({ type: REFRESH_TOKEN_REQUEST });
       return;
@@ -51,7 +51,7 @@ const MobileFooter = () => {
   }, [dispatch]);
 
   useEffect(() => {
-    fetchUserData();
+    if (accessToken) fetchUserData();
   }, [fetchUserData]);
 
   useEffect(() => {
