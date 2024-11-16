@@ -125,14 +125,18 @@ const ReComment = ({
                   <BlueButton onClick={() => onSearch(reComment.User.nickname)}>
                     작성 글 보기
                   </BlueButton>
-                  <FollowButton
-                    userId={reComment.User.id}
-                    setShowInfo={
-                      setShowInfo as React.Dispatch<
-                        React.SetStateAction<boolean | Record<number, boolean>>
-                      >
-                    }
-                  />
+                  {id !== reComment.User.id && (
+                    <FollowButton
+                      userId={reComment.User.id}
+                      setShowInfo={
+                        setShowInfo as React.Dispatch<
+                          React.SetStateAction<
+                            boolean | Record<number, boolean>
+                          >
+                        >
+                      }
+                    />
+                  )}
                 </PopupMenu>
               ) : null}
               <Date>{moment(reComment.createdAt).format("l")}</Date>

@@ -50,7 +50,7 @@ export type ReCommentType = {
 
 export type ImageType = {
   id: number;
-  src?: string;
+  src: string;
   createdAt: string;
   updatedAt: string;
   PostId: number | null;

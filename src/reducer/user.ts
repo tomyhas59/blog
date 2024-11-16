@@ -175,8 +175,13 @@ const user = (state = initialState, action: Action) => {
         break;
       //----------------------------------------------
       case "SET_USER_IMAGE":
-        if (draft.me) {
+        if (draft.me?.Image) {
           draft.me.Image.src = action.data.src;
+        }
+        break;
+      case "DELETE_USER_IMAGE":
+        if (draft.me) {
+          draft.me.Image.src = "";
         }
         break;
       case "SET_USER":

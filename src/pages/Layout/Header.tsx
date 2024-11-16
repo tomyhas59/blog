@@ -12,6 +12,7 @@ import io, { Socket } from "socket.io-client";
 import axios from "axios";
 import { UserRoomList } from "../Chat";
 import { baseURL } from "../../config";
+import { DEFAULT_PROFILE_IMAGE } from "../Info/MyInfo";
 
 const Header = () => {
   const dispatch = useDispatch();
@@ -153,7 +154,11 @@ const Header = () => {
       {isLoggedIn && (
         <SignList>
           <ProfileImage
-            src={me?.Image?.src && `${baseURL}/${me?.Image?.src}`}
+            src={
+              me?.Image?.src === ""
+                ? `${DEFAULT_PROFILE_IMAGE}`
+                : `${baseURL}/${me?.Image?.src}`
+            }
           />
           <li>
             <Link to="/info">내 정보</Link>

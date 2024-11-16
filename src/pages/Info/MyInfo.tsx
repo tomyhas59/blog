@@ -69,7 +69,10 @@ const MyInfo: React.FC = () => {
     }
     try {
       await axios.delete("/user/profileImage");
-      setImageSrc("");
+      setImageSrc(DEFAULT_PROFILE_IMAGE);
+      dispatch({
+        type: "DELETE_USER_IMAGE",
+      });
       alert("프로필 사진이 제거되었습니다.");
     } catch (error) {
       console.error("Error removing profile image:", error);

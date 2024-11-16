@@ -184,16 +184,18 @@ const Comment = ({ post }: { post: PostType }) => {
                     <BlueButton onClick={() => onSearch(comment.User.nickname)}>
                       작성 글 보기
                     </BlueButton>
-                    <FollowButton
-                      userId={comment.User.id}
-                      setShowInfo={
-                        setShowInfo as React.Dispatch<
-                          React.SetStateAction<
-                            boolean | Record<number, boolean>
+                    {id !== comment.User.id && (
+                      <FollowButton
+                        userId={comment.User.id}
+                        setShowInfo={
+                          setShowInfo as React.Dispatch<
+                            React.SetStateAction<
+                              boolean | Record<number, boolean>
+                            >
                           >
-                        >
-                      }
-                    />
+                        }
+                      />
+                    )}
                   </PopupMenu>
                 ) : null}
                 <Date>{moment(comment.createdAt).format("l")}</Date>

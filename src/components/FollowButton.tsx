@@ -30,6 +30,7 @@ const FollowButton: React.FC<FollowButtonProps> = ({
   }, [setShowInfo, setActiveUserOption]);
 
   const onFollow = useCallback(() => {
+    if (userId === me?.id) return alert("자기 자신은 팔로우할 수 없습니다.");
     dispatch({ type: FOLLOW_REQUEST, data: userId });
     resetInfoAndOption();
     alert("팔로우 완료");
