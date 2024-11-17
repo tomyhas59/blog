@@ -1,3 +1,14 @@
+export type UserType = {
+  id: number;
+  email: string;
+  nickname: string;
+  createdAt: string;
+  updatedAt: string;
+  Followings: { id: number; nickname: string }[];
+  Followers: { id: number; nickname: string }[];
+  Image: ImageType;
+};
+
 export type PostType = {
   id: number;
   content: string;
@@ -8,18 +19,6 @@ export type PostType = {
   User: UserType;
   Images: ImageType[];
   Comments: CommentType[];
-};
-
-export type UserType = {
-  id: number;
-  email: string;
-  nickname: string;
-  password: string;
-  createdAt: string;
-  updatedAt: string;
-  Followings: { id: number; nickname: string }[];
-  Followers: { id: number; nickname: string }[];
-  Image: ImageType;
 };
 
 export type LikeType = {

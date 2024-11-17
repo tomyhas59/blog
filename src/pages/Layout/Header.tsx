@@ -130,6 +130,8 @@ const Header = () => {
     };
   }, [me, socket]);
 
+  console.log(me);
+
   return (
     <HeaderWrapper>
       <LogoContainer>
@@ -155,9 +157,9 @@ const Header = () => {
         <SignList>
           <ProfileImage
             src={
-              me?.Image?.src === ""
-                ? `${DEFAULT_PROFILE_IMAGE}`
-                : `${baseURL}/${me?.Image?.src}`
+              me?.Image
+                ? `${baseURL}/${me?.Image?.src}`
+                : `${DEFAULT_PROFILE_IMAGE}`
             }
           />
           <li>

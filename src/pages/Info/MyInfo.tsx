@@ -72,6 +72,7 @@ const MyInfo: React.FC = () => {
       setImageSrc(DEFAULT_PROFILE_IMAGE);
       dispatch({
         type: "DELETE_USER_IMAGE",
+        data: null,
       });
       alert("프로필 사진이 제거되었습니다.");
     } catch (error) {
