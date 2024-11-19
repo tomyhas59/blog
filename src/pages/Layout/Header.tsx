@@ -156,15 +156,13 @@ const Header = () => {
       {isLoggedIn && (
         <SignList>
           <ProfileImage
+            onClick={() => navigator("/info")}
             src={
               me?.Image
                 ? `${baseURL}/${me?.Image?.src}`
                 : `${DEFAULT_PROFILE_IMAGE}`
             }
           />
-          <li>
-            <Link to="/info">내 정보</Link>
-          </li>
           <li>
             <button onClick={onLogout}>로그아웃</button>
           </li>
@@ -278,4 +276,12 @@ const ProfileImage = styled.img`
   width: 20px;
   height: 40px;
   border-radius: 50%;
+  border: 2px solid #cccccc;
+  transition: transform 0.3s ease, color 0.3s ease;
+  cursor: pointer;
+  &:hover {
+    transform: scale(1.1);
+    border-color: gray;
+    color: ${(props) => props.theme.charColor};
+  }
 `;

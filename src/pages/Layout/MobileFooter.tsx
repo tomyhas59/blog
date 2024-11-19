@@ -9,6 +9,8 @@ import { RootState } from "../../reducer";
 import io, { Socket } from "socket.io-client";
 import axios from "axios";
 import { UserRoomList } from "../Chat";
+import { baseURL } from "../../config";
+import { DEFAULT_PROFILE_IMAGE } from "../Info/MyInfo";
 
 const MobileFooter = () => {
   const dispatch = useDispatch();
@@ -138,9 +140,14 @@ const MobileFooter = () => {
       )}
       {isLoggedIn && (
         <>
-          <ListItem>
-            <Link to="/info">내 정보</Link>
-          </ListItem>
+          <ProfileImage
+            onClick={() => navigator("/info")}
+            src={
+              me?.Image
+                ? `${baseURL}/${me?.Image?.src}`
+                : `${DEFAULT_PROFILE_IMAGE}`
+            }
+          />
           <ListItem>
             <button onClick={onLogout}>로그아웃</button>
           </ListItem>
@@ -232,6 +239,20 @@ const ListItem = styled.li`
   transition: transform 0.3s ease, color 0.3s ease;
   &:hover {
     transform: translateY(-2px);
+    color: ${(props) => props.theme.charColor};
+  }
+`;
+
+const ProfileImage = styled.img`
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 2px solid #cccccc;
+  transition: transform 0.3s ease, color 0.3s ease;
+  cursor: pointer;
+  &:hover {
+    transform: scale(1.1);
+    border-color: gray;
     color: ${(props) => props.theme.charColor};
   }
 `;
