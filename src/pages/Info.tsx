@@ -8,15 +8,36 @@ import styled from "styled-components";
 import { useSelector } from "react-redux";
 import { RootState } from "../reducer";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const Info = () => {
   const [activeSection, setActiveSection] = useState("myInfo");
   const { me } = useSelector((state: RootState) => state.user);
+
+  const [newFollowersCount, setNewFollowersCount] = useState<number>();
   const navigate = useNavigate();
 
   useEffect(() => {
     if (!me) navigate("/");
   }, [me, navigate]);
+
+  useEffect(() => {
+    const fetchNewFollowers = async () => {
+      if (!me) return;
+
+      try {
+        const followResponse = await axios.get(
+          `/user/getNewFollowersCount?userId=${me?.id}`
+        );
+        if (followResponse.data > 0) setNewFollowersCount(followResponse.data);
+      } catch (error) {
+        console.error("Error fetching user chat rooms:", error);
+      }
+    };
+    if (me) {
+      fetchNewFollowers();
+    }
+  }, []);
 
   const renderSection = useMemo(() => {
     switch (activeSection) {
@@ -73,9 +94,15 @@ const Info = () => {
           </NavItem>
           <NavItem>
             <NavLink
-              onClick={() => setActiveSection("myFollow")}
+              onClick={() => {
+                setNewFollowersCount(undefined);
+                setActiveSection("myFollow");
+              }}
               active={activeSection === "myFollow"}
             >
+              {newFollowersCount && newFollowersCount > 0 && (
+                <NewFollowersCount>{newFollowersCount}</NewFollowersCount>
+              )}
               팔로우
             </NavLink>
           </NavItem>
@@ -105,7 +132,6 @@ const Container = styled.div`
 
 const Nav = styled.nav`
   flex: 1;
-  max-width: 250px;
   padding: 20px;
   border-right: 1px solid #eaeaea;
   background-color: #f9f9f9;
@@ -117,6 +143,8 @@ const Nav = styled.nav`
 `;
 
 const NavList = styled.ul`
+  display: flex;
+  flex-direction: column;
   list-style: none;
   padding: 0;
   @media (max-width: 768px) {
@@ -128,10 +156,12 @@ const NavList = styled.ul`
 const NavItem = styled.li`
   margin-bottom: 15px;
 `;
+
 interface NavLinkProps {
   active?: boolean;
 }
 const NavLink = styled.button<NavLinkProps>`
+  position: relative;
   font-weight: 600;
   font-size: 1rem;
   color: ${(props) => (props.active ? "#007bff" : "#333")};
@@ -157,4 +187,16 @@ const SectionWrapper = styled.div`
   @media (max-width: 768px) {
     padding: 15px;
   }
+`;
+
+const NewFollowersCount = styled.div`
+  position: absolute;
+  top: 0;
+  right: -10px;
+  background-color: red;
+  width: 20px;
+  border-radius: 50%;
+  text-align: center;
+  color: #fff;
+  font-weight: bold;
 `;

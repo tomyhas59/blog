@@ -1,9 +1,10 @@
-import React, { useCallback, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "../../reducer";
 import styled from "styled-components";
 import useOutsideClick from "../../hooks/useOutsideClick";
 import FollowButton from "../../components/FollowButton";
+import { io, Socket } from "socket.io-client";
 
 const MyFollow: React.FC = () => {
   const { me } = useSelector((state: RootState) => state.user);
@@ -14,9 +15,30 @@ const MyFollow: React.FC = () => {
     setActiveUserOption((prev) => (prev === nickname ? null : nickname));
   }, []);
 
+  const socket = useRef<Socket | null>(null);
+
+  useEffect(() => {
+    socket.current =
+      process.env.NODE_ENV === "production"
+        ? io("https://patient-marina-tomyhas59-8c3582f9.koyeb.app")
+        : io("http://localhost:3075");
+
+    return () => {
+      socket.current?.disconnect();
+    };
+  }, [me]);
+
   useOutsideClick([userOptionRef], () => {
     setActiveUserOption(null);
   });
+
+  useEffect(() => {
+    socket.current?.emit("followNotiRead", me?.id);
+
+    return () => {
+      socket.current?.off("followNotiRead");
+    };
+  }, [me, socket]);
 
   return (
     <FollowContainer>
@@ -24,19 +46,8 @@ const MyFollow: React.FC = () => {
         <SectionHeading>팔로워 ({me?.Followers.length})</SectionHeading>
         <FollowList>
           {me?.Followers.map((follower) => (
-            <FollowItem
-              key={follower.id}
-              onClick={() => onUserOptionClick(follower.nickname)}
-            >
+            <FollowItem key={follower.id}>
               <Nickname>{follower.nickname}</Nickname>
-              {activeUserOption === follower.nickname && (
-                <UserOption ref={userOptionRef}>
-                  <FollowButton
-                    userId={follower.id}
-                    setActiveUserOption={setActiveUserOption}
-                  />
-                </UserOption>
-              )}
             </FollowItem>
           ))}
         </FollowList>
@@ -45,8 +56,19 @@ const MyFollow: React.FC = () => {
         <SectionHeading>팔로잉 ({me?.Followings.length})</SectionHeading>
         <FollowList>
           {me?.Followings.map((following) => (
-            <FollowItem key={following.id}>
+            <FollowItem
+              key={following.id}
+              onClick={() => onUserOptionClick(following.nickname)}
+            >
               <Nickname>{following.nickname}</Nickname>
+              {activeUserOption === following.nickname && (
+                <UserOption ref={userOptionRef}>
+                  <FollowButton
+                    userId={following.id}
+                    setActiveUserOption={setActiveUserOption}
+                  />
+                </UserOption>
+              )}
             </FollowItem>
           ))}
         </FollowList>

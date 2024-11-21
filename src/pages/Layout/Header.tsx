@@ -21,6 +21,8 @@ const Header = () => {
     (state: RootState) => state.user
   );
   const [notification, setNotification] = useState<boolean>(false);
+  const [followNotification, setFollowNotification] = useState<boolean>(false);
+
   const socket = useRef<Socket | null>(null);
 
   useEffect(() => {
@@ -49,14 +51,21 @@ const Header = () => {
         headers: { Authorization: `Bearer ${accessToken}` },
       });
       dispatch({ type: "SET_USER", data: response.data });
+
+      const followResponse = await axios.get(
+        `/user/getNewFollowersCount?userId=${me?.id}`
+      );
+      const hasNewFollower = followResponse.data > 0;
+
+      setFollowNotification(hasNewFollower);
     } catch (error) {
       console.error(error);
     }
-  }, [dispatch]);
+  }, [dispatch, me]);
 
   useEffect(() => {
     if (me) fetchUserData();
-  }, [fetchUserData]);
+  }, [me, fetchUserData]);
 
   useEffect(() => {
     if (logInError) {
@@ -155,14 +164,17 @@ const Header = () => {
 
       {isLoggedIn && (
         <SignList>
-          <ProfileImage
-            onClick={() => navigator("/info")}
-            src={
-              me?.Image
-                ? `${baseURL}/${me?.Image?.src}`
-                : `${DEFAULT_PROFILE_IMAGE}`
-            }
-          />
+          <ProfileImageContainer>
+            <ProfileImage
+              onClick={() => navigator("/info")}
+              src={
+                me?.Image
+                  ? `${baseURL}/${me?.Image?.src}`
+                  : `${DEFAULT_PROFILE_IMAGE}`
+              }
+            />
+            {followNotification && <Notification>🔔</Notification>}
+          </ProfileImageContainer>
           <li>
             <button onClick={onLogout}>로그아웃</button>
           </li>
@@ -245,7 +257,7 @@ export const SignList = styled.ul`
     font-size: 1rem;
     font-weight: bold;
     transition: transform 0.3s ease, color 0.3s ease;
-
+    display: flex;
     &:hover {
       transform: translateY(-2px);
       color: ${(props) => props.theme.charColor};
@@ -261,27 +273,34 @@ export const SignList = styled.ul`
     }
   }
 `;
-
 const Notification = styled.span`
   position: absolute;
-  background-color: red;
-  border-radius: 50%;
-  color: #fff;
   top: -10px;
   right: -10px;
   font-size: 1rem;
+  color: #fff;
+  background-color: red;
+  padding: 3px 6px;
+  border-radius: 50%;
+  z-index: 999;
+`;
+
+const ProfileImageContainer = styled.div`
+  position: relative;
+  width: 50px;
+  height: 50px;
 `;
 
 const ProfileImage = styled.img`
-  width: 20px;
-  height: 40px;
+  width: 100%;
+  height: 100%;
   border-radius: 50%;
   border: 2px solid #cccccc;
-  transition: transform 0.3s ease, color 0.3s ease;
   cursor: pointer;
+  transition: transform 0.3s ease, border-color 0.3s ease;
+
   &:hover {
     transform: scale(1.1);
     border-color: gray;
-    color: ${(props) => props.theme.charColor};
   }
 `;
