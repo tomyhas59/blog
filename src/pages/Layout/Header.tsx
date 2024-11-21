@@ -24,6 +24,7 @@ const Header = () => {
   const [followNotification, setFollowNotification] = useState<boolean>(false);
 
   const socket = useRef<Socket | null>(null);
+  const { paginate } = usePagination();
 
   useEffect(() => {
     socket.current =
@@ -79,6 +80,11 @@ const Header = () => {
         console.error(err);
       }
     };
+      setFollowNotification(hasNewFollower);
+    } catch (error) {
+      console.error(error);
+    }
+  }, [dispatch, me?.id]);
 
     if (me?.id) {
       fetchNewFollowersCount();
@@ -90,7 +96,6 @@ const Header = () => {
       alert(logInError);
     }
   }, [logInError]);
-  const { paginate } = usePagination();
 
   useEffect(() => {
     if (logOutDone) {
@@ -160,8 +165,6 @@ const Header = () => {
       socket.current?.off("joinRoom");
     };
   }, [me, socket]);
-
-  console.log(me);
 
   return (
     <HeaderWrapper>
