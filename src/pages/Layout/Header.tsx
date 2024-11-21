@@ -80,11 +80,6 @@ const Header = () => {
         console.error(err);
       }
     };
-      setFollowNotification(hasNewFollower);
-    } catch (error) {
-      console.error(error);
-    }
-  }, [dispatch, me?.id]);
 
     if (me?.id) {
       fetchNewFollowersCount();
