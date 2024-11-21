@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import MyInfo from "./Info/MyInfo";
 import MyPosts from "./Info/MyPosts";
 import MyComments from "./Info/MyComments";
@@ -9,6 +9,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "../reducer";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { io, Socket } from "socket.io-client";
 
 const Info = () => {
   const [activeSection, setActiveSection] = useState("myInfo");
@@ -16,6 +17,23 @@ const Info = () => {
 
   const [newFollowersCount, setNewFollowersCount] = useState<number>();
   const navigate = useNavigate();
+  const socket = useRef<Socket | null>(null);
+
+  useEffect(() => {
+    socket.current =
+      process.env.NODE_ENV === "production"
+        ? io("https://patient-marina-tomyhas59-8c3582f9.koyeb.app")
+        : io("http://localhost:3075");
+
+    if (me) {
+      const userInfo = { id: me.id, nickname: me.nickname };
+      socket.current.emit("loginUser", userInfo);
+    }
+
+    return () => {
+      socket.current?.disconnect();
+    };
+  }, [me]);
 
   useEffect(() => {
     if (!me) navigate("/");
@@ -56,6 +74,12 @@ const Info = () => {
     }
   }, [activeSection]);
 
+  const goToMyFollow = () => {
+    setNewFollowersCount(undefined);
+    setActiveSection("myFollow");
+    socket.current?.emit("followNotiRead", me?.id);
+  };
+
   return (
     <Container>
       <Nav>
@@ -94,10 +118,7 @@ const Info = () => {
           </NavItem>
           <NavItem>
             <NavLink
-              onClick={() => {
-                setNewFollowersCount(undefined);
-                setActiveSection("myFollow");
-              }}
+              onClick={goToMyFollow}
               active={activeSection === "myFollow"}
             >
               {newFollowersCount && newFollowersCount > 0 && (

@@ -37,35 +37,53 @@ const Header = () => {
   }, [me]);
 
   //새로고침 로그인 유지
-  const fetchUserData = useCallback(async () => {
+  useEffect(() => {
     const accessToken = sessionStorage.getItem("accessToken");
     const refreshToken = sessionStorage.getItem("refreshToken");
 
+    const getUserData = async () => {
+      try {
+        const response = await axios.get("/user/setUser", {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        });
+        const userData = response.data;
+        dispatch({
+          type: "SET_USER",
+          data: userData,
+        });
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    if (accessToken) {
+      getUserData();
+    }
     if (!accessToken && refreshToken) {
       dispatch({ type: REFRESH_TOKEN_REQUEST });
-      return;
     }
-
-    try {
-      const response = await axios.get("/user/setUser", {
-        headers: { Authorization: `Bearer ${accessToken}` },
-      });
-      dispatch({ type: "SET_USER", data: response.data });
-
-      const followResponse = await axios.get(
-        `/user/getNewFollowersCount?userId=${me?.id}`
-      );
-      const hasNewFollower = followResponse.data > 0;
-
-      setFollowNotification(hasNewFollower);
-    } catch (error) {
-      console.error(error);
-    }
-  }, [dispatch, me]);
+  }, [dispatch]);
 
   useEffect(() => {
-    if (me) fetchUserData();
-  }, [me, fetchUserData]);
+    const fetchNewFollowersCount = async () => {
+      try {
+        const response = await axios.get(
+          `/user/getNewFollowersCount?userId=${me?.id}`
+        );
+
+        const hasNewFollowers = response.data > 0;
+
+        setFollowNotification(hasNewFollowers);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+
+    if (me?.id) {
+      fetchNewFollowersCount();
+    }
+  }, [me]);
 
   useEffect(() => {
     if (logInError) {
@@ -131,6 +149,10 @@ const Header = () => {
 
     socket.current?.on("joinRoom", () => {
       fetchUserChatRooms();
+    });
+
+    socket.current?.on("updateNotification", () => {
+      setFollowNotification(false);
     });
 
     return () => {
