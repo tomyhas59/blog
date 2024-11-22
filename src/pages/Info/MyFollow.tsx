@@ -45,11 +45,25 @@ const MyFollow: React.FC = () => {
       <FollowSection>
         <SectionHeading>팔로워 ({me?.Followers.length})</SectionHeading>
         <FollowList>
-          {me?.Followers.map((follower) => (
-            <FollowItem key={follower.id}>
-              <Nickname>{follower.nickname}</Nickname>
-            </FollowItem>
-          ))}
+          {me?.Followers.map((follower) => {
+            const isFollowing = me?.Followings.some(
+              (f) => f.id === follower.id
+            );
+
+            return (
+              <FollowItem key={follower.id}>
+                <Nickname>{follower.nickname}</Nickname>
+                {!isFollowing && (
+                  <UserOption ref={userOptionRef}>
+                    <FollowButton
+                      userId={follower.id}
+                      setActiveUserOption={setActiveUserOption}
+                    />
+                  </UserOption>
+                )}
+              </FollowItem>
+            );
+          })}
         </FollowList>
       </FollowSection>
       <FollowSection>
