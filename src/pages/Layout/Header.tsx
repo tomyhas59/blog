@@ -1,5 +1,5 @@
 import React, { useRef, useState } from "react";
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { useCallback, useEffect } from "react";
@@ -293,6 +293,19 @@ export const SignList = styled.ul`
     }
   }
 `;
+
+const blinkBackground = keyframes`
+  0% {
+    background-color: red;
+  }
+  50% {
+    background-color: darkred;
+  }
+  100% {
+    background-color: red;
+  }
+`;
+
 const Notification = styled.span`
   position: absolute;
   top: -10px;
@@ -300,9 +313,11 @@ const Notification = styled.span`
   font-size: 1rem;
   color: #fff;
   background-color: red;
-  padding: 3px 6px;
+  padding: 2px;
   border-radius: 50%;
   z-index: 999;
+
+  animation: ${blinkBackground} 1s infinite;
 `;
 
 const ProfileImageContainer = styled.div`

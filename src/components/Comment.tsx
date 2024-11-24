@@ -162,7 +162,7 @@ const Comment = ({ post }: { post: PostType }) => {
       {(removeCommentLoading ||
         updateCommentLoading ||
         addReCommentLoading) && <Spinner />}
-      {post.Comments.map((comment) => {
+      {post.Comments?.map((comment) => {
         const isEditing = editComment[comment.id];
         return (
           <div key={comment.id}>

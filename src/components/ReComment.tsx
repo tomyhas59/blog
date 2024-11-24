@@ -99,7 +99,7 @@ const ReComment = ({
   return (
     <>
       {removeReCommentLoading || updateReCommentLoading ? <Spinner /> : null}
-      {comment.ReComments.map((reComment) => {
+      {comment.ReComments?.map((reComment) => {
         const regex = /@\w+/g;
         const regexNickname = reComment.content.match(regex);
         const userNickname = regexNickname && regexNickname[0].replace("@", "");
