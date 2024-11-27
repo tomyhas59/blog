@@ -15,7 +15,7 @@ const MyComments: React.FC = () => {
   const { me } = useSelector((state: RootState) => state.user);
   const navigator = useNavigate();
   const dispatch = useDispatch();
-  const searchOption = "comment";
+  const searchOption = "all";
 
   useEffect(() => {
     if (!me) return; // 로그인되어 있지 않으면 처리 중단
