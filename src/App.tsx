@@ -10,6 +10,7 @@ import Chat from "./pages/Chat";
 import Sign from "./pages/Sign";
 import Info from "./pages/Info";
 import NotFound from "./pages/NotFound";
+import SearchPage from "./pages/SearchPage";
 
 const routes = [
   { path: "/", element: <Main /> },
@@ -17,6 +18,7 @@ const routes = [
   { path: "/signup", element: <Sign /> },
   { path: "/chat", element: <Chat /> },
   { path: "/info", element: <Info /> },
+  { path: "/search", element: <SearchPage /> },
   { path: "*", element: <NotFound /> },
 ];
 

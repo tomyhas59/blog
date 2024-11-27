@@ -19,7 +19,7 @@ const Search = () => {
       return alert("찾을 단어를 입력해 주세요");
     }
 
-    navigator("/");
+    navigator("/search");
     dispatch({
       type: SEARCH_POSTS_REQUEST,
       query: searchText,

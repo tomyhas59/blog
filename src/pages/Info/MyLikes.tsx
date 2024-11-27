@@ -40,7 +40,7 @@ const MyLikes: React.FC = () => {
 
   const onSearch = useCallback(
     (content: string) => {
-      navigator("/");
+      navigator("/search");
       dispatch({
         type: SEARCH_POSTS_REQUEST,
         query: content,
