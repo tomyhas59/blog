@@ -106,6 +106,7 @@ const Header = () => {
     dispatch({
       type: LOG_OUT_REQUEST,
     });
+    setNotification(false);
   }, [dispatch, me?.id, socket]);
 
   const onGoHome = useCallback(() => {
