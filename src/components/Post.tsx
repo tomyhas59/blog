@@ -14,10 +14,10 @@ import {
   REMOVE_POST_REQUEST,
   UPDATE_POST_REQUEST,
   UNLIKE_POST_REQUEST,
-  SEARCH_NICKNAME_REQUEST,
   DELETE_IMAGE_REQUEST,
   UPLOAD_IMAGES_REQUEST,
   REMOVE_IMAGE_REQUEST,
+  SEARCH_POSTS_REQUEST,
 } from "../reducer/post";
 import moment from "moment";
 import "moment/locale/ko";
@@ -31,6 +31,7 @@ import useTextareaAutoHeight from "../hooks/useTextareaAutoHeight";
 import FollowButton from "./FollowButton";
 import { DEFAULT_PROFILE_IMAGE } from "../pages/Info/MyInfo";
 import { FileButton } from "./PostForm";
+import { useNavigate } from "react-router-dom";
 
 const Post = ({
   post,
@@ -42,7 +43,7 @@ const Post = ({
   const dispatch = useDispatch();
   const [editPost, setEditPost] = useState(false);
   const [content, setContent] = useState("");
-
+  const navigator = useNavigate();
   const onChangeContent = useCallback(
     (e: ChangeEvent<HTMLTextAreaElement>) => {
       setContent(e.target.value);
@@ -57,7 +58,6 @@ const Post = ({
 
   const {
     searchPostsLoading,
-    searchNicknameLoading,
     removePostLoading,
     updatePostLoading,
     addCommentLoading,
@@ -178,11 +178,13 @@ const Post = ({
 
   const onSearch = useCallback(() => {
     dispatch({
-      type: SEARCH_NICKNAME_REQUEST,
+      type: SEARCH_POSTS_REQUEST,
       query: post.User.nickname,
+      searchOption: "author",
     });
+    navigator("/search");
     window.scrollTo({ top: 0, behavior: "auto" });
-  }, [dispatch, post.User.nickname]);
+  }, [dispatch, navigator, post.User.nickname]);
 
   const onRemoveImage = useCallback(
     (filename: string) => () => {
@@ -267,7 +269,6 @@ const Post = ({
       {removePostLoading ||
       updatePostLoading ||
       searchPostsLoading ||
-      searchNicknameLoading ||
       addCommentLoading ||
       likePostLoading ||
       unLikePostLoading ? (

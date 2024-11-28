@@ -3,7 +3,7 @@ import { useState, useCallback } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import {
   REMOVE_RECOMMENT_REQUEST,
-  SEARCH_NICKNAME_REQUEST,
+  SEARCH_POSTS_REQUEST,
 } from "../reducer/post";
 import styled from "styled-components";
 import moment from "moment";
@@ -18,6 +18,7 @@ import useOutsideClick from "../hooks/useOutsideClick";
 import { baseURL } from "../config";
 import { DEFAULT_PROFILE_IMAGE } from "../pages/Info/MyInfo";
 import FollowButton from "./FollowButton";
+import { useNavigate } from "react-router-dom";
 
 const ReComment = ({
   post,
@@ -32,7 +33,7 @@ const ReComment = ({
   const { removeReCommentLoading, updateReCommentLoading } = useSelector(
     (state: RootState) => state.post
   );
-
+  const navigator = useNavigate();
   const [showInfo, setShowInfo] = useState<Record<number, boolean>>({});
   const toggleShowInfo = useCallback((ReCommentId: number) => {
     setShowInfo((prev) => {
@@ -78,13 +79,15 @@ const ReComment = ({
   const onSearch = useCallback(
     (userNickname: string) => {
       dispatch({
-        type: SEARCH_NICKNAME_REQUEST,
+        type: SEARCH_POSTS_REQUEST,
         query: userNickname,
+        searchOption: "author",
       });
+      navigator("/search");
       setShowInfo({});
       window.scrollTo({ top: 0, behavior: "auto" });
     },
-    [dispatch]
+    [dispatch, navigator]
   );
 
   //OutsideClick----------------------------------------------

@@ -14,20 +14,10 @@ const Main = () => {
   const dispatch = useDispatch();
   const navigator = useNavigate();
 
-  const {
-    allPosts,
-    searchNicknameError,
-    imagePaths,
-    addPostDone,
-    allPostsLoading,
-  } = useSelector((state: RootState) => state.post);
+  const { allPosts, imagePaths, addPostDone, allPostsLoading } = useSelector(
+    (state: RootState) => state.post
+  );
   const { currentPage, postsPerPage, paginate } = usePagination();
-
-  useEffect(() => {
-    if (searchNicknameError) {
-      alert(searchNicknameError);
-    }
-  }, [searchNicknameError]);
 
   useEffect(() => {
     if (addPostDone) {

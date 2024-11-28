@@ -37,9 +37,6 @@ import {
   REMOVE_RECOMMENT_FAILURE,
   REMOVE_RECOMMENT_REQUEST,
   REMOVE_RECOMMENT_SUCCESS,
-  SEARCH_NICKNAME_FAILURE,
-  SEARCH_NICKNAME_REQUEST,
-  SEARCH_NICKNAME_SUCCESS,
   SEARCH_POSTS_FAILURE,
   SEARCH_POSTS_REQUEST,
   SEARCH_POSTS_SUCCESS,
@@ -110,28 +107,7 @@ function* searchPosts(action: { query: any; searchOption: any }): SagaIterator {
 function* watchSearchPosts() {
   yield takeLatest<any>(SEARCH_POSTS_REQUEST, searchPosts);
 }
-//----------------------------------------------
-function searchNicknameApi(query: any) {
-  return axios.get(`/post/searchNickname?query=${query}`);
-}
-function* searchNickname(action: { query: any }): SagaIterator {
-  try {
-    const result = yield call(searchNicknameApi, action.query);
-    yield put({
-      type: SEARCH_NICKNAME_SUCCESS,
-      data: result.data,
-    });
-  } catch (err: any) {
-    console.log(err);
-    yield put({
-      type: SEARCH_NICKNAME_FAILURE,
-      error: err.response.data,
-    });
-  }
-}
-function* watchSearchNickname() {
-  yield takeLatest<any>(SEARCH_NICKNAME_REQUEST, searchNickname);
-}
+
 //-----------------------------------------------------
 
 function addPostApi(data: any) {
@@ -565,9 +541,7 @@ export default function* postSaga() {
     fork(watchUploadImages),
     fork(watchRemoveImages),
     fork(watchSearchPosts),
-    fork(watchSearchNickname),
     fork(watchDeleteImages),
-
     fork(watchReadChat),
     fork(watchDeleteAllChat),
   ]);

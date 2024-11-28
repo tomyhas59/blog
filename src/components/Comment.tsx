@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { useDispatch, useSelector } from "react-redux";
 import {
   REMOVE_COMMENT_REQUEST,
-  SEARCH_NICKNAME_REQUEST,
+  SEARCH_POSTS_REQUEST,
   UPDATE_COMMENT_REQUEST,
 } from "../reducer/post";
 import moment from "moment";
@@ -21,12 +21,14 @@ import useTextareaAutoHeight from "../hooks/useTextareaAutoHeight";
 import { baseURL } from "../config";
 import { DEFAULT_PROFILE_IMAGE } from "../pages/Info/MyInfo";
 import FollowButton from "./FollowButton";
+import { useNavigate } from "react-router-dom";
 const Comment = ({ post }: { post: PostType }) => {
   const dispatch = useDispatch();
   const id = useSelector((state: RootState) => state.user.me?.id);
   const nickname = useSelector((state: RootState) => state.user.me?.nickname);
   const { removeCommentLoading, updateCommentLoading, addReCommentLoading } =
     useSelector((state: RootState) => state.post);
+  const navigator = useNavigate();
 
   //---닉네임 클릭 정보 보기-------------------------------------
   const [showInfo, setShowInfo] = useState<Record<number, boolean>>({});
@@ -45,13 +47,15 @@ const Comment = ({ post }: { post: PostType }) => {
   const onSearch = useCallback(
     (userNickname: string) => {
       dispatch({
-        type: SEARCH_NICKNAME_REQUEST,
+        type: SEARCH_POSTS_REQUEST,
         query: userNickname,
+        searchOption: "author",
       });
+      navigator("/search");
       setShowInfo({});
       window.scrollTo({ top: 0, behavior: "auto" });
     },
-    [dispatch]
+    [dispatch, navigator]
   );
   //------------------댓글 수정--------------------------------
 

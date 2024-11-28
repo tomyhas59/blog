@@ -22,9 +22,9 @@ const Header = () => {
   );
   const [notification, setNotification] = useState<boolean>(false);
   const [followNotification, setFollowNotification] = useState<boolean>(false);
+  const { paginate } = usePagination();
 
   const socket = useRef<Socket | null>(null);
-  const { paginate } = usePagination();
 
   useEffect(() => {
     socket.current =
@@ -274,7 +274,7 @@ export const SignList = styled.ul`
     padding: 10px;
     border-radius: 5px;
     cursor: pointer;
-    margin-left: 3px;
+    margin-left: 13px;
     font-size: 1rem;
     font-weight: bold;
     transition: transform 0.3s ease, color 0.3s ease;
