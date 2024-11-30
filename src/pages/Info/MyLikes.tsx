@@ -7,14 +7,14 @@ import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { SEARCH_POSTS_REQUEST } from "../../reducer/post";
-import ListRenderer from "../../components/renderer/ListRenderer";
+import TitleRenderer from "../../components/renderer/TitleRenderer";
 
 const MyLikes: React.FC = () => {
   const [posts, setPosts] = useState<PostType[]>([]);
   const { me } = useSelector((state: RootState) => state.user);
   const navigator = useNavigate();
   const dispatch = useDispatch();
-  const searchOption = "content";
+  const searchOption = "title";
 
   useEffect(() => {
     const getUserLikes = async () => {
@@ -22,9 +22,9 @@ const MyLikes: React.FC = () => {
         try {
           const response = await axios.get(`/post/likers?userId=${me.id}`);
           const posts = response.data.map(
-            (item: { id: number; content: string; createdAt: string }) => ({
+            (item: { id: number; title: string; createdAt: string }) => ({
               id: item.id,
-              content: item.content,
+              title: item.title,
               createdAt: item.createdAt,
             })
           );
@@ -39,12 +39,13 @@ const MyLikes: React.FC = () => {
   }, [me]);
 
   const onSearch = useCallback(
-    (content: string) => {
+    (title: string, id: number) => {
       navigator("/search");
       dispatch({
         type: SEARCH_POSTS_REQUEST,
-        query: content,
+        query: title,
         searchOption,
+        id,
       });
 
       window.scrollTo({ top: 0, behavior: "auto" });
@@ -55,9 +56,9 @@ const MyLikes: React.FC = () => {
   return (
     <PostsContainer>
       <Heading>◈좋아요 한 글◈</Heading>
-      <ListRenderer
+      <TitleRenderer
         items={posts}
-        onItemClick={(content) => onSearch(content)}
+        onItemClick={(title, id) => onSearch(title, id)}
       />
     </PostsContainer>
   );

@@ -82,15 +82,22 @@ function* watchLoadPosts() {
   yield takeLatest<any>(ALL_POSTS_REQUEST, loadPosts);
 }
 //----------------------------------------------
-function searchPostsApi(query: any, searchOption: any) {
-  return axios.get(`/post/search?query=${query}&option=${searchOption}`);
+function searchPostsApi(query: any, searchOption: string, id: number) {
+  return axios.get(
+    `/post/search?query=${query}&option=${searchOption}&id=${id}`
+  );
 }
-function* searchPosts(action: { query: any; searchOption: any }): SagaIterator {
+function* searchPosts(action: {
+  query: any;
+  searchOption: string;
+  id: number;
+}): SagaIterator {
   try {
     const result = yield call(
       searchPostsApi,
       action.query,
-      action.searchOption
+      action.searchOption,
+      action.id
     );
     yield put({
       type: SEARCH_POSTS_SUCCESS,

@@ -4,31 +4,31 @@ import ContentRenderer from "./ContentRenderer";
 import moment from "moment";
 
 interface ListRendererProps {
-  items: { id: number; content: string; createdAt: string; PostId: number }[];
-  onItemClick: (content: string, PostId: number) => void;
+  items: { id: number; title: string; createdAt: string }[];
+  onItemClick: (title: string, id: number) => void;
 }
 
-const ListRenderer: React.FC<ListRendererProps> = ({ items, onItemClick }) => (
+const TitleRenderer: React.FC<ListRendererProps> = ({ items, onItemClick }) => (
   <>
     {items.length > 0 ? (
       <List>
         {items.map((item) => (
           <ListItem
             key={item.id}
-            onClick={() => onItemClick(item.content, item.PostId)}
+            onClick={() => onItemClick(item.title, item.id)}
           >
-            <ContentRenderer content={item.content} />
+            <ContentRenderer content={item.title} />
             <CreatedAt>{moment(item.createdAt).format("l")}</CreatedAt>
           </ListItem>
         ))}
       </List>
     ) : (
-      <EmptyMessage>작성한 글이 없습니다.</EmptyMessage>
+      <EmptyMessage>글이 없습니다.</EmptyMessage>
     )}
   </>
 );
 
-export default ListRenderer;
+export default TitleRenderer;
 
 const List = styled.ul`
   list-style-type: none;

@@ -15,7 +15,7 @@ const MyComments: React.FC = () => {
   const { me } = useSelector((state: RootState) => state.user);
   const navigator = useNavigate();
   const dispatch = useDispatch();
-  const searchOption = "all";
+  const searchOption = "comment";
 
   useEffect(() => {
     if (!me) return; // 로그인되어 있지 않으면 처리 중단
@@ -34,12 +34,13 @@ const MyComments: React.FC = () => {
   }, [me]);
 
   const onSearch = useCallback(
-    (content: string) => {
+    (content: string, id: number) => {
       navigator("/search");
       dispatch({
         type: SEARCH_POSTS_REQUEST,
         query: content,
         searchOption,
+        id,
       });
 
       window.scrollTo({ top: 0, behavior: "auto" });
@@ -54,7 +55,7 @@ const MyComments: React.FC = () => {
         <Heading>댓글</Heading>
         <ListRenderer
           items={comments}
-          onItemClick={(content) => onSearch(content)}
+          onItemClick={(content, id) => onSearch(content, id)}
         />
       </CommentList>
 
@@ -62,7 +63,7 @@ const MyComments: React.FC = () => {
         <Heading>대댓글</Heading>
         <ListRenderer
           items={reComments}
-          onItemClick={(content) => onSearch(content)}
+          onItemClick={(content, id) => onSearch(content, id)}
         />
       </CommentList>
     </CommentsContainer>

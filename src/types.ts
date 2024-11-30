@@ -11,6 +11,7 @@ export type UserType = {
 
 export type PostType = {
   id: number;
+  title: string;
   content: string;
   createdAt: string;
   updatedAt: string;

@@ -28,7 +28,7 @@ const Search = () => {
     setSearchText("");
 
     window.scrollTo({ top: 0, behavior: "auto" }); // 페이지 맨 위로 스크롤
-  }, [dispatch, searchOption, searchText]);
+  }, [dispatch, navigator, searchOption, searchText]);
 
   useEffect(() => {
     if (searchPostsError) {
@@ -53,7 +53,6 @@ const Search = () => {
         onChange={(e) => setSearchOption(e.target.value)}
       >
         <option value="author">글쓴이</option>
-        <option value="content">내용</option>
         <option value="all">전체</option>
       </Select>
       <Input

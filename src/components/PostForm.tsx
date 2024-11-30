@@ -33,6 +33,15 @@ const PostForm = () => {
     [setContent]
   );
 
+  const [title, setTitle] = useState("");
+
+  const onChangeTitle = useCallback(
+    (e: ChangeEvent<HTMLInputElement>) => {
+      setTitle(e.target.value);
+    },
+    [setTitle]
+  );
+
   const imageInput = useRef<HTMLInputElement>(null);
   const [active, setActive] = useState(false);
 
@@ -42,8 +51,9 @@ const PostForm = () => {
     }
     if (addPostDone) {
       setContent("");
+      setTitle("");
     }
-  }, [addPostDone, addPostError, setContent]);
+  }, [addPostDone, addPostError]);
 
   const onClickFileUpload = useCallback(() => {
     imageInput.current!.click();
@@ -92,14 +102,15 @@ const PostForm = () => {
   const onSubmit = useCallback(
     (e: SyntheticEvent) => {
       e.preventDefault();
-      if (!content || !content.trim()) {
-        return alert("게시글을 작성하세요.");
+      if (!title || !title.trim() || !content || !content.trim()) {
+        return alert("제목 또는 게시글을 작성하세요.");
       }
       const formData = new FormData();
       const contentWithBreaks = content.replace(/\n/g, "<br>");
       imagePaths.forEach((p) => {
         formData.append("image", p); //req.body.image
       });
+      formData.append("title", title); //req.body.title
       formData.append("content", contentWithBreaks); //req.body.content
       setActive(false);
       dispatch({
@@ -109,7 +120,7 @@ const PostForm = () => {
       if (textareaRef.current) textareaRef.current.style.height = "auto";
     },
 
-    [content, imagePaths, dispatch]
+    [content, imagePaths, title, dispatch]
   );
 
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -124,6 +135,11 @@ const PostForm = () => {
         <FormWrapper>
           <Title>글쓰기</Title>
           <Form encType="multipart/form-data" onSubmit={onSubmit}>
+            <TitleInput
+              value={title}
+              placeholder="제목을 입력해 주세요"
+              onChange={onChangeTitle}
+            />
             <TextArea
               placeholder="내용을 입력해주세요"
               value={content}
@@ -188,6 +204,13 @@ const Title = styled.h2`
 const Form = styled.form`
   width: 100%;
   text-align: center;
+`;
+
+const TitleInput = styled.input`
+  width: 100%;
+  padding: 5px;
+  border: 2px solid #ccc;
+  border-radius: 5px;
 `;
 
 const TextArea = styled.textarea`
