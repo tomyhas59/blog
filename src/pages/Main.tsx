@@ -14,7 +14,7 @@ const Main = () => {
   const dispatch = useDispatch();
   const navigator = useNavigate();
 
-  const { allPosts, imagePaths, addPostDone, allPostsLoading } = useSelector(
+  const { allPosts, addPostDone, allPostsLoading } = useSelector(
     (state: RootState) => state.post
   );
   const { currentPage, postsPerPage, paginate } = usePagination();
@@ -53,7 +53,7 @@ const Main = () => {
           <div>
             {currentPosts.map((post: PostType) => (
               <div key={post.id}>
-                <Post post={post} imagePaths={imagePaths} />
+                <Post post={post} />
               </div>
             ))}
             <Pagination totalPosts={allPosts.length} />

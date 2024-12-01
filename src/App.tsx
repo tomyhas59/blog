@@ -11,6 +11,7 @@ import Sign from "./pages/Sign";
 import Info from "./pages/Info";
 import NotFound from "./pages/NotFound";
 import SearchPage from "./pages/SearchPage";
+import PostDetail from "./pages/PostDetail";
 
 const routes = [
   { path: "/", element: <Main /> },
@@ -19,6 +20,7 @@ const routes = [
   { path: "/chat", element: <Chat /> },
   { path: "/info", element: <Info /> },
   { path: "/search", element: <SearchPage /> },
+  { path: "/post/:postId", element: <PostDetail /> },
   { path: "*", element: <NotFound /> },
 ];
 

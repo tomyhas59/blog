@@ -24,6 +24,7 @@ const LayoutWrapper = styled.div`
 
 const ContentWrapper = styled.div`
   flex-grow: 1;
+  padding: 5px;
   margin-top: 70px;
   overflow-y: auto;
   @media (max-width: 480px) {
