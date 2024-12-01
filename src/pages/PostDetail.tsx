@@ -256,7 +256,7 @@ const PostDetail = () => {
         data: {
           postId: post.id,
           content: contentWithBreaks,
-          imagePaths: imagePaths, //서버 데이터 req.body. key값
+          imagePaths: imagePaths,
         },
       });
 
@@ -267,6 +267,7 @@ const PostDetail = () => {
 
   const prevContent = content.replace(/<br\s*\/?>/gi, "\n");
 
+  console.log(post.User);
   return (
     <>
       {removePostLoading ||

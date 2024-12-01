@@ -21,51 +21,51 @@ const FollowButton: React.FC<FollowButtonProps> = ({
   const me = useSelector((state: RootState) => state.user.me);
 
   const resetInfoAndOption = useCallback(() => {
-    if (setShowInfo) {
-      setShowInfo((prev) => (typeof prev === "boolean" ? false : {}));
-    }
-    if (setActiveUserOption) {
-      setActiveUserOption(null);
-    }
+    setShowInfo?.((prev) => (typeof prev === "boolean" ? false : {}));
+    setActiveUserOption?.(null);
   }, [setShowInfo, setActiveUserOption]);
 
-  const onFollow = useCallback(() => {
-    if (userId === me?.id) return alert("자기 자신은 팔로우할 수 없습니다.");
-    dispatch({ type: FOLLOW_REQUEST, data: userId });
-    resetInfoAndOption();
-    alert("팔로우 완료");
-  }, [dispatch, resetInfoAndOption, userId, me?.id]);
+  const handleFollow = useCallback(
+    (isFollowing: boolean) => (e: React.MouseEvent<HTMLButtonElement>) => {
+      e.stopPropagation();
+      if (userId === me?.id) return alert("자기 자신은 팔로우할 수 없습니다.");
 
-  const onUnFollow = useCallback(() => {
-    dispatch({ type: UNFOLLOW_REQUEST, data: userId });
-    resetInfoAndOption();
-    alert("언팔로우 완료");
-  }, [dispatch, resetInfoAndOption, userId]);
+      dispatch({
+        type: isFollowing ? UNFOLLOW_REQUEST : FOLLOW_REQUEST,
+        data: userId,
+      });
+
+      resetInfoAndOption();
+      alert(isFollowing ? "언팔로우 완료" : "팔로우 완료");
+    },
+    [dispatch, resetInfoAndOption, userId, me?.id]
+  );
 
   if (!me) return null;
 
-  const isFollowing = me?.Followings.some(
+  const isFollowing = me.Followings.some(
     (following) => following.id === userId
   );
 
   return (
-    <Button onClick={isFollowing ? onUnFollow : onFollow}>
+    <Button onClick={handleFollow(isFollowing)}>
       {isFollowing ? "언팔로우" : "팔로우"}
     </Button>
   );
 };
 
 const Button = styled.button`
-  background-color: ${(props) => props.theme.mainColor};
+  background-color: ${({ theme }) => theme.mainColor};
   font-size: 12px;
   color: #fff;
   padding: 6px;
   border-radius: 6px;
   cursor: pointer;
   transition: transform 0.3s ease, color 0.3s ease;
+
   &:hover {
     transform: translateY(-2px);
-    color: ${(props) => props.theme.charColor};
+    color: ${({ theme }) => theme.charColor};
   }
 `;
 
