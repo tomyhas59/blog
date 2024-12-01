@@ -462,8 +462,22 @@ const PostWrapper = styled.div`
   margin: 10px auto;
 `;
 
+const PostHeaderFlex = styled.div`
+  display: flex;
+  justify-content: space-between;
+  position: relative;
+  align-items: center;
+  @media (max-width: 480px) {
+    display: grid;
+    grid-template-areas:
+      "a b"
+      "c c";
+  }
+`;
+
 const PostTitle = styled.div`
   font-size: 18px;
+  flex: 1;
   font-weight: bold;
   color: #333;
   padding: 8px 0;
@@ -471,6 +485,9 @@ const PostTitle = styled.div`
 
   &:hover {
     color: #007bff;
+  }
+  @media (max-width: 480px) {
+    grid-area: c;
   }
 `;
 const InPostWrapper = styled.div`
@@ -518,13 +535,6 @@ const Liked = styled.span`
   }
 `;
 
-const PostHeaderFlex = styled.div`
-  display: flex;
-  justify-content: space-between;
-  position: relative;
-  align-items: center;
-`;
-
 const PostNicknameAndDate = styled.div`
   display: flex;
   justify-content: center;
@@ -533,6 +543,12 @@ const PostNicknameAndDate = styled.div`
 
 const LikeContainer = styled.div`
   position: relative;
+  @media (max-width: 480px) {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 12px;
+  }
 `;
 const LikersList = styled.ul`
   position: absolute;

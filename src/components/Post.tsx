@@ -86,6 +86,7 @@ export default Post;
 
 const PostContainer = styled.div`
   max-width: 800px;
+  padding: 15px;
   margin: 0 auto;
   border: 1px solid #f4f4f4;
   cursor: pointer;
@@ -94,7 +95,21 @@ const PostContainer = styled.div`
   }
 `;
 
+const PostHeaderFlex = styled.div`
+  display: flex;
+  justify-content: space-between;
+  position: relative;
+  align-items: center;
+  @media (max-width: 480px) {
+    display: grid;
+    grid-template-areas:
+      "a b"
+      "c c";
+  }
+`;
+
 const PostTitle = styled.div`
+  flex: 1;
   font-size: 18px;
   font-weight: bold;
   color: #333;
@@ -104,13 +119,9 @@ const PostTitle = styled.div`
   &:hover {
     color: #007bff;
   }
-`;
-
-const PostHeaderFlex = styled.div`
-  display: flex;
-  justify-content: space-between;
-  position: relative;
-  align-items: center;
+  @media (max-width: 480px) {
+    grid-area: c;
+  }
 `;
 
 const PostNicknameAndDate = styled.div`
@@ -154,6 +165,12 @@ const Liked = styled.span`
 
 const LikeContainer = styled.div`
   position: relative;
+  @media (max-width: 480px) {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 12px;
+  }
 `;
 
 const InfoMenu = styled.div`
