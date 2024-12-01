@@ -192,7 +192,6 @@ const FormWrapper = styled.div`
   border: 1px solid silver;
   border-radius: 10px;
   background-color: #f5f5f5;
-  box-shadow: 10px 10px 10px rgba(144, 238, 144, 0.5);
 `;
 
 const Title = styled.h2`
@@ -225,7 +224,7 @@ const TextArea = styled.textarea`
 
 export const FileButton = styled.div`
   display: block;
-  padding: 10px;
+  padding: 6px;
   width: 100px;
   background-color: ${(props) => props.theme.mainColor};
   color: white;
@@ -245,9 +244,10 @@ export const FileButton = styled.div`
 `;
 
 const ImageGrid = styled.div`
+  margin: 10px;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 20px;
+  gap: 5px;
 `;
 
 const ImageContainer = styled.div`

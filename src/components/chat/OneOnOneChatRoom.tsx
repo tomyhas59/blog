@@ -271,8 +271,6 @@ const ChatRoomContainer = styled.div`
   border-radius: 4px;
   background-color: #fff;
   border: 1px solid #ccc;
-  width: 100%;
-
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 `;
 

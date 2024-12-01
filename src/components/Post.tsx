@@ -86,7 +86,7 @@ export default Post;
 
 const PostContainer = styled.div`
   max-width: 800px;
-  padding: 15px;
+
   margin: 0 auto;
   border: 1px solid #f4f4f4;
   cursor: pointer;
@@ -110,7 +110,7 @@ const PostHeaderFlex = styled.div`
 
 const PostTitle = styled.div`
   flex: 1;
-  font-size: 18px;
+  font-size: 15px;
   font-weight: bold;
   color: #333;
   padding: 8px 0;
