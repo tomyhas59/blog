@@ -33,14 +33,13 @@ const MyPosts: React.FC = () => {
 
   const onSearch = useCallback(
     (title: string, id: number) => {
-      navigator("/search");
       dispatch({
         type: SEARCH_POSTS_REQUEST,
         query: title,
         searchOption,
         id,
       });
-
+      navigator(`/post/${id}`);
       window.scrollTo({ top: 0, behavior: "auto" });
     },
     [dispatch, navigator]

@@ -6,6 +6,7 @@ import styled from "styled-components";
 import axios from "axios";
 import { baseURL } from "../../config";
 import { useDispatch } from "react-redux";
+import Spinner from "../../components/Spinner";
 
 export const DEFAULT_PROFILE_IMAGE =
   "https://cdn.pixabay.com/photo/2023/04/12/01/47/cartoon-7918608_1280.png";
@@ -16,8 +17,9 @@ const MyInfo: React.FC = () => {
   const [file, setFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string>("");
   const [imageSrc, setImageSrc] = useState<string>(me?.Image?.src || "");
-
   const dispatch = useDispatch();
+
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     const fetchProfileImage = async () => {
@@ -89,6 +91,7 @@ const MyInfo: React.FC = () => {
     formData.append("profileImage", file);
 
     try {
+      setIsLoading(true);
       const response = await axios.post("/user/profileImage", formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
@@ -100,6 +103,7 @@ const MyInfo: React.FC = () => {
         data: { src: newImageUrl },
       });
 
+      setIsLoading(false);
       setImageSrc(newImageUrl);
       setFile(null);
       setPreviewUrl("");
@@ -113,52 +117,55 @@ const MyInfo: React.FC = () => {
   };
 
   return (
-    <InfoContainer>
-      <ProfileSection>
-        <form encType="multipart/form-data" onSubmit={onSubmit}>
-          {imageSrc && !file && (
-            <RemoveButton type="button" onClick={onRemoveImage}>
-              x
-            </RemoveButton>
-          )}
-          <ProfileImage
-            onClick={onClickFileUpload}
-            src={
-              previewUrl ||
-              (imageSrc ? `${baseURL}/${imageSrc}` : DEFAULT_PROFILE_IMAGE)
-            }
-            alt="userImage"
-          />
-          <input
-            type="file"
-            name="image"
-            hidden
-            ref={imageInput}
-            onChange={onChangeImages}
-          />
-          {file && (
-            <ButtonContainer>
-              <SubmitButton type="submit">등록</SubmitButton>
-              <CancelButton type="button" onClick={onCancel}>
-                취소
-              </CancelButton>
-            </ButtonContainer>
-          )}
-        </form>
-        <InfoText>
-          <h1>내 정보</h1>
-          <UserInfo>
-            <strong>사용자명:</strong> {me.nickname}
-          </UserInfo>
-          <UserInfo>
-            <strong>이메일:</strong> {me.email}
-          </UserInfo>
-          <UserInfo>
-            <strong>가입일:</strong> {formattedDate}
-          </UserInfo>
-        </InfoText>
-      </ProfileSection>
-    </InfoContainer>
+    <>
+      {isLoading && <Spinner />}
+      <InfoContainer>
+        <ProfileSection>
+          <form encType="multipart/form-data" onSubmit={onSubmit}>
+            {imageSrc && !file && (
+              <RemoveButton type="button" onClick={onRemoveImage}>
+                x
+              </RemoveButton>
+            )}
+            <ProfileImage
+              onClick={onClickFileUpload}
+              src={
+                previewUrl ||
+                (imageSrc ? `${baseURL}/${imageSrc}` : DEFAULT_PROFILE_IMAGE)
+              }
+              alt="userImage"
+            />
+            <input
+              type="file"
+              name="image"
+              hidden
+              ref={imageInput}
+              onChange={onChangeImages}
+            />
+            {file && (
+              <ButtonContainer>
+                <SubmitButton type="submit">등록</SubmitButton>
+                <CancelButton type="button" onClick={onCancel}>
+                  취소
+                </CancelButton>
+              </ButtonContainer>
+            )}
+          </form>
+          <InfoText>
+            <h1>내 정보</h1>
+            <UserInfo>
+              <strong>사용자명:</strong> {me.nickname}
+            </UserInfo>
+            <UserInfo>
+              <strong>이메일:</strong> {me.email}
+            </UserInfo>
+            <UserInfo>
+              <strong>가입일:</strong> {formattedDate}
+            </UserInfo>
+          </InfoText>
+        </ProfileSection>
+      </InfoContainer>
+    </>
   );
 };
 

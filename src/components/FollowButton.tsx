@@ -34,13 +34,13 @@ const FollowButton: React.FC<FollowButtonProps> = ({
     dispatch({ type: FOLLOW_REQUEST, data: userId });
     resetInfoAndOption();
     alert("팔로우 완료");
-  }, [dispatch, setActiveUserOption, setShowInfo, userId]);
+  }, [dispatch, resetInfoAndOption, userId, me?.id]);
 
   const onUnFollow = useCallback(() => {
     dispatch({ type: UNFOLLOW_REQUEST, data: userId });
     resetInfoAndOption();
     alert("언팔로우 완료");
-  }, [dispatch, setActiveUserOption, setShowInfo, userId]);
+  }, [dispatch, resetInfoAndOption, userId]);
 
   if (!me) return null;
 
