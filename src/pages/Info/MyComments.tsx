@@ -7,7 +7,7 @@ import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { SEARCH_POSTS_REQUEST } from "../../reducer/post";
-import ListRenderer from "../../components/renderer/ListRenderer";
+import MyCommentListRenderer from "../../components/renderer/MyCommentListRenderer";
 
 const MyComments: React.FC = () => {
   const [comments, setComments] = useState<CommentType[]>([]);
@@ -34,16 +34,24 @@ const MyComments: React.FC = () => {
   }, [me]);
 
   const onSearch = useCallback(
-    (content: string, id: number) => {
-      navigator("/search");
+    (
+      id: number,
+      type: "comment" | "reComment",
+      content: string,
+      postId: number
+    ) => {
       dispatch({
         type: SEARCH_POSTS_REQUEST,
         query: content,
         searchOption,
-        id,
+        postId,
       });
+      const queryParam =
+        type === "comment"
+          ? `commentId=comment-${id}`
+          : `reCommentId=reComment-${id}`;
 
-      window.scrollTo({ top: 0, behavior: "auto" });
+      navigator(`/post/${postId}?${queryParam}`);
     },
     [dispatch, navigator, searchOption]
   );
@@ -53,17 +61,21 @@ const MyComments: React.FC = () => {
       <Heading>◈내가 쓴 댓글◈</Heading>
       <CommentList>
         <Heading>댓글</Heading>
-        <ListRenderer
+        <MyCommentListRenderer
           items={comments}
-          onItemClick={(content, id) => onSearch(content, id)}
+          onItemClick={(id, content, postId) =>
+            onSearch(id, "comment", content, postId)
+          }
         />
       </CommentList>
 
       <CommentList>
         <Heading>대댓글</Heading>
-        <ListRenderer
+        <MyCommentListRenderer
           items={reComments}
-          onItemClick={(content, id) => onSearch(content, id)}
+          onItemClick={(id, content, postId) =>
+            onSearch(id, "reComment", content, postId)
+          }
         />
       </CommentList>
     </CommentsContainer>

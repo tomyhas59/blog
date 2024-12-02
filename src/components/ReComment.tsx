@@ -145,7 +145,7 @@ const ReComment = ({
               <Date>{moment(reComment.createdAt).format("l")}</Date>
             </AuthorWrapper>
             <ContentWrapper>
-              <Content>
+              <Content id={`reComment-${reComment.id}`}>
                 <span>{userNickname}</span>
                 <ContentRenderer content={userContent} />
               </Content>

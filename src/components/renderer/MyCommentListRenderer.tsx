@@ -5,17 +5,20 @@ import moment from "moment";
 
 interface ListRendererProps {
   items: { id: number; content: string; createdAt: string; PostId: number }[];
-  onItemClick: (content: string, PostId: number) => void;
+  onItemClick: (id: number, content: string, PostId: number) => void;
 }
 
-const ListRenderer: React.FC<ListRendererProps> = ({ items, onItemClick }) => (
+const MyCommentListRenderer: React.FC<ListRendererProps> = ({
+  items,
+  onItemClick,
+}) => (
   <>
     {items.length > 0 ? (
       <List>
         {items.map((item) => (
           <ListItem
             key={item.id}
-            onClick={() => onItemClick(item.content, item.PostId)}
+            onClick={() => onItemClick(item.id, item.content, item.PostId)}
           >
             <ContentRenderer content={item.content} />
             <CreatedAt>{moment(item.createdAt).format("l")}</CreatedAt>
@@ -28,7 +31,7 @@ const ListRenderer: React.FC<ListRendererProps> = ({ items, onItemClick }) => (
   </>
 );
 
-export default ListRenderer;
+export default MyCommentListRenderer;
 
 const List = styled.ul`
   list-style-type: none;

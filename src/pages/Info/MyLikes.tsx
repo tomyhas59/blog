@@ -7,7 +7,7 @@ import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { SEARCH_POSTS_REQUEST } from "../../reducer/post";
-import TitleRenderer from "../../components/renderer/TitleRenderer";
+import MyPostListRenderer from "../../components/renderer/MyPostListRenderer";
 
 const MyLikes: React.FC = () => {
   const [posts, setPosts] = useState<PostType[]>([]);
@@ -39,15 +39,15 @@ const MyLikes: React.FC = () => {
   }, [me]);
 
   const onSearch = useCallback(
-    (title: string, id: number) => {
+    (title: string, postId: number) => {
       navigator("/search");
       dispatch({
         type: SEARCH_POSTS_REQUEST,
         query: title,
         searchOption,
-        id,
+        postId,
       });
-
+      navigator(`/post/${postId}`);
       window.scrollTo({ top: 0, behavior: "auto" });
     },
     [dispatch, navigator]
@@ -56,9 +56,9 @@ const MyLikes: React.FC = () => {
   return (
     <PostsContainer>
       <Heading>◈좋아요 한 글◈</Heading>
-      <TitleRenderer
+      <MyPostListRenderer
         items={posts}
-        onItemClick={(title, id) => onSearch(title, id)}
+        onItemClick={(title, postId) => onSearch(title, postId)}
       />
     </PostsContainer>
   );

@@ -8,7 +8,10 @@ interface ListRendererProps {
   onItemClick: (title: string, id: number) => void;
 }
 
-const TitleRenderer: React.FC<ListRendererProps> = ({ items, onItemClick }) => (
+const MyPostListRenderer: React.FC<ListRendererProps> = ({
+  items,
+  onItemClick,
+}) => (
   <>
     {items.length > 0 ? (
       <List>
@@ -28,7 +31,7 @@ const TitleRenderer: React.FC<ListRendererProps> = ({ items, onItemClick }) => (
   </>
 );
 
-export default TitleRenderer;
+export default MyPostListRenderer;
 
 const List = styled.ul`
   list-style-type: none;

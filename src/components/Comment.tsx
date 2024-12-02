@@ -212,7 +212,7 @@ const Comment = ({ post }: { post: PostType }) => {
                     ref={editCommentRef}
                   />
                 ) : (
-                  <Content>
+                  <Content id={`comment-${comment.id}`}>
                     <ContentRenderer content={comment.content} />
                   </Content>
                 )}

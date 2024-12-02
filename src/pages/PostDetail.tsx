@@ -1,8 +1,9 @@
-import { useParams } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 import React, {
   ChangeEvent,
   SyntheticEvent,
   useCallback,
+  useEffect,
   useRef,
   useState,
 } from "react";
@@ -53,6 +54,40 @@ const PostDetail = () => {
     },
     [setContent]
   );
+
+  const location = useLocation();
+
+  useEffect(() => {
+    // URL에서 commentId, reCommentId 추출
+    const params = new URLSearchParams(location.search);
+    const commentId = params.get("commentId");
+    const reCommentId = params.get("reCommentId");
+
+    if (commentId) {
+      // 댓글로 스크롤 이동
+      const commentElement = document.getElementById(commentId);
+      if (commentElement) {
+        commentElement.scrollIntoView({
+          behavior: "auto",
+          block: "center",
+        });
+
+        commentElement.style.backgroundColor = "#fffae6";
+      }
+    }
+    if (reCommentId) {
+      // 댓글로 스크롤 이동
+      const reCommentElement = document.getElementById(reCommentId);
+      if (reCommentElement) {
+        reCommentElement.scrollIntoView({
+          behavior: "auto",
+          block: "center",
+        });
+
+        reCommentElement.style.backgroundColor = "#fffae6";
+      }
+    }
+  }, [location]);
 
   const id = me?.id;
   const nickname = useSelector((state: RootState) => state.user.me?.nickname);

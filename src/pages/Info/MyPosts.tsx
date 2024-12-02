@@ -7,7 +7,7 @@ import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { SEARCH_POSTS_REQUEST } from "../../reducer/post";
-import TitleRenderer from "../../components/renderer/TitleRenderer";
+import MyPostListRenderer from "../../components/renderer/MyPostListRenderer";
 
 const MyPosts: React.FC = () => {
   const [posts, setPosts] = useState<PostType[]>([]);
@@ -32,14 +32,14 @@ const MyPosts: React.FC = () => {
   }, [me]);
 
   const onSearch = useCallback(
-    (title: string, id: number) => {
+    (title: string, postId: number) => {
       dispatch({
         type: SEARCH_POSTS_REQUEST,
         query: title,
         searchOption,
-        id,
+        postId,
       });
-      navigator(`/post/${id}`);
+      navigator(`/post/${postId}`);
       window.scrollTo({ top: 0, behavior: "auto" });
     },
     [dispatch, navigator]
@@ -48,9 +48,9 @@ const MyPosts: React.FC = () => {
   return (
     <PostsContainer>
       <Heading>◈내가 쓴 글◈</Heading>
-      <TitleRenderer
+      <MyPostListRenderer
         items={posts}
-        onItemClick={(title, id) => onSearch(title, id)}
+        onItemClick={(title, postId) => onSearch(title, postId)}
       />
     </PostsContainer>
   );
