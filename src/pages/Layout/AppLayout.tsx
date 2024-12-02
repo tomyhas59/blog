@@ -2,7 +2,6 @@ import React from "react";
 import styled from "styled-components";
 import Header from "./Header";
 import Footer from "./Footer";
-import MobileFooter from "./MobileFooter";
 
 const AppLayout = ({ children }: any) => {
   return (
@@ -10,12 +9,12 @@ const AppLayout = ({ children }: any) => {
       <Header />
       <ContentWrapper>{children}</ContentWrapper>
       <Footer />
-      <MobileFooter />
     </LayoutWrapper>
   );
 };
 
 const LayoutWrapper = styled.div`
+  position: relative;
   display: flex;
   flex-direction: column;
   min-height: 100vh;

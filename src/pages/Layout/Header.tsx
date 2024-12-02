@@ -174,12 +174,12 @@ const Header = () => {
       </LogoContainer>
       {!isLoggedIn && (
         <SignList>
-          <li>
+          <ListItem>
             <Link to="/signup">회원가입</Link>
-          </li>
-          <li>
+          </ListItem>
+          <ListItem>
             <Link to="/login">로그인</Link>
-          </li>
+          </ListItem>
         </SignList>
       )}
 
@@ -196,9 +196,9 @@ const Header = () => {
             />
             {followNotification && <Notification>🔔</Notification>}
           </ProfileImageContainer>
-          <li>
+          <ListItem>
             <button onClick={onLogout}>로그아웃</button>
-          </li>
+          </ListItem>
         </SignList>
       )}
     </HeaderWrapper>
@@ -210,7 +210,6 @@ export const HeaderWrapper = styled.header`
   width: 100%;
   height: 4rem;
   padding: 5px;
-  top: 0;
   z-index: 1000;
   position: fixed;
   background-color: ${(props) => props.theme.subColor};
@@ -220,7 +219,9 @@ export const HeaderWrapper = styled.header`
   align-items: center;
 
   @media (max-width: 480px) {
-    display: none;
+    display: grid;
+    bottom: 0;
+    grid-template-areas: "a b";
   }
 `;
 
@@ -228,12 +229,11 @@ const LogoContainer = styled.div`
   display: flex;
   justify-content: flex-start;
   gap: 5px;
-
   @media (max-width: 480px) {
-    width: 250px;
-    flex-wrap: wrap;
+    grid-area: b;
   }
 `;
+
 export const HeaderLogoBtn = styled.button`
   cursor: pointer;
   font-size: 1.5rem;
@@ -249,10 +249,11 @@ export const HeaderLogoBtn = styled.button`
     color: ${(props) => props.theme.charColor};
   }
   @media (max-width: 480px) {
-    font-size: 1rem;
-    width: 7rem;
-    height: 1.5rem;
-    grid-area: a;
+    font-size: 14px;
+    font-weight: bold;
+    background: none;
+    cursor: pointer;
+    text-align: center;
   }
 `;
 
@@ -262,35 +263,34 @@ const GoToChat = styled(HeaderLogoBtn)`
 
 export const SignList = styled.ul`
   display: flex;
+  justify-content: center;
+  align-items: center;
   color: #fff;
+`;
 
-  > img {
-    width: 50px;
+const ListItem = styled.li`
+  background-color: ${(props) => props.theme.mainColor};
+  text-align: center;
+  padding: 10px;
+  border-radius: 10px;
+  cursor: pointer;
+  margin-left: 13px;
+  font-size: 1rem;
+  font-weight: bold;
+  transition: transform 0.3s ease, color 0.3s ease;
+  display: flex;
+  &:hover {
+    transform: translateY(-2px);
+    color: ${(props) => props.theme.charColor};
   }
-
-  > li {
-    background-color: ${(props) => props.theme.mainColor};
-    text-align: center;
-    padding: 10px;
-    border-radius: 5px;
-    cursor: pointer;
-    margin-left: 13px;
-    font-size: 1rem;
-    font-weight: bold;
-    transition: transform 0.3s ease, color 0.3s ease;
-    display: flex;
+  @media (max-width: 480px) {
+    font-size: 14px;
+    background: none;
+    position: relative;
+    border: 1px solid;
     &:hover {
       transform: translateY(-2px);
       color: ${(props) => props.theme.charColor};
-    }
-  }
-  @media (max-width: 480px) {
-    flex-direction: column;
-    > li {
-      margin-top: 1px;
-      width: 60px;
-      height: 30px;
-      font-size: 0.6rem;
     }
   }
 `;
@@ -338,5 +338,14 @@ const ProfileImage = styled.img`
   &:hover {
     transform: scale(1.1);
     border-color: gray;
+  }
+
+  @media (max-width: 480px) {
+    width: 40px;
+    height: 40px;
+
+    &:hover {
+      color: ${(props) => props.theme.charColor};
+    }
   }
 `;

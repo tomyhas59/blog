@@ -77,9 +77,12 @@ const Container = styled.div`
   height: 1.5rem;
   grid-template-columns: 15% 75% 10%;
   @media (max-width: 480px) {
+    position: absolute;
     width: 250px;
     text-align: center;
     grid-template-columns: 30% 60% 10%;
+    top: -30px;
+    left: 0;
   }
 `;
 

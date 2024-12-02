@@ -269,6 +269,7 @@ const ChatRoomContainer = styled.div`
   position: relative;
   padding: 15px;
   border-radius: 4px;
+  flex: 1;
   background-color: #fff;
   border: 1px solid #ccc;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -324,7 +325,7 @@ const MessageListContainer = styled.div`
   height: 60vh;
   position: relative;
   @media (max-width: 480px) {
-    height: 90vh;
+    height: 85vh;
   }
 `;
 
