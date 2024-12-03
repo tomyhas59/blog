@@ -51,28 +51,26 @@ const Post = ({ post }: { post: PostType }) => {
   return (
     <PostContainer onClick={() => goToPostDetail(post.id)}>
       <PostHeaderFlex>
-        <PostNicknameAndDate>
-          <NicknameButton onClick={toggleShowInfo}>
-            <img
-              src={
-                post.User.Image
-                  ? `${baseURL}/${post.User.Image.src}`
-                  : `${DEFAULT_PROFILE_IMAGE}`
-              }
-              alt="유저 이미지"
-            />
-            {post.User.nickname.slice(0, 5)}
-          </NicknameButton>
-          {showInfo && (
-            <InfoMenu ref={infoMenuRef}>
-              <Button onClick={onSearch}>작성 글 보기</Button>
-              {id !== post.User.id && (
-                <FollowButton userId={post.User.id} setShowInfo={setShowInfo} />
-              )}
-            </InfoMenu>
-          )}
-          <Date>{moment(post.createdAt).format("l")}</Date>
-        </PostNicknameAndDate>
+        <NicknameButton onClick={toggleShowInfo}>
+          <img
+            src={
+              post.User.Image
+                ? `${baseURL}/${post.User.Image.src}`
+                : `${DEFAULT_PROFILE_IMAGE}`
+            }
+            alt="유저 이미지"
+          />
+          {post.User.nickname.slice(0, 5)}
+        </NicknameButton>
+        {showInfo && (
+          <InfoMenu ref={infoMenuRef}>
+            <Button onClick={onSearch}>작성 글 보기</Button>
+            {id !== post.User.id && (
+              <FollowButton userId={post.User.id} setShowInfo={setShowInfo} />
+            )}
+          </InfoMenu>
+        )}
+        <Date>{moment(post.createdAt).format("l")}</Date>
         <PostTitle>{post.title}</PostTitle>
         <LikeContainer>
           <Liked>좋아요 {post.Likers?.length}개</Liked>
@@ -124,18 +122,13 @@ const PostTitle = styled.div`
   }
 `;
 
-const PostNicknameAndDate = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-`;
-
 const NicknameButton = styled.button`
   display: flex;
-  justify-content: space-around;
-  border-radius: 30%;
+  justify-content: start;
   align-items: center;
-  min-width: 70px;
+  gap: 5px;
+  border-radius: 30%;
+  width: 90px;
   color: ${(props) => props.theme.mainColor};
   font-weight: bold;
   transition: transform 0.3s ease, color 0.3s ease;
@@ -199,6 +192,5 @@ const Button = styled.button`
 
 const Date = styled.span`
   width: 100px;
-  margin: 5px;
   color: silver;
 `;
