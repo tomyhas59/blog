@@ -139,6 +139,7 @@ const PostForm = forwardRef<HTMLDivElement, PostFormProps>(
         {addPostLoading ? <Spinner /> : null}
         {me ? (
           <FormWrapper ref={postFormRef}>
+            <CloseForm onClick={() => setTogglePostForm(false)}>X</CloseForm>
             <Title>글쓰기</Title>
             <Form encType="multipart/form-data" onSubmit={onSubmit}>
               <TitleInput
@@ -206,6 +207,15 @@ const FormWrapper = styled.div`
   }
 `;
 
+const CloseForm = styled.button`
+  position: absolute;
+  top: 2%;
+  right: 3%;
+  font-size: 20px;
+  &:hover {
+    color: #ddd;
+  }
+`;
 const Title = styled.h2`
   text-align: center;
   margin-bottom: 20px;
