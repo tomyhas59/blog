@@ -1,5 +1,4 @@
 import React, { useEffect } from "react";
-import PostForm from "../components/PostForm";
 import Post from "../components/Post";
 import { useDispatch, useSelector } from "react-redux";
 import { ALL_POSTS_REQUEST } from "../reducer/post";
@@ -45,7 +44,6 @@ const Main = () => {
 
   return (
     <div>
-      <PostForm />
       {allPostsLoading ? (
         <Spinner />
       ) : (

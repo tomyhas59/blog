@@ -18,7 +18,7 @@ const MyComments: React.FC = () => {
   const searchOption = "comment";
 
   useEffect(() => {
-    if (!me) return; // 로그인되어 있지 않으면 처리 중단
+    if (!me) return;
 
     const getUserComments = async () => {
       try {

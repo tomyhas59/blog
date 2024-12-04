@@ -1,5 +1,4 @@
 import React, { useEffect } from "react";
-import PostForm from "../components/PostForm";
 import Post from "../components/Post";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -28,7 +27,6 @@ const SearchPage = () => {
 
   return (
     <div>
-      <PostForm />
       {searchPostsLoading ? (
         <Spinner />
       ) : (

@@ -38,15 +38,19 @@ const Post = ({ post }: { post: PostType }) => {
     setShowInfo(false);
   });
 
-  const onSearch = useCallback(() => {
-    dispatch({
-      type: SEARCH_POSTS_REQUEST,
-      query: post.User.nickname,
-      searchOption: "author",
-    });
-    navigator("/search");
-    window.scrollTo({ top: 0, behavior: "auto" });
-  }, [dispatch, navigator, post.User.nickname]);
+  const onSearch = useCallback(
+    (e: React.MouseEvent) => {
+      e.stopPropagation();
+      dispatch({
+        type: SEARCH_POSTS_REQUEST,
+        query: post.User.nickname,
+        searchOption: "author",
+      });
+      navigator("/search");
+      window.scrollTo({ top: 0, behavior: "auto" });
+    },
+    [dispatch, navigator, post.User.nickname]
+  );
 
   return (
     <PostContainer onClick={() => goToPostDetail(post.id)}>
@@ -60,7 +64,8 @@ const Post = ({ post }: { post: PostType }) => {
             }
             alt="유저 이미지"
           />
-          {post.User.nickname.slice(0, 5)}
+          <Nickname>{post.User.nickname.slice(0, 5)}</Nickname>
+          <Date>{moment(post.createdAt).format("l")}</Date>
         </NicknameButton>
         {showInfo && (
           <InfoMenu ref={infoMenuRef}>
@@ -70,10 +75,9 @@ const Post = ({ post }: { post: PostType }) => {
             )}
           </InfoMenu>
         )}
-        <Date>{moment(post.createdAt).format("l")}</Date>
         <PostTitle>{post.title}</PostTitle>
         <LikeContainer>
-          <Liked>좋아요 {post.Likers?.length}개</Liked>
+          <Liked>♥{post.Likers?.length}개</Liked>
         </LikeContainer>
       </PostHeaderFlex>
     </PostContainer>
@@ -84,7 +88,7 @@ export default Post;
 
 const PostContainer = styled.div`
   max-width: 800px;
-
+  padding: 5px 10px;
   margin: 0 auto;
   border: 1px solid #f4f4f4;
   cursor: pointer;
@@ -96,8 +100,9 @@ const PostContainer = styled.div`
 const PostHeaderFlex = styled.div`
   display: flex;
   justify-content: space-between;
-  position: relative;
   align-items: center;
+  position: relative;
+
   @media (max-width: 480px) {
     display: grid;
     grid-template-areas:
@@ -111,7 +116,6 @@ const PostTitle = styled.div`
   font-size: 15px;
   font-weight: bold;
   color: #333;
-  padding: 8px 0;
   transition: color 0.3s ease;
 
   &:hover {
@@ -126,9 +130,6 @@ const NicknameButton = styled.button`
   display: flex;
   justify-content: start;
   align-items: center;
-  gap: 5px;
-  border-radius: 30%;
-  width: 90px;
   color: ${(props) => props.theme.mainColor};
   font-weight: bold;
   transition: transform 0.3s ease, color 0.3s ease;
@@ -163,6 +164,7 @@ const LikeContainer = styled.div`
     justify-content: center;
     align-items: center;
     font-size: 12px;
+    grid-area: b;
   }
 `;
 
@@ -193,4 +195,7 @@ const Button = styled.button`
 const Date = styled.span`
   width: 100px;
   color: silver;
+`;
+const Nickname = styled.span`
+  width: 50px;
 `;
