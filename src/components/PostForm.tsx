@@ -203,7 +203,7 @@ const FormWrapper = styled.div`
   background-color: #f5f5f5;
   z-index: 200;
   @media (max-width: 480px) {
-    width: 400px;
+    width: 350px;
   }
 `;
 
