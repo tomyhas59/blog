@@ -80,6 +80,12 @@ const ShowPostForm = styled.div`
     transform: translateY(-2px);
     color: ${(props) => props.theme.charColor};
   }
+  @media (max-width: 480px) {
+    width: 50px;
+    height: 50px;
+    font-size: 50px;
+    line-height: 40px;
+  }
 `;
 
 const Overlay = styled.div`
