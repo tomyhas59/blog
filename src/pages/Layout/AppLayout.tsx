@@ -1,4 +1,4 @@
-import React, { useCallback, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import Header from "./Header";
 import Footer from "./Footer";
@@ -10,15 +10,21 @@ import useOutsideClick from "../../hooks/useOutsideClick";
 
 const AppLayout = ({ children }: any) => {
   const { me } = useSelector((state: RootState) => state.user);
-
+  const titleRef = useRef<HTMLInputElement>(null);
   const [togglePostForm, setTogglePostForm] = useState<boolean>(false);
   const navigator = useNavigate();
+
   const showPostForm = useCallback(() => {
     navigator("/");
     setTogglePostForm(true);
   }, [navigator]);
 
-  console.log(togglePostForm);
+  useEffect(() => {
+    if (togglePostForm && titleRef.current) {
+      titleRef.current.focus();
+    }
+  }, [togglePostForm]);
+
   //OutsideClick----------------------------------------------
   const postFormRef = useRef<HTMLDivElement>(null);
 
@@ -31,7 +37,11 @@ const AppLayout = ({ children }: any) => {
       {togglePostForm && (
         <>
           <Overlay />
-          <PostForm ref={postFormRef} setTogglePostForm={setTogglePostForm} />
+          <PostForm
+            postFormRef={postFormRef}
+            titleRef={titleRef}
+            setTogglePostForm={setTogglePostForm}
+          />
         </>
       )}
       <Header />

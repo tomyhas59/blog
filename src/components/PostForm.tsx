@@ -1,6 +1,5 @@
 import React, {
   ChangeEvent,
-  forwardRef,
   SyntheticEvent,
   useCallback,
   useRef,
@@ -20,172 +19,178 @@ import useTextareaAutoHeight from "../hooks/useTextareaAutoHeight";
 import { baseURL } from "../config";
 
 interface PostFormProps {
+  postFormRef: React.Ref<HTMLDivElement>;
+  titleRef: React.Ref<HTMLInputElement>;
   setTogglePostForm: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const PostForm = forwardRef<HTMLDivElement, PostFormProps>(
-  ({ setTogglePostForm }, postFormRef) => {
-    const dispatch = useDispatch();
-    const { imagePaths, addPostDone, addPostError, addPostLoading } =
-      useSelector((state: RootState) => state.post);
-    const { me } = useSelector((state: RootState) => state.user);
-    const [content, setContent] = useState("");
+const PostForm: React.FC<PostFormProps> = ({
+  postFormRef,
+  titleRef,
+  setTogglePostForm,
+}) => {
+  const dispatch = useDispatch();
+  const { imagePaths, addPostDone, addPostError, addPostLoading } = useSelector(
+    (state: RootState) => state.post
+  );
+  const { me } = useSelector((state: RootState) => state.user);
+  const [content, setContent] = useState("");
 
-    const onChangeContent = useCallback(
-      (e: ChangeEvent<HTMLTextAreaElement>) => {
-        setContent(e.target.value);
-      },
-      [setContent]
-    );
+  const onChangeContent = useCallback(
+    (e: ChangeEvent<HTMLTextAreaElement>) => {
+      setContent(e.target.value);
+    },
+    [setContent]
+  );
 
-    const [title, setTitle] = useState("");
+  const [title, setTitle] = useState("");
 
-    const onChangeTitle = useCallback(
-      (e: ChangeEvent<HTMLInputElement>) => {
-        setTitle(e.target.value);
-      },
-      [setTitle]
-    );
+  const onChangeTitle = useCallback(
+    (e: ChangeEvent<HTMLInputElement>) => {
+      setTitle(e.target.value);
+    },
+    [setTitle]
+  );
 
-    const imageInput = useRef<HTMLInputElement>(null);
-    const [active, setActive] = useState(false);
+  const imageInput = useRef<HTMLInputElement>(null);
+  const [active, setActive] = useState(false);
 
-    useEffect(() => {
-      if (addPostError) {
-        console.log(addPostError);
-      }
-      if (addPostDone) {
-        setContent("");
-        setTitle("");
-      }
-    }, [addPostDone, addPostError]);
+  useEffect(() => {
+    if (addPostError) {
+      console.log(addPostError);
+    }
+    if (addPostDone) {
+      setContent("");
+      setTitle("");
+    }
+  }, [addPostDone, addPostError]);
 
-    const onClickFileUpload = useCallback(() => {
-      imageInput.current!.click();
-    }, []);
+  const onClickFileUpload = useCallback(() => {
+    imageInput.current!.click();
+  }, []);
 
-    const onChangeImages = useCallback(
-      (e: React.ChangeEvent<HTMLInputElement>) => {
-        console.log("images", e.target.files);
-        const imageFormData = new FormData();
+  const onChangeImages = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      console.log("images", e.target.files);
+      const imageFormData = new FormData();
 
-        // 중복된 이미지 파일명을 방지하기 위해 Set 사용
-        const addedImageNames = new Set();
+      // 중복된 이미지 파일명을 방지하기 위해 Set 사용
+      const addedImageNames = new Set();
 
-        const filse = e.target.files as FileList;
+      const filse = e.target.files as FileList;
 
-        [].forEach.call(filse /*선택한 파일들 */, (f: File) => {
-          // 이미 추가된 이미지인지 확인하고 추가되지 않은 경우에만 처리
-          if (!addedImageNames.has(f.name)) {
-            addedImageNames.add(f.name);
-            imageFormData.append("image" /*키값 */, f);
-          }
-        });
-
-        dispatch({
-          type: UPLOAD_IMAGES_REQUEST,
-          data: imageFormData,
-        });
-        setActive(true);
-      },
-
-      [dispatch]
-    );
-
-    const onRemoveImage = useCallback(
-      (filename: string) => {
-        if (filename) {
-          dispatch({
-            type: REMOVE_IMAGE_REQUEST,
-            data: filename,
-          });
+      [].forEach.call(filse /*선택한 파일들 */, (f: File) => {
+        // 이미 추가된 이미지인지 확인하고 추가되지 않은 경우에만 처리
+        if (!addedImageNames.has(f.name)) {
+          addedImageNames.add(f.name);
+          imageFormData.append("image" /*키값 */, f);
         }
-      },
-      [dispatch]
-    );
+      });
 
-    const onSubmit = useCallback(
-      (e: SyntheticEvent) => {
-        e.preventDefault();
-        if (!title || !title.trim() || !content || !content.trim()) {
-          return alert("제목 또는 게시글을 작성하세요.");
-        }
-        const formData = new FormData();
-        const contentWithBreaks = content.replace(/\n/g, "<br>");
-        imagePaths.forEach((p) => {
-          formData.append("image", p); //req.body.image
-        });
-        formData.append("title", title); //req.body.title
-        formData.append("content", contentWithBreaks); //req.body.content
-        setActive(false);
+      dispatch({
+        type: UPLOAD_IMAGES_REQUEST,
+        data: imageFormData,
+      });
+      setActive(true);
+    },
+
+    [dispatch]
+  );
+
+  const onRemoveImage = useCallback(
+    (filename: string) => {
+      if (filename) {
         dispatch({
-          type: ADD_POST_REQUEST,
-          data: formData,
+          type: REMOVE_IMAGE_REQUEST,
+          data: filename,
         });
-        setTogglePostForm(false);
-        if (textareaRef.current) textareaRef.current.style.height = "auto";
-      },
+      }
+    },
+    [dispatch]
+  );
 
-      [title, content, imagePaths, dispatch, setTogglePostForm]
-    );
+  const onSubmit = useCallback(
+    (e: SyntheticEvent) => {
+      e.preventDefault();
+      if (!title || !title.trim() || !content || !content.trim()) {
+        return alert("제목 또는 게시글을 작성하세요.");
+      }
+      const formData = new FormData();
+      const contentWithBreaks = content.replace(/\n/g, "<br>");
+      imagePaths.forEach((p) => {
+        formData.append("image", p); //req.body.image
+      });
+      formData.append("title", title); //req.body.title
+      formData.append("content", contentWithBreaks); //req.body.content
+      setActive(false);
+      dispatch({
+        type: ADD_POST_REQUEST,
+        data: formData,
+      });
+      setTogglePostForm(false);
+      if (textareaRef.current) textareaRef.current.style.height = "auto";
+    },
 
-    const textareaRef = useRef<HTMLTextAreaElement>(null);
+    [title, content, imagePaths, dispatch, setTogglePostForm]
+  );
 
-    //입력 시 textarea높이 조정
-    useTextareaAutoHeight(textareaRef, null);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
 
-    return (
-      <>
-        {addPostLoading ? <Spinner /> : null}
-        {me ? (
-          <FormWrapper ref={postFormRef}>
-            <CloseForm onClick={() => setTogglePostForm(false)}>X</CloseForm>
-            <Title>글쓰기</Title>
-            <Form encType="multipart/form-data" onSubmit={onSubmit}>
-              <TitleInput
-                value={title}
-                placeholder="제목을 입력해 주세요"
-                onChange={onChangeTitle}
-              />
-              <TextArea
-                placeholder="내용을 입력해주세요"
-                value={content}
-                onChange={onChangeContent}
-                ref={textareaRef}
-              ></TextArea>
-              <input
-                type="file"
-                name="image"
-                multiple
-                hidden
-                ref={imageInput}
-                onChange={onChangeImages}
-              />
-              <FileButton type="button" onClick={onClickFileUpload}>
-                파일 첨부
-              </FileButton>
-              <ImageGrid>
-                {active &&
-                  imagePaths.map((filename, index) => (
-                    <ImageContainer key={index}>
-                      <Image src={`${baseURL}/${filename}`} alt="img" />
-                      <RemoveButton
-                        type="button"
-                        onClick={() => onRemoveImage(filename)}
-                      >
-                        x
-                      </RemoveButton>
-                    </ImageContainer>
-                  ))}
-              </ImageGrid>
-              <SubmitButton type="submit">등록</SubmitButton>
-            </Form>
-          </FormWrapper>
-        ) : null}
-      </>
-    );
-  }
-);
+  //입력 시 textarea높이 조정
+  useTextareaAutoHeight(textareaRef, null);
+
+  return (
+    <>
+      {addPostLoading ? <Spinner /> : null}
+      {me ? (
+        <FormWrapper ref={postFormRef}>
+          <CloseForm onClick={() => setTogglePostForm(false)}>X</CloseForm>
+          <Title>글쓰기</Title>
+          <Form encType="multipart/form-data" onSubmit={onSubmit}>
+            <TitleInput
+              value={title}
+              placeholder="제목을 입력해 주세요"
+              onChange={onChangeTitle}
+              ref={titleRef}
+            />
+            <TextArea
+              placeholder="내용을 입력해주세요"
+              value={content}
+              onChange={onChangeContent}
+              ref={textareaRef}
+            ></TextArea>
+            <input
+              type="file"
+              name="image"
+              multiple
+              hidden
+              ref={imageInput}
+              onChange={onChangeImages}
+            />
+            <FileButton type="button" onClick={onClickFileUpload}>
+              파일 첨부
+            </FileButton>
+            <ImageGrid>
+              {active &&
+                imagePaths.map((filename, index) => (
+                  <ImageContainer key={index}>
+                    <Image src={`${baseURL}/${filename}`} alt="img" />
+                    <RemoveButton
+                      type="button"
+                      onClick={() => onRemoveImage(filename)}
+                    >
+                      x
+                    </RemoveButton>
+                  </ImageContainer>
+                ))}
+            </ImageGrid>
+            <SubmitButton type="submit">등록</SubmitButton>
+          </Form>
+        </FormWrapper>
+      ) : null}
+    </>
+  );
+};
 
 export default PostForm;
 

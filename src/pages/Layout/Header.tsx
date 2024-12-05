@@ -208,7 +208,7 @@ export default Header;
 
 export const HeaderWrapper = styled.header`
   width: 100%;
-  height: 4rem;
+  height: 70px;
   padding: 5px;
   z-index: 1000;
   position: fixed;
