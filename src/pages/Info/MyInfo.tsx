@@ -103,11 +103,11 @@ const MyInfo: React.FC = () => {
         data: { src: newImageUrl },
       });
 
-      setIsLoading(false);
       setImageSrc(newImageUrl);
       setFile(null);
       setPreviewUrl("");
       alert("등록되었습니다.");
+      setIsLoading(false);
       if (imageInput.current) {
         imageInput.current.value = "";
       }

@@ -42,7 +42,7 @@ const PostDetail = () => {
   const { allPosts, imagePaths } = useSelector(
     (state: RootState) => state.post
   );
-  const { currentPage, postsPerPage, paginate } = usePagination();
+  const { currentPage, postsPerPage } = usePagination();
 
   const me = useSelector((state: RootState) => state.user.me);
 
@@ -311,6 +311,11 @@ const PostDetail = () => {
   const indexOfFirstPost = indexOfLastPost - postsPerPage;
   const currentPosts = allPosts.slice(indexOfFirstPost, indexOfLastPost);
 
+  const totalReComments = post.Comments.reduce(
+    (total, comment) => total + comment.ReComments.length,
+    0
+  );
+
   return (
     <>
       {removePostLoading ||
@@ -392,21 +397,19 @@ const PostDetail = () => {
                     onChange={onChangeContent}
                     ref={editPostRef}
                   />
-                  {
-                    <>
-                      <input
-                        type="file"
-                        name="image"
-                        multiple
-                        hidden
-                        ref={imageInput}
-                        onChange={onChangeImages}
-                      />
-                      <FileButton onClick={onClickFileUpload}>
-                        파일 첨부
-                      </FileButton>
-                    </>
-                  }
+                  <>
+                    <input
+                      type="file"
+                      name="image"
+                      multiple
+                      hidden
+                      ref={imageInput}
+                      onChange={onChangeImages}
+                    />
+                    <FileButton type="button" onClick={onClickFileUpload}>
+                      파일 첨부
+                    </FileButton>
+                  </>
                   <ImageGrid>
                     {/**기존 이미지 */}
                     {post.Images.map((image, index) => (
@@ -477,7 +480,9 @@ const PostDetail = () => {
 
         <CommentContainer>
           <PostHeaderFlex>
-            <CommentNum>댓글 {post.Comments.length}개</CommentNum>
+            <CommentNum>
+              댓글 {post.Comments.length + totalReComments}개
+            </CommentNum>
             <Button onClick={toggleAddCommentForm}>댓글 달기</Button>
           </PostHeaderFlex>
           {addComment[post.id] && (
@@ -644,6 +649,10 @@ const ContentImg = styled.img`
   border-radius: 4px;
   margin: 1px;
   cursor: pointer;
+  @media (max-width: 480px) {
+    width: 100px;
+    height: 100px;
+  }
 `;
 
 const ContentImgWrapper = styled.div`

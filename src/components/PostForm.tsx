@@ -196,9 +196,9 @@ export default PostForm;
 
 const FormWrapper = styled.div`
   position: absolute;
-  top: 50%;
+  top: 40%;
   left: 50%;
-  transform: translate(-50%, -50%);
+  transform: translate(-50%, -40%);
   width: 800px;
   margin: 0 auto;
   min-height: 220px;
@@ -208,7 +208,7 @@ const FormWrapper = styled.div`
   background-color: #f5f5f5;
   z-index: 200;
   @media (max-width: 480px) {
-    width: 350px;
+    width: 400px;
   }
 `;
 
@@ -233,7 +233,8 @@ const Form = styled.form`
   grid-template-areas:
     "a a"
     "b b"
-    "c d";
+    "c d"
+    "e e";
   gap: 5px;
 `;
 
@@ -278,10 +279,17 @@ export const FileButton = styled.button`
 `;
 
 const ImageGrid = styled.div`
-  margin: 10px;
+  width: 100%;
+  padding: 10px;
+  max-height: 400px;
+  overflow-y: auto;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 5px;
+  gap: 10px;
+  grid-area: e;
+  @media (max-width: 480px) {
+    max-height: 200px;
+  }
 `;
 
 const ImageContainer = styled.div`
@@ -289,6 +297,10 @@ const ImageContainer = styled.div`
   display: inline-block;
   width: 200px;
   height: 200px;
+  @media (max-width: 480px) {
+    width: 100px;
+    height: 100px;
+  }
 `;
 
 const Image = styled.img`

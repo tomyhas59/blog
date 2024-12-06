@@ -325,7 +325,7 @@ const MessageListContainer = styled.div`
   height: 60vh;
   position: relative;
   @media (max-width: 480px) {
-    height: 80vh;
+    height: 75vh;
   }
 `;
 

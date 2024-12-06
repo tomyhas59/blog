@@ -39,7 +39,7 @@ export default Pagination;
 const PaginationContainer = styled.nav`
   display: flex;
   justify-content: center;
-  margin-top: 20px;
+  margin-top: 5px;
 
   ul {
     list-style: none;

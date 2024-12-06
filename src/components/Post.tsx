@@ -59,6 +59,11 @@ const Post = ({ post, postId }: { post: PostType; postId?: number }) => {
     [dispatch, navigator, post.User.nickname]
   );
 
+  const totalReComments = post.Comments.reduce(
+    (total, comment) => total + comment.ReComments.length,
+    0
+  );
+
   return (
     <PostContainer
       onClick={() => goToPostDetail(post.id)}
@@ -86,7 +91,9 @@ const Post = ({ post, postId }: { post: PostType; postId?: number }) => {
         )}
         <PostTitle>
           {post.title}
-          <span style={{ fontSize: "12px" }}>[{post.Comments.length}]</span>
+          <span style={{ fontSize: "12px" }}>
+            [{post.Comments.length + totalReComments}]
+          </span>
         </PostTitle>
       </PostHeaderFlex>
     </PostContainer>

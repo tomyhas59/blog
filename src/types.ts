@@ -20,6 +20,7 @@ export type PostType = {
   User: UserType;
   Images: ImageType[];
   Comments: CommentType[];
+  ReComments: ReCommentType[];
 };
 
 export type LikeType = {

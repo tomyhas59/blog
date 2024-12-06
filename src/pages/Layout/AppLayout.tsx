@@ -57,17 +57,16 @@ const LayoutWrapper = styled.div`
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  overflow: hidden;
 `;
 
 const ContentWrapper = styled.div`
   flex-grow: 1;
   padding: 5px;
   margin-top: 70px;
-  overflow-y: auto;
   @media (max-width: 480px) {
+    margin-top: 0;
     padding: 0;
-    margin-bottom: 70px;
+    margin-bottom: 100px;
   }
 `;
 
@@ -82,10 +81,11 @@ const ShowPostForm = styled.div`
   color: #fff;
   border: 1px solid;
   position: fixed;
-  bottom: 10%;
-  right: 10%;
+  bottom: 7%;
+  right: 5%;
   cursor: pointer;
   transition: transform 0.3s ease, color 0.3s ease;
+  z-index: 9999;
   &:hover {
     transform: translateY(-2px);
     color: ${(props) => props.theme.charColor};
