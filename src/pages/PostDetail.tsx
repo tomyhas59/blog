@@ -34,11 +34,16 @@ import { DEFAULT_PROFILE_IMAGE } from "../pages/Info/MyInfo";
 import { FileButton } from "../components/PostForm";
 import { useNavigate } from "react-router-dom";
 import { PostType } from "../types";
+import Post from "../components/Post";
+import { usePagination } from "./PaginationProvider";
+import Pagination from "./Pagination";
 
 const PostDetail = () => {
   const { allPosts, imagePaths } = useSelector(
     (state: RootState) => state.post
   );
+  const { currentPage, postsPerPage, paginate } = usePagination();
+
   const me = useSelector((state: RootState) => state.user.me);
 
   const { postId } = useParams();
@@ -302,7 +307,10 @@ const PostDetail = () => {
 
   const prevContent = content.replace(/<br\s*\/?>/gi, "\n");
 
-  console.log(post.User);
+  const indexOfLastPost = currentPage * postsPerPage;
+  const indexOfFirstPost = indexOfLastPost - postsPerPage;
+  const currentPosts = allPosts.slice(indexOfFirstPost, indexOfLastPost);
+
   return (
     <>
       {removePostLoading ||
@@ -343,7 +351,7 @@ const PostDetail = () => {
             </PostNicknameAndDate>
             <PostTitle>{post.title}</PostTitle>
             <LikeContainer>
-              <Liked>좋아요 {post.Likers?.length}개</Liked>
+              <Liked>♥ {post.Likers?.length}</Liked>
               {liked ? (
                 <Button
                   onClick={onUnLike}
@@ -480,6 +488,16 @@ const PostDetail = () => {
           <Comment post={post} />
         </CommentContainer>
       </FullPostWrapper>
+      {allPosts.length > 0 && (
+        <div>
+          {currentPosts.map((post: PostType) => (
+            <div key={post.id}>
+              <Post post={post} postId={Number(postId)} />
+            </div>
+          ))}
+          <Pagination totalPosts={allPosts.length} />
+        </div>
+      )}
     </>
   );
 };
@@ -565,10 +583,7 @@ const Liked = styled.span`
   padding: 6px;
   border-radius: 6px;
   text-align: center;
-  &:hover {
-    transform: translateY(-2px);
-    color: ${(props) => props.theme.charColor};
-  }
+  color: red;
 `;
 
 const PostNicknameAndDate = styled.div`
@@ -608,6 +623,9 @@ const Date = styled.span`
   width: 100px;
   margin: 5px;
   color: silver;
+  @media (max-width: 480px) {
+    font-size: 12px;
+  }
 `;
 
 const CommentNum = styled.span`

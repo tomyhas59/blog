@@ -8,17 +8,24 @@ import { DEFAULT_PROFILE_IMAGE } from "../pages/Info/MyInfo";
 import useOutsideClick from "../hooks/useOutsideClick";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../reducer";
-import moment from "moment";
 import FollowButton from "./FollowButton";
 import { SEARCH_POSTS_REQUEST } from "../reducer/post";
 
-const Post = ({ post }: { post: PostType }) => {
+const Post = ({ post, postId }: { post: PostType; postId?: number }) => {
   const navigator = useNavigate();
   const me = useSelector((state: RootState) => state.user.me);
   const id = me?.id;
-  const goToPostDetail = (postId: number) => {
-    navigator(`/post/${postId}`);
-  };
+
+  const goToPostDetail = useCallback(
+    (postId: number) => {
+      navigator(`/post/${postId}`);
+      window.scrollTo({
+        top: 0,
+        behavior: "auto",
+      });
+    },
+    [navigator]
+  );
   const dispatch = useDispatch();
 
   //---닉네임 클릭 정보 보기-------------------------------------
@@ -53,7 +60,10 @@ const Post = ({ post }: { post: PostType }) => {
   );
 
   return (
-    <PostContainer onClick={() => goToPostDetail(post.id)}>
+    <PostContainer
+      onClick={() => goToPostDetail(post.id)}
+      isActive={postId === post.id}
+    >
       <PostHeaderFlex>
         <NicknameButton onClick={toggleShowInfo}>
           <img
@@ -65,7 +75,6 @@ const Post = ({ post }: { post: PostType }) => {
             alt="유저 이미지"
           />
           <Nickname>{post.User.nickname.slice(0, 5)}</Nickname>
-          <Date>{moment(post.createdAt).format("l")}</Date>
         </NicknameButton>
         {showInfo && (
           <InfoMenu ref={infoMenuRef}>
@@ -75,10 +84,10 @@ const Post = ({ post }: { post: PostType }) => {
             )}
           </InfoMenu>
         )}
-        <PostTitle>{post.title}</PostTitle>
-        <LikeContainer>
-          <Liked>♥{post.Likers?.length}개</Liked>
-        </LikeContainer>
+        <PostTitle>
+          {post.title}
+          <span style={{ fontSize: "12px" }}>[{post.Comments.length}]</span>
+        </PostTitle>
       </PostHeaderFlex>
     </PostContainer>
   );
@@ -86,14 +95,16 @@ const Post = ({ post }: { post: PostType }) => {
 
 export default Post;
 
-const PostContainer = styled.div`
+const PostContainer = styled.div<{ isActive: boolean }>`
   max-width: 800px;
   padding: 5px 10px;
   margin: 0 auto;
   border: 1px solid #f4f4f4;
+  background-color: ${(props) => (props.isActive ? "#e0f7fa" : "#fff")};
   cursor: pointer;
+
   &:hover {
-    background-color: #f4f4f4;
+    background-color: ${(props) => (props.isActive ? "#b2ebf2" : "#f4f4f4")};
   }
 `;
 
@@ -102,13 +113,7 @@ const PostHeaderFlex = styled.div`
   justify-content: space-between;
   align-items: center;
   position: relative;
-
-  @media (max-width: 480px) {
-    display: grid;
-    grid-template-areas:
-      "a b"
-      "c c";
-  }
+  gap: 10px;
 `;
 
 const PostTitle = styled.div`
@@ -120,9 +125,6 @@ const PostTitle = styled.div`
 
   &:hover {
     color: #007bff;
-  }
-  @media (max-width: 480px) {
-    grid-area: c;
   }
 `;
 
@@ -142,29 +144,6 @@ const NicknameButton = styled.button`
   &:hover {
     transform: translateY(-2px);
     color: ${(props) => props.theme.charColor};
-  }
-`;
-
-const Liked = styled.span`
-  width: 50px;
-  margin: 2px;
-  padding: 6px;
-  border-radius: 6px;
-  text-align: center;
-  &:hover {
-    transform: translateY(-2px);
-    color: ${(props) => props.theme.charColor};
-  }
-`;
-
-const LikeContainer = styled.div`
-  position: relative;
-  @media (max-width: 480px) {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 12px;
-    grid-area: b;
   }
 `;
 
@@ -192,10 +171,6 @@ const Button = styled.button`
   }
 `;
 
-const Date = styled.span`
-  width: 100px;
-  color: silver;
-`;
 const Nickname = styled.span`
   width: 50px;
 `;

@@ -214,10 +214,9 @@ export const HeaderWrapper = styled.header`
   position: fixed;
   background-color: ${(props) => props.theme.subColor};
   display: flex;
-  gap: 10px;
-  justify-content: space-around;
+  justify-content: center;
   align-items: center;
-
+  gap: 10px;
   @media (max-width: 480px) {
     display: grid;
     bottom: 0;
@@ -227,8 +226,7 @@ export const HeaderWrapper = styled.header`
 
 const LogoContainer = styled.div`
   display: flex;
-  justify-content: flex-start;
-  gap: 5px;
+  gap: 10px;
   @media (max-width: 480px) {
     grid-area: b;
   }
@@ -241,8 +239,7 @@ export const HeaderLogoBtn = styled.button`
   background-color: ${(props) => props.theme.mainColor};
   border-radius: 8px;
   border: 1px solid;
-  width: 6rem;
-  height: 2.5rem;
+  padding: 5px 15px;
   transition: transform 0.3s ease, color 0.3s ease;
   &:hover {
     transform: translateY(-2px);
@@ -266,19 +263,18 @@ export const SignList = styled.ul`
   justify-content: center;
   align-items: center;
   color: #fff;
+  gap: 10px;
 `;
 
 const ListItem = styled.li`
   background-color: ${(props) => props.theme.mainColor};
   text-align: center;
-  padding: 10px;
-  border-radius: 10px;
+  padding: 5px 15px;
+  border-radius: 8px;
   cursor: pointer;
-  margin-left: 13px;
   font-size: 1rem;
   font-weight: bold;
   transition: transform 0.3s ease, color 0.3s ease;
-  display: flex;
   &:hover {
     transform: translateY(-2px);
     color: ${(props) => props.theme.charColor};

@@ -66,8 +66,8 @@ const ContentWrapper = styled.div`
   margin-top: 70px;
   overflow-y: auto;
   @media (max-width: 480px) {
-    transform: scale(0.9);
-    margin-top: -40px;
+    padding: 0;
+    margin-bottom: 70px;
   }
 `;
 
