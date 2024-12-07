@@ -144,7 +144,7 @@ const PostForm: React.FC<PostFormProps> = ({
       {addPostLoading ? <Spinner /> : null}
       {me ? (
         <FormWrapper ref={postFormRef}>
-          <CloseForm onClick={() => setTogglePostForm(false)}>X</CloseForm>
+          <CloseForm onClick={() => setTogglePostForm(false)}>✖</CloseForm>
           <Title>글쓰기</Title>
           <Form encType="multipart/form-data" onSubmit={onSubmit}>
             <TitleInput
@@ -179,7 +179,7 @@ const PostForm: React.FC<PostFormProps> = ({
                       type="button"
                       onClick={() => onRemoveImage(filename)}
                     >
-                      x
+                      ✖
                     </RemoveButton>
                   </ImageContainer>
                 ))}
@@ -208,7 +208,7 @@ const FormWrapper = styled.div`
   background-color: #f5f5f5;
   z-index: 200;
   @media (max-width: 480px) {
-    width: 400px;
+    width: 350px;
   }
 `;
 

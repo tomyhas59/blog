@@ -124,7 +124,7 @@ const MyInfo: React.FC = () => {
           <form encType="multipart/form-data" onSubmit={onSubmit}>
             {imageSrc && !file && (
               <RemoveButton type="button" onClick={onRemoveImage}>
-                x
+                ✖
               </RemoveButton>
             )}
             <ProfileImage

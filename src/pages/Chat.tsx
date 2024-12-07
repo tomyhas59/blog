@@ -373,11 +373,10 @@ const UnReadMessageCount = styled.div<MyComponentProps>`
 const ContentWrapper = styled.div`
   width: 500px;
   @media (max-width: 480px) {
-    display: flex;
     position: absolute;
+    width: 100%;
     top: 1%;
     left: 0;
-    width: 100%;
   }
 `;
 

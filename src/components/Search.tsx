@@ -5,7 +5,7 @@ import { SEARCH_POSTS_REQUEST } from "../reducer/post";
 import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { RootState } from "../reducer";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const Search = () => {
   const [searchOption, setSearchOption] = useState("author");
@@ -13,6 +13,7 @@ const Search = () => {
   const dispatch = useDispatch();
   const { searchPostsError } = useSelector((state: RootState) => state.post);
   const navigator = useNavigate();
+  const location = useLocation();
 
   const onSearch = useCallback(() => {
     if (!searchText.trim()) {
@@ -47,7 +48,7 @@ const Search = () => {
   );
 
   return (
-    <Container>
+    <Container currentPath={location.pathname}>
       <Select
         value={searchOption}
         onChange={(e) => setSearchOption(e.target.value)}
@@ -71,12 +72,13 @@ const Search = () => {
 
 export default Search;
 
-const Container = styled.div`
+const Container = styled.div<{ currentPath: string }>`
   display: grid;
   width: 500px;
   height: 1.5rem;
   grid-template-columns: 15% 75% 10%;
   @media (max-width: 480px) {
+    display: ${({ currentPath }) => currentPath !== "/" && "none"};
     position: absolute;
     width: 250px;
     text-align: center;
