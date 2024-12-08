@@ -263,6 +263,7 @@ export const SignList = styled.ul`
 `;
 
 const ListItem = styled.li`
+  position: relative;
   background-color: ${(props) => props.theme.mainColor};
   text-align: center;
   padding: 5px 15px;

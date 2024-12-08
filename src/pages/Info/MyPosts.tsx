@@ -45,6 +45,8 @@ const MyPosts: React.FC = () => {
     [dispatch, navigator]
   );
 
+  console.log(posts);
+
   return (
     <PostsContainer>
       <Heading>◈내가 쓴 글◈</Heading>

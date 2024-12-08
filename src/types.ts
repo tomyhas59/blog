@@ -21,6 +21,7 @@ export type PostType = {
   Images: ImageType[];
   Comments: CommentType[];
   ReComments: ReCommentType[];
+  Notifications: Notification[];
 };
 
 export type LikeType = {
@@ -75,5 +76,13 @@ export type Message = {
   ChatRoomId: number;
   User: UserType;
   createdAt: string;
+  isRead: boolean;
+};
+
+export type Notification = {
+  id: number;
+  UserId: number;
+  PostId: number;
+  message: string;
   isRead: boolean;
 };

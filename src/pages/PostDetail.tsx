@@ -37,14 +37,27 @@ import { PostType } from "../types";
 import Post from "../components/Post";
 import { usePagination } from "./PaginationProvider";
 import Pagination from "./Pagination";
+import { io, Socket } from "socket.io-client";
 
 const PostDetail = () => {
+  const socket = useRef<Socket | null>(null);
+  const me = useSelector((state: RootState) => state.user.me);
+
+  useEffect(() => {
+    socket.current =
+      process.env.NODE_ENV === "production"
+        ? io("https://patient-marina-tomyhas59-8c3582f9.koyeb.app")
+        : io("http://localhost:3075");
+
+    return () => {
+      socket.current?.disconnect();
+    };
+  }, [me]);
+
   const { allPosts, imagePaths } = useSelector(
     (state: RootState) => state.post
   );
   const { currentPage, postsPerPage } = usePagination();
-
-  const me = useSelector((state: RootState) => state.user.me);
 
   const { postId } = useParams();
   const post: PostType = allPosts.find((post) => post.id === Number(postId))!;
@@ -315,6 +328,10 @@ const PostDetail = () => {
     (total, comment) => total + comment.ReComments.length,
     0
   );
+
+  useEffect(() => {
+    socket.current?.emit("readComment", Number(postId));
+  }, []);
 
   return (
     <>

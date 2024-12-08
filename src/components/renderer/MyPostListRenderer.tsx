@@ -2,34 +2,52 @@ import React from "react";
 import styled from "styled-components";
 import ContentRenderer from "./ContentRenderer";
 import moment from "moment";
+import { Notification } from "../../types";
 
 interface ListRendererProps {
-  items: { id: number; title: string; createdAt: string }[];
+  items: {
+    id: number;
+    title: string;
+    createdAt: string;
+    Notifications: Notification[];
+  }[];
   onItemClick: (title: string, id: number) => void;
 }
 
 const MyPostListRenderer: React.FC<ListRendererProps> = ({
   items,
   onItemClick,
-}) => (
-  <>
-    {items.length > 0 ? (
-      <List>
-        {items.map((item) => (
-          <ListItem
-            key={item.id}
-            onClick={() => onItemClick(item.title, item.id)}
-          >
-            <ContentRenderer content={item.title} />
-            <CreatedAt>{moment(item.createdAt).format("l")}</CreatedAt>
-          </ListItem>
-        ))}
-      </List>
-    ) : (
-      <EmptyMessage>글이 없습니다.</EmptyMessage>
-    )}
-  </>
-);
+}) => {
+  return (
+    <>
+      {items.length > 0 ? (
+        <List>
+          {items.map((item) => {
+            const notRead = item.Notifications.some(
+              (noti) => noti.isRead === false
+            );
+            return (
+              <ListItem
+                key={item.id}
+                onClick={() => onItemClick(item.title, item.id)}
+              >
+                <ContentRenderer content={item.title} />
+                {notRead && (
+                  <NotificationMessage>
+                    새로운 댓글이 있습니다
+                  </NotificationMessage>
+                )}
+                <CreatedAt>{moment(item.createdAt).format("l")}</CreatedAt>
+              </ListItem>
+            );
+          })}
+        </List>
+      ) : (
+        <EmptyMessage>글이 없습니다.</EmptyMessage>
+      )}
+    </>
+  );
+};
 
 export default MyPostListRenderer;
 
@@ -59,4 +77,9 @@ const CreatedAt = styled.div`
   font-size: 0.8rem;
   color: #999;
   text-align: right;
+`;
+
+const NotificationMessage = styled.div`
+  font-size: 10px;
+  color: red;
 `;
