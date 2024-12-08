@@ -166,10 +166,7 @@ const Header = () => {
     <HeaderWrapper>
       <LogoContainer>
         <HeaderLogoBtn onClick={onGoHome}>TMS</HeaderLogoBtn>
-        <GoToChat onClick={onGoToChat}>
-          <span>채팅</span>
-          {notification && <Notification>🔔</Notification>}
-        </GoToChat>
+
         <Search />
       </LogoContainer>
       {!isLoggedIn && (
@@ -196,6 +193,10 @@ const Header = () => {
             />
             {followNotification && <Notification>🔔</Notification>}
           </ProfileImageContainer>
+          <ListItem onClick={onGoToChat}>
+            <span>채팅</span>
+            {notification && <Notification>🔔</Notification>}
+          </ListItem>
           <ListItem>
             <button onClick={onLogout}>로그아웃</button>
           </ListItem>
@@ -210,14 +211,13 @@ export const HeaderWrapper = styled.header`
   width: 100%;
   height: 70px;
   padding: 5px;
-  z-index: 1000;
-  position: fixed;
   background-color: ${(props) => props.theme.subColor};
   display: flex;
   justify-content: center;
   align-items: center;
   gap: 10px;
   @media (max-width: 480px) {
+    position: absolute;
     display: grid;
     bottom: 0;
     grid-template-areas: "a b";
@@ -252,10 +252,6 @@ export const HeaderLogoBtn = styled.button`
     cursor: pointer;
     text-align: center;
   }
-`;
-
-const GoToChat = styled(HeaderLogoBtn)`
-  position: relative;
 `;
 
 export const SignList = styled.ul`

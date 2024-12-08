@@ -8,7 +8,7 @@ import { RootState } from "../reducer";
 import { useLocation, useNavigate } from "react-router-dom";
 
 const Search = () => {
-  const [searchOption, setSearchOption] = useState("author");
+  const [searchOption, setSearchOption] = useState("all");
   const [searchText, setSearchText] = useState("");
   const dispatch = useDispatch();
   const { searchPostsError } = useSelector((state: RootState) => state.post);
@@ -53,8 +53,8 @@ const Search = () => {
         value={searchOption}
         onChange={(e) => setSearchOption(e.target.value)}
       >
-        <option value="author">글쓴이</option>
         <option value="all">전체</option>
+        <option value="author">글쓴이</option>
       </Select>
       <Input
         placeholder="검색"

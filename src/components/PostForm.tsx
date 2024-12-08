@@ -208,7 +208,7 @@ const FormWrapper = styled.div`
   background-color: #f5f5f5;
   z-index: 200;
   @media (max-width: 480px) {
-    width: 350px;
+    width: 300px;
   }
 `;
 
@@ -288,6 +288,7 @@ const ImageGrid = styled.div`
   gap: 10px;
   grid-area: e;
   @media (max-width: 480px) {
+    grid-template-columns: repeat(2, 1fr);
     max-height: 200px;
   }
 `;
@@ -322,6 +323,10 @@ const RemoveButton = styled.button`
 
   &:hover {
     background-color: #c0392b;
+  }
+  @media (max-width: 480px) {
+    font-size: 8px;
+    padding: 2px 5px;
   }
 `;
 
