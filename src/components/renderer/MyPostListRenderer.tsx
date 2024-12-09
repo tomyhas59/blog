@@ -23,7 +23,7 @@ const MyPostListRenderer: React.FC<ListRendererProps> = ({
       {items.length > 0 ? (
         <List>
           {items.map((item) => {
-            const notRead = item.Notifications.some(
+            const notRead = item.Notifications?.some(
               (noti) => noti.isRead === false
             );
             return (
