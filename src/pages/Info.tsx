@@ -10,14 +10,32 @@ import { RootState } from "../reducer";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { io, Socket } from "socket.io-client";
+import { useDispatch } from "react-redux";
 
 const Info = () => {
   const [activeSection, setActiveSection] = useState("myInfo");
   const { me } = useSelector((state: RootState) => state.user);
+  const dispatch = useDispatch();
 
   const [newFollowersCount, setNewFollowersCount] = useState<number>();
   const navigate = useNavigate();
   const socket = useRef<Socket | null>(null);
+
+  useEffect(() => {
+    const getUserData = async () => {
+      try {
+        const response = await axios.get("/user/setUser");
+        const userData = response.data;
+        dispatch({
+          type: "SET_USER",
+          data: userData,
+        });
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    getUserData();
+  }, [dispatch]);
 
   useEffect(() => {
     socket.current =
@@ -55,7 +73,7 @@ const Info = () => {
     if (me) {
       fetchNewFollowers();
     }
-  }, []);
+  }, [me]);
 
   const renderSection = useMemo(() => {
     switch (activeSection) {
@@ -80,6 +98,9 @@ const Info = () => {
     socket.current?.emit("followNotiRead", me?.id);
   };
 
+  const notRead = me?.Notifications?.some((noti) => noti.isRead === false);
+
+  console.log(notRead);
   return (
     <Container>
       <Nav>
@@ -98,6 +119,7 @@ const Info = () => {
               active={activeSection === "myPosts"}
             >
               내가 쓴 글
+              {notRead && <NotificationMessage>New</NotificationMessage>}
             </NavLink>
           </NavItem>
           <NavItem>
@@ -183,6 +205,9 @@ interface NavLinkProps {
 }
 const NavLink = styled.button<NavLinkProps>`
   position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   font-weight: 600;
   font-size: 1rem;
   color: ${(props) => (props.active ? "#007bff" : "#333")};
@@ -217,6 +242,17 @@ const NewFollowersCount = styled.div`
   background-color: red;
   width: 20px;
   border-radius: 50%;
+  text-align: center;
+  color: #fff;
+  font-weight: bold;
+`;
+
+const NotificationMessage = styled.div`
+  background-color: red;
+  border-radius: 50%;
+  padding: 2px;
+  margin-left: 10px;
+  float: right;
   text-align: center;
   color: #fff;
   font-weight: bold;

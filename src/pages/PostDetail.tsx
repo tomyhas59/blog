@@ -330,8 +330,10 @@ const PostDetail = () => {
   );
 
   useEffect(() => {
-    socket.current?.emit("readComment", Number(postId));
-  }, []);
+    if (post.userIdx === me?.id) {
+      socket.current?.emit("readComment", Number(postId));
+    }
+  }, [me?.id, post.userIdx, postId]);
 
   return (
     <>

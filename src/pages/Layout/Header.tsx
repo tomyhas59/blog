@@ -20,8 +20,11 @@ const Header = () => {
   const { isLoggedIn, logOutDone, me, logInError } = useSelector(
     (state: RootState) => state.user
   );
-  const [notification, setNotification] = useState<boolean>(false);
+  const [chatNotification, setChatNotification] = useState<boolean>(false);
   const [followNotification, setFollowNotification] = useState<boolean>(false);
+  const [commentNotification, setCommentNotification] =
+    useState<boolean>(false);
+
   const { paginate } = usePagination();
 
   const socket = useRef<Socket | null>(null);
@@ -87,6 +90,12 @@ const Header = () => {
   }, [me]);
 
   useEffect(() => {
+    const notRead =
+      me?.Notifications?.some((noti) => noti.isRead === false) || false;
+    setCommentNotification(notRead);
+  }, [me?.Notifications]);
+
+  useEffect(() => {
     if (logInError) {
       alert(logInError);
     }
@@ -106,7 +115,7 @@ const Header = () => {
     dispatch({
       type: LOG_OUT_REQUEST,
     });
-    setNotification(false);
+    setChatNotification(false);
   }, [dispatch, me?.id, socket]);
 
   const onGoHome = useCallback(() => {
@@ -135,7 +144,7 @@ const Header = () => {
               .length > 0
         );
 
-        setNotification(hasUnRead);
+        setChatNotification(hasUnRead);
       } catch (error) {
         console.error("Error fetching user chat rooms:", error);
       }
@@ -154,6 +163,7 @@ const Header = () => {
 
     socket.current?.on("updateNotification", () => {
       setFollowNotification(false);
+      setCommentNotification(false);
     });
 
     return () => {
@@ -191,11 +201,12 @@ const Header = () => {
                   : `${DEFAULT_PROFILE_IMAGE}`
               }
             />
-            {followNotification && <Notification>🔔</Notification>}
+            {followNotification ||
+              (commentNotification && <Notification>🔔</Notification>)}
           </ProfileImageContainer>
           <ListItem onClick={onGoToChat}>
             <span>채팅</span>
-            {notification && <Notification>🔔</Notification>}
+            {chatNotification && <Notification>🔔</Notification>}
           </ListItem>
           <ListItem>
             <button onClick={onLogout}>로그아웃</button>
