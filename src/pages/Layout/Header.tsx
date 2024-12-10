@@ -228,10 +228,12 @@ export const HeaderWrapper = styled.header`
   align-items: center;
   gap: 10px;
   @media (max-width: 480px) {
-    position: absolute;
+    position: fixed;
+    height: 50px;
     display: grid;
     bottom: 0;
     grid-template-areas: "a b";
+    z-index: 999;
   }
 `;
 

@@ -179,5 +179,5 @@ const Button = styled.button`
 `;
 
 const Nickname = styled.span`
-  width: 50px;
+  width: 55px;
 `;

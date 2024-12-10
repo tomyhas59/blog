@@ -1,22 +1,20 @@
 import React from "react";
 import styled from "styled-components";
 import { usePagination } from "./PaginationProvider";
-import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 const Pagination = ({ totalPosts }: { totalPosts: number }) => {
   const { postsPerPage, currentPage, paginate } = usePagination();
   const pageNumbers = [];
-  const dispatch = useDispatch();
+  const navigator = useNavigate();
   for (let i = 1; i <= Math.ceil(totalPosts / postsPerPage); i++) {
+    console.log(totalPosts, postsPerPage, totalPosts / postsPerPage);
     pageNumbers.push(i);
   }
 
   const onPageClick = (number: number) => {
     paginate(number);
-    dispatch({
-      type: "REFRESH", //새로 고침
-    });
-    window.scrollTo({ top: 0, behavior: "auto" }); // 페이지 맨 위로 스크롤
+    navigator("/");
   };
 
   return (
