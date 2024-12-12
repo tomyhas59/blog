@@ -48,7 +48,7 @@ const Comment = ({ post }: { post: PostType }) => {
     (userNickname: string) => {
       dispatch({
         type: SEARCH_POSTS_REQUEST,
-        query: userNickname,
+        searchText: userNickname,
         searchOption: "author",
       });
       navigator("/search");

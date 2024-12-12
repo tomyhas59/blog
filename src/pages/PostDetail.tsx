@@ -20,6 +20,8 @@ import {
   UPLOAD_IMAGES_REQUEST,
   REMOVE_IMAGE_REQUEST,
   SEARCH_POSTS_REQUEST,
+  GET_POST_REQUEST,
+  GET_POSTS_REQUEST,
 } from "../reducer/post";
 import moment from "moment";
 import "moment/locale/ko";
@@ -35,14 +37,49 @@ import { FileButton } from "../components/PostForm";
 import { useNavigate } from "react-router-dom";
 import { PostType } from "../types";
 import Post from "../components/Post";
-
 import Pagination from "./Pagination";
 import { io, Socket } from "socket.io-client";
+import { usePagination } from "./PaginationProvider";
 
 const PostDetail = () => {
   const socket = useRef<Socket | null>(null);
   const me = useSelector((state: RootState) => state.user.me);
   const dispatch = useDispatch();
+  const location = useLocation();
+  const { currentPage, postsPerPage, setCurrentPage } = usePagination();
+  const [page, setPage] = useState<number>(currentPage);
+  const { postId } = useParams();
+
+  const { posts, post, imagePaths, totalPosts } = useSelector(
+    (state: RootState) => state.post
+  );
+
+  useEffect(() => {
+    if (postId) {
+      console.log("변경된 postId: ", postId);
+      dispatch({
+        type: GET_POST_REQUEST,
+        postId: postId,
+      });
+    }
+  }, [dispatch, postId]);
+
+  //페이지 이동 시 데이터 반환
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const pageParam = params.get("page");
+    if (pageParam) setPage(Number(pageParam));
+  }, [location.search]);
+
+  useEffect(() => {
+    dispatch({
+      type: GET_POSTS_REQUEST,
+      page: page,
+      limit: postsPerPage,
+    });
+    setCurrentPage(page);
+  }, [dispatch, page, postsPerPage]);
+
   useEffect(() => {
     socket.current =
       process.env.NODE_ENV === "production"
@@ -54,13 +91,6 @@ const PostDetail = () => {
     };
   }, [me]);
 
-  const { posts, imagePaths, totalPosts } = useSelector(
-    (state: RootState) => state.post
-  );
-
-  const { postId } = useParams();
-  const post: PostType = posts.find((post) => post.id === Number(postId))!;
-
   const [editPost, setEditPost] = useState(false);
   const [content, setContent] = useState("");
   const navigator = useNavigate();
@@ -70,8 +100,6 @@ const PostDetail = () => {
     },
     [setContent]
   );
-
-  const location = useLocation();
 
   useEffect(() => {
     // URL에서 commentId, reCommentId 추출
@@ -233,12 +261,12 @@ const PostDetail = () => {
   const onSearch = useCallback(() => {
     dispatch({
       type: SEARCH_POSTS_REQUEST,
-      query: post.User.nickname,
+      searchText: post.User.nickname,
       searchOption: "author",
     });
     navigator("/search");
     window.scrollTo({ top: 0, behavior: "auto" });
-  }, [dispatch, navigator, post.User.nickname]);
+  }, [dispatch, navigator, post.User?.nickname]);
 
   const onRemoveImage = useCallback(
     (filename: string) => () => {
@@ -318,7 +346,7 @@ const PostDetail = () => {
 
   const prevContent = content.replace(/<br\s*\/?>/gi, "\n");
 
-  const totalReComments = post.Comments.reduce(
+  const totalReComments = post.Comments?.reduce(
     (total, comment) => total + comment.ReComments.length,
     0
   );
@@ -346,13 +374,13 @@ const PostDetail = () => {
               <NicknameButton onClick={toggleShowInfo}>
                 <img
                   src={
-                    post.User.Image
+                    post.User?.Image
                       ? `${baseURL}/${post.User.Image.src}`
                       : `${DEFAULT_PROFILE_IMAGE}`
                   }
                   alt="유저 이미지"
                 />
-                {post.User.nickname.slice(0, 5)}
+                {post.User?.nickname.slice(0, 5)}
               </NicknameButton>
               {showInfo && (
                 <InfoMenu ref={infoMenuRef}>
@@ -425,7 +453,7 @@ const PostDetail = () => {
                   </>
                   <ImageGrid>
                     {/**기존 이미지 */}
-                    {post.Images.map((image, index) => (
+                    {post.Images?.map((image, index) => (
                       <ImageContainer key={index}>
                         <ModifyImage
                           src={`${baseURL}/${image.src}`}
@@ -460,7 +488,7 @@ const PostDetail = () => {
               <ContentWrapper>
                 <ContentRenderer content={post.content} />
                 <ContentImgWrapper>
-                  {post.Images.map((image) => (
+                  {post.Images?.map((image) => (
                     <ContentImg
                       key={image.id}
                       src={`${baseURL}/${image.src}`}
@@ -473,7 +501,7 @@ const PostDetail = () => {
                 </ContentImgWrapper>
               </ContentWrapper>
             )}
-            {id === post.User.id || nickname === "admin" ? (
+            {id === post.User?.id || nickname === "admin" ? (
               <div>
                 {!editPost && (
                   <EditToggle onClick={toggleShowOptions}>
@@ -494,7 +522,7 @@ const PostDetail = () => {
         <CommentContainer>
           <PostHeaderFlex>
             <CommentNum>
-              댓글 {post.Comments.length + totalReComments}개
+              댓글 {post.Comments?.length + totalReComments}개
             </CommentNum>
             <Button onClick={toggleAddCommentForm}>댓글 달기</Button>
           </PostHeaderFlex>
@@ -513,7 +541,7 @@ const PostDetail = () => {
               <Post post={post} postId={Number(postId)} />
             </div>
           ))}
-          <Pagination totalPosts={Number(totalPosts)} />
+          <Pagination totalPosts={Number(totalPosts)} postId={post.id} />
         </div>
       )}
     </>

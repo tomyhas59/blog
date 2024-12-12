@@ -20,9 +20,11 @@ export const PaginationProvider = ({ children }: any) => {
     <PaginationContext.Provider
       value={{
         currentPage,
+        setCurrentPage,
         postsPerPage,
         paginate,
         searchedCurrentPage,
+        setSearchedCurrentPage,
         searchedPostsPerPage,
         searchedPaginate,
       }}

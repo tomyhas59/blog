@@ -19,6 +19,9 @@ import {
   GET_POSTS_FAILURE,
   GET_POSTS_REQUEST,
   GET_POSTS_SUCCESS,
+  GET_POST_FAILURE,
+  GET_POST_REQUEST,
+  GET_POST_SUCCESS,
   LIKE_POST_FAILURE,
   LIKE_POST_REQUEST,
   LIKE_POST_SUCCESS,
@@ -59,18 +62,13 @@ import {
 import { SagaIterator } from "redux-saga";
 //-----------------------------------------------------
 
-function getPostsApi(data: any) {
-  return axios.get("/post/posts", {
-    params: {
-      page: data.page,
-      limit: data.limit,
-    },
-  });
+function getPostsApi(page: number, limit: number) {
+  return axios.get(`/post/posts?page=${page}&limit=${limit}`);
 }
 
-function* getPosts(action: { data: any }): SagaIterator {
+function* getPosts(action: { page: number; limit: number }): SagaIterator {
   try {
-    const result = yield call(getPostsApi, action.data);
+    const result = yield call(getPostsApi, action.page, action.limit);
     yield put({
       type: GET_POSTS_SUCCESS,
       data: result.data.posts,
@@ -86,21 +84,44 @@ function* getPosts(action: { data: any }): SagaIterator {
 }
 function* watchGetPosts() {
   yield takeLatest<any>(GET_POSTS_REQUEST, getPosts);
+} //-----------------------------------------------------
+
+function getPostApi(postId: number) {
+  return axios.get(`/post/posts/${postId}`);
+}
+
+function* getPost(action: { postId: number }): SagaIterator {
+  try {
+    const result = yield call(getPostApi, action.postId);
+    yield put({
+      type: GET_POST_SUCCESS,
+      data: result.data,
+    });
+  } catch (err: any) {
+    console.log(err);
+    yield put({
+      type: GET_POST_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+function* watchGetPost() {
+  yield takeLatest<any>(GET_POST_REQUEST, getPost);
 }
 //----------------------------------------------
 function searchPostsApi(
-  query: any,
+  searchText: any,
   searchOption: string,
   postId: number,
   page: number,
   limit: number
 ) {
   return axios.get(
-    `/post/search?query=${query}&searchOption=${searchOption}&postId=${postId}&page=${page}&limit=${limit}`
+    `/post/search?searchText=${searchText}&searchOption=${searchOption}&postId=${postId}&page=${page}&limit=${limit}`
   );
 }
 function* searchPosts(action: {
-  query: any;
+  searchText: any;
   searchOption: string;
   postId: number;
   page: number;
@@ -109,7 +130,7 @@ function* searchPosts(action: {
   try {
     const result = yield call(
       searchPostsApi,
-      action.query,
+      action.searchText,
       action.searchOption,
       action.postId,
       action.page,
@@ -119,6 +140,7 @@ function* searchPosts(action: {
       type: SEARCH_POSTS_SUCCESS,
       searchedPosts: result.data.searchedPosts,
       totalSearchedPosts: result.data.totalSearchedPosts,
+      searchOption: result.data.searchOption,
     });
   } catch (err: any) {
     console.log(err);
@@ -551,6 +573,7 @@ function* watchDeleteAllChat() {
 export default function* postSaga() {
   yield all([
     fork(watchGetPosts),
+    fork(watchGetPost),
     fork(watchAddPost),
     fork(watchRemovePost),
     fork(watchUpdatePost),

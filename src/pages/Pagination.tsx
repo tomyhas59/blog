@@ -1,17 +1,42 @@
 import React from "react";
 import styled from "styled-components";
 import { usePagination } from "./PaginationProvider";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { GET_POSTS_REQUEST } from "../reducer/post";
 
-const Pagination = ({ totalPosts }: { totalPosts: number }) => {
+const Pagination = ({
+  totalPosts,
+  postId,
+}: {
+  totalPosts: number;
+  postId?: number;
+}) => {
+  const location = useLocation();
+  const navigator = useNavigate();
+  const dispatch = useDispatch();
   const { currentPage, postsPerPage, paginate } = usePagination();
 
   const totalPages = Math.ceil(totalPosts / postsPerPage);
-  const navigator = useNavigate();
+
+  const setParams = (number: number) => {
+    const params = new URLSearchParams();
+    params.set("page", number.toString());
+    params.set("limit", postsPerPage.toString());
+    navigator({
+      pathname: postId ? `/post/${postId}` : `${location.pathname}`,
+      search: params.toString(),
+    });
+  };
 
   const onPageClick = (number: number) => {
     paginate(number);
-    navigator("/");
+    dispatch({
+      type: GET_POSTS_REQUEST,
+      page: number,
+      limit: postsPerPage,
+    });
+    setParams(number);
   };
 
   return (

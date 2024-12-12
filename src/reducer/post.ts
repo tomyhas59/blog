@@ -4,15 +4,21 @@ import { Message, PostType } from "../types";
 //전역 상태 초기값
 const initialState = {
   posts: [] as PostType[],
+  post: {} as PostType,
   totalPosts: null,
   imagePaths: [] as string[],
   searchedPosts: [] as PostType[],
+  searchOption: "",
   totalSearchedPosts: null,
   chatMessages: [] as Message[],
 
   getPostsLoading: false,
   getPostsDone: false,
   getPostsError: null,
+
+  getPostLoading: false,
+  getPostDone: false,
+  getPostError: null,
 
   searchedPostsLoading: false,
   searchedPostsDone: false,
@@ -83,6 +89,10 @@ const initialState = {
 export const GET_POSTS_REQUEST = "ALL_POSTS_REQUEST";
 export const GET_POSTS_SUCCESS = "ALL_POSTS_SUCCESS";
 export const GET_POSTS_FAILURE = "ALL_POSTS_FAILURE";
+
+export const GET_POST_REQUEST = "ALL_POST_REQUEST";
+export const GET_POST_SUCCESS = "ALL_POST_SUCCESS";
+export const GET_POST_FAILURE = "ALL_POST_FAILURE";
 
 export const ADD_POST_REQUEST = "ADD_POST_REQUEST";
 export const ADD_POST_SUCCESS = "ADD_POST_SUCCESS";
@@ -163,6 +173,55 @@ const post = (state = initialState, action: any) => {
       case "RESET_CHAT_MESSAGES":
         draft.chatMessages = [];
         break;
+      //------------------------------------------------------
+      case GET_POSTS_REQUEST:
+        draft.getPostsLoading = true;
+        draft.getPostsDone = false;
+        draft.getPostsError = null;
+        break;
+      case GET_POSTS_SUCCESS:
+        draft.getPostsLoading = false;
+        draft.getPostsDone = true;
+        draft.posts = action.data;
+        draft.totalPosts = action.totalPosts;
+        break;
+      case GET_POSTS_FAILURE:
+        draft.getPostsLoading = false;
+        draft.getPostsError = action.error;
+        break;
+      //------------------------------------------------------
+      case GET_POST_REQUEST:
+        draft.getPostLoading = true;
+        draft.getPostDone = false;
+        draft.getPostError = null;
+        break;
+      case GET_POST_SUCCESS:
+        draft.getPostLoading = false;
+        draft.post = action.data;
+        draft.getPostDone = true;
+        break;
+      case GET_POST_FAILURE:
+        draft.getPostLoading = false;
+        draft.getPostError = action.error;
+        break;
+      //------------------------------------------------------
+      case SEARCH_POSTS_REQUEST:
+        draft.searchedPostsLoading = true;
+        draft.searchedPostsDone = false;
+        draft.searchedPostsError = null;
+        break;
+      case SEARCH_POSTS_SUCCESS:
+        draft.searchedPostsLoading = false;
+        draft.searchedPostsDone = true;
+        draft.searchedPosts = action.searchedPosts;
+        draft.totalSearchedPosts = action.totalSearchedPosts;
+        draft.searchOption = action.searchOption;
+        break;
+      case SEARCH_POSTS_FAILURE:
+        draft.searchedPostsLoading = false;
+        draft.searchedPostsError = action.error;
+        break;
+
       //-----------------------------------------------------
       case ADD_POST_REQUEST:
         draft.addPostLoading = true;
@@ -234,39 +293,6 @@ const post = (state = initialState, action: any) => {
       case DELETE_IMAGE_FAILURE:
         draft.deleteImageLoading = false;
         draft.deleteImageError = action.error;
-        break;
-      //------------------------------------------------------
-      case GET_POSTS_REQUEST:
-        draft.getPostsLoading = true;
-        draft.getPostsDone = false;
-        draft.getPostsError = null;
-        break;
-      case GET_POSTS_SUCCESS:
-        draft.getPostsLoading = false;
-        draft.getPostsDone = true;
-        draft.posts = action.data;
-        draft.totalPosts = action.totalPosts;
-        break;
-      case GET_POSTS_FAILURE:
-        draft.getPostsLoading = false;
-        draft.getPostsError = action.error;
-        break;
-
-      //------------------------------------------------------
-      case SEARCH_POSTS_REQUEST:
-        draft.searchedPostsLoading = true;
-        draft.searchedPostsDone = false;
-        draft.searchedPostsError = null;
-        break;
-      case SEARCH_POSTS_SUCCESS:
-        draft.searchedPostsLoading = false;
-        draft.searchedPostsDone = true;
-        draft.searchedPosts = action.searchedPosts;
-        draft.totalSearchedPosts = action.totalSearchedPosts;
-        break;
-      case SEARCH_POSTS_FAILURE:
-        draft.searchedPostsLoading = false;
-        draft.searchedPostsError = action.error;
         break;
 
       //-----------------------------------------------------

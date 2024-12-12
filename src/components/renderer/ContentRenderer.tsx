@@ -2,7 +2,12 @@ import React from "react";
 import styled from "styled-components";
 
 const ContentRenderer = ({ content }: { content: string }) => {
+  if (!content) {
+    return <div>No content</div>;
+  }
+
   const lines = content.split("<br>");
+
   return (
     <Content>
       {lines.map((line, index) => (

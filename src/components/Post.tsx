@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import "moment/locale/ko";
 import { PostType } from "../types";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { baseURL } from "../config";
 import { DEFAULT_PROFILE_IMAGE } from "../pages/Info/MyInfo";
 import useOutsideClick from "../hooks/useOutsideClick";
@@ -16,7 +16,7 @@ const Post = ({ post, postId }: { post: PostType; postId?: number }) => {
   const navigator = useNavigate();
   const me = useSelector((state: RootState) => state.user.me);
   const id = me?.id;
-
+  const location = useLocation();
   const goToPostDetail = useCallback(
     (postId: number) => {
       navigator(`/post/${postId}`);
@@ -48,18 +48,30 @@ const Post = ({ post, postId }: { post: PostType; postId?: number }) => {
 
   const { searchedPostsPerPage, searchedPaginate } = usePagination();
 
+  const setParams = () => {
+    const params = new URLSearchParams();
+    params.set("searchText", post.User.nickname);
+    params.set("searchOption", "author");
+    params.set("page", "1");
+    params.set("limit", searchedPostsPerPage.toString());
+    navigator({
+      pathname: `/search${location.pathname}`,
+      search: params.toString(),
+    });
+  };
+
   const onSearch = useCallback(
     (e: React.MouseEvent) => {
       e.stopPropagation();
       dispatch({
         type: SEARCH_POSTS_REQUEST,
-        query: post.User.nickname,
+        searchText: post.User.nickname,
         searchOption: "author",
         page: 1,
         limit: searchedPostsPerPage,
       });
-      navigator("/search");
       searchedPaginate(1);
+      setParams();
       window.scrollTo({ top: 0, behavior: "auto" });
     },
     [dispatch, navigator, post, searchedPostsPerPage]

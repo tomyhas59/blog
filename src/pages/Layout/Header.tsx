@@ -1,6 +1,6 @@
 import React, { useRef, useState } from "react";
 import styled, { keyframes } from "styled-components";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { useCallback, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
@@ -20,7 +20,7 @@ const Header = () => {
   const { isLoggedIn, logOutDone, me, logInError } = useSelector(
     (state: RootState) => state.user
   );
-
+  const location = useLocation();
   const [chatNotification, setChatNotification] = useState<boolean>(false);
   const [followNotification, setFollowNotification] = useState<boolean>(false);
   const [commentNotification, setCommentNotification] =
@@ -120,9 +120,6 @@ const Header = () => {
   }, [dispatch, me?.id, socket]);
 
   const onGoHome = useCallback(() => {
-    dispatch({
-      type: "REFRESH",
-    });
     paginate(1);
     navigator("/");
     window.location.reload();

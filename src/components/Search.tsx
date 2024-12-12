@@ -23,7 +23,7 @@ const Search = () => {
     navigator("/search");
     dispatch({
       type: SEARCH_POSTS_REQUEST,
-      query: searchText,
+      searchText,
       searchOption,
     });
     setSearchText("");

@@ -1,35 +1,52 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Post from "../components/Post";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../reducer";
 import { PostType } from "../types";
 import Spinner from "../components/Spinner";
+
+import SearchedPagination from "./SearchedPagination";
+import { useLocation, useNavigate } from "react-router-dom";
 import { SEARCH_POSTS_REQUEST } from "../reducer/post";
 import { usePagination } from "./PaginationProvider";
-import SearchedPagination from "./SearchedPagination";
 
 const SearchPage = () => {
+  const location = useLocation();
   const dispatch = useDispatch();
 
   const { searchedPosts, totalSearchedPosts, searchedPostsLoading } =
     useSelector((state: RootState) => state.post);
-  const { searchedPostsPerPage, searchedCurrentPage } = usePagination();
+  const { searchedCurrentPage, searchedPostsPerPage, setSearchedCurrentPage } =
+    usePagination();
 
-  const post = searchedPosts.find((post) => post);
+  const [searchText, setSearchText] = useState<string>("");
+  const [searchOption, setSearchOption] = useState<string>("");
+  const [page, setPage] = useState<number>(searchedCurrentPage);
 
   useEffect(() => {
-    if (searchedCurrentPage > 1) {
+    const params = new URLSearchParams(location.search);
+    const searchTextParam = params.get("searchText");
+    const searchOptionParam = params.get("searchOption");
+    const pageParam = params.get("page");
+
+    if (searchTextParam) setSearchText(searchTextParam);
+    if (searchOptionParam) setSearchOption(searchOptionParam);
+    if (pageParam) setPage(Number(pageParam));
+  }, [location.search]);
+
+  useEffect(() => {
+    if (searchedPosts.length < 1) {
       dispatch({
         type: SEARCH_POSTS_REQUEST,
-        query: post?.User.nickname,
-        searchOption: "author",
-        page: searchedCurrentPage,
+        searchText,
+        searchOption,
+        page: page,
         limit: searchedPostsPerPage,
       });
+      setSearchedCurrentPage(page);
     }
-  }, [searchedCurrentPage]);
+  }, [searchedPosts, searchText, searchOption, page]);
 
-  console.log(searchedPosts);
   return (
     <div>
       {searchedPostsLoading ? (
@@ -44,6 +61,8 @@ const SearchPage = () => {
             ))}
             <SearchedPagination
               totalSearchedPosts={Number(totalSearchedPosts)}
+              searchText={searchText}
+              searchOption={searchOption}
             />
           </div>
         )

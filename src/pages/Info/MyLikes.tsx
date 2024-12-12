@@ -43,7 +43,7 @@ const MyLikes: React.FC = () => {
       navigator("/search");
       dispatch({
         type: SEARCH_POSTS_REQUEST,
-        query: title,
+        searchText: title,
         searchOption,
         postId,
       });

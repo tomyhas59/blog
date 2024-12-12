@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Post from "../components/Post";
 import { useDispatch, useSelector } from "react-redux";
 import { GET_POSTS_REQUEST } from "../reducer/post";
@@ -7,24 +7,31 @@ import { usePagination } from "./PaginationProvider";
 import { RootState } from "../reducer";
 import { PostType } from "../types";
 import Spinner from "../components/Spinner";
+import { useLocation } from "react-router-dom";
 
 const Main = () => {
   const dispatch = useDispatch();
-
+  const location = useLocation();
   const { posts, totalPosts, getPostsLoading } = useSelector(
     (state: RootState) => state.post
   );
-  const { currentPage, postsPerPage } = usePagination();
+  const { currentPage, postsPerPage, setCurrentPage } = usePagination();
+  const [page, setPage] = useState<number>(currentPage);
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const pageParam = params.get("page");
+    if (pageParam) setPage(Number(pageParam));
+  }, [location.search]);
 
   useEffect(() => {
     dispatch({
       type: GET_POSTS_REQUEST,
-      data: {
-        page: currentPage,
-        limit: postsPerPage,
-      },
+      page: page,
+      limit: postsPerPage,
     });
-  }, [currentPage, postsPerPage, dispatch]);
+    setCurrentPage(page);
+  }, [currentPage, postsPerPage, dispatch, page]);
 
   return (
     <div>

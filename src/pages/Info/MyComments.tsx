@@ -42,7 +42,7 @@ const MyComments: React.FC = () => {
     ) => {
       dispatch({
         type: SEARCH_POSTS_REQUEST,
-        query: content,
+        searchText: content,
         searchOption,
         postId,
       });

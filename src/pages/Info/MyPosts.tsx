@@ -35,7 +35,7 @@ const MyPosts: React.FC = () => {
     (title: string, postId: number) => {
       dispatch({
         type: SEARCH_POSTS_REQUEST,
-        query: title,
+        searchText: title,
         searchOption,
         postId,
       });

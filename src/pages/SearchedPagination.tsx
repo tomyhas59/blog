@@ -1,24 +1,52 @@
 import React from "react";
 import styled from "styled-components";
 import { usePagination } from "./PaginationProvider";
-import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { SEARCH_POSTS_REQUEST } from "../reducer/post";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const SearchedPagination = ({
   totalSearchedPosts,
+  searchText,
+  searchOption,
 }: {
   totalSearchedPosts: number;
+  searchText: string;
+  searchOption: string;
 }) => {
+  const location = useLocation();
+  const navigator = useNavigate();
+  const dispatch = useDispatch();
   const { searchedCurrentPage, searchedPostsPerPage, searchedPaginate } =
     usePagination();
 
   const searchedTotalPages = Math.ceil(
     totalSearchedPosts / searchedPostsPerPage
   );
-  const navigator = useNavigate();
+
+  const setParams = (number: number) => {
+    const params = new URLSearchParams();
+    params.set("searchText", searchText);
+    params.set("searchOption", searchOption);
+    params.set("page", number.toString());
+    params.set("limit", searchedPostsPerPage.toString());
+    navigator({
+      pathname: `${location.pathname}`,
+      search: params.toString(),
+    });
+  };
 
   const onPageClick = (number: number) => {
     searchedPaginate(number);
-    navigator("/search");
+    dispatch({
+      type: SEARCH_POSTS_REQUEST,
+      searchText,
+      searchOption,
+      page: number,
+      limit: searchedPostsPerPage,
+    });
+
+    setParams(number);
   };
 
   return (
