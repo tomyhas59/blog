@@ -1,4 +1,4 @@
-import React, { useCallback, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import "moment/locale/ko";
 import { PostType } from "../types";
@@ -10,6 +10,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../reducer";
 import FollowButton from "./FollowButton";
 import { SEARCH_POSTS_REQUEST } from "../reducer/post";
+import { usePagination } from "../pages/PaginationProvider";
 
 const Post = ({ post, postId }: { post: PostType; postId?: number }) => {
   const navigator = useNavigate();
@@ -45,6 +46,8 @@ const Post = ({ post, postId }: { post: PostType; postId?: number }) => {
     setShowInfo(false);
   });
 
+  const { searchedPostsPerPage, searchedPaginate } = usePagination();
+
   const onSearch = useCallback(
     (e: React.MouseEvent) => {
       e.stopPropagation();
@@ -52,11 +55,14 @@ const Post = ({ post, postId }: { post: PostType; postId?: number }) => {
         type: SEARCH_POSTS_REQUEST,
         query: post.User.nickname,
         searchOption: "author",
+        page: 1,
+        limit: searchedPostsPerPage,
       });
       navigator("/search");
+      searchedPaginate(1);
       window.scrollTo({ top: 0, behavior: "auto" });
     },
-    [dispatch, navigator, post.User.nickname]
+    [dispatch, navigator, post, searchedPostsPerPage]
   );
 
   const totalReComments = post.Comments.reduce(

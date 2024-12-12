@@ -3,18 +3,20 @@ import { Message, PostType } from "../types";
 
 //전역 상태 초기값
 const initialState = {
-  allPosts: [] as PostType[],
+  posts: [] as PostType[],
+  totalPosts: null,
   imagePaths: [] as string[],
-  searchPosts: [] as PostType[],
+  searchedPosts: [] as PostType[],
+  totalSearchedPosts: null,
   chatMessages: [] as Message[],
 
-  allPostsLoading: false,
-  allPostsDone: false,
-  allPostsError: null,
+  getPostsLoading: false,
+  getPostsDone: false,
+  getPostsError: null,
 
-  searchPostsLoading: false,
-  searchPostsDone: false,
-  searchPostsError: null,
+  searchedPostsLoading: false,
+  searchedPostsDone: false,
+  searchedPostsError: null,
 
   uploadImagesLoading: false,
   uploadImagesDone: false,
@@ -78,9 +80,9 @@ const initialState = {
 };
 
 //action명
-export const ALL_POSTS_REQUEST = "ALL_POSTS_REQUEST";
-export const ALL_POSTS_SUCCESS = "ALL_POSTS_SUCCESS";
-export const ALL_POSTS_FAILURE = "ALL_POSTS_FAILURE";
+export const GET_POSTS_REQUEST = "ALL_POSTS_REQUEST";
+export const GET_POSTS_SUCCESS = "ALL_POSTS_SUCCESS";
+export const GET_POSTS_FAILURE = "ALL_POSTS_FAILURE";
 
 export const ADD_POST_REQUEST = "ADD_POST_REQUEST";
 export const ADD_POST_SUCCESS = "ADD_POST_SUCCESS";
@@ -170,7 +172,7 @@ const post = (state = initialState, action: any) => {
       case ADD_POST_SUCCESS:
         draft.addPostLoading = false;
         draft.addPostDone = true;
-        draft.allPosts.unshift(action.data);
+        draft.posts.unshift(action.data);
         draft.imagePaths = [];
 
         break;
@@ -202,7 +204,7 @@ const post = (state = initialState, action: any) => {
       case REMOVE_IMAGE_SUCCESS: {
         draft.removeImageLoading = false;
         draft.imagePaths = draft.imagePaths.filter(
-          (v) => v !== action.data.filename
+          (imagePath) => imagePath !== action.data.filename
         );
         draft.removeImageDone = true;
         break;
@@ -219,12 +221,12 @@ const post = (state = initialState, action: any) => {
         break;
       case DELETE_IMAGE_SUCCESS: {
         draft.deleteImageLoading = false;
-        const postIndex = draft.allPosts.findIndex(
-          (v) => v.id === action.data.PostId //백엔드의 json의 PostId
+        const postIndex = draft.posts.findIndex(
+          (post) => post.id === action.data.PostId //백엔드의 json의 PostId
         );
-        draft.allPosts[postIndex].Images = draft.allPosts[
-          postIndex
-        ].Images.filter((v) => v.src !== action.data.filename);
+        draft.posts[postIndex].Images = draft.posts[postIndex].Images.filter(
+          (post) => post.src !== action.data.filename
+        );
 
         draft.deleteImageDone = true;
         break;
@@ -234,36 +236,37 @@ const post = (state = initialState, action: any) => {
         draft.deleteImageError = action.error;
         break;
       //------------------------------------------------------
-      case ALL_POSTS_REQUEST:
-        draft.allPostsLoading = true;
-        draft.allPostsDone = false;
-        draft.allPostsError = null;
+      case GET_POSTS_REQUEST:
+        draft.getPostsLoading = true;
+        draft.getPostsDone = false;
+        draft.getPostsError = null;
         break;
-      case ALL_POSTS_SUCCESS:
-        draft.allPostsLoading = false;
-        draft.allPostsDone = true;
-        draft.allPosts = draft.allPosts.concat(action.data);
+      case GET_POSTS_SUCCESS:
+        draft.getPostsLoading = false;
+        draft.getPostsDone = true;
+        draft.posts = action.data;
+        draft.totalPosts = action.totalPosts;
         break;
-      case ALL_POSTS_FAILURE:
-        draft.allPostsLoading = false;
-        draft.allPostsError = action.error;
+      case GET_POSTS_FAILURE:
+        draft.getPostsLoading = false;
+        draft.getPostsError = action.error;
         break;
 
       //------------------------------------------------------
       case SEARCH_POSTS_REQUEST:
-        draft.searchPostsLoading = true;
-        draft.searchPostsDone = false;
-        draft.searchPostsError = null;
+        draft.searchedPostsLoading = true;
+        draft.searchedPostsDone = false;
+        draft.searchedPostsError = null;
         break;
       case SEARCH_POSTS_SUCCESS:
-        draft.searchPostsLoading = false;
-        draft.searchPostsError = null;
-        draft.searchPostsDone = true;
-        draft.searchPosts = action.data;
+        draft.searchedPostsLoading = false;
+        draft.searchedPostsDone = true;
+        draft.searchedPosts = action.searchedPosts;
+        draft.totalSearchedPosts = action.totalSearchedPosts;
         break;
       case SEARCH_POSTS_FAILURE:
-        draft.searchPostsLoading = false;
-        draft.searchPostsError = action.error;
+        draft.searchedPostsLoading = false;
+        draft.searchedPostsError = action.error;
         break;
 
       //-----------------------------------------------------
@@ -276,12 +279,12 @@ const post = (state = initialState, action: any) => {
       case REMOVE_POST_SUCCESS: {
         draft.removePostLoading = false;
         draft.removePostDone = true;
-        draft.allPosts = draft.allPosts.filter(
-          (v) => v.id !== action.data.PostId
+        draft.posts = draft.posts.filter(
+          (post) => post.id !== action.data.PostId
         );
         //search
-        draft.searchPosts = draft.searchPosts.filter(
-          (v) => v.id !== action.data.PostId
+        draft.searchedPosts = draft.searchedPosts.filter(
+          (post) => post.id !== action.data.PostId
         );
         break;
       }
@@ -299,16 +302,16 @@ const post = (state = initialState, action: any) => {
       case UPDATE_POST_SUCCESS: {
         draft.updatePostLoading = false;
         draft.updatePostDone = true;
-        const postIndex = draft.allPosts.findIndex(
-          (v) => v.id === action.data.PostId //백엔드의 json의 PostId
+        const postIndex = draft.posts.findIndex(
+          (post) => post.id === action.data.PostId //백엔드의 json의 PostId
         );
-        draft.allPosts[postIndex] = action.data.updatePost;
+        draft.posts[postIndex] = action.data.updatePost;
         //search
 
-        const searchPostIndex = draft.searchPosts.findIndex(
-          (v) => v.id === action.data.PostId //백엔드의 json의 PostId
+        const searchPostIndex = draft.searchedPosts.findIndex(
+          (post) => post.id === action.data.PostId //백엔드의 json의 PostId
         );
-        draft.searchPosts[searchPostIndex] = action.data.updatePost;
+        draft.searchedPosts[searchPostIndex] = action.data.updatePost;
 
         draft.imagePaths = [];
         break;
@@ -328,17 +331,17 @@ const post = (state = initialState, action: any) => {
         draft.addCommentLoading = false;
         draft.addCommentDone = true;
 
-        const postIndex = draft.allPosts.findIndex(
-          (v) => v.id === action.data.PostId //백엔드의 json의 PostId
+        const postIndex = draft.posts.findIndex(
+          (post) => post.id === action.data.PostId //백엔드의 json의 PostId
         );
-        draft.allPosts[postIndex].Comments.push(action.data);
+        draft.posts[postIndex].Comments.push(action.data);
 
         //search
-        if (draft.searchPosts.length > 0) {
-          const searchPostIndex = draft.searchPosts.findIndex(
-            (v) => v.id === action.data.PostId //백엔드의 json의 PostId
+        if (draft.searchedPosts.length > 0) {
+          const searchPostIndex = draft.searchedPosts.findIndex(
+            (post) => post.id === action.data.PostId //백엔드의 json의 PostId
           );
-          draft.searchPosts[searchPostIndex].Comments.push(action.data);
+          draft.searchedPosts[searchPostIndex].Comments.push(action.data);
         }
         break;
       }
@@ -356,21 +359,25 @@ const post = (state = initialState, action: any) => {
       case REMOVE_COMMENT_SUCCESS: {
         draft.removeCommentLoading = false;
         draft.removeCommentDone = true;
-        const postIndex = draft.allPosts.findIndex(
-          (v) => v.id === action.data.PostId //백엔드의 json의 PostId
+        const postIndex = draft.posts.findIndex(
+          (post) => post.id === action.data.PostId //백엔드의 json의 PostId
         );
-        draft.allPosts[postIndex].Comments = draft.allPosts[
+        draft.posts[postIndex].Comments = draft.posts[
           postIndex
-        ].Comments.filter((v: { id: any }) => v.id !== action.data.CommentId);
+        ].Comments.filter(
+          (post: { id: any }) => post.id !== action.data.CommentId
+        );
 
         //search
-        if (draft.searchPosts.length > 0) {
-          const searchPostIndex = draft.searchPosts.findIndex(
-            (v) => v.id === action.data.PostId //백엔드의 json의 PostId
+        if (draft.searchedPosts.length > 0) {
+          const searchPostIndex = draft.searchedPosts.findIndex(
+            (post) => post.id === action.data.PostId //백엔드의 json의 PostId
           );
-          draft.searchPosts[searchPostIndex].Comments = draft.searchPosts[
+          draft.searchedPosts[searchPostIndex].Comments = draft.searchedPosts[
             searchPostIndex
-          ].Comments.filter((v: { id: any }) => v.id !== action.data.CommentId);
+          ].Comments.filter(
+            (post: { id: any }) => post.id !== action.data.CommentId
+          );
         }
 
         break;
@@ -389,26 +396,26 @@ const post = (state = initialState, action: any) => {
       case UPDATE_COMMENT_SUCCESS: {
         draft.updateCommentLoading = false;
         draft.updateCommentDone = true;
-        const postIndex = draft.allPosts.findIndex(
-          (v) => v.id === action.data.PostId //백엔드의 json의 PostId
+        const postIndex = draft.posts.findIndex(
+          (post) => post.id === action.data.PostId //백엔드의 json의 PostId
         );
-        const commentIndex = draft.allPosts[postIndex].Comments.findIndex(
-          (v: { id: any }) => v.id === action.data.CommentId
+        const commentIndex = draft.posts[postIndex].Comments.findIndex(
+          (post: { id: any }) => post.id === action.data.CommentId
         );
-        draft.allPosts[postIndex].Comments[commentIndex].content =
+        draft.posts[postIndex].Comments[commentIndex].content =
           action.data.content; //post 안의 Comments안에 있는 content를 찾아서 바꾸므로 배열값 넣어줌
 
         //search
-        if (draft.searchPosts.length > 0) {
-          const searchPostIndex = draft.searchPosts.findIndex(
-            (v) => v.id === action.data.PostId //백엔드의 json의 PostId
+        if (draft.searchedPosts.length > 0) {
+          const searchPostIndex = draft.searchedPosts.findIndex(
+            (post) => post.id === action.data.PostId //백엔드의 json의 PostId
           );
-          const searchCommentIndex = draft.searchPosts[
+          const searchCommentIndex = draft.searchedPosts[
             searchPostIndex
           ].Comments.findIndex(
-            (v: { id: any }) => v.id === action.data.CommentId
+            (post: { id: any }) => post.id === action.data.CommentId
           );
-          draft.searchPosts[searchPostIndex].Comments[
+          draft.searchedPosts[searchPostIndex].Comments[
             searchCommentIndex
           ].content = action.data.content;
         }
@@ -430,27 +437,27 @@ const post = (state = initialState, action: any) => {
       case ADD_RECOMMENT_SUCCESS: {
         draft.addReCommentLoading = false;
         draft.addReCommentDone = true;
-        const postIndex = draft.allPosts.findIndex(
-          (v) => v.id === action.data.PostId //백엔드의 json의 PostId
+        const postIndex = draft.posts.findIndex(
+          (post) => post.id === action.data.PostId //백엔드의 json의 PostId
         );
-        const commentIndex = draft.allPosts[postIndex].Comments.findIndex(
-          (v: { id: any }) => v.id === action.data.CommentId
+        const commentIndex = draft.posts[postIndex].Comments.findIndex(
+          (post: { id: any }) => post.id === action.data.CommentId
         );
-        draft.allPosts[postIndex].Comments[commentIndex].ReComments.push(
+        draft.posts[postIndex].Comments[commentIndex].ReComments.push(
           action.data
         );
 
         //search
-        if (draft.searchPosts.length > 0) {
-          const searchPostIndex = draft.searchPosts.findIndex(
-            (v) => v.id === action.data.PostId //백엔드의 json의 PostId
+        if (draft.searchedPosts.length > 0) {
+          const searchPostIndex = draft.searchedPosts.findIndex(
+            (post) => post.id === action.data.PostId //백엔드의 json의 PostId
           );
-          const searchCommentIndex = draft.searchPosts[
+          const searchCommentIndex = draft.searchedPosts[
             searchPostIndex
           ].Comments.findIndex(
-            (v: { id: any }) => v.id === action.data.CommentId
+            (post: { id: any }) => post.id === action.data.CommentId
           );
-          draft.searchPosts[searchPostIndex].Comments[
+          draft.searchedPosts[searchPostIndex].Comments[
             searchCommentIndex
           ].ReComments.push(action.data);
         }
@@ -471,33 +478,34 @@ const post = (state = initialState, action: any) => {
       case REMOVE_RECOMMENT_SUCCESS: {
         draft.removeReCommentLoading = false;
         draft.removeReCommentDone = true;
-        const postIndex = draft.allPosts.findIndex(
-          (v) => v.id === action.data.PostId //백엔드의 json의 PostId
+        const postIndex = draft.posts.findIndex(
+          (post) => post.id === action.data.PostId //백엔드의 json의 PostId
         );
-        const commentIndex = draft.allPosts[postIndex].Comments.findIndex(
-          (v: { id: any }) => v.id === action.data.CommentId
+        const commentIndex = draft.posts[postIndex].Comments.findIndex(
+          (post: { id: any }) => post.id === action.data.CommentId
         );
-        draft.allPosts[postIndex].Comments[commentIndex].ReComments =
-          draft.allPosts[postIndex].Comments[commentIndex].ReComments.filter(
-            (v: { id: any }) => v.id !== action.data.ReCommentId
-          );
+        draft.posts[postIndex].Comments[commentIndex].ReComments = draft.posts[
+          postIndex
+        ].Comments[commentIndex].ReComments.filter(
+          (post: { id: any }) => post.id !== action.data.ReCommentId
+        );
         //search
-        if (draft.searchPosts.length > 0) {
-          const searchPostIndex = draft.searchPosts.findIndex(
-            (v) => v.id === action.data.PostId //백엔드의 json의 PostId
+        if (draft.searchedPosts.length > 0) {
+          const searchPostIndex = draft.searchedPosts.findIndex(
+            (post) => post.id === action.data.PostId //백엔드의 json의 PostId
           );
-          const searchCommentIndex = draft.searchPosts[
+          const searchCommentIndex = draft.searchedPosts[
             searchPostIndex
           ].Comments.findIndex(
-            (v: { id: any }) => v.id === action.data.CommentId
+            (post: { id: any }) => post.id === action.data.CommentId
           );
 
-          draft.searchPosts[searchPostIndex].Comments[
+          draft.searchedPosts[searchPostIndex].Comments[
             searchCommentIndex
-          ].ReComments = draft.searchPosts[searchPostIndex].Comments[
+          ].ReComments = draft.searchedPosts[searchPostIndex].Comments[
             searchCommentIndex
           ].ReComments.filter(
-            (v: { id: any }) => v.id !== action.data.ReCommentId
+            (post: { id: any }) => post.id !== action.data.ReCommentId
           );
         }
 
@@ -517,38 +525,38 @@ const post = (state = initialState, action: any) => {
       case UPDATE_RECOMMENT_SUCCESS: {
         draft.updateReCommentLoading = false;
         draft.updateReCommentDone = true;
-        const postIndex = draft.allPosts.findIndex(
-          (v) => v.id === action.data.PostId //백엔드의 json의 PostId
+        const postIndex = draft.posts.findIndex(
+          (post) => post.id === action.data.PostId //백엔드의 json의 PostId
         );
-        const commentIndex = draft.allPosts[postIndex].Comments.findIndex(
-          (v: { id: any }) => v.id === action.data.CommentId
+        const commentIndex = draft.posts[postIndex].Comments.findIndex(
+          (post: { id: any }) => post.id === action.data.CommentId
         );
-        const reCommentIndex = draft.allPosts[postIndex].Comments[
+        const reCommentIndex = draft.posts[postIndex].Comments[
           commentIndex
         ].ReComments.findIndex(
-          (v: { id: any }) => v.id === action.data.ReCommentId
+          (post: { id: any }) => post.id === action.data.ReCommentId
         );
 
-        draft.allPosts[postIndex].Comments[commentIndex].ReComments[
+        draft.posts[postIndex].Comments[commentIndex].ReComments[
           reCommentIndex
         ].content = action.data.content; //post 안의 Comments안의 ReComments 안에 있는 content를 찾아서 바꾸므로 배열값 넣어줌
         //search
-        if (draft.searchPosts.length > 0) {
-          const searchPostIndex = draft.searchPosts.findIndex(
-            (v) => v.id === action.data.PostId //백엔드의 json의 PostId
+        if (draft.searchedPosts.length > 0) {
+          const searchPostIndex = draft.searchedPosts.findIndex(
+            (post) => post.id === action.data.PostId //백엔드의 json의 PostId
           );
-          const searchCommentIndex = draft.searchPosts[
+          const searchCommentIndex = draft.searchedPosts[
             searchPostIndex
           ].Comments.findIndex(
-            (v: { id: any }) => v.id === action.data.CommentId
+            (post: { id: any }) => post.id === action.data.CommentId
           );
-          const searchReCommentIndex = draft.searchPosts[
+          const searchReCommentIndex = draft.searchedPosts[
             searchPostIndex
           ].Comments[searchCommentIndex].ReComments.findIndex(
-            (v: { id: any }) => v.id === action.data.ReCommentId
+            (post: { id: any }) => post.id === action.data.ReCommentId
           );
 
-          draft.searchPosts[searchPostIndex].Comments[
+          draft.searchedPosts[searchPostIndex].Comments[
             searchCommentIndex
           ].ReComments[searchReCommentIndex].content = action.data.content;
         }
@@ -568,7 +576,7 @@ const post = (state = initialState, action: any) => {
         draft.likePostError = null;
         break;
       case LIKE_POST_SUCCESS: {
-        const post = draft.allPosts.find((v) => v.id === action.data.PostId);
+        const post = draft.posts.find((post) => post.id === action.data.PostId);
         if (post) {
           post.Likers.push({
             id: action.data.UserId,
@@ -576,9 +584,9 @@ const post = (state = initialState, action: any) => {
           });
         }
         //search
-        if (draft.searchPosts.length > 0) {
-          const searchPost = draft.searchPosts.find(
-            (v) => v.id === action.data.PostId //백엔드의 json의 PostId
+        if (draft.searchedPosts.length > 0) {
+          const searchPost = draft.searchedPosts.find(
+            (post) => post.id === action.data.PostId //백엔드의 json의 PostId
           );
           if (searchPost) {
             searchPost.Likers.push({
@@ -603,18 +611,18 @@ const post = (state = initialState, action: any) => {
         draft.unLikePostError = null;
         break;
       case UNLIKE_POST_SUCCESS: {
-        const post = draft.allPosts.find((v) => v.id === action.data.PostId);
+        const post = draft.posts.find((post) => post.id === action.data.PostId);
         post!.Likers = post!.Likers.filter(
-          (v: { id: any }) => v.id !== action.data.UserId
+          (post: { id: any }) => post.id !== action.data.UserId
         );
 
         //search
-        if (draft.searchPosts.length > 0) {
-          const searchPost = draft.searchPosts.find(
-            (v) => v.id === action.data.PostId
+        if (draft.searchedPosts.length > 0) {
+          const searchPost = draft.searchedPosts.find(
+            (post) => post.id === action.data.PostId
           );
           searchPost!.Likers = searchPost!.Likers.filter(
-            (v: { id: any }) => v.id !== action.data.UserId
+            (post: { id: any }) => post.id !== action.data.UserId
           );
         }
         draft.unLikePostLoading = false;

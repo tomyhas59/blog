@@ -35,14 +35,14 @@ import { FileButton } from "../components/PostForm";
 import { useNavigate } from "react-router-dom";
 import { PostType } from "../types";
 import Post from "../components/Post";
-import { usePagination } from "./PaginationProvider";
+
 import Pagination from "./Pagination";
 import { io, Socket } from "socket.io-client";
 
 const PostDetail = () => {
   const socket = useRef<Socket | null>(null);
   const me = useSelector((state: RootState) => state.user.me);
-
+  const dispatch = useDispatch();
   useEffect(() => {
     socket.current =
       process.env.NODE_ENV === "production"
@@ -54,15 +54,13 @@ const PostDetail = () => {
     };
   }, [me]);
 
-  const { allPosts, imagePaths } = useSelector(
+  const { posts, imagePaths, totalPosts } = useSelector(
     (state: RootState) => state.post
   );
-  const { currentPage, postsPerPage } = usePagination();
 
   const { postId } = useParams();
-  const post: PostType = allPosts.find((post) => post.id === Number(postId))!;
+  const post: PostType = posts.find((post) => post.id === Number(postId))!;
 
-  const dispatch = useDispatch();
   const [editPost, setEditPost] = useState(false);
   const [content, setContent] = useState("");
   const navigator = useNavigate();
@@ -111,7 +109,7 @@ const PostDetail = () => {
   const nickname = useSelector((state: RootState) => state.user.me?.nickname);
 
   const {
-    searchPostsLoading,
+    searchedPostsLoading,
     removePostLoading,
     updatePostLoading,
     addCommentLoading,
@@ -320,10 +318,6 @@ const PostDetail = () => {
 
   const prevContent = content.replace(/<br\s*\/?>/gi, "\n");
 
-  const indexOfLastPost = currentPage * postsPerPage;
-  const indexOfFirstPost = indexOfLastPost - postsPerPage;
-  const currentPosts = allPosts.slice(indexOfFirstPost, indexOfLastPost);
-
   const totalReComments = post.Comments.reduce(
     (total, comment) => total + comment.ReComments.length,
     0
@@ -339,7 +333,7 @@ const PostDetail = () => {
     <>
       {removePostLoading ||
       updatePostLoading ||
-      searchPostsLoading ||
+      searchedPostsLoading ||
       addCommentLoading ||
       likePostLoading ||
       unLikePostLoading ? (
@@ -512,14 +506,14 @@ const PostDetail = () => {
           <Comment post={post} />
         </CommentContainer>
       </FullPostWrapper>
-      {allPosts.length > 0 && (
+      {posts.length > 0 && (
         <div>
-          {currentPosts.map((post: PostType) => (
+          {posts.map((post: PostType) => (
             <div key={post.id}>
               <Post post={post} postId={Number(postId)} />
             </div>
           ))}
-          <Pagination totalPosts={allPosts.length} />
+          <Pagination totalPosts={Number(totalPosts)} />
         </div>
       )}
     </>

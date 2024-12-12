@@ -12,11 +12,13 @@ import {
   REMOVE_IMAGE_REQUEST,
   UPLOAD_IMAGES_REQUEST,
 } from "../reducer/post";
-import { useEffect } from "react";
+
 import { RootState } from "../reducer";
 import Spinner from "./Spinner";
 import useTextareaAutoHeight from "../hooks/useTextareaAutoHeight";
 import { baseURL } from "../config";
+
+import { useNavigate } from "react-router-dom";
 
 interface PostFormProps {
   postFormRef: React.Ref<HTMLDivElement>;
@@ -30,18 +32,18 @@ const PostForm: React.FC<PostFormProps> = ({
   setTogglePostForm,
 }) => {
   const dispatch = useDispatch();
-  const { imagePaths, addPostDone, addPostError, addPostLoading } = useSelector(
+  const { imagePaths, addPostLoading } = useSelector(
     (state: RootState) => state.post
   );
   const { me } = useSelector((state: RootState) => state.user);
   const [content, setContent] = useState("");
-
   const onChangeContent = useCallback(
     (e: ChangeEvent<HTMLTextAreaElement>) => {
       setContent(e.target.value);
     },
     [setContent]
   );
+  const navigator = useNavigate();
 
   const [title, setTitle] = useState("");
 
@@ -54,16 +56,6 @@ const PostForm: React.FC<PostFormProps> = ({
 
   const imageInput = useRef<HTMLInputElement>(null);
   const [active, setActive] = useState(false);
-
-  useEffect(() => {
-    if (addPostError) {
-      console.log(addPostError);
-    }
-    if (addPostDone) {
-      setContent("");
-      setTitle("");
-    }
-  }, [addPostDone, addPostError]);
 
   const onClickFileUpload = useCallback(() => {
     imageInput.current!.click();
@@ -129,9 +121,14 @@ const PostForm: React.FC<PostFormProps> = ({
       });
       setTogglePostForm(false);
       if (textareaRef.current) textareaRef.current.style.height = "auto";
+
+      setContent("");
+      setTitle("");
+      navigator("/");
+      window.location.reload();
     },
 
-    [title, content, imagePaths, dispatch, setTogglePostForm]
+    [title, content, imagePaths, dispatch, setTogglePostForm, navigator]
   );
 
   const textareaRef = useRef<HTMLTextAreaElement>(null);

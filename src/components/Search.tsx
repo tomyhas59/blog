@@ -11,7 +11,7 @@ const Search = () => {
   const [searchOption, setSearchOption] = useState("all");
   const [searchText, setSearchText] = useState("");
   const dispatch = useDispatch();
-  const { searchPostsError } = useSelector((state: RootState) => state.post);
+  const { searchedPostsError } = useSelector((state: RootState) => state.post);
   const navigator = useNavigate();
   const location = useLocation();
 
@@ -32,11 +32,11 @@ const Search = () => {
   }, [dispatch, navigator, searchOption, searchText]);
 
   useEffect(() => {
-    if (searchPostsError) {
-      alert(searchPostsError);
+    if (searchedPostsError) {
+      alert(searchedPostsError);
       setSearchText("");
     }
-  }, [searchPostsError]);
+  }, [searchedPostsError]);
 
   const onEnterKeyPress = useCallback(
     (e: KeyboardEvent<HTMLInputElement>) => {

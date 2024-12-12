@@ -10,15 +10,15 @@ import {
   ADD_RECOMMENT_FAILURE,
   ADD_RECOMMENT_REQUEST,
   ADD_RECOMMENT_SUCCESS,
-  ALL_POSTS_FAILURE,
-  ALL_POSTS_REQUEST,
-  ALL_POSTS_SUCCESS,
   DELETE_ALL_CHAT_FAILURE,
   DELETE_ALL_CHAT_REQUEST,
   DELETE_ALL_CHAT_SUCCESS,
   DELETE_IMAGE_FAILURE,
   DELETE_IMAGE_REQUEST,
   DELETE_IMAGE_SUCCESS,
+  GET_POSTS_FAILURE,
+  GET_POSTS_REQUEST,
+  GET_POSTS_SUCCESS,
   LIKE_POST_FAILURE,
   LIKE_POST_REQUEST,
   LIKE_POST_SUCCESS,
@@ -59,49 +59,66 @@ import {
 import { SagaIterator } from "redux-saga";
 //-----------------------------------------------------
 
-function allPostsApi() {
-  return axios.get("/post/all");
+function getPostsApi(data: any) {
+  return axios.get("/post/posts", {
+    params: {
+      page: data.page,
+      limit: data.limit,
+    },
+  });
 }
 
-function* loadPosts(): SagaIterator {
+function* getPosts(action: { data: any }): SagaIterator {
   try {
-    const result = yield call(allPostsApi);
+    const result = yield call(getPostsApi, action.data);
     yield put({
-      type: ALL_POSTS_SUCCESS,
-      data: result.data,
+      type: GET_POSTS_SUCCESS,
+      data: result.data.posts,
+      totalPosts: result.data.totalPosts,
     });
   } catch (err: any) {
     console.log(err);
     yield put({
-      type: ALL_POSTS_FAILURE,
+      type: GET_POSTS_FAILURE,
       error: err.response.data,
     });
   }
 }
-function* watchLoadPosts() {
-  yield takeLatest<any>(ALL_POSTS_REQUEST, loadPosts);
+function* watchGetPosts() {
+  yield takeLatest<any>(GET_POSTS_REQUEST, getPosts);
 }
 //----------------------------------------------
-function searchPostsApi(query: any, searchOption: string, postId: number) {
+function searchPostsApi(
+  query: any,
+  searchOption: string,
+  postId: number,
+  page: number,
+  limit: number
+) {
   return axios.get(
-    `/post/search?query=${query}&searchOption=${searchOption}&postId=${postId}`
+    `/post/search?query=${query}&searchOption=${searchOption}&postId=${postId}&page=${page}&limit=${limit}`
   );
 }
 function* searchPosts(action: {
   query: any;
   searchOption: string;
   postId: number;
+  page: number;
+  limit: number;
 }): SagaIterator {
   try {
     const result = yield call(
       searchPostsApi,
       action.query,
       action.searchOption,
-      action.postId
+      action.postId,
+      action.page,
+      action.limit
     );
     yield put({
       type: SEARCH_POSTS_SUCCESS,
-      data: result.data,
+      searchedPosts: result.data.searchedPosts,
+      totalSearchedPosts: result.data.totalSearchedPosts,
     });
   } catch (err: any) {
     console.log(err);
@@ -533,7 +550,7 @@ function* watchDeleteAllChat() {
 
 export default function* postSaga() {
   yield all([
-    fork(watchLoadPosts),
+    fork(watchGetPosts),
     fork(watchAddPost),
     fork(watchRemovePost),
     fork(watchUpdatePost),

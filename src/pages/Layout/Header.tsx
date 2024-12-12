@@ -20,6 +20,7 @@ const Header = () => {
   const { isLoggedIn, logOutDone, me, logInError } = useSelector(
     (state: RootState) => state.user
   );
+
   const [chatNotification, setChatNotification] = useState<boolean>(false);
   const [followNotification, setFollowNotification] = useState<boolean>(false);
   const [commentNotification, setCommentNotification] =
@@ -124,7 +125,7 @@ const Header = () => {
     });
     paginate(1);
     navigator("/");
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    window.location.reload();
   }, [dispatch, navigator, paginate]);
 
   const onGoToChat = () => {
@@ -289,6 +290,7 @@ const ListItem = styled.li`
     transform: translateY(-2px);
     color: ${(props) => props.theme.charColor};
   }
+  z-index: 0;
   @media (max-width: 480px) {
     font-size: 14px;
     background: none;

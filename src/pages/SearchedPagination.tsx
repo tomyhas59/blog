@@ -3,22 +3,29 @@ import styled from "styled-components";
 import { usePagination } from "./PaginationProvider";
 import { useNavigate } from "react-router-dom";
 
-const Pagination = ({ totalPosts }: { totalPosts: number }) => {
-  const { currentPage, postsPerPage, paginate } = usePagination();
+const SearchedPagination = ({
+  totalSearchedPosts,
+}: {
+  totalSearchedPosts: number;
+}) => {
+  const { searchedCurrentPage, searchedPostsPerPage, searchedPaginate } =
+    usePagination();
 
-  const totalPages = Math.ceil(totalPosts / postsPerPage);
+  const searchedTotalPages = Math.ceil(
+    totalSearchedPosts / searchedPostsPerPage
+  );
   const navigator = useNavigate();
 
   const onPageClick = (number: number) => {
-    paginate(number);
-    navigator("/");
+    searchedPaginate(number);
+    navigator("/search");
   };
 
   return (
     <PaginationContainer>
       <ul>
-        {[...Array(totalPages)].map((_, index) => (
-          <PageItem key={index} isActive={index + 1 === currentPage}>
+        {[...Array(searchedTotalPages)].map((_, index) => (
+          <PageItem key={index} isActive={index + 1 === searchedCurrentPage}>
             <PageButton onClick={() => onPageClick(index + 1)}>
               {index + 1}
             </PageButton>
@@ -29,7 +36,7 @@ const Pagination = ({ totalPosts }: { totalPosts: number }) => {
   );
 };
 
-export default Pagination;
+export default SearchedPagination;
 
 const PaginationContainer = styled.nav`
   display: flex;
@@ -55,7 +62,6 @@ const PageItem = styled.li<PageItemProps>`
       props.isActive ? props.theme.mainColor : "#fff"};
     color: ${(props) => (props.isActive ? "#fff" : "#333")};
     cursor: pointer;
-
     &:hover {
       background-color: ${(props) => !props.isActive && "#D3D3D3"};
     }
