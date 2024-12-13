@@ -21,7 +21,6 @@ import {
   REMOVE_IMAGE_REQUEST,
   SEARCH_POSTS_REQUEST,
   GET_POST_REQUEST,
-  GET_POSTS_REQUEST,
 } from "../reducer/post";
 import moment from "moment";
 import "moment/locale/ko";
@@ -32,25 +31,28 @@ import ContentRenderer from "../components/renderer/ContentRenderer";
 import useOutsideClick from "../hooks/useOutsideClick";
 import useTextareaAutoHeight from "../hooks/useTextareaAutoHeight";
 import FollowButton from "../components/FollowButton";
-import { DEFAULT_PROFILE_IMAGE } from "../pages/Info/MyInfo";
+import { DEFAULT_PROFILE_IMAGE } from "./Info/MyInfo";
 import { FileButton } from "../components/PostForm";
 import { useNavigate } from "react-router-dom";
 import { PostType } from "../types";
 import Post from "../components/Post";
-import Pagination from "./Pagination";
 import { io, Socket } from "socket.io-client";
 import { usePagination } from "./PaginationProvider";
+import SearchedPagination from "./SearchedPagination";
+import SeachedPost from "../components/SeachedPost";
 
-const PostDetail = () => {
+const SearchedPostDetail = () => {
   const socket = useRef<Socket | null>(null);
   const me = useSelector((state: RootState) => state.user.me);
   const dispatch = useDispatch();
   const location = useLocation();
-  const { currentPage, postsPerPage, setCurrentPage } = usePagination();
+  const { currentPage } = usePagination();
+  const [searchText, setSearchText] = useState<string>("");
+  const [searchOption, setSearchOption] = useState<string>("");
   const [page, setPage] = useState<number>(currentPage);
   const { postId } = useParams();
 
-  const { posts, post, imagePaths, totalPosts } = useSelector(
+  const { searchedPosts, post, imagePaths, totalSearchedPosts } = useSelector(
     (state: RootState) => state.post
   );
 
@@ -63,21 +65,16 @@ const PostDetail = () => {
     }
   }, [dispatch, postId]);
 
-  //페이지 이동 시 데이터 반환
   useEffect(() => {
     const params = new URLSearchParams(location.search);
+    const searchTextParam = params.get("searchText");
+    const searchOptionParam = params.get("searchOption");
     const pageParam = params.get("page");
+
+    if (searchTextParam) setSearchText(searchTextParam);
+    if (searchOptionParam) setSearchOption(searchOptionParam);
     if (pageParam) setPage(Number(pageParam));
   }, [location.search]);
-
-  useEffect(() => {
-    dispatch({
-      type: GET_POSTS_REQUEST,
-      page: page,
-      limit: postsPerPage,
-    });
-    setCurrentPage(page);
-  }, [dispatch, page, postsPerPage, post.Comments]);
 
   useEffect(() => {
     socket.current =
@@ -538,21 +535,25 @@ const PostDetail = () => {
           <Comment post={post} />
         </CommentContainer>
       </FullPostWrapper>
-      {posts.length > 0 && (
+      {searchedPosts.length > 0 && (
         <div>
-          {posts.map((post: PostType) => (
+          {searchedPosts.map((post: PostType) => (
             <div key={post.id}>
-              <Post post={post} postId={Number(postId)} />
+              <SeachedPost post={post} postId={Number(postId)} />
             </div>
           ))}
-          <Pagination totalPosts={Number(totalPosts)} postId={post.id} />
+          <SearchedPagination
+            totalSearchedPosts={Number(totalSearchedPosts)}
+            searchText={searchText}
+            searchOption={searchOption}
+          />
         </div>
       )}
     </>
   );
 };
 
-export default PostDetail;
+export default SearchedPostDetail;
 
 const FullPostWrapper = styled.div`
   max-width: 800px;

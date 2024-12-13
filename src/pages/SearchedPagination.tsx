@@ -36,6 +36,7 @@ const SearchedPagination = ({
     });
   };
 
+  console.log(location.pathname);
   const onPageClick = (number: number) => {
     searchedPaginate(number);
     dispatch({
@@ -45,7 +46,6 @@ const SearchedPagination = ({
       page: number,
       limit: searchedPostsPerPage,
     });
-
     setParams(number);
   };
 

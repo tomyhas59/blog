@@ -1,54 +1,16 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback } from "react";
 import styled from "styled-components";
 import "moment/locale/ko";
 import { PostType } from "../types";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { baseURL } from "../config";
 import { DEFAULT_PROFILE_IMAGE } from "../pages/Info/MyInfo";
-import useOutsideClick from "../hooks/useOutsideClick";
-import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../reducer";
-import FollowButton from "./FollowButton";
-import { SEARCH_POSTS_REQUEST } from "../reducer/post";
 import { usePagination } from "../pages/PaginationProvider";
 
-const Post = ({ post, postId }: { post: PostType; postId?: number }) => {
+const SeachedPost = ({ post, postId }: { post: PostType; postId?: number }) => {
   const navigator = useNavigate();
-  const me = useSelector((state: RootState) => state.user.me);
-  const id = me?.id;
-  const location = useLocation();
-  const { currentPage, searchedPostsPerPage, searchedPaginate } =
-    usePagination();
 
-  const goToPostDetail = useCallback(
-    (postId: number) => {
-      const params = new URLSearchParams();
-      params.set("page", currentPage.toString());
-      navigator({
-        pathname: `/post/${postId}`,
-        search: params.toString(),
-      });
-    },
-    [navigator]
-  );
-  const dispatch = useDispatch();
-
-  //---닉네임 클릭 정보 보기-------------------------------------
-  const [showInfo, setShowInfo] = useState<boolean | {}>(false);
-  const toggleShowInfo = useCallback(
-    (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-      e.stopPropagation();
-      setShowInfo((prevShowInfo) => !prevShowInfo);
-    },
-    []
-  );
-
-  //OutsideClick----------------------------------------------
-  const infoMenuRef = useRef<HTMLDivElement>(null);
-
-  useOutsideClick([infoMenuRef], () => {
-    setShowInfo(false);
-  });
+  const { searchedPostsPerPage } = usePagination();
 
   const setParams = () => {
     const params = new URLSearchParams();
@@ -57,26 +19,14 @@ const Post = ({ post, postId }: { post: PostType; postId?: number }) => {
     params.set("page", "1");
     params.set("limit", searchedPostsPerPage.toString());
     navigator({
-      pathname: `/search`,
+      pathname: `/searchedPost/${post.id}`,
       search: params.toString(),
     });
   };
 
-  const onSearch = useCallback(
-    (e: React.MouseEvent) => {
-      e.stopPropagation();
-      dispatch({
-        type: SEARCH_POSTS_REQUEST,
-        searchText: post.User.nickname,
-        searchOption: "author",
-        page: 1,
-        limit: searchedPostsPerPage,
-      });
-      searchedPaginate(1);
-      setParams();
-    },
-    [dispatch, navigator, post, searchedPostsPerPage]
-  );
+  const goToSearchedPostDetail = useCallback(() => {
+    setParams();
+  }, []);
 
   const totalReComments = post.Comments.reduce(
     (total, comment) => total + comment.ReComments.length,
@@ -85,11 +35,11 @@ const Post = ({ post, postId }: { post: PostType; postId?: number }) => {
 
   return (
     <PostContainer
-      onClick={() => goToPostDetail(post.id)}
+      onClick={goToSearchedPostDetail}
       isActive={postId === post.id}
     >
       <PostHeaderFlex>
-        <NicknameButton onClick={toggleShowInfo}>
+        <NicknameButton>
           <img
             src={
               post.User.Image
@@ -100,14 +50,6 @@ const Post = ({ post, postId }: { post: PostType; postId?: number }) => {
           />
           <Nickname>{post.User.nickname.slice(0, 5)}</Nickname>
         </NicknameButton>
-        {showInfo && (
-          <InfoMenu ref={infoMenuRef}>
-            <Button onClick={onSearch}>작성 글 보기</Button>
-            {id !== post.User.id && (
-              <FollowButton userId={post.User.id} setShowInfo={setShowInfo} />
-            )}
-          </InfoMenu>
-        )}
         <PostTitle>
           {post.title}
           <span style={{ fontSize: "12px" }}>
@@ -119,7 +61,7 @@ const Post = ({ post, postId }: { post: PostType; postId?: number }) => {
   );
 };
 
-export default Post;
+export default SeachedPost;
 
 const PostContainer = styled.div<{ isActive: boolean }>`
   max-width: 800px;

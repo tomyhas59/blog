@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from "react";
-import Post from "../components/Post";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../reducer";
 import { PostType } from "../types";
 import Spinner from "../components/Spinner";
 
 import SearchedPagination from "./SearchedPagination";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import { SEARCH_POSTS_REQUEST } from "../reducer/post";
 import { usePagination } from "./PaginationProvider";
+import SeachedPost from "../components/SeachedPost";
 
 const SearchPage = () => {
   const location = useLocation();
@@ -23,6 +23,7 @@ const SearchPage = () => {
   const [searchOption, setSearchOption] = useState<string>("");
   const [page, setPage] = useState<number>(searchedCurrentPage);
 
+  //페이지 이동 시 데이터 반환
   useEffect(() => {
     const params = new URLSearchParams(location.search);
     const searchTextParam = params.get("searchText");
@@ -56,7 +57,7 @@ const SearchPage = () => {
           <div>
             {searchedPosts.map((post: PostType) => (
               <div key={post.id}>
-                <Post post={post} />
+                <SeachedPost post={post} />
               </div>
             ))}
             <SearchedPagination
