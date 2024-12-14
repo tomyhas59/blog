@@ -39,7 +39,7 @@ const Header = () => {
     return () => {
       socket.current?.disconnect();
     };
-  }, [me]);
+  }, []);
 
   //새로고침 로그인 유지
   useEffect(() => {
@@ -168,7 +168,7 @@ const Header = () => {
       socket.current?.off("unReadMessages");
       socket.current?.off("joinRoom");
     };
-  }, [me, socket]);
+  }, [me]);
 
   return (
     <HeaderWrapper>

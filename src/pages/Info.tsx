@@ -22,22 +22,6 @@ const Info = () => {
   const socket = useRef<Socket | null>(null);
 
   useEffect(() => {
-    const getUserData = async () => {
-      try {
-        const response = await axios.get("/user/setUser");
-        const userData = response.data;
-        dispatch({
-          type: "SET_USER",
-          data: userData,
-        });
-      } catch (error) {
-        console.error(error);
-      }
-    };
-    getUserData();
-  }, [dispatch]);
-
-  useEffect(() => {
     socket.current =
       process.env.NODE_ENV === "production"
         ? io("https://patient-marina-tomyhas59-8c3582f9.koyeb.app")
@@ -52,6 +36,22 @@ const Info = () => {
       socket.current?.disconnect();
     };
   }, [me]);
+
+  useEffect(() => {
+    const getUserData = async () => {
+      try {
+        const response = await axios.get("/user/setUser");
+        const userData = response.data;
+        dispatch({
+          type: "SET_USER",
+          data: userData,
+        });
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    getUserData();
+  }, [dispatch]);
 
   useEffect(() => {
     if (!me) navigate("/");
