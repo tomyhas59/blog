@@ -100,7 +100,6 @@ const Info = () => {
 
   const notRead = me?.Notifications?.some((noti) => noti.isRead === false);
 
-  console.log(notRead);
   return (
     <Container>
       <Nav>

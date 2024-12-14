@@ -15,21 +15,31 @@ const Search = () => {
   const navigator = useNavigate();
   const location = useLocation();
 
+  const setParams = useCallback(() => {
+    const params = new URLSearchParams();
+    params.set("searchText", searchText);
+    params.set("searchOption", searchOption);
+    params.set("page", "1");
+    navigator({
+      pathname: `/search`,
+      search: params.toString(),
+    });
+  }, [navigator, searchOption, searchText]);
+
   const onSearch = useCallback(() => {
     if (!searchText.trim()) {
       return alert("찾을 단어를 입력해 주세요");
     }
 
-    navigator("/search");
     dispatch({
       type: SEARCH_POSTS_REQUEST,
       searchText,
       searchOption,
     });
     setSearchText("");
-
+    setParams();
     window.scrollTo({ top: 0, behavior: "auto" }); // 페이지 맨 위로 스크롤
-  }, [dispatch, navigator, searchOption, searchText]);
+  }, [dispatch, searchOption, searchText, setParams]);
 
   useEffect(() => {
     if (searchedPostsError) {

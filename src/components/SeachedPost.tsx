@@ -5,28 +5,24 @@ import { PostType } from "../types";
 import { useNavigate } from "react-router-dom";
 import { baseURL } from "../config";
 import { DEFAULT_PROFILE_IMAGE } from "../pages/Info/MyInfo";
-import { usePagination } from "../pages/PaginationProvider";
 
 const SeachedPost = ({ post, postId }: { post: PostType; postId?: number }) => {
   const navigator = useNavigate();
 
-  const { searchedPostsPerPage } = usePagination();
-
-  const setParams = () => {
+  const setParams = useCallback(() => {
     const params = new URLSearchParams();
     params.set("searchText", post.User.nickname);
     params.set("searchOption", "author");
     params.set("page", "1");
-    params.set("limit", searchedPostsPerPage.toString());
     navigator({
       pathname: `/searchedPost/${post.id}`,
       search: params.toString(),
     });
-  };
+  }, [navigator, post.User.nickname, post.id]);
 
   const goToSearchedPostDetail = useCallback(() => {
     setParams();
-  }, []);
+  }, [setParams]);
 
   const totalReComments = post.Comments.reduce(
     (total, comment) => total + comment.ReComments.length,
@@ -109,30 +105,6 @@ const NicknameButton = styled.button`
     width: 30px;
     height: 30px;
   }
-  &:hover {
-    transform: translateY(-2px);
-    color: ${(props) => props.theme.charColor};
-  }
-`;
-
-const InfoMenu = styled.div`
-  position: absolute;
-  top: 30px;
-  left: 50px;
-  display: flex;
-  flex-direction: column;
-  z-index: 999;
-`;
-
-const Button = styled.button`
-  background-color: ${(props) => props.theme.mainColor};
-  margin: 2px;
-  font-size: 12px;
-  color: #fff;
-  padding: 6px;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: transform 0.3s ease, color 0.3s ease;
   &:hover {
     transform: translateY(-2px);
     color: ${(props) => props.theme.charColor};

@@ -1,23 +1,20 @@
 import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { RootState } from "../reducer";
 import { PostType } from "../types";
 import Spinner from "../components/Spinner";
 
 import SearchedPagination from "./SearchedPagination";
 import { useLocation } from "react-router-dom";
-import { SEARCH_POSTS_REQUEST } from "../reducer/post";
 import { usePagination } from "./PaginationProvider";
 import SeachedPost from "../components/SeachedPost";
 
 const SearchPage = () => {
   const location = useLocation();
-  const dispatch = useDispatch();
 
   const { searchedPosts, totalSearchedPosts, searchedPostsLoading } =
     useSelector((state: RootState) => state.post);
-  const { searchedCurrentPage, searchedPostsPerPage, setSearchedCurrentPage } =
-    usePagination();
+  const { searchedCurrentPage } = usePagination();
 
   const [searchText, setSearchText] = useState<string>("");
   const [searchOption, setSearchOption] = useState<string>("");
@@ -34,19 +31,6 @@ const SearchPage = () => {
     if (searchOptionParam) setSearchOption(searchOptionParam);
     if (pageParam) setPage(Number(pageParam));
   }, [location.search]);
-
-  useEffect(() => {
-    if (searchedPosts.length < 1) {
-      dispatch({
-        type: SEARCH_POSTS_REQUEST,
-        searchText,
-        searchOption,
-        page: page,
-        limit: searchedPostsPerPage,
-      });
-      setSearchedCurrentPage(page);
-    }
-  }, [searchedPosts, searchText, searchOption, page]);
 
   return (
     <div>

@@ -1,9 +1,10 @@
 import React from "react";
 import styled from "styled-components";
+import Spinner from "../Spinner";
 
 const ContentRenderer = ({ content }: { content: string }) => {
   if (!content) {
-    return <div>No content</div>;
+    return <Spinner />;
   }
 
   const lines = content.split("<br>");

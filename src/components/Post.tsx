@@ -1,8 +1,8 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback, useRef, useState } from "react";
 import styled from "styled-components";
 import "moment/locale/ko";
 import { PostType } from "../types";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { baseURL } from "../config";
 import { DEFAULT_PROFILE_IMAGE } from "../pages/Info/MyInfo";
 import useOutsideClick from "../hooks/useOutsideClick";
@@ -16,7 +16,7 @@ const Post = ({ post, postId }: { post: PostType; postId?: number }) => {
   const navigator = useNavigate();
   const me = useSelector((state: RootState) => state.user.me);
   const id = me?.id;
-  const location = useLocation();
+
   const { currentPage, searchedPostsPerPage, searchedPaginate } =
     usePagination();
 
@@ -29,7 +29,7 @@ const Post = ({ post, postId }: { post: PostType; postId?: number }) => {
         search: params.toString(),
       });
     },
-    [navigator]
+    [currentPage, navigator]
   );
   const dispatch = useDispatch();
 
@@ -50,17 +50,17 @@ const Post = ({ post, postId }: { post: PostType; postId?: number }) => {
     setShowInfo(false);
   });
 
-  const setParams = () => {
+  const setParams = useCallback(() => {
     const params = new URLSearchParams();
     params.set("searchText", post.User.nickname);
     params.set("searchOption", "author");
     params.set("page", "1");
-    params.set("limit", searchedPostsPerPage.toString());
+
     navigator({
       pathname: `/search`,
       search: params.toString(),
     });
-  };
+  }, [navigator, post.User.nickname]);
 
   const onSearch = useCallback(
     (e: React.MouseEvent) => {
@@ -74,8 +74,15 @@ const Post = ({ post, postId }: { post: PostType; postId?: number }) => {
       });
       searchedPaginate(1);
       setParams();
+      window.scrollTo({ top: 0, behavior: "auto" });
     },
-    [dispatch, navigator, post, searchedPostsPerPage]
+    [
+      dispatch,
+      post.User.nickname,
+      searchedPaginate,
+      searchedPostsPerPage,
+      setParams,
+    ]
   );
 
   const totalReComments = post.Comments.reduce(

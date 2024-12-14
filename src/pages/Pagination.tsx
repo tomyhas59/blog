@@ -22,7 +22,6 @@ const Pagination = ({
   const setParams = (number: number) => {
     const params = new URLSearchParams();
     params.set("page", number.toString());
-    params.set("limit", postsPerPage.toString());
     navigator({
       pathname: postId ? `/post/${postId}` : `${location.pathname}`,
       search: params.toString(),
@@ -37,6 +36,7 @@ const Pagination = ({
       limit: postsPerPage,
     });
     setParams(number);
+    window.scrollTo({ top: 0, behavior: "auto" });
   };
 
   return (

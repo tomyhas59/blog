@@ -51,7 +51,7 @@ const MyComments: React.FC = () => {
           ? `commentId=comment-${id}`
           : `reCommentId=reComment-${id}`;
 
-      navigator(`/post/${postId}?${queryParam}`);
+      navigator(`/searchedPost/${postId}?${queryParam}`);
     },
     [dispatch, navigator, searchOption]
   );

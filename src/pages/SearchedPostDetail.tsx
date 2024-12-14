@@ -35,7 +35,6 @@ import { DEFAULT_PROFILE_IMAGE } from "./Info/MyInfo";
 import { FileButton } from "../components/PostForm";
 import { useNavigate } from "react-router-dom";
 import { PostType } from "../types";
-import Post from "../components/Post";
 import { io, Socket } from "socket.io-client";
 import { usePagination } from "./PaginationProvider";
 import SearchedPagination from "./SearchedPagination";
@@ -98,36 +97,26 @@ const SearchedPostDetail = () => {
   );
 
   useEffect(() => {
-    // URL에서 commentId, reCommentId 추출
     const params = new URLSearchParams(location.search);
     const commentId = params.get("commentId");
     const reCommentId = params.get("reCommentId");
 
-    if (commentId) {
-      // 댓글로 스크롤 이동
-      const commentElement = document.getElementById(commentId);
-      if (commentElement) {
-        commentElement.scrollIntoView({
+    const scrollToElement = (id: string) => {
+      const element = document.getElementById(id);
+      if (element) {
+        element.scrollIntoView({
           behavior: "auto",
           block: "center",
         });
-
-        commentElement.style.backgroundColor = "#fffae6";
+        element.style.backgroundColor = "#fffae6";
       }
-    }
-    if (reCommentId) {
-      // 댓글로 스크롤 이동
-      const reCommentElement = document.getElementById(reCommentId);
-      if (reCommentElement) {
-        reCommentElement.scrollIntoView({
-          behavior: "auto",
-          block: "center",
-        });
+    };
 
-        reCommentElement.style.backgroundColor = "#fffae6";
-      }
-    }
-  }, [location]);
+    setTimeout(() => {
+      if (commentId) scrollToElement(commentId);
+      if (reCommentId) scrollToElement(reCommentId);
+    }, 200);
+  }, [location.search]);
 
   const id = me?.id;
   const nickname = useSelector((state: RootState) => state.user.me?.nickname);

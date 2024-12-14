@@ -36,7 +36,6 @@ const SearchedPagination = ({
     });
   };
 
-  console.log(location.pathname);
   const onPageClick = (number: number) => {
     searchedPaginate(number);
     dispatch({
@@ -47,6 +46,7 @@ const SearchedPagination = ({
       limit: searchedPostsPerPage,
     });
     setParams(number);
+    window.scrollTo({ top: 0, behavior: "auto" });
   };
 
   return (

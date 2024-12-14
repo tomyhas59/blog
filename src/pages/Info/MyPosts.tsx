@@ -39,7 +39,7 @@ const MyPosts: React.FC = () => {
         searchOption,
         postId,
       });
-      navigator(`/post/${postId}`);
+      navigator(`/searchedPost/${postId}`);
       window.scrollTo({ top: 0, behavior: "auto" });
     },
     [dispatch, navigator]

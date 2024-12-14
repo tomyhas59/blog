@@ -110,11 +110,11 @@ function* watchGetPost() {
 }
 //----------------------------------------------
 function searchPostsApi(
-  searchText: any,
+  searchText: string,
   searchOption: string,
-  postId: number,
-  page: number,
-  limit: number
+  postId?: number,
+  page?: number,
+  limit?: number
 ) {
   return axios.get(
     `/post/search?searchText=${searchText}&searchOption=${searchOption}&postId=${postId}&page=${page}&limit=${limit}`
@@ -123,9 +123,9 @@ function searchPostsApi(
 function* searchPosts(action: {
   searchText: any;
   searchOption: string;
-  postId: number;
-  page: number;
-  limit: number;
+  postId?: number;
+  page?: number;
+  limit?: number;
 }): SagaIterator {
   try {
     const result = yield call(

@@ -31,7 +31,7 @@ const Main = () => {
       limit: postsPerPage,
     });
     setCurrentPage(page);
-  }, [currentPage, postsPerPage, dispatch, page]);
+  }, [currentPage, postsPerPage, dispatch, page, setCurrentPage]);
 
   return (
     <div>
