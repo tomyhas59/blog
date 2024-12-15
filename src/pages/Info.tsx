@@ -166,7 +166,7 @@ const Container = styled.div`
   overflow: hidden;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   background-color: #fff;
-  @media (max-width: 768px) {
+  @media (max-width: 480px) {
     flex-direction: column;
     width: 95%;
   }
@@ -177,7 +177,7 @@ const Nav = styled.nav`
   padding: 20px;
   border-right: 1px solid #eaeaea;
   background-color: #f9f9f9;
-  @media (max-width: 768px) {
+  @media (max-width: 480px) {
     max-width: 100%;
     border-right: none;
     border-bottom: 1px solid #eaeaea;
@@ -189,14 +189,17 @@ const NavList = styled.ul`
   flex-direction: column;
   list-style: none;
   padding: 0;
-  @media (max-width: 768px) {
-    display: flex;
+  @media (max-width: 480px) {
+    flex-direction: row;
     flex-wrap: wrap;
   }
 `;
 
 const NavItem = styled.li`
   margin-bottom: 15px;
+  @media (max-width: 480px) {
+    margin-bottom: 0;
+  }
 `;
 
 interface NavLinkProps {
@@ -219,7 +222,7 @@ const NavLink = styled.button<NavLinkProps>`
     color: #0056b3;
     background-color: #f1f1f1;
   }
-  @media (max-width: 768px) {
+  @media (max-width: 480px) {
     font-size: 0.9rem;
     text-align: center;
   }
@@ -229,7 +232,7 @@ const SectionWrapper = styled.div`
   flex: 3;
   padding: 20px;
   background-color: #fafafa;
-  @media (max-width: 768px) {
+  @media (max-width: 480px) {
     padding: 15px;
   }
 `;

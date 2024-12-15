@@ -265,8 +265,10 @@ export const FileButton = styled.button`
   cursor: pointer;
   font-weight: bold;
   grid-area: c;
+  transition: transform 0.3s ease, color 0.3s ease;
   &:hover {
-    background-color: ${(props) => props.theme.subColor};
+    transform: translateY(-2px);
+    color: ${(props) => props.theme.charColor};
   }
   @media (max-width: 480px) {
     width: 70px;

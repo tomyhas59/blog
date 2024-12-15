@@ -218,7 +218,6 @@ export default Header;
 
 export const HeaderWrapper = styled.header`
   width: 100%;
-  height: 70px;
   padding: 5px;
   background-color: ${(props) => props.theme.subColor};
   display: flex;
@@ -227,7 +226,7 @@ export const HeaderWrapper = styled.header`
   gap: 10px;
   @media (max-width: 480px) {
     position: fixed;
-    height: 50px;
+    padding: 5px;
     display: grid;
     bottom: 0;
     grid-template-areas: "a b";

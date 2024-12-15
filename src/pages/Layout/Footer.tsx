@@ -5,57 +5,52 @@ import React from "react";
 
 const Footer = () => {
   return (
-    <FooterWrapper>
-      <FooterTamplate>
-        <Footertxt>
-          <p>
-            YH
-            <br />
-            (우) 00000 대한민국 서울특별시
-            <br />
-            010.1234.1234
-            <br />
-            yh9035926@naver.com
-            <br />
-            Copyright 2023, Ltd. All rights reserved.
-          </p>
-        </Footertxt>
-        <FooterRight>
-          <ul>
-            <li>
-              <span>
-                <a href="https://tmshop.vercel.app" target="blank">
-                  TMShop
-                </a>
-              </span>
-            </li>
-            <li>
-              <FontAwesomeIcon icon={faInstagram} />
-            </li>
-            <li>
-              <FontAwesomeIcon icon={faYoutube} />
-            </li>
-          </ul>
-        </FooterRight>
-      </FooterTamplate>
-    </FooterWrapper>
+    <FooterContainer>
+      <Footertxt>
+        <p>
+          YH
+          <br />
+          (우) 00000 대한민국 서울특별시
+          <br />
+          010.1234.1234
+          <br />
+          yh9035926@naver.com
+          <br />
+          Copyright 2023, Ltd. All rights reserved.
+        </p>
+      </Footertxt>
+      <FooterRight>
+        <ul>
+          <li>
+            <span>
+              <a href="https://tmshop.vercel.app" target="blank">
+                TMShop
+              </a>
+            </span>
+          </li>
+          <li>
+            <FontAwesomeIcon icon={faInstagram} />
+          </li>
+          <li>
+            <FontAwesomeIcon icon={faYoutube} />
+          </li>
+        </ul>
+      </FooterRight>
+    </FooterContainer>
   );
 };
 export default Footer;
 
-export const FooterWrapper = styled.footer`
-  height: 120px;
+export const FooterContainer = styled.footer`
   background-color: ${(props) => props.theme.subColor};
-  @media (max-width: 480px) {
-    display: none;
-  }
-`;
-
-export const FooterTamplate = styled.div`
   padding: 14px 40px;
   display: flex;
   justify-content: center;
   align-items: center;
+  gap: 20px;
+  @media (max-width: 480px) {
+    display: none;
+  }
 `;
 
 export const Footertxt = styled.div`
