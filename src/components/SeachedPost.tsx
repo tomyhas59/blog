@@ -1,18 +1,39 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useState } from "react";
 import styled from "styled-components";
 import "moment/locale/ko";
 import { PostType } from "../types";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { baseURL } from "../config";
 import { DEFAULT_PROFILE_IMAGE } from "../pages/Info/MyInfo";
 
 const SeachedPost = ({ post, postId }: { post: PostType; postId?: number }) => {
   const navigator = useNavigate();
+  const location = useLocation();
+  const params = new URLSearchParams(location.search);
+  const searchTextParam = params.get("searchText");
+  const searchOptiontParam = params.get("searchOption");
+
+  const highlightText = (text: string) => {
+    if (!searchTextParam) return text;
+    const regex = new RegExp(`(${searchTextParam})`, "gi");
+    text = text.replace(/<br>/gi, " ");
+    console.log(text);
+    if (text.includes(searchTextParam)) {
+      return text
+        .split(regex)
+        .map((part, index) =>
+          part.toLowerCase() === searchTextParam.toLowerCase() ? (
+            <HighlightedText key={index}>{part}</HighlightedText>
+          ) : (
+            part
+          )
+        );
+    }
+  };
 
   const setParams = useCallback(() => {
-    const params = new URLSearchParams();
-    params.set("searchText", post.User.nickname);
-    params.set("searchOption", "author");
+    if (searchTextParam) params.set("searchText", searchTextParam);
+    if (searchOptiontParam) params.set("searchOption", searchOptiontParam);
     params.set("page", "1");
     navigator({
       pathname: `/searchedPost/${post.id}`,
@@ -22,6 +43,7 @@ const SeachedPost = ({ post, postId }: { post: PostType; postId?: number }) => {
 
   const goToSearchedPostDetail = useCallback(() => {
     setParams();
+    window.scrollTo({ top: 0, behavior: "auto" });
   }, [setParams]);
 
   const totalReComments = post.Comments.reduce(
@@ -29,32 +51,65 @@ const SeachedPost = ({ post, postId }: { post: PostType; postId?: number }) => {
     0
   );
 
-  return (
-    <PostContainer
-      onClick={goToSearchedPostDetail}
-      isActive={postId === post.id}
-    >
-      <PostHeaderFlex>
-        <NicknameButton>
-          <img
-            src={
-              post.User.Image
-                ? `${baseURL}/${post.User.Image.src}`
-                : `${DEFAULT_PROFILE_IMAGE}`
-            }
-            alt="유저 이미지"
-          />
-          <Nickname>{post.User.nickname.slice(0, 5)}</Nickname>
-        </NicknameButton>
-        <PostTitle>
-          {post.title}
-          <span style={{ fontSize: "12px" }}>
-            [{post.Comments.length + totalReComments}]
-          </span>
-        </PostTitle>
-      </PostHeaderFlex>
-    </PostContainer>
-  );
+  if (!searchTextParam) {
+    return null;
+  }
+
+  if (searchTextParam) {
+    return (
+      <div>
+        <PostContainer
+          onClick={goToSearchedPostDetail}
+          isActive={postId === post.id}
+        >
+          <PostHeaderFlex>
+            <NicknameButton>
+              <img
+                src={
+                  post.User.Image
+                    ? `${baseURL}/${post.User.Image.src}`
+                    : `${DEFAULT_PROFILE_IMAGE}`
+                }
+                alt="유저 이미지"
+              />
+              <Nickname>
+                {((searchOptiontParam === "author" || "all") &&
+                  highlightText(post.User.nickname.slice(0, 5))) ||
+                  post.User.nickname.slice(0, 5)}
+              </Nickname>
+            </NicknameButton>
+            <PostTitle>
+              {highlightText(post.title) || post.title}
+              <span style={{ fontSize: "12px" }}>
+                [{post.Comments.length + totalReComments}]
+              </span>
+            </PostTitle>
+          </PostHeaderFlex>
+          <Content>
+            {searchOptiontParam === "all" && (
+              <div>{highlightText(post.content)}</div>
+            )}
+            {searchOptiontParam === "all" &&
+              post.Comments.map((comment) => (
+                <Comment key={comment.id}>
+                  <div>
+                    {comment.content.includes(searchTextParam) && "댓글 : "}
+                    {highlightText(comment.content)}
+                  </div>
+                  {comment.ReComments.map((recomment) => (
+                    <ReComment key={recomment.id}>
+                      {highlightText(recomment.content)}
+                    </ReComment>
+                  ))}
+                </Comment>
+              ))}
+          </Content>
+        </PostContainer>
+      </div>
+    );
+  } else {
+    return null;
+  }
 };
 
 export default SeachedPost;
@@ -113,4 +168,28 @@ const NicknameButton = styled.button`
 
 const Nickname = styled.span`
   width: 55px;
+`;
+
+const Content = styled.div`
+  margin-top: 15px;
+  color: #555;
+  font-size: 14px;
+`;
+
+const Comment = styled.div`
+  margin-top: 10px;
+  padding-left: 20px;
+  border-left: 2px solid #ddd;
+`;
+
+const ReComment = styled.div`
+  margin-top: 5px;
+  padding-left: 20px;
+  font-style: italic;
+  color: #777;
+`;
+
+const HighlightedText = styled.span`
+  background-color: yellow;
+  font-weight: bold;
 `;

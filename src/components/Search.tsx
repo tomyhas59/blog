@@ -6,6 +6,7 @@ import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { RootState } from "../reducer";
 import { useLocation, useNavigate } from "react-router-dom";
+import { usePagination } from "../pages/PaginationProvider";
 
 const Search = () => {
   const [searchOption, setSearchOption] = useState("all");
@@ -14,6 +15,7 @@ const Search = () => {
   const { searchedPostsError } = useSelector((state: RootState) => state.post);
   const navigator = useNavigate();
   const location = useLocation();
+  const { searchedPaginate } = usePagination();
 
   const setParams = useCallback(() => {
     const params = new URLSearchParams();
@@ -38,6 +40,7 @@ const Search = () => {
     });
     setSearchText("");
     setParams();
+    searchedPaginate(1);
     window.scrollTo({ top: 0, behavior: "auto" }); // 페이지 맨 위로 스크롤
   }, [dispatch, searchOption, searchText, setParams]);
 

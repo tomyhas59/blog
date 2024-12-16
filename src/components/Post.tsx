@@ -69,8 +69,6 @@ const Post = ({ post, postId }: { post: PostType; postId?: number }) => {
         type: SEARCH_POSTS_REQUEST,
         searchText: post.User.nickname,
         searchOption: "author",
-        page: 1,
-        limit: searchedPostsPerPage,
       });
       searchedPaginate(1);
       setParams();

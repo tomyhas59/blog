@@ -22,6 +22,7 @@ import { baseURL } from "../config";
 import { DEFAULT_PROFILE_IMAGE } from "../pages/Info/MyInfo";
 import FollowButton from "./FollowButton";
 import { useNavigate } from "react-router-dom";
+import { usePagination } from "../pages/PaginationProvider";
 const Comment = ({ post }: { post: PostType }) => {
   const dispatch = useDispatch();
   const id = useSelector((state: RootState) => state.user.me?.id);
@@ -29,6 +30,7 @@ const Comment = ({ post }: { post: PostType }) => {
   const { removeCommentLoading, updateCommentLoading, addReCommentLoading } =
     useSelector((state: RootState) => state.post);
   const navigator = useNavigate();
+  const { searchedPaginate } = usePagination();
 
   //---닉네임 클릭 정보 보기-------------------------------------
   const [showInfo, setShowInfo] = useState<Record<number, boolean>>({});
@@ -44,6 +46,21 @@ const Comment = ({ post }: { post: PostType }) => {
     });
   }, []);
 
+  const setParams = useCallback(
+    (userNickname: string) => {
+      const params = new URLSearchParams();
+      params.set("searchText", userNickname);
+      params.set("searchOption", "author");
+      params.set("page", "1");
+
+      navigator({
+        pathname: `/search`,
+        search: params.toString(),
+      });
+    },
+    [navigator, post.User?.nickname]
+  );
+
   const onSearch = useCallback(
     (userNickname: string) => {
       dispatch({
@@ -51,7 +68,8 @@ const Comment = ({ post }: { post: PostType }) => {
         searchText: userNickname,
         searchOption: "author",
       });
-      navigator("/search");
+      searchedPaginate(1);
+      setParams(userNickname);
       setShowInfo({});
       window.scrollTo({ top: 0, behavior: "auto" });
     },

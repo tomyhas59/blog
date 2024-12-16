@@ -21,7 +21,7 @@ const MyPosts: React.FC = () => {
       if (me?.id) {
         try {
           const response = await axios.get(`/post?userId=${me.id}`);
-          console.log(response.data);
+
           setPosts(response.data);
         } catch (error) {
           console.error(error);
@@ -44,8 +44,6 @@ const MyPosts: React.FC = () => {
     },
     [dispatch, navigator]
   );
-
-  console.log(posts);
 
   return (
     <PostsContainer>

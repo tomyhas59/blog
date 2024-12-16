@@ -19,6 +19,7 @@ import { baseURL } from "../config";
 import { DEFAULT_PROFILE_IMAGE } from "../pages/Info/MyInfo";
 import FollowButton from "./FollowButton";
 import { useNavigate } from "react-router-dom";
+import { usePagination } from "../pages/PaginationProvider";
 
 const ReComment = ({
   post,
@@ -33,6 +34,7 @@ const ReComment = ({
   const { removeReCommentLoading, updateReCommentLoading } = useSelector(
     (state: RootState) => state.post
   );
+  const { searchedPaginate } = usePagination();
   const navigator = useNavigate();
   const [showInfo, setShowInfo] = useState<Record<number, boolean>>({});
   const toggleShowInfo = useCallback((ReCommentId: number) => {
@@ -76,6 +78,21 @@ const ReComment = ({
     [comment.id, dispatch, post.id]
   );
 
+  const setParams = useCallback(
+    (userNickname: string) => {
+      const params = new URLSearchParams();
+      params.set("searchText", userNickname);
+      params.set("searchOption", "author");
+      params.set("page", "1");
+
+      navigator({
+        pathname: `/search`,
+        search: params.toString(),
+      });
+    },
+    [navigator, post.User?.nickname]
+  );
+
   const onSearch = useCallback(
     (userNickname: string) => {
       dispatch({
@@ -83,7 +100,8 @@ const ReComment = ({
         searchText: userNickname,
         searchOption: "author",
       });
-      navigator("/search");
+      searchedPaginate(1);
+      setParams(userNickname);
       setShowInfo({});
       window.scrollTo({ top: 0, behavior: "auto" });
     },

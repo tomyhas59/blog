@@ -45,7 +45,7 @@ const SearchedPostDetail = () => {
   const me = useSelector((state: RootState) => state.user.me);
   const dispatch = useDispatch();
   const location = useLocation();
-  const { currentPage } = usePagination();
+  const { currentPage, searchedPaginate } = usePagination();
   const [searchText, setSearchText] = useState<string>("");
   const [searchOption, setSearchOption] = useState<string>("");
   const [page, setPage] = useState<number>(currentPage);
@@ -248,15 +248,32 @@ const SearchedPostDetail = () => {
     navigator("/");
   }, [dispatch, navigator, post.id]);
 
-  const onSearch = useCallback(() => {
-    dispatch({
-      type: SEARCH_POSTS_REQUEST,
-      searchText: post.User.nickname,
-      searchOption: "author",
+  const setParams = useCallback(() => {
+    const params = new URLSearchParams();
+    params.set("searchText", post.User?.nickname);
+    params.set("searchOption", "author");
+    params.set("page", "1");
+
+    navigator({
+      pathname: `/search`,
+      search: params.toString(),
     });
-    navigator("/search");
-    window.scrollTo({ top: 0, behavior: "auto" });
-  }, [dispatch, navigator, post.User?.nickname]);
+  }, [navigator, post.User?.nickname]);
+
+  const onSearch = useCallback(
+    (e: React.MouseEvent) => {
+      e.stopPropagation();
+      dispatch({
+        type: SEARCH_POSTS_REQUEST,
+        searchText: post.User.nickname,
+        searchOption: "author",
+      });
+      searchedPaginate(1);
+      setParams();
+      window.scrollTo({ top: 0, behavior: "auto" });
+    },
+    [dispatch, post.User?.nickname, searchedPaginate, setParams]
+  );
 
   const onRemoveImage = useCallback(
     (filename: string) => () => {

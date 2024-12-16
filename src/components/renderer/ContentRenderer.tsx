@@ -24,6 +24,7 @@ const ContentRenderer = ({ content }: { content: string }) => {
 export default ContentRenderer;
 
 const Content = styled.div`
+  display: inline;
   width: 100%;
   word-break: keep-all;
 `;
