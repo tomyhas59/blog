@@ -3,11 +3,11 @@ import { useSelector } from "react-redux";
 import { RootState } from "../reducer";
 import { PostType } from "../types";
 import Spinner from "../components/Spinner";
-
 import SearchedPagination from "./SearchedPagination";
 import { useLocation } from "react-router-dom";
 import { usePagination } from "./PaginationProvider";
 import SeachedPost from "../components/SeachedPost";
+import styled from "styled-components";
 
 const SearchPage = () => {
   const location = useLocation();
@@ -33,27 +33,63 @@ const SearchPage = () => {
   }, [location.search]);
 
   return (
-    <div>
+    <SearchPageContainer>
       {searchedPostsLoading ? (
         <Spinner />
       ) : (
-        searchedPosts.length > 0 && (
-          <div>
-            {searchedPosts.map((post: PostType) => (
-              <div key={post.id}>
-                <SeachedPost post={post} />
-              </div>
-            ))}
-            <SearchedPagination
-              totalSearchedPosts={Number(totalSearchedPosts)}
-              searchText={searchText}
-              searchOption={searchOption}
-            />
-          </div>
-        )
+        <div>
+          <SearchTitle>
+            <SearchResultText>{searchText}</SearchResultText> 검색 결과
+          </SearchTitle>
+          {searchedPosts.length > 0 ? (
+            <ResultContainer>
+              {searchedPosts.map((post: PostType) => (
+                <div key={post.id}>
+                  <SeachedPost post={post} />
+                </div>
+              ))}
+              <SearchedPagination
+                totalSearchedPosts={Number(totalSearchedPosts)}
+                searchText={searchText}
+                searchOption={searchOption}
+              />
+            </ResultContainer>
+          ) : (
+            <NoResults>검색 결과가 없습니다.</NoResults>
+          )}
+        </div>
       )}
-    </div>
+    </SearchPageContainer>
   );
 };
 
 export default SearchPage;
+
+const SearchPageContainer = styled.div`
+  max-width: 800px;
+  padding: 5px 10px;
+  margin: 0 auto;
+`;
+
+const SearchTitle = styled.div`
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 20px;
+`;
+
+const ResultContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
+
+const NoResults = styled.div`
+  font-size: 18px;
+  color: #555;
+`;
+
+const SearchResultText = styled.span`
+  font-size: 20px;
+  font-weight: 600;
+  margin-right: 10px;
+  color: red;
+`;

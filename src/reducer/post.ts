@@ -208,6 +208,7 @@ const post = (state = initialState, action: any) => {
       case SEARCH_POSTS_REQUEST:
         draft.searchedPostsLoading = true;
         draft.searchedPostsDone = false;
+        draft.searchedPosts = [];
         draft.searchedPostsError = null;
         break;
       case SEARCH_POSTS_SUCCESS:

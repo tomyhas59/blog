@@ -93,7 +93,8 @@ const Container = styled.div<{ currentPath: string }>`
   }
 
   @media (max-width: 480px) {
-    display: ${({ currentPath }) => currentPath !== "/" && "none"};
+    display: ${({ currentPath }) =>
+      currentPath === "/" || currentPath.includes("/search") ? "grid" : "none"};
     position: absolute;
     width: 250px;
     text-align: center;
