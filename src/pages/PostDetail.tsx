@@ -64,7 +64,6 @@ const PostDetail = () => {
     }
   }, [dispatch, postId]);
 
-  //페이지 이동 시 데이터 반환
   useEffect(() => {
     const params = new URLSearchParams(location.search);
     const pageParam = params.get("page");

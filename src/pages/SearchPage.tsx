@@ -8,19 +8,20 @@ import { useLocation } from "react-router-dom";
 import { usePagination } from "./PaginationProvider";
 import SeachedPost from "../components/SeachedPost";
 import styled from "styled-components";
+import { useDispatch } from "react-redux";
+import { SEARCH_POSTS_REQUEST } from "../reducer/post";
 
 const SearchPage = () => {
   const location = useLocation();
-
+  const dispatch = useDispatch();
   const { searchedPosts, totalSearchedPosts, searchedPostsLoading } =
     useSelector((state: RootState) => state.post);
-  const { searchedCurrentPage } = usePagination();
+  const { searchedCurrentPage, setSearchedCurrentPage } = usePagination();
 
   const [searchText, setSearchText] = useState<string>("");
   const [searchOption, setSearchOption] = useState<string>("");
   const [page, setPage] = useState<number>(searchedCurrentPage);
 
-  //페이지 이동 시 데이터 반환
   useEffect(() => {
     const params = new URLSearchParams(location.search);
     const searchTextParam = params.get("searchText");
@@ -31,6 +32,18 @@ const SearchPage = () => {
     if (searchOptionParam) setSearchOption(searchOptionParam);
     if (pageParam) setPage(Number(pageParam));
   }, [location.search]);
+
+  useEffect(() => {
+    if (searchText && searchOption) {
+      dispatch({
+        type: SEARCH_POSTS_REQUEST,
+        searchText,
+        searchOption,
+        page: page,
+      });
+      setSearchedCurrentPage(page);
+    }
+  }, [dispatch, searchText, searchOption, page]);
 
   return (
     <SearchPageContainer>

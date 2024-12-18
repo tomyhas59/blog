@@ -23,6 +23,7 @@ import { DEFAULT_PROFILE_IMAGE } from "../pages/Info/MyInfo";
 import FollowButton from "./FollowButton";
 import { useNavigate } from "react-router-dom";
 import { usePagination } from "../pages/PaginationProvider";
+import useSetParams from "../hooks/useSetParams";
 const Comment = ({ post }: { post: PostType }) => {
   const dispatch = useDispatch();
   const id = useSelector((state: RootState) => state.user.me?.id);
@@ -46,30 +47,15 @@ const Comment = ({ post }: { post: PostType }) => {
     });
   }, []);
 
-  const setParams = useCallback(
-    (userNickname: string) => {
-      const params = new URLSearchParams();
-      params.set("searchText", userNickname);
-      params.set("searchOption", "author");
-      params.set("page", "1");
-
-      navigator({
-        pathname: `/search`,
-        search: params.toString(),
-      });
-    },
-    [navigator, post.User?.nickname]
-  );
+  const setParams = useSetParams({
+    searchOption: "author",
+    page: 1,
+  });
 
   const onSearch = useCallback(
     (userNickname: string) => {
-      dispatch({
-        type: SEARCH_POSTS_REQUEST,
-        searchText: userNickname,
-        searchOption: "author",
-      });
       searchedPaginate(1);
-      setParams(userNickname);
+      setParams({ searchText: userNickname });
       setShowInfo({});
       window.scrollTo({ top: 0, behavior: "auto" });
     },

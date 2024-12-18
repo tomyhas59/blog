@@ -65,6 +65,17 @@ const SearchedPostDetail = () => {
   }, [dispatch, postId]);
 
   useEffect(() => {
+    if (searchText && searchOption) {
+      dispatch({
+        type: SEARCH_POSTS_REQUEST,
+        searchText,
+        searchOption,
+        page,
+      });
+    }
+  }, [dispatch, searchText, searchOption]);
+
+  useEffect(() => {
     const params = new URLSearchParams(location.search);
     const searchTextParam = params.get("searchText");
     const searchOptionParam = params.get("searchOption");

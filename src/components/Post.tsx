@@ -11,6 +11,7 @@ import { RootState } from "../reducer";
 import FollowButton from "./FollowButton";
 import { SEARCH_POSTS_REQUEST } from "../reducer/post";
 import { usePagination } from "../pages/PaginationProvider";
+import useSetParams from "../hooks/useSetParams";
 
 const Post = ({ post, postId }: { post: PostType; postId?: number }) => {
   const navigator = useNavigate();
@@ -50,37 +51,20 @@ const Post = ({ post, postId }: { post: PostType; postId?: number }) => {
     setShowInfo(false);
   });
 
-  const setParams = useCallback(() => {
-    const params = new URLSearchParams();
-    params.set("searchText", post.User.nickname);
-    params.set("searchOption", "author");
-    params.set("page", "1");
-
-    navigator({
-      pathname: `/search`,
-      search: params.toString(),
-    });
-  }, [navigator, post.User.nickname]);
+  const setParams = useSetParams({
+    searchText: post.User.nickname,
+    searchOption: "author",
+    page: 1,
+  });
 
   const onSearch = useCallback(
     (e: React.MouseEvent) => {
       e.stopPropagation();
-      dispatch({
-        type: SEARCH_POSTS_REQUEST,
-        searchText: post.User.nickname,
-        searchOption: "author",
-      });
       searchedPaginate(1);
-      setParams();
+      setParams({ searchText: post.User.nickname });
       window.scrollTo({ top: 0, behavior: "auto" });
     },
-    [
-      dispatch,
-      post.User.nickname,
-      searchedPaginate,
-      searchedPostsPerPage,
-      setParams,
-    ]
+    [post.User.nickname, searchedPaginate, searchedPostsPerPage, setParams]
   );
 
   const totalReComments = post.Comments.reduce(

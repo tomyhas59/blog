@@ -5,6 +5,7 @@ import { PostType } from "../types";
 import { useLocation, useNavigate } from "react-router-dom";
 import { baseURL } from "../config";
 import { DEFAULT_PROFILE_IMAGE } from "../pages/Info/MyInfo";
+import useSetParams from "../hooks/useSetParams";
 
 const SeachedPost = ({ post, postId }: { post: PostType; postId?: number }) => {
   const navigator = useNavigate();
@@ -12,6 +13,7 @@ const SeachedPost = ({ post, postId }: { post: PostType; postId?: number }) => {
   const params = new URLSearchParams(location.search);
   const searchTextParam = params.get("searchText");
   const searchOptiontParam = params.get("searchOption");
+  const pageParam = params.get("page");
 
   const highlightText = (text: string) => {
     if (!searchTextParam) return text;
@@ -30,19 +32,15 @@ const SeachedPost = ({ post, postId }: { post: PostType; postId?: number }) => {
         );
     }
   };
-
-  const setParams = useCallback(() => {
-    if (searchTextParam) params.set("searchText", searchTextParam);
-    if (searchOptiontParam) params.set("searchOption", searchOptiontParam);
-    params.set("page", "1");
-    navigator({
-      pathname: `/searchedPost/${post.id}`,
-      search: params.toString(),
-    });
-  }, [navigator, post.User.nickname, post.id]);
+  const setParams = useSetParams({
+    searchText: searchTextParam || "",
+    searchOption: searchOptiontParam || "",
+    page: Number(pageParam),
+    postId: post.id,
+  });
 
   const goToSearchedPostDetail = useCallback(() => {
-    setParams();
+    setParams({ searchText: searchTextParam || "" });
     window.scrollTo({ top: 0, behavior: "auto" });
   }, [setParams]);
 

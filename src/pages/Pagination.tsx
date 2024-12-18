@@ -30,11 +30,6 @@ const Pagination = ({
 
   const onPageClick = (number: number) => {
     paginate(number);
-    dispatch({
-      type: GET_POSTS_REQUEST,
-      page: number,
-      limit: postsPerPage,
-    });
     setParams(number);
     window.scrollTo({ top: 0, behavior: "auto" });
   };

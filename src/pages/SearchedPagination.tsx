@@ -29,22 +29,14 @@ const SearchedPagination = ({
     params.set("searchText", searchText);
     params.set("searchOption", searchOption);
     params.set("page", number.toString());
-    params.set("limit", searchedPostsPerPage.toString());
     navigator({
-      pathname: `${location.pathname}`,
+      pathname: "/search",
       search: params.toString(),
     });
   };
 
   const onPageClick = (number: number) => {
     searchedPaginate(number);
-    dispatch({
-      type: SEARCH_POSTS_REQUEST,
-      searchText,
-      searchOption,
-      page: number,
-      limit: searchedPostsPerPage,
-    });
     setParams(number);
     window.scrollTo({ top: 0, behavior: "auto" });
   };
