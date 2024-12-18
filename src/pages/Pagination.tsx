@@ -2,8 +2,6 @@ import React from "react";
 import styled from "styled-components";
 import { usePagination } from "./PaginationProvider";
 import { useLocation, useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
-import { GET_POSTS_REQUEST } from "../reducer/post";
 
 const Pagination = ({
   totalPosts,
@@ -14,7 +12,6 @@ const Pagination = ({
 }) => {
   const location = useLocation();
   const navigator = useNavigate();
-  const dispatch = useDispatch();
   const { currentPage, postsPerPage, paginate } = usePagination();
 
   const totalPages = Math.ceil(totalPosts / postsPerPage);

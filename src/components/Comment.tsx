@@ -3,7 +3,6 @@ import styled from "styled-components";
 import { useDispatch, useSelector } from "react-redux";
 import {
   REMOVE_COMMENT_REQUEST,
-  SEARCH_POSTS_REQUEST,
   UPDATE_COMMENT_REQUEST,
 } from "../reducer/post";
 import moment from "moment";

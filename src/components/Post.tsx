@@ -6,12 +6,12 @@ import { useNavigate } from "react-router-dom";
 import { baseURL } from "../config";
 import { DEFAULT_PROFILE_IMAGE } from "../pages/Info/MyInfo";
 import useOutsideClick from "../hooks/useOutsideClick";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { RootState } from "../reducer";
 import FollowButton from "./FollowButton";
-import { SEARCH_POSTS_REQUEST } from "../reducer/post";
 import { usePagination } from "../pages/PaginationProvider";
 import useSetParams from "../hooks/useSetParams";
+import moment from "moment";
 
 const Post = ({ post, postId }: { post: PostType; postId?: number }) => {
   const navigator = useNavigate();
@@ -32,7 +32,6 @@ const Post = ({ post, postId }: { post: PostType; postId?: number }) => {
     },
     [currentPage, navigator]
   );
-  const dispatch = useDispatch();
 
   //---닉네임 클릭 정보 보기-------------------------------------
   const [showInfo, setShowInfo] = useState<boolean | {}>(false);
@@ -104,6 +103,10 @@ const Post = ({ post, postId }: { post: PostType; postId?: number }) => {
           </span>
         </PostTitle>
       </PostHeaderFlex>
+      <DateContainer>
+        <Date>{moment(post.createdAt).format("l")}</Date>
+        <Liked>{post.Likers.length === 0 ? "" : post.Likers.length}</Liked>
+      </DateContainer>
     </PostContainer>
   );
 };
@@ -111,6 +114,9 @@ const Post = ({ post, postId }: { post: PostType; postId?: number }) => {
 export default Post;
 
 const PostContainer = styled.div<{ isActive: boolean }>`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   max-width: 800px;
   padding: 5px 10px;
   margin: 0 auto;
@@ -187,5 +193,23 @@ const Button = styled.button`
 `;
 
 const Nickname = styled.span`
-  width: 55px;
+  width: 50px;
+  text-align: start;
+`;
+
+const DateContainer = styled.div`
+  font-size: 12px;
+  color: silver;
+  width: 100px;
+`;
+
+const Date = styled.span`
+  font-size: 12px;
+  color: silver;
+`;
+
+const Liked = styled.span`
+  margin-left: 5px;
+  color: red;
+  font-weight: bold;
 `;

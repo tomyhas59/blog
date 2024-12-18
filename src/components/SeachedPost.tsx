@@ -2,10 +2,11 @@ import React, { useCallback } from "react";
 import styled from "styled-components";
 import "moment/locale/ko";
 import { PostType } from "../types";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import { baseURL } from "../config";
 import { DEFAULT_PROFILE_IMAGE } from "../pages/Info/MyInfo";
 import useSetParams from "../hooks/useSetParams";
+import moment from "moment";
 
 const SeachedPost = ({ post, postId }: { post: PostType; postId?: number }) => {
   const location = useLocation();
@@ -54,11 +55,11 @@ const SeachedPost = ({ post, postId }: { post: PostType; postId?: number }) => {
 
   if (searchTextParam) {
     return (
-      <div>
-        <PostContainer
-          onClick={goToSearchedPostDetail}
-          isActive={postId === post.id}
-        >
+      <SearchedPostContainer
+        onClick={goToSearchedPostDetail}
+        isActive={postId === post.id}
+      >
+        <PostContainer>
           <PostHeaderFlex>
             <NicknameButton>
               <img
@@ -82,34 +83,39 @@ const SeachedPost = ({ post, postId }: { post: PostType; postId?: number }) => {
               </span>
             </PostTitle>
           </PostHeaderFlex>
-          <Content>
-            {searchOptiontParam === "all" && (
-              <div>{highlightText(post.content)}</div>
-            )}
-            {searchOptiontParam === "all" &&
-              post.Comments.map((comment) => (
-                <Comment key={comment.id}>
-                  {comment.content.includes(searchTextParam) && (
-                    <div>
-                      <Nickname>{comment.User.nickname} : </Nickname>
-                      {highlightText(comment.content)}
-                    </div>
-                  )}
-                  {comment.ReComments.map((recomment) => (
-                    <ReComment key={recomment.id}>
-                      {recomment.content.includes(searchTextParam) && (
-                        <div>
-                          <Nickname>{recomment.User.nickname} : </Nickname>
-                          {highlightText(recomment.content)}
-                        </div>
-                      )}
-                    </ReComment>
-                  ))}
-                </Comment>
-              ))}
-          </Content>
+          <DateContainer>
+            <Date>{moment(post.createdAt).format("l")}</Date>
+            <Liked>{post.Likers.length === 0 ? "" : post.Likers.length}</Liked>
+          </DateContainer>
         </PostContainer>
-      </div>
+
+        <Content>
+          {searchOptiontParam === "all" && (
+            <div>{highlightText(post.content)}</div>
+          )}
+          {searchOptiontParam === "all" &&
+            post.Comments.map((comment) => (
+              <Comment key={comment.id}>
+                {comment.content.includes(searchTextParam) && (
+                  <div>
+                    <Nickname>{comment.User.nickname} : </Nickname>
+                    {highlightText(comment.content)}
+                  </div>
+                )}
+                {comment.ReComments.map((recomment) => (
+                  <ReComment key={recomment.id}>
+                    {recomment.content.includes(searchTextParam) && (
+                      <div>
+                        <Nickname>{recomment.User.nickname} : </Nickname>
+                        {highlightText(recomment.content)}
+                      </div>
+                    )}
+                  </ReComment>
+                ))}
+              </Comment>
+            ))}
+        </Content>
+      </SearchedPostContainer>
     );
   } else {
     return null;
@@ -118,7 +124,7 @@ const SeachedPost = ({ post, postId }: { post: PostType; postId?: number }) => {
 
 export default SeachedPost;
 
-const PostContainer = styled.div<{ isActive: boolean }>`
+const SearchedPostContainer = styled.div<{ isActive: boolean }>`
   max-width: 800px;
   padding: 5px 10px;
   margin: 0 auto;
@@ -129,6 +135,12 @@ const PostContainer = styled.div<{ isActive: boolean }>`
   &:hover {
     background-color: ${(props) => (props.isActive ? "#b2ebf2" : "#f4f4f4")};
   }
+`;
+
+const PostContainer = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 `;
 
 const PostHeaderFlex = styled.div`
@@ -171,11 +183,12 @@ const NicknameButton = styled.button`
 const Nickname = styled.span`
   color: ${(props) => props.theme.mainColor};
   font-weight: bold;
-  width: 55px;
+  text-align: start;
+  width: 50px;
 `;
 
 const Content = styled.div`
-  margin-top: 15px;
+  margin: 15px;
   color: #555;
   font-size: 14px;
   padding-left: 20px;
@@ -193,5 +206,22 @@ const ReComment = styled.div`
 
 const HighlightedText = styled.span`
   background-color: yellow;
+  font-weight: bold;
+`;
+const DateContainer = styled.div`
+  font-size: 12px;
+  color: silver;
+  width: 80px;
+`;
+
+const Date = styled.span`
+  font-size: 12px;
+
+  color: silver;
+`;
+
+const Liked = styled.span`
+  margin-left: 5px;
+  color: red;
   font-weight: bold;
 `;

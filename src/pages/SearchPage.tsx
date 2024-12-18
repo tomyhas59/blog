@@ -45,6 +45,7 @@ const SearchPage = () => {
     }
   }, [dispatch, searchText, searchOption, page]);
 
+  console.log(searchedPosts);
   return (
     <SearchPageContainer>
       {searchedPostsLoading ? (

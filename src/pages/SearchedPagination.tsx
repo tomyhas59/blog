@@ -1,9 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import { usePagination } from "./PaginationProvider";
-import { useDispatch } from "react-redux";
-import { SEARCH_POSTS_REQUEST } from "../reducer/post";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const SearchedPagination = ({
   totalSearchedPosts,
@@ -14,9 +12,7 @@ const SearchedPagination = ({
   searchText: string;
   searchOption: string;
 }) => {
-  const location = useLocation();
   const navigator = useNavigate();
-  const dispatch = useDispatch();
   const { searchedCurrentPage, searchedPostsPerPage, searchedPaginate } =
     usePagination();
 

@@ -1,10 +1,7 @@
 import React, { useRef } from "react";
 import { useState, useCallback } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import {
-  REMOVE_RECOMMENT_REQUEST,
-  SEARCH_POSTS_REQUEST,
-} from "../reducer/post";
+import { REMOVE_RECOMMENT_REQUEST } from "../reducer/post";
 import styled from "styled-components";
 import moment from "moment";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";

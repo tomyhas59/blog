@@ -1,7 +1,6 @@
 import React, { KeyboardEvent, useCallback, useEffect, useState } from "react";
 import styled from "styled-components";
 import { useDispatch, useSelector } from "react-redux";
-import { SEARCH_POSTS_REQUEST } from "../reducer/post";
 import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { RootState } from "../reducer";
@@ -14,7 +13,6 @@ const Search = () => {
   const [searchText, setSearchText] = useState("");
   const dispatch = useDispatch();
   const { searchedPostsError } = useSelector((state: RootState) => state.post);
-  const navigator = useNavigate();
   const location = useLocation();
   const { searchedPaginate } = usePagination();
 
