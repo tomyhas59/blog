@@ -8,6 +8,7 @@ import { RootState } from "../reducer";
 import { PostType } from "../types";
 import Spinner from "../components/Spinner";
 import { useLocation } from "react-router-dom";
+import styled from "styled-components";
 
 const Main = () => {
   const dispatch = useDispatch();
@@ -34,7 +35,8 @@ const Main = () => {
   }, [currentPage, postsPerPage, dispatch, page, setCurrentPage]);
 
   return (
-    <div>
+    <MainContainer>
+      <Banner>BANNER</Banner>
       {getPostsLoading ? (
         <Spinner />
       ) : (
@@ -49,8 +51,24 @@ const Main = () => {
           </div>
         )
       )}
-    </div>
+    </MainContainer>
   );
 };
 
 export default Main;
+
+const MainContainer = styled.div`
+  max-width: 800px;
+  padding: 5px 10px;
+  margin: 0 auto;
+`;
+
+const Banner = styled.div`
+  background-color: #4caf50;
+  color: white;
+  text-align: center;
+  padding: 20px;
+  margin-bottom: 20px;
+  font-size: 24px;
+  font-weight: bold;
+`;

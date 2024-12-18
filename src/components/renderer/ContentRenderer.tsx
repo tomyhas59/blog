@@ -7,7 +7,10 @@ const ContentRenderer = ({ content }: { content: string }) => {
     return <Spinner />;
   }
 
-  const lines = content.split("<br>");
+  const regex = /@\w+/g; ///@가 붙은 문자열 찾기
+  const userContent = content.replace(regex, "");
+
+  const lines = userContent.split("<br>");
 
   return (
     <Content>

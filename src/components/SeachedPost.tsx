@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback } from "react";
 import styled from "styled-components";
 import "moment/locale/ko";
 import { PostType } from "../types";
@@ -8,7 +8,6 @@ import { DEFAULT_PROFILE_IMAGE } from "../pages/Info/MyInfo";
 import useSetParams from "../hooks/useSetParams";
 
 const SeachedPost = ({ post, postId }: { post: PostType; postId?: number }) => {
-  const navigator = useNavigate();
   const location = useLocation();
   const params = new URLSearchParams(location.search);
   const searchTextParam = params.get("searchText");
@@ -90,13 +89,20 @@ const SeachedPost = ({ post, postId }: { post: PostType; postId?: number }) => {
             {searchOptiontParam === "all" &&
               post.Comments.map((comment) => (
                 <Comment key={comment.id}>
-                  <div>
-                    {comment.content.includes(searchTextParam) && "댓글 : "}
-                    {highlightText(comment.content)}
-                  </div>
+                  {comment.content.includes(searchTextParam) && (
+                    <div>
+                      <Nickname>{comment.User.nickname} : </Nickname>
+                      {highlightText(comment.content)}
+                    </div>
+                  )}
                   {comment.ReComments.map((recomment) => (
                     <ReComment key={recomment.id}>
-                      {highlightText(recomment.content)}
+                      {recomment.content.includes(searchTextParam) && (
+                        <div>
+                          <Nickname>{recomment.User.nickname} : </Nickname>
+                          {highlightText(recomment.content)}
+                        </div>
+                      )}
                     </ReComment>
                   ))}
                 </Comment>
@@ -149,8 +155,6 @@ const NicknameButton = styled.button`
   display: flex;
   justify-content: start;
   align-items: center;
-  color: ${(props) => props.theme.mainColor};
-  font-weight: bold;
   transition: transform 0.3s ease, color 0.3s ease;
   img {
     display: inline;
@@ -165,6 +169,8 @@ const NicknameButton = styled.button`
 `;
 
 const Nickname = styled.span`
+  color: ${(props) => props.theme.mainColor};
+  font-weight: bold;
   width: 55px;
 `;
 
@@ -172,13 +178,11 @@ const Content = styled.div`
   margin-top: 15px;
   color: #555;
   font-size: 14px;
-`;
-
-const Comment = styled.div`
-  margin-top: 10px;
   padding-left: 20px;
   border-left: 2px solid #ddd;
 `;
+
+const Comment = styled.div``;
 
 const ReComment = styled.div`
   margin-top: 5px;
