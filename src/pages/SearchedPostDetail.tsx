@@ -73,7 +73,7 @@ const SearchedPostDetail = () => {
         page,
       });
     }
-  }, [dispatch, searchText, searchOption]);
+  }, [dispatch, searchText, searchOption, page]);
 
   useEffect(() => {
     const params = new URLSearchParams(location.search);

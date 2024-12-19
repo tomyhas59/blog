@@ -2,18 +2,12 @@ import { useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 
 interface ParamsType {
-  searchText?: string;
   searchOption: string;
   page: number;
   postId?: number;
 }
 
-const useSetParams = ({
-  searchOption,
-  searchText,
-  page,
-  postId,
-}: ParamsType) => {
+const useSetParams = ({ searchOption, page, postId }: ParamsType) => {
   const navigator = useNavigate();
 
   const setParams = useCallback(
@@ -29,7 +23,7 @@ const useSetParams = ({
         search: params.toString(),
       });
     },
-    [navigator, searchOption, searchText, page, postId]
+    [navigator, searchOption, page, postId]
   );
 
   return setParams;

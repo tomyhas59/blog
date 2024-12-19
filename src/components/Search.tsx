@@ -1,23 +1,22 @@
 import React, { KeyboardEvent, useCallback, useEffect, useState } from "react";
 import styled from "styled-components";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { RootState } from "../reducer";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import { usePagination } from "../pages/PaginationProvider";
 import useSetParams from "../hooks/useSetParams";
 
 const Search = () => {
   const [searchOption, setSearchOption] = useState("all");
   const [searchText, setSearchText] = useState("");
-  const dispatch = useDispatch();
+
   const { searchedPostsError } = useSelector((state: RootState) => state.post);
   const location = useLocation();
   const { searchedPaginate } = usePagination();
 
   const setParams = useSetParams({
-    searchText,
     searchOption,
     page: 1,
   });
@@ -30,7 +29,7 @@ const Search = () => {
     setParams({ searchText });
     searchedPaginate(1);
     window.scrollTo({ top: 0, behavior: "auto" }); // 페이지 맨 위로 스크롤
-  }, [dispatch, searchOption, searchText, setParams]);
+  }, [searchText, searchedPaginate, setParams]);
 
   useEffect(() => {
     if (searchedPostsError) {

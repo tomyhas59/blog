@@ -15,7 +15,6 @@ import useOutsideClick from "../hooks/useOutsideClick";
 import { baseURL } from "../config";
 import { DEFAULT_PROFILE_IMAGE } from "../pages/Info/MyInfo";
 import FollowButton from "./FollowButton";
-import { useNavigate } from "react-router-dom";
 import { usePagination } from "../pages/PaginationProvider";
 import useSetParams from "../hooks/useSetParams";
 
@@ -33,7 +32,6 @@ const ReComment = ({
     (state: RootState) => state.post
   );
   const { searchedPaginate } = usePagination();
-  const navigator = useNavigate();
   const [showInfo, setShowInfo] = useState<Record<number, boolean>>({});
   const toggleShowInfo = useCallback((ReCommentId: number) => {
     setShowInfo((prev) => {
@@ -88,7 +86,7 @@ const ReComment = ({
       setShowInfo({});
       window.scrollTo({ top: 0, behavior: "auto" });
     },
-    [dispatch, navigator]
+    [searchedPaginate, setParams]
   );
 
   //OutsideClick----------------------------------------------

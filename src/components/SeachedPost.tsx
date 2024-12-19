@@ -33,7 +33,6 @@ const SeachedPost = ({ post, postId }: { post: PostType; postId?: number }) => {
     }
   };
   const setParams = useSetParams({
-    searchText: searchTextParam || "",
     searchOption: searchOptiontParam || "",
     page: Number(pageParam),
     postId: post.id,
@@ -42,7 +41,7 @@ const SeachedPost = ({ post, postId }: { post: PostType; postId?: number }) => {
   const goToSearchedPostDetail = useCallback(() => {
     setParams({ searchText: searchTextParam || "" });
     window.scrollTo({ top: 0, behavior: "auto" });
-  }, [setParams]);
+  }, [searchTextParam, setParams]);
 
   const totalReComments = post.Comments.reduce(
     (total, comment) => total + comment.ReComments.length,

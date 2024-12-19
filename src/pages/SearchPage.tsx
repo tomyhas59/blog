@@ -43,7 +43,7 @@ const SearchPage = () => {
       });
       setSearchedCurrentPage(page);
     }
-  }, [dispatch, searchText, searchOption, page]);
+  }, [dispatch, searchText, searchOption, page, setSearchedCurrentPage]);
 
   console.log(searchedPosts);
   return (

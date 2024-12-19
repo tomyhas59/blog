@@ -12,18 +12,20 @@ const useTextareaAutoHeight = (
   editForm: Record<number, boolean> | boolean | null
 ) => {
   useEffect(() => {
+    const currentTextarea = textareaRef.current;
+
     const onResize = () => {
-      resizeTextarea(textareaRef.current);
+      resizeTextarea(currentTextarea);
     };
 
-    if (textareaRef.current) {
+    if (currentTextarea) {
       onResize();
       textareaRef.current.addEventListener("input", onResize);
     }
 
     return () => {
-      if (textareaRef.current) {
-        textareaRef.current.removeEventListener("input", onResize);
+      if (currentTextarea) {
+        currentTextarea.removeEventListener("input", onResize);
       }
     };
   }, [textareaRef, editForm]);

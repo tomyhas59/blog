@@ -20,7 +20,6 @@ import useTextareaAutoHeight from "../hooks/useTextareaAutoHeight";
 import { baseURL } from "../config";
 import { DEFAULT_PROFILE_IMAGE } from "../pages/Info/MyInfo";
 import FollowButton from "./FollowButton";
-import { useNavigate } from "react-router-dom";
 import { usePagination } from "../pages/PaginationProvider";
 import useSetParams from "../hooks/useSetParams";
 const Comment = ({ post }: { post: PostType }) => {
@@ -29,7 +28,6 @@ const Comment = ({ post }: { post: PostType }) => {
   const nickname = useSelector((state: RootState) => state.user.me?.nickname);
   const { removeCommentLoading, updateCommentLoading, addReCommentLoading } =
     useSelector((state: RootState) => state.post);
-  const navigator = useNavigate();
   const { searchedPaginate } = usePagination();
 
   //---닉네임 클릭 정보 보기-------------------------------------
@@ -58,7 +56,7 @@ const Comment = ({ post }: { post: PostType }) => {
       setShowInfo({});
       window.scrollTo({ top: 0, behavior: "auto" });
     },
-    [dispatch, navigator]
+    [searchedPaginate, setParams]
   );
   //------------------댓글 수정--------------------------------
 
