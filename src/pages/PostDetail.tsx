@@ -46,7 +46,7 @@ const PostDetail = () => {
   const me = useSelector((state: RootState) => state.user.me);
   const dispatch = useDispatch();
   const location = useLocation();
-  const { currentPage, postsPerPage, setCurrentPage, searchedPaginate } =
+  const { currentPage, postsPerPage, paginate, searchedPaginate } =
     usePagination();
   const [page, setPage] = useState<number>(currentPage);
   const { postId } = useParams();
@@ -76,8 +76,8 @@ const PostDetail = () => {
       page: page,
       limit: postsPerPage,
     });
-    setCurrentPage(page);
-  }, [dispatch, page, postsPerPage, post.Comments, setCurrentPage]);
+    paginate(page);
+  }, [dispatch, page, paginate, postsPerPage]);
 
   useEffect(() => {
     socket.current =

@@ -62,13 +62,22 @@ import {
 import { SagaIterator } from "redux-saga";
 //-----------------------------------------------------
 
-function getPostsApi(page: number, limit: number) {
-  return axios.get(`/post/posts?page=${page}&limit=${limit}`);
+function getPostsApi(page: number, limit: number, sortBy: string) {
+  return axios.get(`/post/posts?page=${page}&limit=${limit}&sortBy=${sortBy}`);
 }
 
-function* getPosts(action: { page: number; limit: number }): SagaIterator {
+function* getPosts(action: {
+  page: number;
+  limit: number;
+  sortBy: string;
+}): SagaIterator {
   try {
-    const result = yield call(getPostsApi, action.page, action.limit);
+    const result = yield call(
+      getPostsApi,
+      action.page,
+      action.limit,
+      action.sortBy
+    );
     yield put({
       type: GET_POSTS_SUCCESS,
       data: result.data.posts,

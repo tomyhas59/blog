@@ -7,17 +7,19 @@ import { usePagination } from "./PaginationProvider";
 import { RootState } from "../reducer";
 import { PostType } from "../types";
 import Spinner from "../components/Spinner";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
 const Main = () => {
+  const navigator = useNavigate();
   const dispatch = useDispatch();
   const location = useLocation();
   const { posts, totalPosts, getPostsLoading } = useSelector(
     (state: RootState) => state.post
   );
-  const { currentPage, postsPerPage, setCurrentPage } = usePagination();
+  const { currentPage, postsPerPage, paginate } = usePagination();
   const [page, setPage] = useState<number>(currentPage);
+  const [sortBy, setSortBy] = useState<string>("recent");
 
   useEffect(() => {
     const params = new URLSearchParams(location.search);
@@ -30,13 +32,50 @@ const Main = () => {
       type: GET_POSTS_REQUEST,
       page: page,
       limit: postsPerPage,
+      sortBy,
     });
-    setCurrentPage(page);
-  }, [currentPage, postsPerPage, dispatch, page, setCurrentPage]);
+    paginate(page);
+  }, [currentPage, postsPerPage, dispatch, page, sortBy, paginate]);
+
+  const handleSortChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newSortBy = e.target.value;
+    setSortBy(newSortBy);
+    setPage(1);
+
+    const params = new URLSearchParams(location.search);
+    params.set("page", "1");
+    params.set("sortBy", newSortBy);
+    navigator({
+      pathname: location.pathname,
+      search: params.toString(),
+    });
+  };
 
   return (
     <MainContainer>
       <Banner>BANNER</Banner>
+      <SortButtons>
+        <label>
+          <input
+            type="radio"
+            name="sort"
+            value="recent"
+            checked={sortBy === "recent"}
+            onChange={handleSortChange}
+          />
+          최신순
+        </label>
+        <label>
+          <input
+            type="radio"
+            name="sort"
+            value="popular"
+            checked={sortBy === "popular"}
+            onChange={handleSortChange}
+          />
+          인기순
+        </label>
+      </SortButtons>
       {getPostsLoading ? (
         <Spinner />
       ) : (
@@ -71,4 +110,24 @@ const Banner = styled.div`
   margin-bottom: 20px;
   font-size: 24px;
   font-weight: bold;
+`;
+
+const SortButtons = styled.div`
+  display: flex;
+  justify-content: right;
+  gap: 10px;
+
+  label {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    padding: 5px;
+    &:hover {
+      background-color: #f1f1f1;
+      border-radius: 5px;
+    }
+    input {
+      margin-right: 4px;
+    }
+  }
 `;

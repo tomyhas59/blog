@@ -28,6 +28,7 @@ const Post = ({ post, postId }: { post: PostType; postId?: number }) => {
         pathname: `/post/${postId}`,
         search: params.toString(),
       });
+      window.scrollTo({ top: 0, behavior: "auto" });
     },
     [currentPage, navigator]
   );

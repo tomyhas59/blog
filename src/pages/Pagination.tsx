@@ -19,6 +19,7 @@ const Pagination = ({
   const setParams = (number: number) => {
     const params = new URLSearchParams();
     params.set("page", number.toString());
+    params.set("sortBy", "recent");
     navigator({
       pathname: postId ? `/post/${postId}` : `${location.pathname}`,
       search: params.toString(),

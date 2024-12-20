@@ -16,7 +16,7 @@ const SearchPage = () => {
   const dispatch = useDispatch();
   const { searchedPosts, totalSearchedPosts, searchedPostsLoading } =
     useSelector((state: RootState) => state.post);
-  const { searchedCurrentPage, setSearchedCurrentPage } = usePagination();
+  const { searchedCurrentPage, searchedPaginate } = usePagination();
 
   const [searchText, setSearchText] = useState<string>("");
   const [searchOption, setSearchOption] = useState<string>("");
@@ -41,9 +41,9 @@ const SearchPage = () => {
         searchOption,
         page: page,
       });
-      setSearchedCurrentPage(page);
+      searchedPaginate(page);
     }
-  }, [dispatch, searchText, searchOption, page, setSearchedCurrentPage]);
+  }, [dispatch, page, searchOption, searchText, searchedPaginate]);
 
   console.log(searchedPosts);
   return (
