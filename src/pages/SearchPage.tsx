@@ -16,11 +16,10 @@ const SearchPage = () => {
   const dispatch = useDispatch();
   const { searchedPosts, totalSearchedPosts, searchedPostsLoading } =
     useSelector((state: RootState) => state.post);
-  const { searchedCurrentPage, searchedPaginate } = usePagination();
+  const { searchedCurrentPage, setSearchedCurrentPage } = usePagination();
 
   const [searchText, setSearchText] = useState<string>("");
   const [searchOption, setSearchOption] = useState<string>("");
-  const [page, setPage] = useState<number>(searchedCurrentPage);
 
   useEffect(() => {
     const params = new URLSearchParams(location.search);
@@ -30,7 +29,7 @@ const SearchPage = () => {
 
     if (searchTextParam) setSearchText(searchTextParam);
     if (searchOptionParam) setSearchOption(searchOptionParam);
-    if (pageParam) setPage(Number(pageParam));
+    if (pageParam) setSearchedCurrentPage(Number(pageParam));
   }, [location.search]);
 
   useEffect(() => {
@@ -39,11 +38,17 @@ const SearchPage = () => {
         type: SEARCH_POSTS_REQUEST,
         searchText,
         searchOption,
-        page: page,
+        page: searchedCurrentPage,
       });
-      searchedPaginate(page);
+      setSearchedCurrentPage(searchedCurrentPage);
     }
-  }, [dispatch, page, searchOption, searchText, searchedPaginate]);
+  }, [
+    dispatch,
+    searchedCurrentPage,
+    searchOption,
+    searchText,
+    setSearchedCurrentPage,
+  ]);
 
   console.log(searchedPosts);
   return (

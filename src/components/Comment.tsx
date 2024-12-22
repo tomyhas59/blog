@@ -28,7 +28,7 @@ const Comment = ({ post }: { post: PostType }) => {
   const nickname = useSelector((state: RootState) => state.user.me?.nickname);
   const { removeCommentLoading, updateCommentLoading, addReCommentLoading } =
     useSelector((state: RootState) => state.post);
-  const { searchedPaginate } = usePagination();
+  const { setSearchedCurrentPage } = usePagination();
 
   //---닉네임 클릭 정보 보기-------------------------------------
   const [showInfo, setShowInfo] = useState<Record<number, boolean>>({});
@@ -51,12 +51,12 @@ const Comment = ({ post }: { post: PostType }) => {
 
   const onSearch = useCallback(
     (userNickname: string) => {
-      searchedPaginate(1);
+      setSearchedCurrentPage(1);
       setParams({ searchText: userNickname });
       setShowInfo({});
       window.scrollTo({ top: 0, behavior: "auto" });
     },
-    [searchedPaginate, setParams]
+    [setSearchedCurrentPage, setParams]
   );
   //------------------댓글 수정--------------------------------
 

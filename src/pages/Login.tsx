@@ -11,7 +11,7 @@ import Spinner from "../components/Spinner";
 function Login() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { paginate } = usePagination();
+  const { setCurrentPage } = usePagination();
 
   const [email, onChangeEmail] = useInput();
   const [password, onChangePassword] = useInput();
@@ -23,11 +23,11 @@ function Login() {
   useEffect(() => {
     if (logInDone) {
       dispatch({ type: "GO_HOME" });
-      paginate(1);
+      setCurrentPage(1);
       navigate("/");
       window.scrollTo({ top: 0, behavior: "smooth" });
     }
-  }, [dispatch, logInDone, navigate, paginate]);
+  }, [dispatch, logInDone, navigate, setCurrentPage]);
 
   const onLogin = useCallback(
     (e: SyntheticEvent) => {

@@ -31,7 +31,7 @@ const ReComment = ({
   const { removeReCommentLoading, updateReCommentLoading } = useSelector(
     (state: RootState) => state.post
   );
-  const { searchedPaginate } = usePagination();
+  const { setSearchedCurrentPage } = usePagination();
   const [showInfo, setShowInfo] = useState<Record<number, boolean>>({});
   const toggleShowInfo = useCallback((ReCommentId: number) => {
     setShowInfo((prev) => {
@@ -81,12 +81,12 @@ const ReComment = ({
 
   const onSearch = useCallback(
     (userNickname: string) => {
-      searchedPaginate(1);
+      setSearchedCurrentPage(1);
       setParams({ searchText: userNickname });
       setShowInfo({});
       window.scrollTo({ top: 0, behavior: "auto" });
     },
-    [searchedPaginate, setParams]
+    [setSearchedCurrentPage, setParams]
   );
 
   //OutsideClick----------------------------------------------

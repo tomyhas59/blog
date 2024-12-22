@@ -12,7 +12,7 @@ const Pagination = ({
 }) => {
   const location = useLocation();
   const navigator = useNavigate();
-  const { currentPage, postsPerPage, paginate, sortBy } = usePagination();
+  const { currentPage, postsPerPage, setCurrentPage, sortBy } = usePagination();
 
   const totalPages = Math.ceil(totalPosts / postsPerPage);
 
@@ -27,7 +27,7 @@ const Pagination = ({
   };
 
   const onPageClick = (number: number) => {
-    paginate(number);
+    setCurrentPage(number);
     setParams(number);
     window.scrollTo({ top: 0, behavior: "auto" });
   };

@@ -26,7 +26,7 @@ const Header = () => {
   const [commentNotification, setCommentNotification] =
     useState<boolean>(false);
 
-  const { paginate } = usePagination();
+  const { setCurrentPage } = usePagination();
 
   const socket = useRef<Socket | null>(null);
 
@@ -120,10 +120,10 @@ const Header = () => {
   }, [dispatch, me?.id, socket]);
 
   const onGoHome = useCallback(() => {
-    paginate(1);
+    setCurrentPage(1);
     navigator("/");
     window.location.reload();
-  }, [navigator, paginate]);
+  }, [navigator, setCurrentPage]);
 
   const onGoToChat = () => {
     if (!me) return alert("로그인이 필요합니다");

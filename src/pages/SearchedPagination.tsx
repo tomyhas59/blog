@@ -13,7 +13,7 @@ const SearchedPagination = ({
   searchOption: string;
 }) => {
   const navigator = useNavigate();
-  const { searchedCurrentPage, searchedPostsPerPage, searchedPaginate } =
+  const { searchedCurrentPage, searchedPostsPerPage, setSearchedCurrentPage } =
     usePagination();
 
   const searchedTotalPages = Math.ceil(
@@ -32,7 +32,7 @@ const SearchedPagination = ({
   };
 
   const onPageClick = (number: number) => {
-    searchedPaginate(number);
+    setSearchedCurrentPage(number);
     setParams(number);
     window.scrollTo({ top: 0, behavior: "auto" });
   };

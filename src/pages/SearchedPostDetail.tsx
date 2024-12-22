@@ -45,10 +45,9 @@ const SearchedPostDetail = () => {
   const me = useSelector((state: RootState) => state.user.me);
   const dispatch = useDispatch();
   const location = useLocation();
-  const { currentPage, searchedPaginate } = usePagination();
+  const { searchedCurrentPage, setSearchedCurrentPage } = usePagination();
   const [searchText, setSearchText] = useState<string>("");
   const [searchOption, setSearchOption] = useState<string>("");
-  const [page, setPage] = useState<number>(currentPage);
   const { postId } = useParams();
 
   const { searchedPosts, post, imagePaths, totalSearchedPosts } = useSelector(
@@ -70,10 +69,10 @@ const SearchedPostDetail = () => {
         type: SEARCH_POSTS_REQUEST,
         searchText,
         searchOption,
-        page,
+        searchedCurrentPage,
       });
     }
-  }, [dispatch, searchText, searchOption, page]);
+  }, [dispatch, searchText, searchOption, searchedCurrentPage]);
 
   useEffect(() => {
     const params = new URLSearchParams(location.search);
@@ -83,7 +82,7 @@ const SearchedPostDetail = () => {
 
     if (searchTextParam) setSearchText(searchTextParam);
     if (searchOptionParam) setSearchOption(searchOptionParam);
-    if (pageParam) setPage(Number(pageParam));
+    if (pageParam) setSearchedCurrentPage(Number(pageParam));
   }, [location.search]);
 
   useEffect(() => {
@@ -279,11 +278,11 @@ const SearchedPostDetail = () => {
         searchText: post.User.nickname,
         searchOption: "author",
       });
-      searchedPaginate(1);
+      setSearchedCurrentPage(1);
       setParams();
       window.scrollTo({ top: 0, behavior: "auto" });
     },
-    [dispatch, post.User?.nickname, searchedPaginate, setParams]
+    [dispatch, post.User?.nickname, setSearchedCurrentPage, setParams]
   );
 
   const onRemoveImage = useCallback(

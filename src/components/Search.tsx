@@ -14,7 +14,7 @@ const Search = () => {
 
   const { searchedPostsError } = useSelector((state: RootState) => state.post);
   const location = useLocation();
-  const { searchedPaginate } = usePagination();
+  const { setSearchedCurrentPage } = usePagination();
 
   const setParams = useSetParams({
     searchOption,
@@ -27,9 +27,9 @@ const Search = () => {
     }
     setSearchText("");
     setParams({ searchText });
-    searchedPaginate(1);
+    setSearchedCurrentPage(1);
     window.scrollTo({ top: 0, behavior: "auto" }); // 페이지 맨 위로 스크롤
-  }, [searchText, searchedPaginate, setParams]);
+  }, [searchText, setSearchedCurrentPage, setParams]);
 
   useEffect(() => {
     if (searchedPostsError) {

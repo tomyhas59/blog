@@ -3,19 +3,15 @@ import { useLocation, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { usePagination } from "../pages/PaginationProvider";
 
-const SortButton = ({
-  setPage,
-}: {
-  setPage: React.Dispatch<React.SetStateAction<number>>;
-}) => {
+const SortButton = () => {
   const navigator = useNavigate();
   const location = useLocation();
 
-  const { sortBy, setSortBy } = usePagination();
+  const { sortBy, setSortBy, setCurrentPage } = usePagination();
 
   const handleSortChange = (newSortBy: string) => {
     setSortBy(newSortBy);
-    setPage(1);
+    setCurrentPage(1);
     updateUrlParams(newSortBy);
   };
 

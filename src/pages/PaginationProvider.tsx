@@ -9,23 +9,15 @@ export const PaginationProvider = ({ children }: any) => {
   const [searchedPostsPerPage] = useState(10);
   const [sortBy, setSortBy] = useState("recent");
 
-  const paginate = (pageNumber: number) => {
-    setCurrentPage(pageNumber);
-  };
-
-  const searchedPaginate = (pageNumber: number) => {
-    setSearchedCurrentPage(pageNumber);
-  };
-
   return (
     <PaginationContext.Provider
       value={{
         currentPage,
+        setCurrentPage,
         postsPerPage,
-        paginate,
+        setSearchedCurrentPage,
         searchedCurrentPage,
         searchedPostsPerPage,
-        searchedPaginate,
         sortBy,
         setSortBy,
       }}

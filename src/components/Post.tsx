@@ -18,7 +18,7 @@ const Post = ({ post, postId }: { post: PostType; postId?: number }) => {
   const me = useSelector((state: RootState) => state.user.me);
   const id = me?.id;
 
-  const { currentPage, searchedPaginate, sortBy } = usePagination();
+  const { currentPage, setSearchedCurrentPage, sortBy } = usePagination();
 
   const goToPostDetail = useCallback(
     (postId: number) => {
@@ -59,11 +59,11 @@ const Post = ({ post, postId }: { post: PostType; postId?: number }) => {
   const onSearch = useCallback(
     (e: React.MouseEvent) => {
       e.stopPropagation();
-      searchedPaginate(1);
+      setSearchedCurrentPage(1);
       setParams({ searchText: post.User.nickname });
       window.scrollTo({ top: 0, behavior: "auto" });
     },
-    [post.User.nickname, searchedPaginate, setParams]
+    [post.User.nickname, setSearchedCurrentPage, setParams]
   );
 
   const totalReComments = post.Comments.reduce(

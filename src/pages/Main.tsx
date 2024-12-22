@@ -7,7 +7,7 @@ import { usePagination } from "./PaginationProvider";
 import { RootState } from "../reducer";
 import { PostType } from "../types";
 import Spinner from "../components/Spinner";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import styled from "styled-components";
 import SortButton from "../components/SortButton";
 
@@ -17,30 +17,28 @@ const Main = () => {
   const { posts, totalPosts, getPostsLoading } = useSelector(
     (state: RootState) => state.post
   );
-  const { currentPage, postsPerPage, paginate, sortBy, setSortBy } =
-    usePagination();
-  const [page, setPage] = useState<number>(currentPage);
+  const { currentPage, postsPerPage, sortBy, setCurrentPage } = usePagination();
 
   useEffect(() => {
     const params = new URLSearchParams(location.search);
     const pageParam = params.get("page");
-    if (pageParam) setPage(Number(pageParam));
+    if (pageParam) setCurrentPage(Number(pageParam));
   }, [location.search]);
 
   useEffect(() => {
     dispatch({
       type: GET_POSTS_REQUEST,
-      page: page,
+      page: currentPage,
       limit: postsPerPage,
       sortBy,
     });
-    paginate(page);
-  }, [currentPage, postsPerPage, dispatch, page, sortBy, paginate]);
+    setCurrentPage(currentPage);
+  }, [currentPage, postsPerPage, dispatch, currentPage, sortBy]);
 
   return (
     <MainContainer>
       <Banner>BANNER</Banner>
-      <SortButton setPage={setPage} />
+      <SortButton />
       {getPostsLoading ? (
         <Spinner />
       ) : (
@@ -75,24 +73,4 @@ const Banner = styled.div`
   margin-bottom: 20px;
   font-size: 24px;
   font-weight: bold;
-`;
-
-const SortButtons = styled.div`
-  display: flex;
-  justify-content: right;
-  gap: 10px;
-
-  label {
-    display: flex;
-    align-items: center;
-    cursor: pointer;
-    padding: 5px;
-    &:hover {
-      background-color: #f1f1f1;
-      border-radius: 5px;
-    }
-    input {
-      margin-right: 4px;
-    }
-  }
 `;

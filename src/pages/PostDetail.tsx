@@ -50,12 +50,11 @@ const PostDetail = () => {
   const {
     currentPage,
     postsPerPage,
-    paginate,
-    searchedPaginate,
     sortBy,
     setSortBy,
+    setCurrentPage,
+    setSearchedCurrentPage,
   } = usePagination();
-  const [page, setPage] = useState<number>(currentPage);
 
   const { postId } = useParams();
 
@@ -76,19 +75,19 @@ const PostDetail = () => {
     const params = new URLSearchParams(location.search);
     const pageParam = params.get("page");
     const sortByParam = params.get("sortBy");
-    if (pageParam) setPage(Number(pageParam));
+    if (pageParam) setCurrentPage(Number(pageParam));
     if (sortByParam) setSortBy(sortByParam);
   }, [location.search]);
 
   useEffect(() => {
     dispatch({
       type: GET_POSTS_REQUEST,
-      page: page,
+      page: currentPage,
       limit: postsPerPage,
       sortBy,
     });
-    paginate(page);
-  }, [dispatch, page, paginate, postsPerPage, sortBy]);
+    setCurrentPage(currentPage);
+  }, [dispatch, currentPage, setCurrentPage, postsPerPage, sortBy]);
 
   useEffect(() => {
     socket.current =
@@ -261,11 +260,11 @@ const PostDetail = () => {
         searchText: post.User.nickname,
         searchOption: "author",
       });
-      searchedPaginate(1);
+      setSearchedCurrentPage(1);
       setParams();
       window.scrollTo({ top: 0, behavior: "auto" });
     },
-    [dispatch, post.User?.nickname, searchedPaginate, setParams]
+    [dispatch, post.User?.nickname, setSearchedCurrentPage, setParams]
   );
 
   const onRemoveImage = useCallback(
@@ -534,7 +533,7 @@ const PostDetail = () => {
           <Comment post={post} />
         </CommentContainer>
       </FullPostWrapper>
-      <SortButton setPage={setPage} />
+      <SortButton />
       {posts.length > 0 && (
         <div>
           {posts.map((post: PostType) => (
