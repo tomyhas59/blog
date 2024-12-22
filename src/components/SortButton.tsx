@@ -55,6 +55,9 @@ const SortButtons = styled.div`
   display: flex;
   justify-content: flex-end;
   gap: 10px;
+  @media (max-width: 480px) {
+    gap: 2px;
+  }
 `;
 
 const SortLabel = styled.label`
@@ -71,5 +74,8 @@ const SortLabel = styled.label`
 
   input {
     margin-right: 4px;
+  }
+  @media (max-width: 480px) {
+    font-size: 12px;
   }
 `;
