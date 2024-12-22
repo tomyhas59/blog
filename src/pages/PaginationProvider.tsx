@@ -7,6 +7,7 @@ export const PaginationProvider = ({ children }: any) => {
   const [postsPerPage] = useState(10);
   const [searchedCurrentPage, setSearchedCurrentPage] = useState(1);
   const [searchedPostsPerPage] = useState(10);
+  const [sortBy, setSortBy] = useState("recent");
 
   const paginate = (pageNumber: number) => {
     setCurrentPage(pageNumber);
@@ -25,6 +26,8 @@ export const PaginationProvider = ({ children }: any) => {
         searchedCurrentPage,
         searchedPostsPerPage,
         searchedPaginate,
+        sortBy,
+        setSortBy,
       }}
     >
       {children}

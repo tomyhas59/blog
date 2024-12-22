@@ -9,17 +9,17 @@ import { PostType } from "../types";
 import Spinner from "../components/Spinner";
 import { useLocation, useNavigate } from "react-router-dom";
 import styled from "styled-components";
+import SortButton from "../components/SortButton";
 
 const Main = () => {
-  const navigator = useNavigate();
   const dispatch = useDispatch();
   const location = useLocation();
   const { posts, totalPosts, getPostsLoading } = useSelector(
     (state: RootState) => state.post
   );
-  const { currentPage, postsPerPage, paginate } = usePagination();
+  const { currentPage, postsPerPage, paginate, sortBy, setSortBy } =
+    usePagination();
   const [page, setPage] = useState<number>(currentPage);
-  const [sortBy, setSortBy] = useState<string>("recent");
 
   useEffect(() => {
     const params = new URLSearchParams(location.search);
@@ -37,45 +37,10 @@ const Main = () => {
     paginate(page);
   }, [currentPage, postsPerPage, dispatch, page, sortBy, paginate]);
 
-  const handleSortChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newSortBy = e.target.value;
-    setSortBy(newSortBy);
-    setPage(1);
-
-    const params = new URLSearchParams(location.search);
-    params.set("page", "1");
-    params.set("sortBy", newSortBy);
-    navigator({
-      pathname: location.pathname,
-      search: params.toString(),
-    });
-  };
-
   return (
     <MainContainer>
       <Banner>BANNER</Banner>
-      <SortButtons>
-        <label>
-          <input
-            type="radio"
-            name="sort"
-            value="recent"
-            checked={sortBy === "recent"}
-            onChange={handleSortChange}
-          />
-          최신순
-        </label>
-        <label>
-          <input
-            type="radio"
-            name="sort"
-            value="popular"
-            checked={sortBy === "popular"}
-            onChange={handleSortChange}
-          />
-          인기순
-        </label>
-      </SortButtons>
+      <SortButton setPage={setPage} />
       {getPostsLoading ? (
         <Spinner />
       ) : (

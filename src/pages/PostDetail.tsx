@@ -40,15 +40,23 @@ import Post from "../components/Post";
 import Pagination from "./Pagination";
 import { io, Socket } from "socket.io-client";
 import { usePagination } from "./PaginationProvider";
+import SortButton from "../components/SortButton";
 
 const PostDetail = () => {
   const socket = useRef<Socket | null>(null);
   const me = useSelector((state: RootState) => state.user.me);
   const dispatch = useDispatch();
   const location = useLocation();
-  const { currentPage, postsPerPage, paginate, searchedPaginate } =
-    usePagination();
+  const {
+    currentPage,
+    postsPerPage,
+    paginate,
+    searchedPaginate,
+    sortBy,
+    setSortBy,
+  } = usePagination();
   const [page, setPage] = useState<number>(currentPage);
+
   const { postId } = useParams();
 
   const { posts, post, imagePaths, totalPosts } = useSelector(
@@ -67,7 +75,9 @@ const PostDetail = () => {
   useEffect(() => {
     const params = new URLSearchParams(location.search);
     const pageParam = params.get("page");
+    const sortByParam = params.get("sortBy");
     if (pageParam) setPage(Number(pageParam));
+    if (sortByParam) setSortBy(sortByParam);
   }, [location.search]);
 
   useEffect(() => {
@@ -75,9 +85,10 @@ const PostDetail = () => {
       type: GET_POSTS_REQUEST,
       page: page,
       limit: postsPerPage,
+      sortBy,
     });
     paginate(page);
-  }, [dispatch, page, paginate, postsPerPage]);
+  }, [dispatch, page, paginate, postsPerPage, sortBy]);
 
   useEffect(() => {
     socket.current =
@@ -347,7 +358,7 @@ const PostDetail = () => {
   }, [me?.id, post.userIdx, postId]);
 
   return (
-    <>
+    <PostDetailContainer>
       {removePostLoading ||
       updatePostLoading ||
       searchedPostsLoading ||
@@ -523,6 +534,7 @@ const PostDetail = () => {
           <Comment post={post} />
         </CommentContainer>
       </FullPostWrapper>
+      <SortButton setPage={setPage} />
       {posts.length > 0 && (
         <div>
           {posts.map((post: PostType) => (
@@ -533,11 +545,16 @@ const PostDetail = () => {
           <Pagination totalPosts={Number(totalPosts)} postId={post.id} />
         </div>
       )}
-    </>
+    </PostDetailContainer>
   );
 };
 
 export default PostDetail;
+
+const PostDetailContainer = styled.div`
+  max-width: 800px;
+  margin: 0 auto;
+`;
 
 const FullPostWrapper = styled.div`
   max-width: 800px;

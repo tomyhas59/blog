@@ -12,14 +12,14 @@ const Pagination = ({
 }) => {
   const location = useLocation();
   const navigator = useNavigate();
-  const { currentPage, postsPerPage, paginate } = usePagination();
+  const { currentPage, postsPerPage, paginate, sortBy } = usePagination();
 
   const totalPages = Math.ceil(totalPosts / postsPerPage);
 
   const setParams = (number: number) => {
     const params = new URLSearchParams();
     params.set("page", number.toString());
-    params.set("sortBy", "recent");
+    params.set("sortBy", sortBy);
     navigator({
       pathname: postId ? `/post/${postId}` : `${location.pathname}`,
       search: params.toString(),

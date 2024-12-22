@@ -18,19 +18,20 @@ const Post = ({ post, postId }: { post: PostType; postId?: number }) => {
   const me = useSelector((state: RootState) => state.user.me);
   const id = me?.id;
 
-  const { currentPage, searchedPaginate } = usePagination();
+  const { currentPage, searchedPaginate, sortBy } = usePagination();
 
   const goToPostDetail = useCallback(
     (postId: number) => {
       const params = new URLSearchParams();
       params.set("page", currentPage.toString());
+      params.set("sortBy", sortBy.toString());
       navigator({
         pathname: `/post/${postId}`,
         search: params.toString(),
       });
       window.scrollTo({ top: 0, behavior: "auto" });
     },
-    [currentPage, navigator]
+    [currentPage, navigator, sortBy]
   );
 
   //---닉네임 클릭 정보 보기-------------------------------------
