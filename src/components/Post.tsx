@@ -103,10 +103,11 @@ const Post = ({ post, postId }: { post: PostType; postId?: number }) => {
           </span>
         </PostTitle>
       </PostHeaderFlex>
-      <DateContainer>
+      <PostInfo>
         <Date>{moment(post.createdAt).format("l")}</Date>
         <Liked>{post.Likers.length === 0 ? "" : post.Likers.length}</Liked>
-      </DateContainer>
+        <ViewCount>{post.viewCount}</ViewCount>
+      </PostInfo>
     </PostContainer>
   );
 };
@@ -197,10 +198,13 @@ const Nickname = styled.span`
   text-align: start;
 `;
 
-const DateContainer = styled.div`
+const PostInfo = styled.div`
   font-size: 12px;
   color: silver;
-  width: 100px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  text-align: center;
 `;
 
 const Date = styled.span`
@@ -209,7 +213,15 @@ const Date = styled.span`
 `;
 
 const Liked = styled.span`
-  margin-left: 5px;
   color: red;
   font-weight: bold;
+  min-width: 30px;
+`;
+
+const ViewCount = styled.span`
+  color: silver;
+  min-width: 30px;
+  @media (max-width: 480px) {
+    font-size: 12px;
+  }
 `;

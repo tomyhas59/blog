@@ -27,6 +27,7 @@ const SortButton = () => {
 
   const sortOptions = [
     { value: "recent", label: "최신순" },
+    { value: "view", label: "조회순" },
     { value: "popular", label: "인기순" },
     { value: "comment", label: "댓글순" },
   ];
@@ -54,7 +55,7 @@ export default SortButton;
 const SortButtons = styled.div`
   display: flex;
   justify-content: flex-end;
-  gap: 10px;
+  font-size: 0.7rem;
   @media (max-width: 480px) {
     gap: 2px;
   }

@@ -1,13 +1,22 @@
-import React, { createContext, useContext, useState } from "react";
+import React, { createContext, useContext, useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
 
 const PaginationContext = createContext<any>({});
 
 export const PaginationProvider = ({ children }: any) => {
-  const [currentPage, setCurrentPage] = useState(1);
-  const [postsPerPage] = useState(10);
-  const [searchedCurrentPage, setSearchedCurrentPage] = useState(1);
-  const [searchedPostsPerPage] = useState(10);
-  const [sortBy, setSortBy] = useState("recent");
+  const location = useLocation();
+
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [postsPerPage] = useState<number>(10);
+  const [searchedCurrentPage, setSearchedCurrentPage] = useState<number>(1);
+  const [searchedPostsPerPage] = useState<number>(10);
+  const [sortBy, setSortBy] = useState<string>("recent");
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const pageParam = params.get("page");
+    if (pageParam) setCurrentPage(Number(pageParam));
+  }, [location.search]);
 
   return (
     <PaginationContext.Provider

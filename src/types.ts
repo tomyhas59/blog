@@ -17,6 +17,7 @@ export type PostType = {
   createdAt: string;
   updatedAt: string;
   userIdx: number;
+  viewCount: number;
   Likers: LikeType[];
   User: UserType;
   Images: ImageType[];

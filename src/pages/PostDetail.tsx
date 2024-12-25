@@ -87,7 +87,7 @@ const PostDetail = () => {
       sortBy,
     });
     setCurrentPage(currentPage);
-  }, [dispatch, currentPage, setCurrentPage, postsPerPage, sortBy]);
+  }, [dispatch, currentPage, setCurrentPage, postsPerPage, sortBy, post]);
 
   useEffect(() => {
     socket.current =
@@ -395,6 +395,7 @@ const PostDetail = () => {
               <Date>{moment(post.createdAt).format("l")}</Date>
             </PostNicknameAndDate>
             <PostTitle>{post.title}</PostTitle>
+            <ViewCount>조회 수 {post.viewCount}</ViewCount>
             <LikeContainer>
               <Liked>♥ {post.Likers?.length}</Liked>
               {liked ? (
@@ -673,6 +674,13 @@ const ContentWrapper = styled.div`
 const Date = styled.span`
   width: 100px;
   margin: 5px;
+  color: silver;
+  @media (max-width: 480px) {
+    font-size: 12px;
+  }
+`;
+
+const ViewCount = styled.span`
   color: silver;
   @media (max-width: 480px) {
     font-size: 12px;
