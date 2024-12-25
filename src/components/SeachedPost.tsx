@@ -7,6 +7,8 @@ import { baseURL } from "../config";
 import { DEFAULT_PROFILE_IMAGE } from "../pages/Info/MyInfo";
 import useSetParams from "../hooks/useSetParams";
 import moment from "moment";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faImage, faImages } from "@fortawesome/free-solid-svg-icons";
 
 const SeachedPost = ({ post, postId }: { post: PostType; postId?: number }) => {
   const location = useLocation();
@@ -79,6 +81,13 @@ const SeachedPost = ({ post, postId }: { post: PostType; postId?: number }) => {
               {highlightText(post.title) || post.title}
               <span style={{ fontSize: "12px" }}>
                 [{post.Comments.length + totalReComments}]
+              </span>
+              <span>
+                {post.Images.length > 0 && (
+                  <FontAwesomeIcon
+                    icon={post.Images.length === 1 ? faImage : faImages}
+                  />
+                )}
               </span>
             </PostTitle>
           </PostHeaderFlex>
@@ -156,7 +165,9 @@ const PostTitle = styled.div`
   font-weight: bold;
   color: #333;
   transition: color 0.3s ease;
-
+  display: flex;
+  align-items: center;
+  gap: 2px;
   &:hover {
     color: #007bff;
   }

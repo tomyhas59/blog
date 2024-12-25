@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import Post from "../components/Post";
 import { useDispatch, useSelector } from "react-redux";
 import { GET_POSTS_REQUEST } from "../reducer/post";
@@ -23,7 +23,7 @@ const Main = () => {
     const params = new URLSearchParams(location.search);
     const pageParam = params.get("page");
     if (pageParam) setCurrentPage(Number(pageParam));
-  }, [location.search]);
+  }, [location.search, setCurrentPage]);
 
   useEffect(() => {
     dispatch({
@@ -33,7 +33,7 @@ const Main = () => {
       sortBy,
     });
     setCurrentPage(currentPage);
-  }, [currentPage, postsPerPage, dispatch, currentPage, sortBy]);
+  }, [currentPage, postsPerPage, dispatch, sortBy, setCurrentPage]);
 
   return (
     <MainContainer>

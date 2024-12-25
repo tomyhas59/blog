@@ -12,6 +12,8 @@ import FollowButton from "./FollowButton";
 import { usePagination } from "../pages/PaginationProvider";
 import useSetParams from "../hooks/useSetParams";
 import moment from "moment";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faImage, faImages } from "@fortawesome/free-solid-svg-icons";
 
 const Post = ({ post, postId }: { post: PostType; postId?: number }) => {
   const navigator = useNavigate();
@@ -101,6 +103,13 @@ const Post = ({ post, postId }: { post: PostType; postId?: number }) => {
           <span style={{ fontSize: "12px" }}>
             [{post.Comments.length + totalReComments}]
           </span>
+          <span>
+            {post.Images.length > 0 && (
+              <FontAwesomeIcon
+                icon={post.Images.length === 1 ? faImage : faImages}
+              />
+            )}
+          </span>
         </PostTitle>
       </PostHeaderFlex>
       <DateContainer>
@@ -143,7 +152,9 @@ const PostTitle = styled.div`
   font-weight: bold;
   color: #333;
   transition: color 0.3s ease;
-
+  display: flex;
+  align-items: center;
+  gap: 2px;
   &:hover {
     color: #007bff;
   }
