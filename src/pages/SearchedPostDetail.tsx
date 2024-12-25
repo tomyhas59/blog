@@ -83,7 +83,7 @@ const SearchedPostDetail = () => {
     if (searchTextParam) setSearchText(searchTextParam);
     if (searchOptionParam) setSearchOption(searchOptionParam);
     if (pageParam) setSearchedCurrentPage(Number(pageParam));
-  }, [location.search]);
+  }, [location.search, setSearchedCurrentPage]);
 
   useEffect(() => {
     socket.current =

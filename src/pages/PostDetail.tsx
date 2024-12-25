@@ -77,7 +77,7 @@ const PostDetail = () => {
     const sortByParam = params.get("sortBy");
     if (pageParam) setCurrentPage(Number(pageParam));
     if (sortByParam) setSortBy(sortByParam);
-  }, [location.search]);
+  }, [location.search, setCurrentPage, setSortBy]);
 
   useEffect(() => {
     dispatch({
