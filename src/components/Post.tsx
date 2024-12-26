@@ -15,9 +15,18 @@ import moment from "moment";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faImage, faImages } from "@fortawesome/free-solid-svg-icons";
 
-const Post = ({ post, postId }: { post: PostType; postId?: number }) => {
+const Post = ({
+  post,
+  postId,
+  viewedPosts,
+}: {
+  post: PostType;
+  viewedPosts?: number[];
+  postId?: number;
+}) => {
   const navigator = useNavigate();
   const me = useSelector((state: RootState) => state.user.me);
+
   const id = me?.id;
 
   const { currentPage, setSearchedCurrentPage, sortBy } = usePagination();
@@ -33,7 +42,7 @@ const Post = ({ post, postId }: { post: PostType; postId?: number }) => {
       });
       window.scrollTo({ top: 0, behavior: "auto" });
     },
-    [currentPage, navigator, sortBy]
+    [currentPage, navigator, sortBy, postId]
   );
 
   //---닉네임 클릭 정보 보기-------------------------------------
@@ -98,7 +107,7 @@ const Post = ({ post, postId }: { post: PostType; postId?: number }) => {
             )}
           </InfoMenu>
         )}
-        <PostTitle>
+        <PostTitle isViewed={viewedPosts?.includes(post.id) as boolean}>
           {post.title}
           <span style={{ fontSize: "12px" }}>
             [{post.Comments.length + totalReComments}]
@@ -132,8 +141,8 @@ const PostContainer = styled.div<{ isActive: boolean }>`
   margin: 0 auto;
   border: 1px solid #f4f4f4;
   background-color: ${(props) => (props.isActive ? "#e0f7fa" : "#fff")};
-  cursor: pointer;
 
+  cursor: pointer;
   &:hover {
     background-color: ${(props) => (props.isActive ? "#b2ebf2" : "#f4f4f4")};
   }
@@ -147,7 +156,7 @@ const PostHeaderFlex = styled.div`
   gap: 10px;
 `;
 
-const PostTitle = styled.div`
+const PostTitle = styled.div<{ isViewed: boolean }>`
   flex: 1;
   font-size: 15px;
   font-weight: bold;
@@ -156,6 +165,7 @@ const PostTitle = styled.div`
   display: flex;
   align-items: center;
   gap: 2px;
+  color: ${(props) => (props.isViewed ? "#b0b0b0" : "black")};
   &:hover {
     color: #007bff;
   }

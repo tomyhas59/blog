@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Post from "../components/Post";
 import { useDispatch, useSelector } from "react-redux";
 import { GET_POSTS_REQUEST } from "../reducer/post";
@@ -17,7 +17,15 @@ const Main = () => {
   const { posts, totalPosts, getPostsLoading } = useSelector(
     (state: RootState) => state.post
   );
+  const [viewedPosts, setViewedPosts] = useState<number[]>([]);
   const { currentPage, postsPerPage, sortBy, setCurrentPage } = usePagination();
+
+  useEffect(() => {
+    const viewedPostsCookie = JSON.parse(
+      localStorage.getItem("viewedPosts") || "[]"
+    );
+    setViewedPosts(viewedPostsCookie);
+  }, []);
 
   useEffect(() => {
     const params = new URLSearchParams(location.search);
@@ -46,7 +54,7 @@ const Main = () => {
           <div>
             {posts.map((post: PostType) => (
               <div key={post.id}>
-                <Post post={post} />
+                <Post post={post} viewedPosts={viewedPosts} />
               </div>
             ))}
             <Pagination totalPosts={Number(totalPosts)} />

@@ -61,6 +61,7 @@ const PostDetail = () => {
   const { posts, post, imagePaths, totalPosts } = useSelector(
     (state: RootState) => state.post
   );
+  const [viewedPosts, setViewedPosts] = useState<number[]>([]);
 
   useEffect(() => {
     if (postId) {
@@ -88,6 +89,15 @@ const PostDetail = () => {
     });
     setCurrentPage(currentPage);
   }, [dispatch, currentPage, setCurrentPage, postsPerPage, sortBy, post]);
+
+  useEffect(() => {
+    const viewedPosts = JSON.parse(localStorage.getItem("viewedPosts") || "[]");
+    setViewedPosts(viewedPosts);
+    if (!viewedPosts.includes(post.id)) {
+      const newViewedPosts = [...viewedPosts, post.id];
+      localStorage.setItem("viewedPosts", JSON.stringify(newViewedPosts));
+    }
+  }, [post]);
 
   useEffect(() => {
     socket.current =
@@ -539,7 +549,11 @@ const PostDetail = () => {
         <div>
           {posts.map((post: PostType) => (
             <div key={post.id}>
-              <Post post={post} postId={Number(postId)} />
+              <Post
+                post={post}
+                viewedPosts={viewedPosts}
+                postId={Number(postId)}
+              />
             </div>
           ))}
           <Pagination totalPosts={Number(totalPosts)} postId={post.id} />
