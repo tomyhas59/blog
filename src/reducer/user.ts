@@ -81,7 +81,7 @@ const user = (state = initialState, action: Action) => {
       case LOG_IN_SUCCESS:
         draft.logInLoading = false;
         draft.logInDone = true;
-        draft.me = action.data;
+        draft.me = action.data.user;
         draft.isLoggedIn = true;
         break;
       case LOG_IN_FAILURE:

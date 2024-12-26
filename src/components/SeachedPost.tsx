@@ -10,7 +10,15 @@ import moment from "moment";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faImage, faImages } from "@fortawesome/free-solid-svg-icons";
 
-const SeachedPost = ({ post, postId }: { post: PostType; postId?: number }) => {
+const SeachedPost = ({
+  post,
+  postId,
+  viewedPosts,
+}: {
+  post: PostType;
+  viewedPosts?: number[];
+  postId?: number;
+}) => {
   const location = useLocation();
   const params = new URLSearchParams(location.search);
   const searchTextParam = params.get("searchText");
@@ -77,7 +85,7 @@ const SeachedPost = ({ post, postId }: { post: PostType; postId?: number }) => {
                   post.User.nickname.slice(0, 5)}
               </Nickname>
             </NicknameButton>
-            <PostTitle>
+            <PostTitle isViewed={viewedPosts?.includes(post.id) as boolean}>
               {highlightText(post.title) || post.title}
               <span style={{ fontSize: "12px" }}>
                 [{post.Comments.length + totalReComments}]
@@ -91,10 +99,11 @@ const SeachedPost = ({ post, postId }: { post: PostType; postId?: number }) => {
               </span>
             </PostTitle>
           </PostHeaderFlex>
-          <DateContainer>
+          <PostInfo>
             <Date>{moment(post.createdAt).format("l")}</Date>
             <Liked>{post.Likers.length === 0 ? "" : post.Likers.length}</Liked>
-          </DateContainer>
+            <ViewCount>{post.viewCount}</ViewCount>
+          </PostInfo>
         </PostContainer>
 
         <Content>
@@ -159,7 +168,7 @@ const PostHeaderFlex = styled.div`
   gap: 10px;
 `;
 
-const PostTitle = styled.div`
+const PostTitle = styled.div<{ isViewed: boolean }>`
   flex: 1;
   font-size: 15px;
   font-weight: bold;
@@ -168,6 +177,7 @@ const PostTitle = styled.div`
   display: flex;
   align-items: center;
   gap: 2px;
+  color: ${(props) => (props.isViewed ? "#b0b0b0" : "black")};
   &:hover {
     color: #007bff;
   }
@@ -218,20 +228,30 @@ const HighlightedText = styled.span`
   background-color: yellow;
   font-weight: bold;
 `;
-const DateContainer = styled.div`
+const PostInfo = styled.div`
   font-size: 12px;
   color: silver;
-  width: 80px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  text-align: center;
 `;
 
 const Date = styled.span`
   font-size: 12px;
-
   color: silver;
 `;
 
 const Liked = styled.span`
-  margin-left: 5px;
   color: red;
   font-weight: bold;
+  min-width: 30px;
+`;
+
+const ViewCount = styled.span`
+  color: silver;
+  min-width: 30px;
+  @media (max-width: 480px) {
+    font-size: 12px;
+  }
 `;

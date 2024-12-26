@@ -36,7 +36,7 @@ import { FileButton } from "../components/PostForm";
 import { useNavigate } from "react-router-dom";
 import { PostType } from "../types";
 import { io, Socket } from "socket.io-client";
-import { usePagination } from "./PaginationProvider";
+import { usePagination } from "../hooks/PaginationProvider";
 import SearchedPagination from "./SearchedPagination";
 import SeachedPost from "../components/SeachedPost";
 
@@ -53,6 +53,17 @@ const SearchedPostDetail = () => {
   const { searchedPosts, post, imagePaths, totalSearchedPosts } = useSelector(
     (state: RootState) => state.post
   );
+
+  const [viewedPosts, setViewedPosts] = useState<number[]>([]);
+
+  useEffect(() => {
+    const viewedPosts = JSON.parse(localStorage.getItem("viewedPosts") || "[]");
+    setViewedPosts(viewedPosts);
+    if (!viewedPosts.includes(post.id)) {
+      const newViewedPosts = [...viewedPosts, post.id];
+      localStorage.setItem("viewedPosts", JSON.stringify(newViewedPosts));
+    }
+  }, [post]);
 
   useEffect(() => {
     if (postId) {
@@ -367,10 +378,9 @@ const SearchedPostDetail = () => {
     (total, comment) => total + comment.ReComments.length,
     0
   );
-
   useEffect(() => {
     if (post.userIdx === me?.id) {
-      socket.current?.emit("readComment", Number(postId));
+      socket.current?.emit("readComment", [Number(postId), me.id]);
     }
   }, [me?.id, post.userIdx, postId]);
 
@@ -555,7 +565,11 @@ const SearchedPostDetail = () => {
         <div>
           {searchedPosts.map((post: PostType) => (
             <div key={post.id}>
-              <SeachedPost post={post} postId={Number(postId)} />
+              <SeachedPost
+                post={post}
+                viewedPosts={viewedPosts}
+                postId={Number(postId)}
+              />
             </div>
           ))}
           <SearchedPagination

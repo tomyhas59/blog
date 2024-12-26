@@ -4,7 +4,7 @@ import MyPosts from "./Info/MyPosts";
 import MyComments from "./Info/MyComments";
 import MyLikes from "./Info/MyLikes";
 import MyFollow from "./Info/MyFollow";
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
 import { useSelector } from "react-redux";
 import { RootState } from "../reducer";
 import { useNavigate } from "react-router-dom";
@@ -249,13 +249,30 @@ const NewFollowersCount = styled.div`
   font-weight: bold;
 `;
 
+const blinkBackground = keyframes`
+  0% {
+    background-color: red;
+    opacity:1
+  }
+  50% {
+    background-color: darkred;
+    opacity:0.5
+  }
+  100% {
+    background-color: red;
+    opacity:1
+  }
+`;
+
 const NotificationMessage = styled.div`
+  position: absolute;
+  top: 0;
+  right: -20px;
   background-color: red;
   border-radius: 50%;
   padding: 2px;
-  margin-left: 10px;
-  float: right;
   text-align: center;
   color: #fff;
   font-weight: bold;
+  animation: ${blinkBackground} 1s infinite;
 `;

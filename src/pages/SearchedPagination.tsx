@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
-import { usePagination } from "./PaginationProvider";
-import { useNavigate } from "react-router-dom";
+import { usePagination } from "../hooks/PaginationProvider";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const SearchedPagination = ({
   totalSearchedPosts,
@@ -12,6 +12,7 @@ const SearchedPagination = ({
   searchText: string;
   searchOption: string;
 }) => {
+  const location = useLocation();
   const navigator = useNavigate();
   const { searchedCurrentPage, searchedPostsPerPage, setSearchedCurrentPage } =
     usePagination();
@@ -26,7 +27,7 @@ const SearchedPagination = ({
     params.set("searchOption", searchOption);
     params.set("page", number.toString());
     navigator({
-      pathname: "/search",
+      pathname: location.pathname,
       search: params.toString(),
     });
   };
@@ -34,7 +35,6 @@ const SearchedPagination = ({
   const onPageClick = (number: number) => {
     setSearchedCurrentPage(number);
     setParams(number);
-    window.scrollTo({ top: 0, behavior: "auto" });
   };
 
   return (

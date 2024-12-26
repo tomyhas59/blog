@@ -4,7 +4,7 @@ import useInput from "../hooks/useInput";
 import { LOG_IN_REQUEST } from "../reducer/user";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { usePagination } from "./PaginationProvider";
+import { usePagination } from "../hooks/PaginationProvider";
 import { RootState } from "../reducer";
 import Spinner from "../components/Spinner";
 

@@ -39,7 +39,7 @@ import { PostType } from "../types";
 import Post from "../components/Post";
 import Pagination from "./Pagination";
 import { io, Socket } from "socket.io-client";
-import { usePagination } from "./PaginationProvider";
+import { usePagination } from "../hooks/PaginationProvider";
 import SortButton from "../components/SortButton";
 
 const PostDetail = () => {
@@ -88,7 +88,14 @@ const PostDetail = () => {
       sortBy,
     });
     setCurrentPage(currentPage);
-  }, [dispatch, currentPage, setCurrentPage, postsPerPage, sortBy, post]);
+  }, [
+    dispatch,
+    currentPage,
+    setCurrentPage,
+    postsPerPage,
+    sortBy,
+    post.viewCount,
+  ]);
 
   useEffect(() => {
     const viewedPosts = JSON.parse(localStorage.getItem("viewedPosts") || "[]");
@@ -180,13 +187,6 @@ const PostDetail = () => {
 
   //좋아요 누른 유저-------------------------
   const [showLikers, setShowLikers] = useState(false);
-  const [likers, setLikers] = useState<string[]>([]);
-
-  useEffect(() => {
-    if (post) {
-      setLikers(post.Likers?.map((liker) => liker.nickname));
-    }
-  }, [post]);
 
   const onLike = useCallback(() => {
     if (!id) {
@@ -195,13 +195,6 @@ const PostDetail = () => {
     dispatch({
       type: LIKE_POST_REQUEST,
       data: post.id,
-    });
-
-    setLikers((prevLikers) => {
-      if (!nickname || prevLikers.includes(nickname)) {
-        return prevLikers;
-      }
-      return [...prevLikers, nickname];
     });
   }, [dispatch, id, post.id, nickname]);
 
@@ -213,7 +206,6 @@ const PostDetail = () => {
       type: UNLIKE_POST_REQUEST,
       data: post.id,
     });
-    setLikers((prevLikers) => prevLikers.filter((liker) => liker !== nickname));
   }, [dispatch, id, post.id, nickname]);
 
   const handleMouseEnter = () => {
@@ -362,7 +354,7 @@ const PostDetail = () => {
 
   useEffect(() => {
     if (post.userIdx === me?.id) {
-      socket.current?.emit("readComment", Number(postId));
+      socket.current?.emit("readComment", [Number(postId), me.id]);
     }
   }, [me?.id, post.userIdx, postId]);
 
@@ -378,7 +370,7 @@ const PostDetail = () => {
       ) : null}
       <FullPostWrapper>
         <PostWrapper>
-          <PostHeaderFlex>
+          <PostHeader>
             <PostNicknameAndDate>
               <NicknameButton onClick={toggleShowInfo}>
                 <img
@@ -425,15 +417,17 @@ const PostDetail = () => {
                   ♡
                 </Button>
               )}
-              {showLikers && likers?.length > 0 && (
+              {showLikers && post.Likers?.length > 0 && (
                 <LikersList>
-                  {likers.map((liker, index) => (
-                    <LikersListItem key={index}>{liker}</LikersListItem>
+                  {post.Likers.map((liker, index) => (
+                    <LikersListItem key={index}>
+                      {liker.nickname}
+                    </LikersListItem>
                   ))}
                 </LikersList>
               )}
             </LikeContainer>
-          </PostHeaderFlex>
+          </PostHeader>
           <InPostWrapper>
             {editPost ? (
               <>
@@ -530,12 +524,12 @@ const PostDetail = () => {
         </PostWrapper>
 
         <CommentContainer>
-          <PostHeaderFlex>
+          <CommentHeader>
             <CommentNum>
               댓글 {post.Comments?.length + totalReComments}개
             </CommentNum>
             <Button onClick={toggleAddCommentForm}>댓글 달기</Button>
-          </PostHeaderFlex>
+          </CommentHeader>
           {addComment[post.id] && (
             <div ref={commentFormRef}>
               <CommentForm post={post} setAddComment={setAddComment} />
@@ -572,26 +566,27 @@ const PostDetailContainer = styled.div`
 
 const FullPostWrapper = styled.div`
   max-width: 800px;
-  border: 1px solid silver;
-  border-radius: 5px;
+  border-top: 1px solid silver;
+  border-bottom: 1px solid silver;
   margin: 10px auto;
-  padding: 20px;
 `;
 
 const PostWrapper = styled.div`
   margin: 10px auto;
 `;
 
-const PostHeaderFlex = styled.div`
+const PostHeader = styled.div`
   display: flex;
   justify-content: space-between;
   position: relative;
   align-items: center;
+  border-bottom: 1px solid silver;
   @media (max-width: 480px) {
     display: grid;
+    column-gap: 100px;
     grid-template-areas:
       "a b"
-      "c c";
+      "c d";
   }
 `;
 
@@ -601,11 +596,7 @@ const PostTitle = styled.div`
   font-weight: bold;
   color: #333;
   padding: 8px 0;
-  transition: color 0.3s ease;
 
-  &:hover {
-    color: #007bff;
-  }
   @media (max-width: 480px) {
     grid-area: c;
   }
@@ -650,6 +641,9 @@ const Liked = styled.span`
   border-radius: 6px;
   text-align: center;
   color: red;
+  @media (max-width: 480px) {
+    margin: 0;
+  }
 `;
 
 const PostNicknameAndDate = styled.div`
@@ -703,12 +697,19 @@ const ViewCount = styled.span`
 
 const CommentNum = styled.span`
   font-size: 12px;
+  font-weight: bold;
   margin: 5px;
   color: "#000";
 `;
 
 const CommentContainer = styled.div`
   padding: 10px;
+`;
+
+const CommentHeader = styled.div`
+  display: flex;
+  justify-content: space-between;
+  position: relative;
 `;
 
 const ContentImg = styled.img`

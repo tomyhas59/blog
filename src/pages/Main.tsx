@@ -3,7 +3,7 @@ import Post from "../components/Post";
 import { useDispatch, useSelector } from "react-redux";
 import { GET_POSTS_REQUEST } from "../reducer/post";
 import Pagination from "./Pagination";
-import { usePagination } from "./PaginationProvider";
+import { usePagination } from "../hooks/PaginationProvider";
 import { RootState } from "../reducer";
 import { PostType } from "../types";
 import Spinner from "../components/Spinner";
@@ -41,7 +41,14 @@ const Main = () => {
       sortBy,
     });
     setCurrentPage(currentPage);
-  }, [currentPage, postsPerPage, dispatch, sortBy, setCurrentPage]);
+  }, [
+    currentPage,
+    postsPerPage,
+    dispatch,
+    sortBy,
+    setCurrentPage,
+    location.pathname,
+  ]);
 
   return (
     <MainContainer>

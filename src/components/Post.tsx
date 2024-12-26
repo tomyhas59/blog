@@ -9,7 +9,7 @@ import useOutsideClick from "../hooks/useOutsideClick";
 import { useSelector } from "react-redux";
 import { RootState } from "../reducer";
 import FollowButton from "./FollowButton";
-import { usePagination } from "../pages/PaginationProvider";
+import { usePagination } from "../hooks/PaginationProvider";
 import useSetParams from "../hooks/useSetParams";
 import moment from "moment";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";

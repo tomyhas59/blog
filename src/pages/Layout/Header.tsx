@@ -6,7 +6,7 @@ import { useCallback, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { LOG_OUT_REQUEST, REFRESH_TOKEN_REQUEST } from "../../reducer/user";
 import Search from "../../components/Search";
-import { usePagination } from "../PaginationProvider";
+import { usePagination } from "../../hooks/PaginationProvider";
 import { RootState } from "../../reducer";
 import io, { Socket } from "socket.io-client";
 import axios from "axios";
@@ -159,9 +159,13 @@ const Header = () => {
       fetchUserChatRooms();
     });
 
-    socket.current?.on("updateNotification", () => {
+    socket.current?.on("updateNotification", (user) => {
       setFollowNotification(false);
-      setCommentNotification(false);
+      const notRead =
+        user?.Notifications?.some(
+          (noti: { isRead: boolean }) => noti.isRead === false
+        ) || false;
+      setCommentNotification(notRead);
     });
 
     return () => {
@@ -313,20 +317,22 @@ const blinkBackground = keyframes`
 
 const Notification = styled.span`
   position: absolute;
-  top: -10px;
-  right: -10px;
-  font-size: 1rem;
+  top: -5px;
+  right: -5px;
+  font-size: 0.7rem;
   color: #fff;
   background-color: red;
   padding: 2px;
   border-radius: 50%;
   z-index: 999;
-
   animation: ${blinkBackground} 1s infinite;
 `;
 
 const ProfileImageContainer = styled.div`
   position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   width: 50px;
   height: 50px;
 `;
@@ -338,7 +344,6 @@ const ProfileImage = styled.img`
   border: 2px solid #cccccc;
   cursor: pointer;
   transition: transform 0.3s ease, border-color 0.3s ease;
-
   &:hover {
     transform: scale(1.1);
     border-color: gray;

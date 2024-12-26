@@ -3,7 +3,7 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 
 import AppLayout from "./pages/Layout/AppLayout";
 import GlobalStyle from "./style/global";
-import { PaginationProvider } from "./pages/PaginationProvider";
+import { PaginationProvider } from "./hooks/PaginationProvider";
 import Main from "./pages/Main";
 import Login from "./pages/Login";
 import Chat from "./pages/Chat";

@@ -15,7 +15,7 @@ import useOutsideClick from "../hooks/useOutsideClick";
 import { baseURL } from "../config";
 import { DEFAULT_PROFILE_IMAGE } from "../pages/Info/MyInfo";
 import FollowButton from "./FollowButton";
-import { usePagination } from "../pages/PaginationProvider";
+import { usePagination } from "../hooks/PaginationProvider";
 import useSetParams from "../hooks/useSetParams";
 
 const ReComment = ({

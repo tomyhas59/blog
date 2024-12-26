@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { usePagination } from "./PaginationProvider";
+import { usePagination } from "../hooks/PaginationProvider";
 import { useLocation, useNavigate } from "react-router-dom";
 
 const Pagination = ({
@@ -29,7 +29,6 @@ const Pagination = ({
   const onPageClick = (number: number) => {
     setCurrentPage(number);
     setParams(number);
-    window.scrollTo({ top: 0, behavior: "auto" });
   };
 
   return (
