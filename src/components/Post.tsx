@@ -42,7 +42,7 @@ const Post = ({
       });
       window.scrollTo({ top: 0, behavior: "auto" });
     },
-    [currentPage, navigator, sortBy, postId]
+    [currentPage, navigator, sortBy]
   );
 
   //---닉네임 클릭 정보 보기-------------------------------------

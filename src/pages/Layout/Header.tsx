@@ -45,7 +45,7 @@ const Header = () => {
   useEffect(() => {
     const accessToken = sessionStorage.getItem("accessToken");
     const refreshToken = sessionStorage.getItem("refreshToken");
-
+    console.log(accessToken);
     const getUserData = async () => {
       try {
         const response = await axios.get("/user/setUser", {

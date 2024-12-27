@@ -88,14 +88,7 @@ const PostDetail = () => {
       sortBy,
     });
     setCurrentPage(currentPage);
-  }, [
-    dispatch,
-    currentPage,
-    setCurrentPage,
-    postsPerPage,
-    sortBy,
-    post.viewCount,
-  ]);
+  }, [dispatch, currentPage, setCurrentPage, postsPerPage, sortBy, post]);
 
   useEffect(() => {
     const viewedPosts = JSON.parse(localStorage.getItem("viewedPosts") || "[]");
@@ -196,7 +189,7 @@ const PostDetail = () => {
       type: LIKE_POST_REQUEST,
       data: post.id,
     });
-  }, [dispatch, id, post.id, nickname]);
+  }, [dispatch, id, post.id]);
 
   const onUnLike = useCallback(() => {
     if (!id) {
@@ -206,7 +199,7 @@ const PostDetail = () => {
       type: UNLIKE_POST_REQUEST,
       data: post.id,
     });
-  }, [dispatch, id, post.id, nickname]);
+  }, [dispatch, id, post.id]);
 
   const handleMouseEnter = () => {
     setShowLikers(true);
@@ -354,7 +347,7 @@ const PostDetail = () => {
 
   useEffect(() => {
     if (post.userIdx === me?.id) {
-      socket.current?.emit("readComment", [Number(postId), me.id]);
+      socket.current?.emit("readComment", [Number(postId), me?.id]);
     }
   }, [me?.id, post.userIdx, postId]);
 
