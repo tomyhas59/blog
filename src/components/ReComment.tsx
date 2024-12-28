@@ -181,7 +181,7 @@ const ReComment = ({
 export default ReComment;
 
 const ReCommentWrapper = styled.div`
-  width: 85%;
+  width: 90%;
   padding: 5px;
   margin: 0 auto;
   border-top: 1px solid silver;

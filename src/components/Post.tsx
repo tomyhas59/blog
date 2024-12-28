@@ -141,22 +141,28 @@ const PostContainer = styled.div<{ isActive: boolean }>`
   margin: 0 auto;
   border: 1px solid #f4f4f4;
   background-color: ${(props) => (props.isActive ? "#e0f7fa" : "#fff")};
-
   cursor: pointer;
   &:hover {
     background-color: ${(props) => (props.isActive ? "#b2ebf2" : "#f4f4f4")};
   }
+  @media (max-width: 480px) {
+    flex-direction: column;
+  }
 `;
 
-const PostHeaderFlex = styled.div`
+export const PostHeaderFlex = styled.div`
   display: flex;
+  width: 80%;
   justify-content: space-between;
   align-items: center;
   position: relative;
   gap: 10px;
+  @media (max-width: 480px) {
+    width: 100%;
+  }
 `;
 
-const PostTitle = styled.div<{ isViewed: boolean }>`
+export const PostTitle = styled.div<{ isViewed: boolean }>`
   flex: 1;
   font-size: 15px;
   font-weight: bold;
@@ -171,7 +177,7 @@ const PostTitle = styled.div<{ isViewed: boolean }>`
   }
 `;
 
-const NicknameButton = styled.button`
+export const NicknameButton = styled.button`
   display: flex;
   justify-content: start;
   align-items: center;
@@ -199,7 +205,7 @@ const InfoMenu = styled.div`
   z-index: 999;
 `;
 
-const Button = styled.button`
+export const Button = styled.button`
   background-color: ${(props) => props.theme.mainColor};
   margin: 2px;
   font-size: 12px;
@@ -214,34 +220,38 @@ const Button = styled.button`
   }
 `;
 
-const Nickname = styled.span`
-  width: 50px;
+export const Nickname = styled.span`
+  color: ${(props) => props.theme.mainColor};
+  font-weight: bold;
   text-align: start;
+  width: 50px;
 `;
 
-const PostInfo = styled.div`
+export const PostInfo = styled.div`
   font-size: 12px;
   color: silver;
   display: flex;
   justify-content: space-between;
   align-items: center;
   text-align: center;
+  align-self: flex-end;
+  gap: 5px;
 `;
 
-const Date = styled.span`
+export const Date = styled.span`
   font-size: 12px;
   color: silver;
 `;
 
-const Liked = styled.span`
+export const Liked = styled.span`
   color: red;
   font-weight: bold;
-  min-width: 30px;
+  min-width: 20px;
 `;
 
-const ViewCount = styled.span`
+export const ViewCount = styled.span`
   color: silver;
-  min-width: 30px;
+  min-width: 20px;
   @media (max-width: 480px) {
     font-size: 12px;
   }

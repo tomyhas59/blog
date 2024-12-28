@@ -9,7 +9,16 @@ import useSetParams from "../hooks/useSetParams";
 import moment from "moment";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faImage, faImages } from "@fortawesome/free-solid-svg-icons";
-
+import {
+  PostHeaderFlex,
+  PostTitle,
+  NicknameButton,
+  Nickname,
+  PostInfo,
+  Date,
+  Liked,
+  ViewCount,
+} from "./Post";
 const SeachedPost = ({
   post,
   postId,
@@ -158,53 +167,13 @@ const PostContainer = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-`;
-
-const PostHeaderFlex = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  position: relative;
-  gap: 10px;
-`;
-
-const PostTitle = styled.div<{ isViewed: boolean }>`
-  flex: 1;
-  font-size: 15px;
-  font-weight: bold;
-  color: #333;
-  transition: color 0.3s ease;
-  display: flex;
-  align-items: center;
-  gap: 2px;
-  color: ${(props) => (props.isViewed ? "#b0b0b0" : "black")};
-  &:hover {
-    color: #007bff;
+  max-width: 800px;
+  padding: 5px 10px;
+  margin: 0 auto;
+  @media (max-width: 480px) {
+    flex-direction: column;
+    align-items: start;
   }
-`;
-
-const NicknameButton = styled.button`
-  display: flex;
-  justify-content: start;
-  align-items: center;
-  transition: transform 0.3s ease, color 0.3s ease;
-  img {
-    display: inline;
-    border-radius: 50%;
-    width: 30px;
-    height: 30px;
-  }
-  &:hover {
-    transform: translateY(-2px);
-    color: ${(props) => props.theme.charColor};
-  }
-`;
-
-const Nickname = styled.span`
-  color: ${(props) => props.theme.mainColor};
-  font-weight: bold;
-  text-align: start;
-  width: 50px;
 `;
 
 const Content = styled.div`
@@ -227,31 +196,4 @@ const ReComment = styled.div`
 const HighlightedText = styled.span`
   background-color: yellow;
   font-weight: bold;
-`;
-const PostInfo = styled.div`
-  font-size: 12px;
-  color: silver;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  text-align: center;
-`;
-
-const Date = styled.span`
-  font-size: 12px;
-  color: silver;
-`;
-
-const Liked = styled.span`
-  color: red;
-  font-weight: bold;
-  min-width: 30px;
-`;
-
-const ViewCount = styled.span`
-  color: silver;
-  min-width: 30px;
-  @media (max-width: 480px) {
-    font-size: 12px;
-  }
 `;
