@@ -74,7 +74,6 @@ const PostDetail = () => {
     addCommentLoading,
     likePostLoading,
     unLikePostLoading,
-    uploadImagesLoading,
   } = useSelector((state: RootState) => state.post);
 
   return (
@@ -84,8 +83,7 @@ const PostDetail = () => {
       searchedPostsLoading ||
       addCommentLoading ||
       likePostLoading ||
-      unLikePostLoading ||
-      uploadImagesLoading ? (
+      unLikePostLoading ? (
         <Spinner />
       ) : null}
       <CommonPost />

@@ -32,7 +32,7 @@ const PostForm: React.FC<PostFormProps> = ({
   setTogglePostForm,
 }) => {
   const dispatch = useDispatch();
-  const { imagePaths, addPostLoading } = useSelector(
+  const { imagePaths, addPostLoading, uploadImagesLoading } = useSelector(
     (state: RootState) => state.post
   );
   const { me } = useSelector((state: RootState) => state.user);
@@ -138,7 +138,7 @@ const PostForm: React.FC<PostFormProps> = ({
 
   return (
     <>
-      {addPostLoading ? <Spinner /> : null}
+      {addPostLoading || uploadImagesLoading ? <Spinner /> : null}
       {me ? (
         <FormWrapper ref={postFormRef}>
           <CloseForm onClick={() => setTogglePostForm(false)}>✖</CloseForm>
