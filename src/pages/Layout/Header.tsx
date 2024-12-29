@@ -33,8 +33,10 @@ const Header = () => {
   useEffect(() => {
     socket.current =
       process.env.NODE_ENV === "production"
-        ? io("https://patient-marina-tomyhas59-8c3582f9.koyeb.app")
-        : io("http://localhost:3075");
+        ? io("wss://patient-marina-tomyhas59-8c3582f9.koyeb.app", {
+            withCredentials: true,
+          })
+        : io("http://localhost:3075", { withCredentials: true });
 
     return () => {
       socket.current?.disconnect();
@@ -45,7 +47,7 @@ const Header = () => {
   useEffect(() => {
     const accessToken = sessionStorage.getItem("accessToken");
     const refreshToken = sessionStorage.getItem("refreshToken");
-    console.log(accessToken);
+
     const getUserData = async () => {
       try {
         const response = await axios.get("/user/setUser", {
