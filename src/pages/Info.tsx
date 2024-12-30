@@ -24,8 +24,10 @@ const Info = () => {
   useEffect(() => {
     socket.current =
       process.env.NODE_ENV === "production"
-        ? io("https://patient-marina-tomyhas59-8c3582f9.koyeb.app")
-        : io("http://localhost:3075");
+        ? io("https://patient-marina-tomyhas59-8c3582f9.koyeb.app", {
+            withCredentials: true,
+          })
+        : io("http://localhost:3075", { withCredentials: true });
 
     if (me) {
       const userInfo = { id: me.id, nickname: me.nickname };
