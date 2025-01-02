@@ -192,7 +192,7 @@ const PostForm: React.FC<PostFormProps> = ({
 export default PostForm;
 
 const FormWrapper = styled.div`
-  position: absolute;
+  position: fixed;
   top: 40%;
   left: 50%;
   transform: translate(-50%, -40%);
@@ -247,6 +247,8 @@ const TextArea = styled.textarea`
   max-width: 100%;
   min-width: 100%;
   min-height: 250px;
+  max-height: 250px;
+
   padding: 12px;
   font-size: 16px;
   border: 2px solid #ccc;
@@ -278,12 +280,11 @@ export const FileButton = styled.button`
 `;
 
 const ImageGrid = styled.div`
-  width: 100%;
   padding: 10px;
   max-height: 400px;
   overflow-y: auto;
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(6, 1fr);
   gap: 10px;
   grid-area: e;
   @media (max-width: 480px) {
@@ -295,8 +296,8 @@ const ImageGrid = styled.div`
 const ImageContainer = styled.div`
   position: relative;
   display: inline-block;
-  width: 200px;
-  height: 200px;
+  width: 100px;
+  height: 100px;
   @media (max-width: 480px) {
     width: 100px;
     height: 100px;
@@ -313,7 +314,8 @@ const RemoveButton = styled.button`
   position: absolute;
   top: 0;
   right: 0;
-  padding: 5px 10px;
+  font-size: 8px;
+  padding: 4px 7px;
   background-color: #e74c3c;
   color: white;
   border: none;
