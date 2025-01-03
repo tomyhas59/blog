@@ -45,6 +45,8 @@ const PostForm: React.FC<PostFormProps> = ({
   );
   const navigator = useNavigate();
 
+  console.log(uploadImagesLoading);
+
   const [title, setTitle] = useState("");
 
   const onChangeTitle = useCallback(
