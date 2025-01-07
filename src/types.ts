@@ -7,7 +7,7 @@ export type UserType = {
   Followings: { id: number; nickname: string }[];
   Followers: { id: number; nickname: string }[];
   Image: ImageType;
-  Notifications: Notification[];
+  Notifications: NotificationType[];
 };
 
 export type PostType = {
@@ -23,7 +23,7 @@ export type PostType = {
   Images: ImageType[];
   Comments: CommentType[];
   ReComments: ReCommentType[];
-  Notifications: Notification[];
+  Notifications: NotificationType[];
 };
 
 export type LikeType = {
@@ -61,7 +61,7 @@ export type ImageType = {
   UserId: number | null;
 };
 
-export type Data = {
+export type DataType = {
   filename: string;
   PostId: number;
   UserId: number;
@@ -71,7 +71,7 @@ export type Data = {
   content: string;
 };
 
-export type Message = {
+export type MessageType = {
   id: number;
   content: string;
   UserId: number;
@@ -81,8 +81,9 @@ export type Message = {
   isRead: boolean;
 };
 
-export type Notification = {
+export type NotificationType = {
   id: number;
+  type: string;
   UserId: number;
   PostId: number;
   message: string;

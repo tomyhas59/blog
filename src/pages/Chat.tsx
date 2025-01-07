@@ -3,7 +3,7 @@ import { useSelector } from "react-redux";
 import styled from "styled-components";
 import io, { Socket } from "socket.io-client";
 import { RootState } from "../reducer";
-import { Message } from "../types";
+import { MessageType } from "../types";
 import useOutsideClick from "../hooks/useOutsideClick";
 import axios from "axios";
 import OneOnOneChatRoom from "../components/chat/OneOnOneChatRoom";
@@ -15,7 +15,7 @@ export interface UserRoomList {
   User2: { id: number; nickname: string };
   User1Join: boolean;
   User2Join: boolean;
-  UnReadMessages: Message[];
+  UnReadMessages: MessageType[];
 }
 
 const Chat = () => {

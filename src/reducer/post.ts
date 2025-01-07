@@ -1,5 +1,5 @@
 import { produce } from "immer";
-import { Message, PostType } from "../types";
+import { MessageType, PostType } from "../types";
 
 //전역 상태 초기값
 const initialState = {
@@ -10,7 +10,7 @@ const initialState = {
   searchedPosts: [] as PostType[],
   searchOption: "",
   totalSearchedPosts: null,
-  chatMessages: [] as Message[],
+  chatMessages: [] as MessageType[],
 
   getPostsLoading: false,
   getPostsDone: false,

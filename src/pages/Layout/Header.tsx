@@ -13,6 +13,7 @@ import axios from "axios";
 import { UserRoomList } from "../Chat";
 import { baseURL } from "../../config";
 import { DEFAULT_PROFILE_IMAGE } from "../Info/MyInfo";
+import { NotificationType } from "../../types";
 
 const Header = () => {
   const dispatch = useDispatch();
@@ -94,7 +95,9 @@ const Header = () => {
 
   useEffect(() => {
     const notRead =
-      me?.Notifications?.some((noti) => noti.isRead === false) || false;
+      me?.Notifications?.some(
+        (Notification: NotificationType) => Notification.isRead === false
+      ) || false;
     setCommentNotification(notRead);
   }, [me?.Notifications]);
 
@@ -162,12 +165,21 @@ const Header = () => {
     });
 
     socket.current?.on("updateNotification", (user) => {
-      setFollowNotification(false);
-      const notRead =
-        user?.Notifications?.some(
-          (noti: { isRead: boolean }) => noti.isRead === false
+      const followerNotRead =
+        user?.Notifications?.map(
+          (notification: NotificationType) => notification.type === "FOLLOW"
+        ).some(
+          (notification: NotificationType) => notification.isRead === false
         ) || false;
-      setCommentNotification(notRead);
+
+      setFollowNotification(followerNotRead);
+      const commentNotRead =
+        user?.Notifications?.map(
+          (notification: NotificationType) => notification.type === "SYSTEM"
+        ).some(
+          (notification: NotificationType) => notification.isRead === false
+        ) || false;
+      setCommentNotification(commentNotRead);
     });
 
     return () => {
@@ -205,8 +217,9 @@ const Header = () => {
                   : `${DEFAULT_PROFILE_IMAGE}`
               }
             />
-            {followNotification ||
-              (commentNotification && <Notification>🔔</Notification>)}
+            {(followNotification || commentNotification) && (
+              <Notification>🔔</Notification>
+            )}
           </ProfileImageContainer>
           <ListItem onClick={onGoToChat}>
             <span>채팅</span>

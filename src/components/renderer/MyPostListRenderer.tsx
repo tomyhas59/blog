@@ -2,14 +2,14 @@ import React from "react";
 import styled from "styled-components";
 import ContentRenderer from "./ContentRenderer";
 import moment from "moment";
-import { Notification } from "../../types";
+import { NotificationType } from "../../types";
 
 interface ListRendererProps {
   items: {
     id: number;
     title: string;
     createdAt: string;
-    Notifications: Notification[];
+    Notifications: NotificationType[];
   }[];
   onItemClick: (title: string, id: number) => void;
 }

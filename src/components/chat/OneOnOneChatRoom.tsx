@@ -9,7 +9,7 @@ import { useSelector } from "react-redux";
 import io, { Socket } from "socket.io-client";
 import moment from "moment";
 import { RootState } from "../../reducer";
-import { Message, UserType } from "../../types";
+import { MessageType, UserType } from "../../types";
 import { useDispatch } from "react-redux";
 import { READ_CHAT_REQUEST } from "../../reducer/post";
 import styled from "styled-components";
@@ -30,7 +30,7 @@ const OneOnOneChatRoom = ({
   setActiveRoom,
   setUserRoomList,
 }: OneOnOneChatRoomProps) => {
-  const [messages, setMessages] = useState<Message[]>([]);
+  const [messages, setMessages] = useState<MessageType[]>([]);
   const { chatMessages } = useSelector((state: RootState) => state.post);
   const dispatch = useDispatch();
   const currentRoomId = room?.id;
