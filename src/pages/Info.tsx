@@ -11,7 +11,6 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { io, Socket } from "socket.io-client";
 import { useDispatch } from "react-redux";
-import { NotificationType } from "../types";
 
 const Info = () => {
   const [activeSection, setActiveSection] = useState("myInfo");
@@ -101,12 +100,9 @@ const Info = () => {
     socket.current?.emit("followNotiRead", me?.id);
   };
 
-  console.log("--------", me);
-  /*   const commentNotRead =
-    me?.Notifications?.map(
-      (notification: NotificationType) => notification.type === "SYSTEM"
-    ).some((notification: NotificationType) => notification.isRead === false) ||
-    false; */
+  const notRead = me?.Notifications.filter(
+    (noti) => noti.type === "SYSTEM"
+  ).some((noti) => noti.isRead === false);
 
   return (
     <Container>
@@ -126,7 +122,7 @@ const Info = () => {
               active={activeSection === "myPosts"}
             >
               내가 쓴 글
-              {/*    {commentNotRead && <NotificationMessage>New</NotificationMessage>} */}
+              {notRead && <NotificationMessage>New</NotificationMessage>}
             </NavLink>
           </NavItem>
           <NavItem>

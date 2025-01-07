@@ -13,7 +13,7 @@ import axios from "axios";
 import { UserRoomList } from "../Chat";
 import { baseURL } from "../../config";
 import { DEFAULT_PROFILE_IMAGE } from "../Info/MyInfo";
-import { NotificationType } from "../../types";
+import { NotificationType, UserType } from "../../types";
 
 const Header = () => {
   const dispatch = useDispatch();
@@ -164,21 +164,18 @@ const Header = () => {
       fetchUserChatRooms();
     });
 
-    socket.current?.on("updateNotification", (user) => {
-      const followerNotRead =
-        user?.Notifications?.map(
-          (notification: NotificationType) => notification.type === "FOLLOW"
-        ).some(
-          (notification: NotificationType) => notification.isRead === false
-        ) || false;
+    const notRead = (user: UserType, type: string) => {
+      return (
+        user?.Notifications?.filter(
+          (notification) => (notification.type = type)
+        ).some((notification) => notification.isRead === false) || false
+      );
+    };
 
+    socket.current?.on("updateNotification", (user) => {
+      const followerNotRead = notRead(user, "FOLLOW");
       setFollowNotification(followerNotRead);
-      const commentNotRead =
-        user?.Notifications?.map(
-          (notification: NotificationType) => notification.type === "SYSTEM"
-        ).some(
-          (notification: NotificationType) => notification.isRead === false
-        ) || false;
+      const commentNotRead = notRead(user, "SYSTEM");
       setCommentNotification(commentNotRead);
     });
 
