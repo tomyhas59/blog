@@ -88,7 +88,7 @@ const CommonPost = () => {
   const id = me?.id;
   const nickname = useSelector((state: RootState) => state.user.me?.nickname);
 
-  const liked = post.Likers?.find((v) => v.id === id);
+  const liked = post.Likers?.find((v) => v.id === me?.id);
   const imageInput = useRef<HTMLInputElement>(null);
   const editPostRef = useRef<HTMLTextAreaElement>(null);
 
@@ -536,6 +536,16 @@ const TextArea = styled.textarea`
   margin-bottom: 10px;
 `;
 
+const LikeContainer = styled.div`
+  position: relative;
+  @media (max-width: 480px) {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 12px;
+  }
+`;
+
 const LikeButton = styled.button`
   margin: 2px;
   font-size: 12px;
@@ -546,16 +556,6 @@ const LikeButton = styled.button`
   transition: transform 0.3s ease, color 0.3s ease;
   &:hover {
     transform: translateY(-2px);
-  }
-`;
-
-const LikeContainer = styled.div`
-  position: relative;
-  @media (max-width: 480px) {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 12px;
   }
 `;
 const LikersList = styled.ul`
