@@ -12,10 +12,8 @@ import CommentForm from "../components/CommentForm";
 import Comment from "../components/Comment";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  LIKE_POST_REQUEST,
   REMOVE_POST_REQUEST,
   UPDATE_POST_REQUEST,
-  UNLIKE_POST_REQUEST,
   DELETE_IMAGE_REQUEST,
   UPLOAD_IMAGES_REQUEST,
   REMOVE_IMAGE_REQUEST,
@@ -35,14 +33,8 @@ import { FileButton } from "../components/PostForm";
 import { useNavigate } from "react-router-dom";
 import { io, Socket } from "socket.io-client";
 import { usePagination } from "../hooks/PaginationProvider";
-import {
-  Date,
-  PostInfo,
-  Liked,
-  ViewCount,
-  PostHeaderFlex,
-  Button,
-} from "./Post";
+import { Date, PostInfo, ViewCount, PostHeaderFlex, Button } from "./Post";
+import Like from "./Like";
 
 const CommonPost = () => {
   const socket = useRef<Socket | null>(null);
@@ -88,7 +80,6 @@ const CommonPost = () => {
   const id = me?.id;
   const nickname = useSelector((state: RootState) => state.user.me?.nickname);
 
-  const liked = post.Likers?.find((v) => v.id === me?.id);
   const imageInput = useRef<HTMLInputElement>(null);
   const editPostRef = useRef<HTMLTextAreaElement>(null);
 
@@ -133,37 +124,6 @@ const CommonPost = () => {
       return !prev;
     });
   }, [dispatch, post.content, setContent]);
-
-  //좋아요 누른 유저-------------------------
-  const [showLikers, setShowLikers] = useState(false);
-
-  const onLike = useCallback(() => {
-    if (!id) {
-      return alert("로그인이 필요합니다");
-    }
-    dispatch({
-      type: LIKE_POST_REQUEST,
-      data: post.id,
-    });
-  }, [dispatch, id, post.id]);
-
-  const onUnLike = useCallback(() => {
-    if (!id) {
-      return alert("로그인이 필요합니다");
-    }
-    dispatch({
-      type: UNLIKE_POST_REQUEST,
-      data: post.id,
-    });
-  }, [dispatch, id, post.id]);
-
-  const handleMouseEnter = () => {
-    setShowLikers(true);
-  };
-
-  const handleMouseLeave = () => {
-    setShowLikers(false);
-  };
 
   //댓글 창, 기존 폼 닫고 새로운 폼 열고 닫기--------------
   const [addComment, setAddComment] = useState<Record<number, boolean>>({});
@@ -338,35 +298,7 @@ const CommonPost = () => {
           </PostHeaderFlex>
           <PostInfo>
             <Date>{moment(post.createdAt).format("l")}</Date>
-            <LikeContainer>
-              <Liked>{post.Likers?.length}</Liked>
-              {liked ? (
-                <LikeButton
-                  onClick={onUnLike}
-                  onMouseEnter={handleMouseEnter}
-                  onMouseLeave={handleMouseLeave}
-                >
-                  ♥
-                </LikeButton>
-              ) : (
-                <LikeButton
-                  onClick={onLike}
-                  onMouseEnter={handleMouseEnter}
-                  onMouseLeave={handleMouseLeave}
-                >
-                  ♡
-                </LikeButton>
-              )}
-              {showLikers && post.Likers?.length > 0 && (
-                <LikersList>
-                  {post.Likers.map((liker, index) => (
-                    <LikersListItem key={index}>
-                      {liker.nickname}
-                    </LikersListItem>
-                  ))}
-                </LikersList>
-              )}
-            </LikeContainer>
+            <Like itemType="post" item={post} />
             <ViewCount>조회 수 {post.viewCount}</ViewCount>
           </PostInfo>
         </PostHeader>
@@ -534,43 +466,6 @@ const TextArea = styled.textarea`
   border: 2px solid #ccc;
   border-radius: 8px;
   margin-bottom: 10px;
-`;
-
-const LikeContainer = styled.div`
-  position: relative;
-  @media (max-width: 480px) {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 12px;
-  }
-`;
-
-const LikeButton = styled.button`
-  margin: 2px;
-  font-size: 12px;
-  color: red;
-  padding: 6px;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: transform 0.3s ease, color 0.3s ease;
-  &:hover {
-    transform: translateY(-2px);
-  }
-`;
-const LikersList = styled.ul`
-  position: absolute;
-  top: 2rem;
-  right: 0;
-  list-style-type: none;
-  padding: 0.5rem;
-  background-color: #ffffff;
-  border: 1px solid #ccc;
-  z-index: 99;
-`;
-
-const LikersListItem = styled.li`
-  color: ${(props) => props.theme.mainColor};
 `;
 const ContentWrapper = styled.div`
   width: 97%;

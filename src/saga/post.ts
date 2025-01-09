@@ -22,9 +22,15 @@ import {
   GET_POST_FAILURE,
   GET_POST_REQUEST,
   GET_POST_SUCCESS,
+  LIKE_COMMENT_FAILURE,
+  LIKE_COMMENT_REQUEST,
+  LIKE_COMMENT_SUCCESS,
   LIKE_POST_FAILURE,
   LIKE_POST_REQUEST,
   LIKE_POST_SUCCESS,
+  LIKE_RECOMMENT_FAILURE,
+  LIKE_RECOMMENT_REQUEST,
+  LIKE_RECOMMENT_SUCCESS,
   READ_CHAT_FAILURE,
   READ_CHAT_REQUEST,
   READ_CHAT_SUCCESS,
@@ -43,9 +49,15 @@ import {
   SEARCH_POSTS_FAILURE,
   SEARCH_POSTS_REQUEST,
   SEARCH_POSTS_SUCCESS,
+  UNLIKE_COMMENT_FAILURE,
+  UNLIKE_COMMENT_REQUEST,
+  UNLIKE_COMMENT_SUCCESS,
   UNLIKE_POST_FAILURE,
   UNLIKE_POST_REQUEST,
   UNLIKE_POST_SUCCESS,
+  UNLIKE_RECOMMENT_FAILURE,
+  UNLIKE_RECOMMENT_REQUEST,
+  UNLIKE_RECOMMENT_SUCCESS,
   UPDATE_COMMENT_FAILURE,
   UPDATE_COMMENT_REQUEST,
   UPDATE_COMMENT_SUCCESS,
@@ -529,6 +541,116 @@ function* watchUnLikePost() {
   yield takeLatest<any>(UNLIKE_POST_REQUEST, unLikePost);
 }
 
+//-------------------------------------------------------------
+
+function likeCommentAPI(data: any) {
+  return axios.patch(`/post/${data}/commentLike`); //patch 일부분 수정
+}
+
+function* likeComment(action: { data: any }): SagaIterator {
+  try {
+    const result = yield call(likeCommentAPI, action.data);
+    console.log("------------", result.data);
+    yield put({
+      //put은 dipatch
+      type: LIKE_COMMENT_SUCCESS,
+      data: result.data,
+    });
+  } catch (err: any) {
+    console.error(err);
+    yield put({
+      type: LIKE_COMMENT_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+
+function* watchLikeComment() {
+  yield takeLatest<any>(LIKE_COMMENT_REQUEST, likeComment);
+}
+//-------------------------------------------------------------
+
+function unLikeCommentAPI(data: any) {
+  return axios.delete(`/post/${data}/commentLike`);
+}
+
+function* unLikeComment(action: { data: any }): SagaIterator {
+  try {
+    const result = yield call(unLikeCommentAPI, action.data);
+    yield put({
+      //put은 dipatch
+      type: UNLIKE_COMMENT_SUCCESS,
+      data: result.data,
+    });
+  } catch (err: any) {
+    console.error(err);
+    yield put({
+      type: UNLIKE_COMMENT_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+
+function* watchUnLikeComment() {
+  yield takeLatest<any>(UNLIKE_COMMENT_REQUEST, unLikeComment);
+}
+//-------------------------------------------------------------
+
+function likeReCommentAPI(data: any) {
+  return axios.patch(
+    `/post/${data.commentId}/${data.reCommentId}/reCommentLike`
+  ); //patch 일부분 수정
+}
+
+function* likeReComment(action: { data: any }): SagaIterator {
+  try {
+    const result = yield call(likeReCommentAPI, action.data);
+    yield put({
+      //put은 dipatch
+      type: LIKE_RECOMMENT_SUCCESS,
+      data: result.data,
+    });
+  } catch (err: any) {
+    console.error(err);
+    yield put({
+      type: LIKE_RECOMMENT_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+
+function* watchLikeReComment() {
+  yield takeLatest<any>(LIKE_RECOMMENT_REQUEST, likeReComment);
+}
+//-------------------------------------------------------------
+
+function unLikeReCommentAPI(data: any) {
+  return axios.delete(
+    `/post/${data.commentId}/${data.reCommentId}/reCommentLike`
+  );
+}
+
+function* unLikeReComment(action: { data: any }): SagaIterator {
+  try {
+    const result = yield call(unLikeReCommentAPI, action.data);
+    yield put({
+      //put은 dipatch
+      type: UNLIKE_RECOMMENT_SUCCESS,
+      data: result.data,
+    });
+  } catch (err: any) {
+    console.error(err);
+    yield put({
+      type: UNLIKE_RECOMMENT_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+
+function* watchUnLikeReComment() {
+  yield takeLatest<any>(UNLIKE_RECOMMENT_REQUEST, unLikeReComment);
+}
+
 //-----------------------------------------------------
 
 function readChatApi(roomId: number) {
@@ -594,6 +716,10 @@ export default function* postSaga() {
     fork(watchUpdateReComment),
     fork(watchLikePost),
     fork(watchUnLikePost),
+    fork(watchLikeComment),
+    fork(watchUnLikeComment),
+    fork(watchLikeReComment),
+    fork(watchUnLikeReComment),
     fork(watchUploadImages),
     fork(watchRemoveImages),
     fork(watchSearchPosts),

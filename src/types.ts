@@ -40,6 +40,7 @@ export type CommentType = {
   PostId: number;
   ReComments: ReCommentType[];
   User: UserType;
+  Likers: LikeType[];
 };
 
 export type ReCommentType = {
@@ -49,6 +50,7 @@ export type ReCommentType = {
   updatedAt: string;
   UserId: number;
   PostId: number;
+  Likers: LikeType[];
   User: UserType;
 };
 

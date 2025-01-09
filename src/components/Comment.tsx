@@ -22,6 +22,7 @@ import { DEFAULT_PROFILE_IMAGE } from "../pages/Info/MyInfo";
 import FollowButton from "./FollowButton";
 import { usePagination } from "../hooks/PaginationProvider";
 import useSetParams from "../hooks/useSetParams";
+import Like from "./Like";
 const Comment = ({ post }: { post: PostType }) => {
   const dispatch = useDispatch();
   const id = useSelector((state: RootState) => state.user.me?.id);
@@ -204,6 +205,7 @@ const Comment = ({ post }: { post: PostType }) => {
                   </PopupMenu>
                 ) : null}
                 <Date>{moment(comment.createdAt).format("l")}</Date>
+                <Like itemType="comment" item={comment} />
               </AuthorWrapper>
               <ContentWrapper>
                 {isEditing && currentCommentId === comment.id ? (
@@ -281,6 +283,8 @@ const FullCommentWrapper = styled.div`
 
 const AuthorWrapper = styled.div`
   position: relative;
+  display: flex;
+  align-items: center;
   margin-top: 15px;
 `;
 

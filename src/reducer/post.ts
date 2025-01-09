@@ -80,6 +80,22 @@ const initialState = {
   unLikePostDone: false,
   unLikePostError: null,
 
+  likeCommentLoading: false,
+  likeCommentDone: false,
+  likeCommentError: null,
+
+  unLikeCommentLoading: false,
+  unLikeCommentDone: false,
+  unLikeCommentError: null,
+
+  likeReCommentLoading: false,
+  likeReCommentDone: false,
+  likeReCommentError: null,
+
+  unLikeReCommentLoading: false,
+  unLikeReCommentDone: false,
+  unLikeReCommentError: null,
+
   readChatLoading: false,
   readChatDone: false,
   readChatError: null,
@@ -149,6 +165,22 @@ export const LIKE_POST_FAILURE = "LIKE_POST_FAILURE";
 export const UNLIKE_POST_REQUEST = "UNLIKE_POST_REQUEST";
 export const UNLIKE_POST_SUCCESS = "UNLIKE_POST_SUCCESS";
 export const UNLIKE_POST_FAILURE = "UNLIKE_POST_FAILURE";
+
+export const LIKE_COMMENT_REQUEST = "LIKE_COMMENT_REQUEST";
+export const LIKE_COMMENT_SUCCESS = "LIKE_COMMENT_SUCCESS";
+export const LIKE_COMMENT_FAILURE = "LIKE_COMMENT_FAILURE";
+
+export const UNLIKE_COMMENT_REQUEST = "UNLIKE_COMMENT_REQUEST";
+export const UNLIKE_COMMENT_SUCCESS = "UNLIKE_COMMENT_SUCCESS";
+export const UNLIKE_COMMENT_FAILURE = "UNLIKE_COMMENT_FAILURE";
+
+export const LIKE_RECOMMENT_REQUEST = "LIKE_RECOMMENT_REQUEST";
+export const LIKE_RECOMMENT_SUCCESS = "LIKE_RECOMMENT_SUCCESS";
+export const LIKE_RECOMMENT_FAILURE = "LIKE_RECOMMENT_FAILURE";
+
+export const UNLIKE_RECOMMENT_REQUEST = "UNLIKE_RECOMMENT_REQUEST";
+export const UNLIKE_RECOMMENT_SUCCESS = "UNLIKE_RECOMMENT_SUCCESS";
+export const UNLIKE_RECOMMENT_FAILURE = "UNLIKE_RECOMMENT_FAILURE";
 
 export const SEARCH_POSTS_REQUEST = "SEARCH_POSTS_REQUEST";
 export const SEARCH_POSTS_SUCCESS = "SEARCH_POSTS_SUCCESS";
@@ -363,7 +395,7 @@ const post = (state = initialState, action: any) => {
         draft.removeCommentLoading = false;
         draft.removeCommentDone = true;
         draft.post.Comments = draft.post.Comments.filter(
-          (post: { id: any }) => post.id !== action.data.CommentId
+          (comment: { id: any }) => comment.id !== action.data.CommentId
         );
         break;
       }
@@ -382,7 +414,7 @@ const post = (state = initialState, action: any) => {
         draft.updateCommentLoading = false;
         draft.updateCommentDone = true;
         const commentIndex = draft.post.Comments.findIndex(
-          (post: { id: any }) => post.id === action.data.CommentId
+          (comment: { id: any }) => comment.id === action.data.CommentId
         );
         draft.post.Comments[commentIndex].content = action.data.content;
         break;
@@ -426,7 +458,7 @@ const post = (state = initialState, action: any) => {
         draft.removeReCommentDone = true;
 
         const commentIndex = draft.post.Comments.findIndex(
-          (post: { id: any }) => post.id === action.data.CommentId
+          (comment: { id: any }) => comment.id === action.data.CommentId
         );
         draft.post.Comments[commentIndex].ReComments = draft.post.Comments[
           commentIndex
@@ -452,12 +484,12 @@ const post = (state = initialState, action: any) => {
         draft.updateReCommentDone = true;
 
         const commentIndex = draft.post.Comments.findIndex(
-          (post: { id: any }) => post.id === action.data.CommentId
+          (comment: { id: any }) => comment.id === action.data.CommentId
         );
         const reCommentIndex = draft.post.Comments[
           commentIndex
         ].ReComments.findIndex(
-          (post: { id: any }) => post.id === action.data.ReCommentId
+          (reComment: { id: any }) => reComment.id === action.data.ReCommentId
         );
         draft.post.Comments[commentIndex].ReComments[reCommentIndex].content =
           action.data.content;
@@ -499,7 +531,7 @@ const post = (state = initialState, action: any) => {
         break;
       case UNLIKE_POST_SUCCESS: {
         draft.post.Likers = draft.post.Likers.filter(
-          (post: { id: any }) => post.id !== action.data.UserId
+          (liker: { id: any }) => liker.id !== action.data.UserId
         );
         draft.unLikePostLoading = false;
         draft.unLikePostDone = true;
@@ -508,6 +540,149 @@ const post = (state = initialState, action: any) => {
       case UNLIKE_POST_FAILURE:
         draft.unLikePostLoading = false;
         draft.unLikePostError = action.error;
+        break;
+      //-------------------------------------------------------------------
+
+      case LIKE_COMMENT_REQUEST:
+        draft.likeCommentLoading = true;
+        draft.likeCommentDone = false;
+        draft.likeCommentError = null;
+        break;
+      case LIKE_COMMENT_SUCCESS: {
+        const commentIndex = draft.post.Comments.findIndex(
+          (comment) => comment.id === action.data.CommentId
+        );
+
+        if (commentIndex === -1) {
+          return;
+        }
+
+        if (!draft.post.Comments[commentIndex].Likers) {
+          draft.post.Comments[commentIndex].Likers = [];
+        }
+
+        draft.post.Comments[commentIndex].Likers.push({
+          id: action.data.UserId,
+          nickname: action.data.nickname,
+        });
+
+        draft.likeCommentLoading = false;
+        draft.likeCommentDone = true;
+        break;
+      }
+      case LIKE_COMMENT_FAILURE:
+        draft.likeCommentLoading = false;
+        draft.likeCommentError = action.error;
+        break;
+      //-------------------------------------------------------------------
+
+      case UNLIKE_COMMENT_REQUEST:
+        draft.unLikeCommentLoading = true;
+        draft.unLikeCommentDone = false;
+        draft.unLikeCommentError = null;
+        break;
+      case UNLIKE_COMMENT_SUCCESS: {
+        const commentIndex = draft.post.Comments.findIndex(
+          (comment) => comment.id === action.data.CommentId
+        );
+        if (commentIndex === -1) {
+          return;
+        }
+
+        draft.post.Comments[commentIndex].Likers = draft.post.Comments[
+          commentIndex
+        ].Likers.filter(
+          (liker: { id: any }) => liker.id !== action.data.UserId
+        );
+
+        draft.unLikeCommentLoading = false;
+        draft.unLikeCommentDone = true;
+        break;
+      }
+      case UNLIKE_COMMENT_FAILURE:
+        draft.unLikeCommentLoading = false;
+        draft.unLikeCommentError = action.error;
+        break;
+
+      //-------------------------------------------------------------------
+
+      case LIKE_RECOMMENT_REQUEST:
+        draft.likeReCommentLoading = true;
+        draft.likeReCommentDone = false;
+        draft.likeReCommentError = null;
+        break;
+      case LIKE_RECOMMENT_SUCCESS: {
+        const commentIndex = draft.post.Comments.findIndex(
+          (comment: { id: any }) => comment.id === action.data.CommentId
+        );
+
+        if (commentIndex === -1) return;
+
+        const reCommentIndex = draft.post.Comments[
+          commentIndex
+        ].ReComments.findIndex(
+          (reComment: { id: any }) => reComment.id === action.data.ReCommentId
+        );
+
+        if (reCommentIndex === -1) return;
+
+        if (
+          !draft.post.Comments[commentIndex].ReComments[reCommentIndex].Likers
+        ) {
+          draft.post.Comments[commentIndex].ReComments[reCommentIndex].Likers =
+            [];
+        }
+
+        draft.post.Comments[commentIndex].ReComments[
+          reCommentIndex
+        ].Likers.push({
+          id: action.data.UserId,
+          nickname: action.data.nickname,
+        });
+
+        draft.likeReCommentLoading = false;
+        draft.likeReCommentDone = true;
+        break;
+      }
+      case LIKE_RECOMMENT_FAILURE:
+        draft.likeReCommentLoading = false;
+        draft.likeReCommentError = action.error;
+        break;
+      //-------------------------------------------------------------------
+
+      case UNLIKE_RECOMMENT_REQUEST:
+        draft.unLikeReCommentLoading = true;
+        draft.unLikeReCommentDone = false;
+        draft.unLikeReCommentError = null;
+        break;
+      case UNLIKE_RECOMMENT_SUCCESS: {
+        const commentIndex = draft.post.Comments.findIndex(
+          (comment: { id: any }) => comment.id === action.data.CommentId
+        );
+
+        if (commentIndex === -1) return;
+
+        const reCommentIndex = draft.post.Comments[
+          commentIndex
+        ].ReComments.findIndex(
+          (reComment: { id: any }) => reComment.id === action.data.ReCommentId
+        );
+
+        if (reCommentIndex === -1) return;
+        draft.post.Comments[commentIndex].ReComments[reCommentIndex].Likers =
+          draft.post.Comments[commentIndex].ReComments[
+            reCommentIndex
+          ].Likers.filter(
+            (liker: { id: any }) => liker.id !== action.data.UserId
+          );
+
+        draft.unLikeReCommentLoading = false;
+        draft.unLikeReCommentDone = true;
+        break;
+      }
+      case UNLIKE_RECOMMENT_FAILURE:
+        draft.unLikeReCommentLoading = false;
+        draft.unLikeReCommentError = action.error;
         break;
 
       //-------------------------------------------------------

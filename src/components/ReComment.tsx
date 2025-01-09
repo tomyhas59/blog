@@ -17,6 +17,7 @@ import { DEFAULT_PROFILE_IMAGE } from "../pages/Info/MyInfo";
 import FollowButton from "./FollowButton";
 import { usePagination } from "../hooks/PaginationProvider";
 import useSetParams from "../hooks/useSetParams";
+import Like from "./Like";
 
 const ReComment = ({
   post,
@@ -142,6 +143,11 @@ const ReComment = ({
                 </PopupMenu>
               ) : null}
               <Date>{moment(reComment.createdAt).format("l")}</Date>
+              <Like
+                itemType="reComment"
+                item={reComment}
+                commentId={comment.id}
+              />
             </AuthorWrapper>
             <ContentWrapper>
               <Content id={`reComment-${reComment.id}`}>
@@ -190,6 +196,8 @@ const ReCommentWrapper = styled.div`
 
 const AuthorWrapper = styled.div`
   position: relative;
+  display: flex;
+  align-items: center;
 `;
 
 const Author = styled.button`
