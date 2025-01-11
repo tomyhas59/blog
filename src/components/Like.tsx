@@ -123,12 +123,6 @@ export default Like;
 const LikeContainer = styled.div`
   position: relative;
   margin-left: auto;
-  @media (max-width: 480px) {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 12px;
-  }
 `;
 
 const LikeButton = styled.button`

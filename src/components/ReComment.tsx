@@ -243,9 +243,6 @@ const Toggle = styled.button`
 const Date = styled.span`
   color: gray;
   font-size: 10px;
-  @media (max-width: 480px) {
-    width: 20px;
-  }
 `;
 
 const ReCommentOptions = styled.div`
