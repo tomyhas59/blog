@@ -334,7 +334,6 @@ const RemoveButton = styled.button`
 `;
 
 const SubmitButton = styled.button`
-  width: 100px;
   padding: 10px;
   background-color: ${(props) => props.theme.mainColor};
   color: white;
