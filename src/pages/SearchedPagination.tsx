@@ -40,6 +40,13 @@ const SearchedPagination = ({
   return (
     <PaginationContainer>
       <ul>
+        <li
+          onClick={() =>
+            searchedCurrentPage > 1 && onPageClick(searchedCurrentPage - 1)
+          }
+        >
+          ◀
+        </li>
         {[...Array(searchedTotalPages)].map((_, index) => (
           <PageItem key={index} isActive={index + 1 === searchedCurrentPage}>
             <PageButton onClick={() => onPageClick(index + 1)}>
@@ -47,6 +54,14 @@ const SearchedPagination = ({
             </PageButton>
           </PageItem>
         ))}
+        <li
+          onClick={() =>
+            searchedCurrentPage < searchedTotalPages &&
+            onPageClick(searchedCurrentPage + 1)
+          }
+        >
+          ▶
+        </li>
       </ul>
     </PaginationContainer>
   );
@@ -62,7 +77,15 @@ const PaginationContainer = styled.nav`
   ul {
     list-style: none;
     display: flex;
+    justify-content: center;
+    align-items: center;
     gap: 5px;
+  }
+  li {
+    cursor: pointer;
+    &:hover {
+      color: ${(props) => props.theme.mainColor};
+    }
   }
 `;
 
