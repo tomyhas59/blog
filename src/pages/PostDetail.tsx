@@ -19,7 +19,7 @@ const PostDetail = () => {
   const me = useSelector((state: RootState) => state.user.me);
   const dispatch = useDispatch();
   const location = useLocation();
-  const { currentPage, postsPerPage, sortBy, setSortBy, setCurrentPage } =
+  const { currentPage, divisor, sortBy, setSortBy, setCurrentPage } =
     usePagination();
 
   const { postId } = useParams();
@@ -41,11 +41,11 @@ const PostDetail = () => {
     dispatch({
       type: GET_POSTS_REQUEST,
       page: currentPage,
-      limit: postsPerPage,
+      limit: divisor,
       sortBy,
     });
     setCurrentPage(currentPage);
-  }, [dispatch, currentPage, setCurrentPage, postsPerPage, sortBy, post]);
+  }, [dispatch, currentPage, setCurrentPage, divisor, sortBy, post]);
 
   useEffect(() => {
     const viewedPosts = JSON.parse(localStorage.getItem("viewedPosts") || "[]");

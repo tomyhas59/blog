@@ -1,44 +1,29 @@
 import React from "react";
 import styled from "styled-components";
 import { usePagination } from "../hooks/PaginationProvider";
-import { useLocation, useNavigate } from "react-router-dom";
 
-const Pagination = ({
-  totalPosts,
-  postId,
-}: {
-  totalPosts: number;
-  postId?: number;
-}) => {
-  const location = useLocation();
-  const navigator = useNavigate();
-  const { currentPage, divisor, setCurrentPage, sortBy } = usePagination();
+const CommnetPagination = ({ totalComments }: { totalComments: number }) => {
+  const { currentCommentsPage, divisor, setCurrentCommentsPage } =
+    usePagination();
 
-  const totalPages = Math.ceil(totalPosts / divisor);
-
-  const setParams = (number: number) => {
-    const params = new URLSearchParams();
-    params.set("page", number.toString());
-    params.set("sortBy", sortBy);
-    navigator({
-      pathname: postId ? `/post/${postId}` : `${location.pathname}`,
-      search: params.toString(),
-    });
-  };
+  const totalPages = Math.ceil(totalComments / divisor);
 
   const onPageClick = (number: number) => {
-    setCurrentPage(number);
-    setParams(number);
+    setCurrentCommentsPage(number);
   };
 
   return (
     <PaginationContainer>
       <ul>
-        <li onClick={() => currentPage > 1 && onPageClick(currentPage - 1)}>
+        <li
+          onClick={() =>
+            currentCommentsPage > 1 && onPageClick(currentCommentsPage - 1)
+          }
+        >
           ◀
         </li>
         {[...Array(totalPages)].map((_, index) => (
-          <PageItem key={index} isActive={index + 1 === currentPage}>
+          <PageItem key={index} isActive={index + 1 === currentCommentsPage}>
             <PageButton onClick={() => onPageClick(index + 1)}>
               {index + 1}
             </PageButton>
@@ -46,7 +31,8 @@ const Pagination = ({
         ))}
         <li
           onClick={() =>
-            currentPage < totalPages && onPageClick(currentPage + 1)
+            currentCommentsPage < totalPages &&
+            onPageClick(currentCommentsPage + 1)
           }
         >
           ▶
@@ -56,7 +42,7 @@ const Pagination = ({
   );
 };
 
-export default Pagination;
+export default CommnetPagination;
 
 const PaginationContainer = styled.nav`
   display: flex;

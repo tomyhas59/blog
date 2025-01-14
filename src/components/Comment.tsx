@@ -23,6 +23,8 @@ import FollowButton from "./FollowButton";
 import { usePagination } from "../hooks/PaginationProvider";
 import useSetParams from "../hooks/useSetParams";
 import Like from "./Like";
+import CommnetPagination from "../pages/CommnetPagination";
+
 const Comment = ({ post }: { post: PostType }) => {
   const dispatch = useDispatch();
   const id = useSelector((state: RootState) => state.user.me?.id);
@@ -163,12 +165,14 @@ const Comment = ({ post }: { post: PostType }) => {
     setEditComment({});
   });
 
+  const currentComments = post.Comments?.slice(0, 5) || [];
+  const CommentsCount = post.Comments?.length || 0;
   return (
     <>
       {(removeCommentLoading ||
         updateCommentLoading ||
         addReCommentLoading) && <Spinner />}
-      {post.Comments?.map((comment) => {
+      {currentComments?.map((comment) => {
         const isEditing = editComment[comment.id];
         return (
           <div key={comment.id}>
@@ -270,6 +274,7 @@ const Comment = ({ post }: { post: PostType }) => {
           </div>
         );
       })}
+      <CommnetPagination totalComments={CommentsCount} />
     </>
   );
 };

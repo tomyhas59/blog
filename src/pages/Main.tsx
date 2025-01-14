@@ -18,7 +18,7 @@ const Main = () => {
     (state: RootState) => state.post
   );
   const [viewedPosts, setViewedPosts] = useState<number[]>([]);
-  const { currentPage, postsPerPage, sortBy, setCurrentPage } = usePagination();
+  const { currentPage, divisor, sortBy, setCurrentPage } = usePagination();
 
   useEffect(() => {
     const viewedPostsCookie = JSON.parse(
@@ -37,13 +37,13 @@ const Main = () => {
     dispatch({
       type: GET_POSTS_REQUEST,
       page: currentPage,
-      limit: postsPerPage,
+      limit: divisor,
       sortBy,
     });
     setCurrentPage(currentPage);
   }, [
     currentPage,
-    postsPerPage,
+    divisor,
     dispatch,
     sortBy,
     setCurrentPage,

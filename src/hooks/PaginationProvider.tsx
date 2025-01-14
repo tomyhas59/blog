@@ -7,7 +7,8 @@ export const PaginationProvider = ({ children }: any) => {
   const location = useLocation();
 
   const [currentPage, setCurrentPage] = useState<number>(1);
-  const [postsPerPage] = useState<number>(10);
+  const [currentCommentsPage, setCurrentCommentsPage] = useState<number>(1);
+  const [divisor] = useState<number>(10);
   const [searchedCurrentPage, setSearchedCurrentPage] = useState<number>(1);
   const [searchedPostsPerPage] = useState<number>(10);
   const [sortBy, setSortBy] = useState<string>("recent");
@@ -23,7 +24,9 @@ export const PaginationProvider = ({ children }: any) => {
       value={{
         currentPage,
         setCurrentPage,
-        postsPerPage,
+        setCurrentCommentsPage,
+        currentCommentsPage,
+        divisor,
         setSearchedCurrentPage,
         searchedCurrentPage,
         searchedPostsPerPage,
