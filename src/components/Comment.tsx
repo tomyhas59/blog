@@ -1,4 +1,10 @@
-import React, { ChangeEvent, useCallback, useRef, useState } from "react";
+import React, {
+  ChangeEvent,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import styled from "styled-components";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -11,7 +17,7 @@ import ReCommentForm from "./ReCommentForm";
 import ReComment from "./ReComment";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faComment, faPen, faTrash } from "@fortawesome/free-solid-svg-icons";
-import { PostType } from "../types";
+import { CommentType, PostType } from "../types";
 import { RootState } from "../reducer";
 import Spinner from "./Spinner";
 import ContentRenderer from "./renderer/ContentRenderer";
@@ -23,7 +29,7 @@ import FollowButton from "./FollowButton";
 import { usePagination } from "../hooks/PaginationProvider";
 import useSetParams from "../hooks/useSetParams";
 import Like from "./Like";
-import CommnetPagination from "../pages/CommnetPagination";
+import CommentPagination from "../pages/CommentPagination";
 
 const Comment = ({ post }: { post: PostType }) => {
   const dispatch = useDispatch();
@@ -31,7 +37,12 @@ const Comment = ({ post }: { post: PostType }) => {
   const nickname = useSelector((state: RootState) => state.user.me?.nickname);
   const { removeCommentLoading, updateCommentLoading, addReCommentLoading } =
     useSelector((state: RootState) => state.post);
-  const { setSearchedCurrentPage } = usePagination();
+  const {
+    setSearchedCurrentPage,
+    divisor,
+    currentCommentsPage,
+    setCurrentCommentsPage,
+  } = usePagination();
 
   //---닉네임 클릭 정보 보기-------------------------------------
   const [showInfo, setShowInfo] = useState<Record<number, boolean>>({});
@@ -165,8 +176,31 @@ const Comment = ({ post }: { post: PostType }) => {
     setEditComment({});
   });
 
-  const currentComments = post.Comments?.slice(0, 5) || [];
-  const CommentsCount = post.Comments?.length || 0;
+  const totalComments = post.Comments?.length || 0;
+
+  const getCurrentComments = useCallback(() => {
+    const startIndex = (currentCommentsPage - 1) * divisor;
+    const endIndex = startIndex + divisor;
+    const currentComments = post.Comments?.slice(startIndex, endIndex);
+
+    if (currentComments?.length < 1) {
+      const startIndex = (currentCommentsPage - 2) * divisor;
+      const endIndex = startIndex + divisor;
+      const currentComments = post.Comments?.slice(startIndex, endIndex);
+      setCurrentCommentsPage(currentCommentsPage - 1);
+      return currentComments;
+    }
+
+    return currentComments;
+  }, [divisor, currentCommentsPage, post.Comments, setCurrentCommentsPage]);
+
+  const [currentComments, setCurrentComments] = useState<CommentType[]>([]);
+
+  useEffect(() => {
+    const currentComments = getCurrentComments();
+    setCurrentComments(currentComments);
+  }, [getCurrentComments]);
+
   return (
     <>
       {(removeCommentLoading ||
@@ -274,7 +308,11 @@ const Comment = ({ post }: { post: PostType }) => {
           </div>
         );
       })}
-      <CommnetPagination totalComments={CommentsCount} />
+      <CommentPagination
+        totalComments={totalComments}
+        setCurrentComments={setCurrentComments}
+        getCurrentComments={getCurrentComments}
+      />
     </>
   );
 };

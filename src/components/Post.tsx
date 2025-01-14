@@ -29,7 +29,12 @@ const Post = ({
 
   const id = me?.id;
 
-  const { currentPage, setSearchedCurrentPage, sortBy } = usePagination();
+  const {
+    currentPage,
+    setSearchedCurrentPage,
+    sortBy,
+    setCurrentCommentsPage,
+  } = usePagination();
 
   const goToPostDetail = useCallback(
     (postId: number) => {
@@ -41,8 +46,9 @@ const Post = ({
         search: params.toString(),
       });
       window.scrollTo({ top: 0, behavior: "auto" });
+      setCurrentCommentsPage(1);
     },
-    [currentPage, navigator, sortBy]
+    [currentPage, navigator, sortBy, setCurrentCommentsPage]
   );
 
   //---닉네임 클릭 정보 보기-------------------------------------

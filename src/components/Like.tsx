@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { SyntheticEvent, useCallback, useState } from "react";
 import styled from "styled-components";
 import { Liked } from "./Post";
 import { useSelector } from "react-redux";
@@ -31,53 +31,61 @@ const Like = ({
   //좋아요 누른 유저-------------------------
   const [showLikers, setShowLikers] = useState(false);
 
-  const onLike = useCallback(() => {
-    if (!id) {
-      return alert("로그인이 필요합니다");
-    }
-    if (itemType === "post") {
-      dispatch({
-        type: LIKE_POST_REQUEST,
-        data: item.id,
-      });
-    } else if (itemType === "comment") {
-      dispatch({
-        type: LIKE_COMMENT_REQUEST,
-        data: item.id,
-      });
-    } else if (itemType === "reComment")
-      dispatch({
-        type: LIKE_RECOMMENT_REQUEST,
-        data: {
-          commentId,
-          reCommentId: item.id,
-        },
-      });
-  }, [dispatch, id, item.id, commentId, itemType]);
+  const onLike = useCallback(
+    (e: SyntheticEvent) => {
+      e.preventDefault();
+      if (!id) {
+        return alert("로그인이 필요합니다");
+      }
+      if (itemType === "post") {
+        dispatch({
+          type: LIKE_POST_REQUEST,
+          data: item.id,
+        });
+      } else if (itemType === "comment") {
+        dispatch({
+          type: LIKE_COMMENT_REQUEST,
+          data: item.id,
+        });
+      } else if (itemType === "reComment")
+        dispatch({
+          type: LIKE_RECOMMENT_REQUEST,
+          data: {
+            commentId,
+            reCommentId: item.id,
+          },
+        });
+    },
+    [dispatch, id, item.id, commentId, itemType]
+  );
 
-  const onUnLike = useCallback(() => {
-    if (!id) {
-      return alert("로그인이 필요합니다");
-    }
-    if (itemType === "post") {
-      dispatch({
-        type: UNLIKE_POST_REQUEST,
-        data: item.id,
-      });
-    } else if (itemType === "comment") {
-      dispatch({
-        type: UNLIKE_COMMENT_REQUEST,
-        data: item.id,
-      });
-    } else if (itemType === "reComment")
-      dispatch({
-        type: UNLIKE_RECOMMENT_REQUEST,
-        data: {
-          commentId,
-          reCommentId: item.id,
-        },
-      });
-  }, [dispatch, id, item.id, commentId, itemType]);
+  const onUnLike = useCallback(
+    (e: SyntheticEvent) => {
+      e.preventDefault();
+      if (!id) {
+        return alert("로그인이 필요합니다");
+      }
+      if (itemType === "post") {
+        dispatch({
+          type: UNLIKE_POST_REQUEST,
+          data: item.id,
+        });
+      } else if (itemType === "comment") {
+        dispatch({
+          type: UNLIKE_COMMENT_REQUEST,
+          data: item.id,
+        });
+      } else if (itemType === "reComment")
+        dispatch({
+          type: UNLIKE_RECOMMENT_REQUEST,
+          data: {
+            commentId,
+            reCommentId: item.id,
+          },
+        });
+    },
+    [dispatch, id, item.id, commentId, itemType]
+  );
 
   const handleMouseEnter = () => {
     setShowLikers(true);

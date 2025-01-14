@@ -1,42 +1,59 @@
-import React from "react";
+import React, { Dispatch, SetStateAction } from "react";
 import styled from "styled-components";
 import { usePagination } from "../hooks/PaginationProvider";
+import { CommentType } from "../types";
 
-const CommnetPagination = ({ totalComments }: { totalComments: number }) => {
+interface propsType {
+  totalComments: number;
+  setCurrentComments: Dispatch<SetStateAction<CommentType[]>>;
+  getCurrentComments: () => CommentType[];
+}
+
+const CommnetPagination = ({
+  totalComments,
+  setCurrentComments,
+  getCurrentComments,
+}: propsType) => {
   const { currentCommentsPage, divisor, setCurrentCommentsPage } =
     usePagination();
 
-  const totalPages = Math.ceil(totalComments / divisor);
+  const totalCommentPages = Math.ceil(totalComments / divisor);
 
   const onPageClick = (number: number) => {
     setCurrentCommentsPage(number);
+    const currentComments = getCurrentComments();
+    setCurrentComments(currentComments);
   };
 
   return (
     <PaginationContainer>
       <ul>
-        <li
-          onClick={() =>
-            currentCommentsPage > 1 && onPageClick(currentCommentsPage - 1)
-          }
-        >
-          ◀
-        </li>
-        {[...Array(totalPages)].map((_, index) => (
+        {totalComments > 0 && (
+          <li
+            onClick={() =>
+              currentCommentsPage > 1 && onPageClick(currentCommentsPage - 1)
+            }
+          >
+            ◀
+          </li>
+        )}
+        {[...Array(totalCommentPages)].map((_, index) => (
           <PageItem key={index} isActive={index + 1 === currentCommentsPage}>
             <PageButton onClick={() => onPageClick(index + 1)}>
               {index + 1}
             </PageButton>
           </PageItem>
         ))}
-        <li
-          onClick={() =>
-            currentCommentsPage < totalPages &&
-            onPageClick(currentCommentsPage + 1)
-          }
-        >
-          ▶
-        </li>
+        {totalComments > 0 && (
+          <li
+            onClick={() =>
+              currentCommentsPage < totalCommentPages &&
+              onPageClick(currentCommentsPage + 1)
+            }
+          >
+            ▶
+          </li>
+        )}
       </ul>
     </PaginationContainer>
   );
