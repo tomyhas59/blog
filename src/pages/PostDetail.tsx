@@ -33,6 +33,7 @@ const PostDetail = () => {
     const params = new URLSearchParams(location.search);
     const pageParam = params.get("page");
     const sortByParam = params.get("sortBy");
+
     if (pageParam) setCurrentPage(Number(pageParam));
     if (sortByParam) setSortBy(sortByParam);
   }, [location.search, setCurrentPage, setSortBy]);

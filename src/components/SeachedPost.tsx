@@ -19,7 +19,7 @@ import {
   Liked,
   ViewCount,
 } from "./Post";
-import { usePagination } from "../hooks/PaginationProvider";
+
 const SeachedPost = ({
   post,
   postId,
@@ -34,13 +34,11 @@ const SeachedPost = ({
   const searchTextParam = params.get("searchText");
   const searchOptiontParam = params.get("searchOption");
   const pageParam = params.get("page");
-  const { setCurrentCommentsPage } = usePagination();
 
   const highlightText = (text: string) => {
     if (!searchTextParam) return text;
     const regex = new RegExp(`(${searchTextParam})`, "gi");
     text = text.replace(/<br>/gi, " ");
-    console.log(text);
     if (text.includes(searchTextParam)) {
       return text
         .split(regex)
@@ -61,9 +59,9 @@ const SeachedPost = ({
 
   const goToSearchedPostDetail = useCallback(() => {
     setParams({ searchText: searchTextParam || "" });
-    setCurrentCommentsPage(1);
+
     window.scrollTo({ top: 0, behavior: "auto" });
-  }, [searchTextParam, setParams, setCurrentCommentsPage]);
+  }, [searchTextParam, setParams]);
 
   const totalReComments = post.Comments.reduce(
     (total, comment) => total + comment.ReComments.length,

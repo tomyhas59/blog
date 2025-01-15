@@ -1,28 +1,58 @@
 import React, { Dispatch, SetStateAction } from "react";
 import styled from "styled-components";
 import { usePagination } from "../hooks/PaginationProvider";
-import { CommentType } from "../types";
+import { CommentType, PostType } from "../types";
+import { useLocation, useNavigate } from "react-router-dom";
 
 interface propsType {
+  post: PostType;
   totalComments: number;
   setCurrentComments: Dispatch<SetStateAction<CommentType[]>>;
   getCurrentComments: () => CommentType[];
 }
 
 const CommnetPagination = ({
+  post,
   totalComments,
   setCurrentComments,
   getCurrentComments,
 }: propsType) => {
-  const { currentCommentsPage, divisor, setCurrentCommentsPage } =
-    usePagination();
+  const {
+    currentPage,
+    currentCommentsPage,
+    divisor,
+    setCurrentCommentsPage,
+    sortBy,
+  } = usePagination();
 
   const totalCommentPages = Math.ceil(totalComments / divisor);
+  const location = useLocation();
+  const navigator = useNavigate();
+  const params = new URLSearchParams(location.search);
+  const searchTextParam = params.get("searchText");
+  const searchOptiontParam = params.get("searchOption");
+
+  const setParams = (number: number) => {
+    const params = new URLSearchParams();
+    if (searchTextParam) params.set("searchText", searchTextParam);
+    if (searchOptiontParam) params.set("searchOption", searchOptiontParam);
+    params.set("page", currentPage.toString());
+    params.set("sortBy", sortBy);
+    params.set("cPage", number.toString());
+
+    const pathname = post.id ? `/searchedPost/${post.id}` : `/search`;
+
+    navigator({
+      pathname,
+      search: params.toString(),
+    });
+  };
 
   const onPageClick = (number: number) => {
     setCurrentCommentsPage(number);
     const currentComments = getCurrentComments();
     setCurrentComments(currentComments);
+    setParams(number);
   };
 
   return (

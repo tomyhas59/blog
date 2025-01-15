@@ -12,7 +12,8 @@ const Pagination = ({
 }) => {
   const location = useLocation();
   const navigator = useNavigate();
-  const { currentPage, divisor, setCurrentPage, sortBy } = usePagination();
+  const { currentPage, divisor, setCurrentPage, sortBy, currentCommentsPage } =
+    usePagination();
 
   const totalPages = Math.ceil(totalPosts / divisor);
 
@@ -20,6 +21,8 @@ const Pagination = ({
     const params = new URLSearchParams();
     params.set("page", number.toString());
     params.set("sortBy", sortBy);
+    params.set("cPage", currentCommentsPage);
+
     navigator({
       pathname: postId ? `/post/${postId}` : `${location.pathname}`,
       search: params.toString(),

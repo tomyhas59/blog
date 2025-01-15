@@ -16,6 +16,7 @@ const useSetParams = ({ searchOption, page, postId }: ParamsType) => {
       if (searchText) params.set("searchText", searchText);
       params.set("searchOption", searchOption);
       params.set("page", page.toString());
+      params.set("cPage", "1");
       const pathname = postId ? `/searchedPost/${postId}` : `/search`;
 
       navigator({

@@ -14,8 +14,12 @@ const SearchedPagination = ({
 }) => {
   const location = useLocation();
   const navigator = useNavigate();
-  const { searchedCurrentPage, searchedPostsPerPage, setSearchedCurrentPage } =
-    usePagination();
+  const {
+    searchedCurrentPage,
+    searchedPostsPerPage,
+    setSearchedCurrentPage,
+    currentCommentsPage,
+  } = usePagination();
 
   const searchedTotalPages = Math.ceil(
     totalSearchedPosts / searchedPostsPerPage
@@ -26,6 +30,7 @@ const SearchedPagination = ({
     params.set("searchText", searchText);
     params.set("searchOption", searchOption);
     params.set("page", number.toString());
+    params.set("cPage", currentCommentsPage);
     navigator({
       pathname: location.pathname,
       search: params.toString(),

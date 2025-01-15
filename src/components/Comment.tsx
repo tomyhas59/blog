@@ -30,6 +30,7 @@ import { usePagination } from "../hooks/PaginationProvider";
 import useSetParams from "../hooks/useSetParams";
 import Like from "./Like";
 import CommentPagination from "../pages/CommentPagination";
+import { useLocation } from "react-router-dom";
 
 const Comment = ({ post }: { post: PostType }) => {
   const dispatch = useDispatch();
@@ -44,6 +45,7 @@ const Comment = ({ post }: { post: PostType }) => {
     setCurrentCommentsPage,
   } = usePagination();
 
+  const location = useLocation();
   //---닉네임 클릭 정보 보기-------------------------------------
   const [showInfo, setShowInfo] = useState<Record<number, boolean>>({});
 
@@ -178,6 +180,12 @@ const Comment = ({ post }: { post: PostType }) => {
 
   const totalComments = post.Comments?.length || 0;
 
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const commentsPageParam = params.get("cPage");
+    if (commentsPageParam) setCurrentCommentsPage(Number(commentsPageParam));
+  }, [location.search, setCurrentCommentsPage]);
+
   const getCurrentComments = useCallback(() => {
     const startIndex = (currentCommentsPage - 1) * divisor;
     const endIndex = startIndex + divisor;
@@ -309,6 +317,7 @@ const Comment = ({ post }: { post: PostType }) => {
         );
       })}
       <CommentPagination
+        post={post}
         totalComments={totalComments}
         setCurrentComments={setCurrentComments}
         getCurrentComments={getCurrentComments}

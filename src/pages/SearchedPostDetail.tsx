@@ -14,7 +14,11 @@ import CommonPost from "../components/CommonPost";
 const SearchedPostDetail = () => {
   const dispatch = useDispatch();
   const location = useLocation();
-  const { searchedCurrentPage, setSearchedCurrentPage } = usePagination();
+  const {
+    searchedCurrentPage,
+    setSearchedCurrentPage,
+    setCurrentCommentsPage,
+  } = usePagination();
   const [searchText, setSearchText] = useState<string>("");
   const [searchOption, setSearchOption] = useState<string>("");
   const { postId } = useParams();
@@ -35,26 +39,36 @@ const SearchedPostDetail = () => {
   }, [post]);
 
   useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const searchTextParam = params.get("searchText");
+    const searchOptionParam = params.get("searchOption");
+    const pageParam = params.get("page");
+    const commentsPageParam = params.get("cPage");
+
+    if (searchTextParam) setSearchText(searchTextParam);
+    if (searchOptionParam) setSearchOption(searchOptionParam);
+    if (pageParam) setSearchedCurrentPage(Number(pageParam));
+    if (commentsPageParam) setCurrentCommentsPage(Number(commentsPageParam));
+  }, [location.search, setSearchedCurrentPage, setCurrentCommentsPage]);
+
+  useEffect(() => {
     if (searchText && searchOption) {
       dispatch({
         type: SEARCH_POSTS_REQUEST,
         searchText,
         searchOption,
-        searchedCurrentPage,
+        page: searchedCurrentPage,
       });
     }
-  }, [dispatch, searchText, searchOption, searchedCurrentPage]);
+  }, [
+    dispatch,
+    searchText,
+    searchOption,
+    searchedCurrentPage,
+    setSearchedCurrentPage,
+  ]);
 
-  useEffect(() => {
-    const params = new URLSearchParams(location.search);
-    const searchTextParam = params.get("searchText");
-    const searchOptionParam = params.get("searchOption");
-    const pageParam = params.get("page");
-
-    if (searchTextParam) setSearchText(searchTextParam);
-    if (searchOptionParam) setSearchOption(searchOptionParam);
-    if (pageParam) setSearchedCurrentPage(Number(pageParam));
-  }, [location.search, setSearchedCurrentPage]);
+  console.log(searchedPosts);
 
   useEffect(() => {
     const params = new URLSearchParams(location.search);

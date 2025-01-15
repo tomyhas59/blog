@@ -41,6 +41,7 @@ const Post = ({
       const params = new URLSearchParams();
       params.set("page", currentPage.toString());
       params.set("sortBy", sortBy.toString());
+      params.set("cPage", "1");
       navigator({
         pathname: `/post/${postId}`,
         search: params.toString(),
