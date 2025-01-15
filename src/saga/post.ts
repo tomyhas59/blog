@@ -16,6 +16,9 @@ import {
   DELETE_IMAGE_FAILURE,
   DELETE_IMAGE_REQUEST,
   DELETE_IMAGE_SUCCESS,
+  GET_COMMENTS_FAILURE,
+  GET_COMMENTS_REQUEST,
+  GET_COMMENTS_SUCCESS,
   GET_POSTS_FAILURE,
   GET_POSTS_REQUEST,
   GET_POSTS_SUCCESS,
@@ -105,7 +108,35 @@ function* getPosts(action: {
 }
 function* watchGetPosts() {
   yield takeLatest<any>(GET_POSTS_REQUEST, getPosts);
-} //-----------------------------------------------------
+}
+
+//-----------------------------------------------------
+
+function getCommentsApi(page: number, postId: number) {
+  return axios.get(`/post/comment`, { params: { page, postId } });
+}
+
+function* getComments(action: { page: number; postId: number }): SagaIterator {
+  try {
+    const result = yield call(getCommentsApi, action.page, action.postId);
+    yield put({
+      type: GET_COMMENTS_SUCCESS,
+      data: result.data.comments,
+      totalComments: result.data.totalComments,
+    });
+  } catch (err: any) {
+    console.log(err);
+    yield put({
+      type: GET_COMMENTS_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+function* watchGetComments() {
+  yield takeLatest<any>(GET_COMMENTS_REQUEST, getComments);
+}
+
+//-----------------------------------------------------
 
 function getPostApi(postId: number) {
   return axios.get(`/post/posts/${postId}`);
@@ -726,5 +757,6 @@ export default function* postSaga() {
     fork(watchDeleteImages),
     fork(watchReadChat),
     fork(watchDeleteAllChat),
+    fork(watchGetComments),
   ]);
 }

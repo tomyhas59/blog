@@ -22,7 +22,7 @@ const MyComments: React.FC = () => {
 
     const getUserComments = async () => {
       try {
-        const response = await axios.get(`/post/comment?userId=${me.id}`);
+        const response = await axios.get(`/post/user/comment?userId=${me.id}`);
         setComments(response.data.comments);
         setReComments(response.data.reComments);
       } catch (error) {

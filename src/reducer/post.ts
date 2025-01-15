@@ -1,11 +1,13 @@
 import { produce } from "immer";
-import { MessageType, PostType } from "../types";
+import { CommentType, MessageType, PostType } from "../types";
 
 //전역 상태 초기값
 const initialState = {
   posts: [] as PostType[],
-  post: {} as PostType,
   totalPosts: null,
+  post: {} as PostType,
+  comments: [] as CommentType[],
+  totalComments: null,
   imagePaths: [] as string[],
   searchedPosts: [] as PostType[],
   searchOption: "",
@@ -15,6 +17,10 @@ const initialState = {
   getPostsLoading: false,
   getPostsDone: false,
   getPostsError: null,
+
+  getCommentsLoading: false,
+  getCommentsDone: false,
+  getCommentsError: null,
 
   getPostLoading: false,
   getPostDone: false,
@@ -102,13 +108,17 @@ const initialState = {
 };
 
 //action명
-export const GET_POSTS_REQUEST = "ALL_POSTS_REQUEST";
-export const GET_POSTS_SUCCESS = "ALL_POSTS_SUCCESS";
-export const GET_POSTS_FAILURE = "ALL_POSTS_FAILURE";
+export const GET_POSTS_REQUEST = "GET_POSTS_REQUEST";
+export const GET_POSTS_SUCCESS = "GET_POSTS_SUCCESS";
+export const GET_POSTS_FAILURE = "GET_POSTS_FAILURE";
 
-export const GET_POST_REQUEST = "ALL_POST_REQUEST";
-export const GET_POST_SUCCESS = "ALL_POST_SUCCESS";
-export const GET_POST_FAILURE = "ALL_POST_FAILURE";
+export const GET_COMMENTS_REQUEST = "GET_COMMENTS_REQUEST";
+export const GET_COMMENTS_SUCCESS = "GET_COMMENTS_SUCCESS";
+export const GET_COMMENTS_FAILURE = "GET_COMMENTS_FAILURE";
+
+export const GET_POST_REQUEST = "GET_POST_REQUEST";
+export const GET_POST_SUCCESS = "GET_POST_SUCCESS";
+export const GET_POST_FAILURE = "GET_POST_FAILURE";
 
 export const ADD_POST_REQUEST = "ADD_POST_REQUEST";
 export const ADD_POST_SUCCESS = "ADD_POST_SUCCESS";
@@ -221,6 +231,23 @@ const post = (state = initialState, action: any) => {
         draft.getPostsLoading = false;
         draft.getPostsError = action.error;
         break;
+      //---------------------------------------------------
+      case GET_COMMENTS_REQUEST:
+        draft.getCommentsLoading = true;
+        draft.getCommentsDone = false;
+        draft.getCommentsError = null;
+        break;
+      case GET_COMMENTS_SUCCESS:
+        draft.getCommentsLoading = false;
+        draft.getCommentsDone = true;
+        draft.comments = action.data;
+        draft.totalComments = action.totalComments;
+        break;
+      case GET_COMMENTS_FAILURE:
+        draft.getCommentsLoading = false;
+        draft.getCommentsError = action.error;
+        break;
+
       //------------------------------------------------------
       case GET_POST_REQUEST:
         draft.getPostLoading = true;
@@ -377,7 +404,9 @@ const post = (state = initialState, action: any) => {
       case ADD_COMMENT_SUCCESS: {
         draft.addCommentLoading = false;
         draft.addCommentDone = true;
-        draft.post.Comments.push(action.data);
+        draft.comments.push(action.data);
+        if (draft.totalComments) draft.totalComments++;
+
         break;
       }
       case ADD_COMMENT_FAILURE:
@@ -394,9 +423,10 @@ const post = (state = initialState, action: any) => {
       case REMOVE_COMMENT_SUCCESS: {
         draft.removeCommentLoading = false;
         draft.removeCommentDone = true;
-        draft.post.Comments = draft.post.Comments.filter(
+        draft.comments = draft.comments.filter(
           (comment: { id: any }) => comment.id !== action.data.CommentId
         );
+        if (draft.totalComments) draft.totalComments--;
         break;
       }
       case REMOVE_COMMENT_FAILURE:
@@ -413,10 +443,10 @@ const post = (state = initialState, action: any) => {
       case UPDATE_COMMENT_SUCCESS: {
         draft.updateCommentLoading = false;
         draft.updateCommentDone = true;
-        const commentIndex = draft.post.Comments.findIndex(
+        const commentIndex = draft.comments.findIndex(
           (comment: { id: any }) => comment.id === action.data.CommentId
         );
-        draft.post.Comments[commentIndex].content = action.data.content;
+        draft.comments[commentIndex].content = action.data.content;
         break;
       }
 
@@ -435,10 +465,10 @@ const post = (state = initialState, action: any) => {
         draft.addReCommentLoading = false;
         draft.addReCommentDone = true;
 
-        const commentIndex = draft.post.Comments.findIndex(
+        const commentIndex = draft.comments.findIndex(
           (post: { id: any }) => post.id === action.data.CommentId
         );
-        draft.post.Comments[commentIndex].ReComments.push(action.data);
+        draft.comments[commentIndex].ReComments.push(action.data);
 
         break;
       }
@@ -457,10 +487,10 @@ const post = (state = initialState, action: any) => {
         draft.removeReCommentLoading = false;
         draft.removeReCommentDone = true;
 
-        const commentIndex = draft.post.Comments.findIndex(
+        const commentIndex = draft.comments.findIndex(
           (comment: { id: any }) => comment.id === action.data.CommentId
         );
-        draft.post.Comments[commentIndex].ReComments = draft.post.Comments[
+        draft.comments[commentIndex].ReComments = draft.comments[
           commentIndex
         ].ReComments.filter(
           (post: { id: any }) => post.id !== action.data.ReCommentId
@@ -483,15 +513,15 @@ const post = (state = initialState, action: any) => {
         draft.updateReCommentLoading = false;
         draft.updateReCommentDone = true;
 
-        const commentIndex = draft.post.Comments.findIndex(
+        const commentIndex = draft.comments.findIndex(
           (comment: { id: any }) => comment.id === action.data.CommentId
         );
-        const reCommentIndex = draft.post.Comments[
+        const reCommentIndex = draft.comments[
           commentIndex
         ].ReComments.findIndex(
           (reComment: { id: any }) => reComment.id === action.data.ReCommentId
         );
-        draft.post.Comments[commentIndex].ReComments[reCommentIndex].content =
+        draft.comments[commentIndex].ReComments[reCommentIndex].content =
           action.data.content;
 
         break;
@@ -549,7 +579,7 @@ const post = (state = initialState, action: any) => {
         draft.likeCommentError = null;
         break;
       case LIKE_COMMENT_SUCCESS: {
-        const commentIndex = draft.post.Comments.findIndex(
+        const commentIndex = draft.comments.findIndex(
           (comment) => comment.id === action.data.CommentId
         );
 
@@ -557,11 +587,11 @@ const post = (state = initialState, action: any) => {
           return;
         }
 
-        if (!draft.post.Comments[commentIndex].Likers) {
-          draft.post.Comments[commentIndex].Likers = [];
+        if (!draft.comments[commentIndex].Likers) {
+          draft.comments[commentIndex].Likers = [];
         }
 
-        draft.post.Comments[commentIndex].Likers.push({
+        draft.comments[commentIndex].Likers.push({
           id: action.data.UserId,
           nickname: action.data.nickname,
         });
@@ -582,14 +612,14 @@ const post = (state = initialState, action: any) => {
         draft.unLikeCommentError = null;
         break;
       case UNLIKE_COMMENT_SUCCESS: {
-        const commentIndex = draft.post.Comments.findIndex(
+        const commentIndex = draft.comments.findIndex(
           (comment) => comment.id === action.data.CommentId
         );
         if (commentIndex === -1) {
           return;
         }
 
-        draft.post.Comments[commentIndex].Likers = draft.post.Comments[
+        draft.comments[commentIndex].Likers = draft.comments[
           commentIndex
         ].Likers.filter(
           (liker: { id: any }) => liker.id !== action.data.UserId
@@ -612,13 +642,13 @@ const post = (state = initialState, action: any) => {
         draft.likeReCommentError = null;
         break;
       case LIKE_RECOMMENT_SUCCESS: {
-        const commentIndex = draft.post.Comments.findIndex(
+        const commentIndex = draft.comments.findIndex(
           (comment: { id: any }) => comment.id === action.data.CommentId
         );
 
         if (commentIndex === -1) return;
 
-        const reCommentIndex = draft.post.Comments[
+        const reCommentIndex = draft.comments[
           commentIndex
         ].ReComments.findIndex(
           (reComment: { id: any }) => reComment.id === action.data.ReCommentId
@@ -626,16 +656,11 @@ const post = (state = initialState, action: any) => {
 
         if (reCommentIndex === -1) return;
 
-        if (
-          !draft.post.Comments[commentIndex].ReComments[reCommentIndex].Likers
-        ) {
-          draft.post.Comments[commentIndex].ReComments[reCommentIndex].Likers =
-            [];
+        if (!draft.comments[commentIndex].ReComments[reCommentIndex].Likers) {
+          draft.comments[commentIndex].ReComments[reCommentIndex].Likers = [];
         }
 
-        draft.post.Comments[commentIndex].ReComments[
-          reCommentIndex
-        ].Likers.push({
+        draft.comments[commentIndex].ReComments[reCommentIndex].Likers.push({
           id: action.data.UserId,
           nickname: action.data.nickname,
         });
@@ -656,23 +681,21 @@ const post = (state = initialState, action: any) => {
         draft.unLikeReCommentError = null;
         break;
       case UNLIKE_RECOMMENT_SUCCESS: {
-        const commentIndex = draft.post.Comments.findIndex(
+        const commentIndex = draft.comments.findIndex(
           (comment: { id: any }) => comment.id === action.data.CommentId
         );
 
         if (commentIndex === -1) return;
 
-        const reCommentIndex = draft.post.Comments[
+        const reCommentIndex = draft.comments[
           commentIndex
         ].ReComments.findIndex(
           (reComment: { id: any }) => reComment.id === action.data.ReCommentId
         );
 
         if (reCommentIndex === -1) return;
-        draft.post.Comments[commentIndex].ReComments[reCommentIndex].Likers =
-          draft.post.Comments[commentIndex].ReComments[
-            reCommentIndex
-          ].Likers.filter(
+        draft.comments[commentIndex].ReComments[reCommentIndex].Likers =
+          draft.comments[commentIndex].ReComments[reCommentIndex].Likers.filter(
             (liker: { id: any }) => liker.id !== action.data.UserId
           );
 

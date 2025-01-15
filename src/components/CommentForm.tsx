@@ -12,6 +12,8 @@ import { ADD_COMMENT_REQUEST } from "../reducer/post";
 import { PostType } from "../types";
 import { RootState } from "../reducer";
 import useTextareaAutoHeight from "../hooks/useTextareaAutoHeight";
+import { useLocation, useNavigate } from "react-router-dom";
+import { usePagination } from "../hooks/PaginationProvider";
 
 const CommentForm = ({
   post,
@@ -20,12 +22,16 @@ const CommentForm = ({
   post: PostType;
   setAddComment: React.Dispatch<React.SetStateAction<Record<number, boolean>>>;
 }) => {
-  const { addCommentDone } = useSelector((state: RootState) => state.post);
+  const { addCommentDone, totalComments } = useSelector(
+    (state: RootState) => state.post
+  );
   const [content, , setContent] = useInput();
 
   const onChangeContent = (e: ChangeEvent<HTMLTextAreaElement>) => {
     setContent(e.target.value);
   };
+  const { currentPage, divisor, setCurrentCommentsPage, sortBy } =
+    usePagination();
 
   const editCommentRef = useRef<HTMLTextAreaElement>(null);
 
@@ -44,6 +50,42 @@ const CommentForm = ({
     }
   }, [addCommentDone, setContent]);
 
+  const location = useLocation();
+  const navigator = useNavigate();
+  const params = new URLSearchParams(location.search);
+  const searchTextParam = params.get("searchText");
+  const searchOptiontParam = params.get("searchOption");
+
+  const setParams = useCallback(
+    (number: number) => {
+      const params = new URLSearchParams();
+      if (searchTextParam) params.set("searchText", searchTextParam);
+      if (searchOptiontParam) params.set("searchOption", searchOptiontParam);
+      params.set("page", currentPage.toString());
+      params.set("sortBy", sortBy);
+      params.set("cPage", number.toString());
+
+      const pathname = searchOptiontParam
+        ? `/searchedPost/${post.id}`
+        : `/post/${post.id}`;
+
+      navigator({
+        pathname,
+        search: params.toString(),
+      });
+    },
+    [
+      currentPage,
+      navigator,
+      post.id,
+      searchOptiontParam,
+      searchTextParam,
+      sortBy,
+    ]
+  );
+
+  const totalCommentPages = Math.ceil(Number(totalComments) / divisor);
+
   const onSubmitComment = useCallback(
     (e: SyntheticEvent) => {
       e.preventDefault();
@@ -57,8 +99,19 @@ const CommentForm = ({
         data: { content: contentWithBreaks, postId: post.id, userId: id },
       });
       setAddComment({ [post.id]: false });
+      setCurrentCommentsPage(totalCommentPages);
+      setParams(totalCommentPages);
     },
-    [content, dispatch, id, post.id, setAddComment]
+    [
+      content,
+      dispatch,
+      id,
+      post.id,
+      setAddComment,
+      setCurrentCommentsPage,
+      setParams,
+      totalCommentPages,
+    ]
   );
 
   return (

@@ -1,31 +1,23 @@
-import React, { Dispatch, SetStateAction } from "react";
+import React from "react";
 import styled from "styled-components";
 import { usePagination } from "../hooks/PaginationProvider";
-import { CommentType, PostType } from "../types";
+import { PostType } from "../types";
 import { useLocation, useNavigate } from "react-router-dom";
 
 interface propsType {
   post: PostType;
-  totalComments: number;
-  setCurrentComments: Dispatch<SetStateAction<CommentType[]>>;
-  getCurrentComments: () => CommentType[];
+  totalCommentPages: number;
+  scrollTargetRef: React.RefObject<HTMLElement>;
 }
 
 const CommnetPagination = ({
   post,
-  totalComments,
-  setCurrentComments,
-  getCurrentComments,
+  totalCommentPages,
+  scrollTargetRef,
 }: propsType) => {
-  const {
-    currentPage,
-    currentCommentsPage,
-    divisor,
-    setCurrentCommentsPage,
-    sortBy,
-  } = usePagination();
+  const { currentPage, currentCommentsPage, setCurrentCommentsPage, sortBy } =
+    usePagination();
 
-  const totalCommentPages = Math.ceil(totalComments / divisor);
   const location = useLocation();
   const navigator = useNavigate();
   const params = new URLSearchParams(location.search);
@@ -40,7 +32,9 @@ const CommnetPagination = ({
     params.set("sortBy", sortBy);
     params.set("cPage", number.toString());
 
-    const pathname = post.id ? `/searchedPost/${post.id}` : `/search`;
+    const pathname = searchOptiontParam
+      ? `/searchedPost/${post.id}`
+      : `/post/${post.id}`;
 
     navigator({
       pathname,
@@ -50,15 +44,20 @@ const CommnetPagination = ({
 
   const onPageClick = (number: number) => {
     setCurrentCommentsPage(number);
-    const currentComments = getCurrentComments();
-    setCurrentComments(currentComments);
     setParams(number);
+
+    if (scrollTargetRef.current) {
+      scrollTargetRef.current.scrollIntoView({
+        behavior: "auto",
+        block: "start", // 상단에 위치하게
+      });
+    }
   };
 
   return (
     <PaginationContainer>
       <ul>
-        {totalComments > 0 && (
+        {totalCommentPages > 0 && (
           <li
             onClick={() =>
               currentCommentsPage > 1 && onPageClick(currentCommentsPage - 1)
@@ -74,7 +73,7 @@ const CommnetPagination = ({
             </PageButton>
           </PageItem>
         ))}
-        {totalComments > 0 && (
+        {totalCommentPages > 0 && (
           <li
             onClick={() =>
               currentCommentsPage < totalCommentPages &&

@@ -45,7 +45,9 @@ const CommonPost = () => {
 
   const { postId } = useParams();
 
-  const { post, imagePaths } = useSelector((state: RootState) => state.post);
+  const { post, imagePaths, comments, totalComments } = useSelector(
+    (state: RootState) => state.post
+  );
 
   useEffect(() => {
     if (postId) {
@@ -256,7 +258,7 @@ const CommonPost = () => {
 
   const prevContent = content.replace(/<br\s*\/?>/gi, "\n");
 
-  const totalReComments = post.Comments?.reduce(
+  const totalReComments = comments.reduce(
     (total, comment) => total + comment.ReComments.length,
     0
   );
@@ -400,7 +402,7 @@ const CommonPost = () => {
       <CommentContainer>
         <CommentHeader>
           <CommentNum>
-            댓글 {post.Comments?.length + totalReComments}개
+            댓글 {totalComments && totalComments + totalReComments}개
           </CommentNum>
           <Button onClick={toggleAddCommentForm}>댓글 달기</Button>
         </CommentHeader>

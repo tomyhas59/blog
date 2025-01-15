@@ -8,6 +8,7 @@ import React, {
 import styled from "styled-components";
 import { useDispatch, useSelector } from "react-redux";
 import {
+  GET_COMMENTS_REQUEST,
   REMOVE_COMMENT_REQUEST,
   UPDATE_COMMENT_REQUEST,
 } from "../reducer/post";
@@ -17,7 +18,7 @@ import ReCommentForm from "./ReCommentForm";
 import ReComment from "./ReComment";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faComment, faPen, faTrash } from "@fortawesome/free-solid-svg-icons";
-import { CommentType, PostType } from "../types";
+import { PostType } from "../types";
 import { RootState } from "../reducer";
 import Spinner from "./Spinner";
 import ContentRenderer from "./renderer/ContentRenderer";
@@ -30,22 +31,37 @@ import { usePagination } from "../hooks/PaginationProvider";
 import useSetParams from "../hooks/useSetParams";
 import Like from "./Like";
 import CommentPagination from "../pages/CommentPagination";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const Comment = ({ post }: { post: PostType }) => {
   const dispatch = useDispatch();
   const id = useSelector((state: RootState) => state.user.me?.id);
   const nickname = useSelector((state: RootState) => state.user.me?.nickname);
-  const { removeCommentLoading, updateCommentLoading, addReCommentLoading } =
-    useSelector((state: RootState) => state.post);
+  const {
+    removeCommentLoading,
+    updateCommentLoading,
+    addReCommentLoading,
+    comments,
+    totalComments,
+  } = useSelector((state: RootState) => state.post);
   const {
     setSearchedCurrentPage,
-    divisor,
+    currentPage,
     currentCommentsPage,
     setCurrentCommentsPage,
+    divisor,
+    sortBy,
   } = usePagination();
 
+  //댓글 페이지 이동 시 스크롤 조정
+  const scrollTargetRef = useRef<HTMLDivElement>(null);
+
   const location = useLocation();
+  const navigator = useNavigate();
+  const params = new URLSearchParams(location.search);
+  const searchTextParam = params.get("searchText");
+  const searchOptiontParam = params.get("searchOption");
+
   //---닉네임 클릭 정보 보기-------------------------------------
   const [showInfo, setShowInfo] = useState<Record<number, boolean>>({});
 
@@ -178,43 +194,62 @@ const Comment = ({ post }: { post: PostType }) => {
     setEditComment({});
   });
 
-  const totalComments = post.Comments?.length || 0;
-
   useEffect(() => {
     const params = new URLSearchParams(location.search);
     const commentsPageParam = params.get("cPage");
     if (commentsPageParam) setCurrentCommentsPage(Number(commentsPageParam));
   }, [location.search, setCurrentCommentsPage]);
 
-  const getCurrentComments = useCallback(() => {
-    const startIndex = (currentCommentsPage - 1) * divisor;
-    const endIndex = startIndex + divisor;
-    const currentComments = post.Comments?.slice(startIndex, endIndex);
+  useEffect(() => {
+    dispatch({
+      type: GET_COMMENTS_REQUEST,
+      page: currentCommentsPage,
+      postId: post.id,
+    });
+  }, [currentCommentsPage, totalComments, dispatch, post.id]);
 
-    if (currentComments?.length < 1) {
-      const startIndex = (currentCommentsPage - 2) * divisor;
-      const endIndex = startIndex + divisor;
-      const currentComments = post.Comments?.slice(startIndex, endIndex);
-      setCurrentCommentsPage(currentCommentsPage - 1);
-      return currentComments;
-    }
-
-    return currentComments;
-  }, [divisor, currentCommentsPage, post.Comments, setCurrentCommentsPage]);
-
-  const [currentComments, setCurrentComments] = useState<CommentType[]>([]);
+  const totalCommentPages = Math.ceil(Number(totalComments) / divisor);
 
   useEffect(() => {
-    const currentComments = getCurrentComments();
-    setCurrentComments(currentComments);
-  }, [getCurrentComments]);
+    const setParams = (number: number) => {
+      const params = new URLSearchParams();
+      if (searchTextParam) params.set("searchText", searchTextParam);
+      if (searchOptiontParam) params.set("searchOption", searchOptiontParam);
+      params.set("page", currentPage.toString());
+      params.set("sortBy", sortBy);
+      params.set("cPage", number.toString());
+
+      const pathname = searchOptiontParam
+        ? `/searchedPost/${post.id}`
+        : `/post/${post.id}`;
+
+      navigator({
+        pathname,
+        search: params.toString(),
+      });
+    };
+    if (totalCommentPages > 0 && totalCommentPages < currentCommentsPage) {
+      setCurrentCommentsPage(totalCommentPages);
+      setParams(totalCommentPages);
+    }
+  }, [
+    currentCommentsPage,
+    currentPage,
+    navigator,
+    post.id,
+    searchOptiontParam,
+    searchTextParam,
+    setCurrentCommentsPage,
+    sortBy,
+    totalCommentPages,
+  ]);
 
   return (
-    <>
+    <div ref={scrollTargetRef}>
       {(removeCommentLoading ||
         updateCommentLoading ||
         addReCommentLoading) && <Spinner />}
-      {currentComments?.map((comment) => {
+      {comments?.map((comment) => {
         const isEditing = editComment[comment.id];
         return (
           <div key={comment.id}>
@@ -318,11 +353,10 @@ const Comment = ({ post }: { post: PostType }) => {
       })}
       <CommentPagination
         post={post}
-        totalComments={totalComments}
-        setCurrentComments={setCurrentComments}
-        getCurrentComments={getCurrentComments}
+        totalCommentPages={totalCommentPages}
+        scrollTargetRef={scrollTargetRef}
       />
-    </>
+    </div>
   );
 };
 
