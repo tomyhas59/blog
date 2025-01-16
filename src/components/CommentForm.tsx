@@ -22,7 +22,7 @@ const CommentForm = ({
   post: PostType;
   setAddComment: React.Dispatch<React.SetStateAction<Record<number, boolean>>>;
 }) => {
-  const { addCommentDone, totalComments } = useSelector(
+  const { addCommentDone, totalComments, commentId } = useSelector(
     (state: RootState) => state.post
   );
   const [content, , setContent] = useInput();
@@ -113,7 +113,7 @@ const CommentForm = ({
       totalCommentPages,
     ]
   );
-
+  console.log("--------------", commentId);
   return (
     <CommentWrapper>
       <Form onSubmit={onSubmitComment}>

@@ -14,6 +14,8 @@ const initialState = {
   totalSearchedPosts: null,
   chatMessages: [] as MessageType[],
 
+  commentId: null,
+
   getPostsLoading: false,
   getPostsDone: false,
   getPostsError: null,
@@ -405,6 +407,7 @@ const post = (state = initialState, action: any) => {
         draft.addCommentLoading = false;
         draft.addCommentDone = true;
         draft.comments.push(action.data);
+        draft.commentId = action.data.id;
         if (draft.totalComments) draft.totalComments++;
 
         break;

@@ -43,6 +43,7 @@ const Comment = ({ post }: { post: PostType }) => {
     addReCommentLoading,
     comments,
     totalComments,
+    commentId,
   } = useSelector((state: RootState) => state.post);
   const {
     setSearchedCurrentPage,
@@ -200,13 +201,26 @@ const Comment = ({ post }: { post: PostType }) => {
     if (commentsPageParam) setCurrentCommentsPage(Number(commentsPageParam));
   }, [location.search, setCurrentCommentsPage]);
 
+  const scrollToElement = (commentId: string) => {
+    const element = document.getElementById(`comment-${commentId}`);
+    if (element) {
+      element.scrollIntoView({
+        behavior: "auto",
+        block: "center",
+      });
+      element.style.backgroundColor = "#fffae6";
+    }
+  };
+
   useEffect(() => {
     dispatch({
       type: GET_COMMENTS_REQUEST,
       page: currentCommentsPage,
       postId: post.id,
     });
-  }, [currentCommentsPage, totalComments, dispatch, post.id]);
+
+    if (commentId) scrollToElement(commentId);
+  }, [currentCommentsPage, totalComments, dispatch, post.id, commentId]);
 
   const totalCommentPages = Math.ceil(Number(totalComments) / divisor);
 
@@ -252,7 +266,7 @@ const Comment = ({ post }: { post: PostType }) => {
       {comments?.map((comment) => {
         const isEditing = editComment[comment.id];
         return (
-          <div key={comment.id}>
+          <div key={comment.id} id={`comment-${comment.id}`}>
             <FullCommentWrapper key={comment.id}>
               <AuthorWrapper>
                 <Author onClick={() => toggleShowInfo(comment.id)}>
@@ -296,7 +310,7 @@ const Comment = ({ post }: { post: PostType }) => {
                     ref={editCommentRef}
                   />
                 ) : (
-                  <Content id={`comment-${comment.id}`}>
+                  <Content id={`comment-content-${comment.id}`}>
                     <ContentRenderer content={comment.content} />
                   </Content>
                 )}

@@ -48,8 +48,8 @@ const MyComments: React.FC = () => {
       });
       const queryParam =
         type === "comment"
-          ? `commentId=comment-${id}`
-          : `reCommentId=reComment-${id}`;
+          ? `commentId=comment-content-${id}`
+          : `reCommentId=reComment-content-${id}`;
 
       navigator(`/searchedPost/${postId}?${queryParam}`);
     },

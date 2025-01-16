@@ -150,7 +150,7 @@ const ReComment = ({
               />
             </AuthorWrapper>
             <ContentWrapper>
-              <Content id={`reComment-${reComment.id}`}>
+              <Content id={`reComment-content-${reComment.id}`}>
                 <span>{userNickname}</span>
                 <ContentRenderer content={userContent} />
               </Content>

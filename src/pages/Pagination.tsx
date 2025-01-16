@@ -37,9 +37,12 @@ const Pagination = ({
   return (
     <PaginationContainer>
       <ul>
-        <li onClick={() => currentPage > 1 && onPageClick(currentPage - 1)}>
-          ◀
-        </li>
+        {totalPages > 0 && (
+          <li onClick={() => currentPage > 1 && onPageClick(currentPage - 1)}>
+            ◀
+          </li>
+        )}
+
         {[...Array(totalPages)].map((_, index) => (
           <PageItem key={index} isActive={index + 1 === currentPage}>
             <PageButton onClick={() => onPageClick(index + 1)}>
@@ -47,13 +50,15 @@ const Pagination = ({
             </PageButton>
           </PageItem>
         ))}
-        <li
-          onClick={() =>
-            currentPage < totalPages && onPageClick(currentPage + 1)
-          }
-        >
-          ▶
-        </li>
+        {totalPages > 0 && (
+          <li
+            onClick={() =>
+              currentPage < totalPages && onPageClick(currentPage + 1)
+            }
+          >
+            ▶
+          </li>
+        )}
       </ul>
     </PaginationContainer>
   );
