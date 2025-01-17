@@ -24,7 +24,7 @@ const PostDetail = () => {
 
   const { postId } = useParams();
 
-  const { posts, post, totalPosts } = useSelector(
+  const { posts, post, totalPosts, postNum } = useSelector(
     (state: RootState) => state.post
   );
   const [viewedPosts, setViewedPosts] = useState<number[]>([]);
@@ -36,7 +36,7 @@ const PostDetail = () => {
 
     if (pageParam) setCurrentPage(Number(pageParam));
     if (sortByParam) setSortBy(sortByParam);
-  }, [location.search, setCurrentPage, setSortBy]);
+  }, [location.search, setCurrentPage, setSortBy, divisor, postId]);
 
   useEffect(() => {
     dispatch({
@@ -110,7 +110,7 @@ const PostDetail = () => {
               />
             </div>
           ))}
-          <Pagination totalPosts={Number(totalPosts)} postId={post.id} />
+          <Pagination totalPosts={Number(totalPosts)} />
         </div>
       )}
     </PostDetailContainer>

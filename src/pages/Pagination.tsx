@@ -3,13 +3,7 @@ import styled from "styled-components";
 import { usePagination } from "../hooks/PaginationProvider";
 import { useLocation, useNavigate } from "react-router-dom";
 
-const Pagination = ({
-  totalPosts,
-  postId,
-}: {
-  totalPosts: number;
-  postId?: number;
-}) => {
+const Pagination = ({ totalPosts }: { totalPosts: number }) => {
   const location = useLocation();
   const navigator = useNavigate();
   const { currentPage, divisor, setCurrentPage, sortBy, currentCommentsPage } =
@@ -24,7 +18,7 @@ const Pagination = ({
     params.set("cPage", currentCommentsPage);
 
     navigator({
-      pathname: postId ? `/post/${postId}` : `${location.pathname}`,
+      pathname: location.pathname,
       search: params.toString(),
     });
   };
@@ -36,21 +30,20 @@ const Pagination = ({
 
   return (
     <PaginationContainer>
-      <ul>
-        {totalPages > 0 && (
+      {totalPages !== 1 && (
+        <ul>
           <li onClick={() => currentPage > 1 && onPageClick(currentPage - 1)}>
             ◀
           </li>
-        )}
 
-        {[...Array(totalPages)].map((_, index) => (
-          <PageItem key={index} isActive={index + 1 === currentPage}>
-            <PageButton onClick={() => onPageClick(index + 1)}>
-              {index + 1}
-            </PageButton>
-          </PageItem>
-        ))}
-        {totalPages > 0 && (
+          {[...Array(totalPages)].map((_, index) => (
+            <PageItem key={index} isActive={index + 1 === currentPage}>
+              <PageButton onClick={() => onPageClick(index + 1)}>
+                {index + 1}
+              </PageButton>
+            </PageItem>
+          ))}
+
           <li
             onClick={() =>
               currentPage < totalPages && onPageClick(currentPage + 1)
@@ -58,8 +51,8 @@ const Pagination = ({
           >
             ▶
           </li>
-        )}
-      </ul>
+        </ul>
+      )}
     </PaginationContainer>
   );
 };

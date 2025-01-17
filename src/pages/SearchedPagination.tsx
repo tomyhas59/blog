@@ -44,30 +44,32 @@ const SearchedPagination = ({
 
   return (
     <PaginationContainer>
-      <ul>
-        <li
-          onClick={() =>
-            searchedCurrentPage > 1 && onPageClick(searchedCurrentPage - 1)
-          }
-        >
-          ◀
-        </li>
-        {[...Array(searchedTotalPages)].map((_, index) => (
-          <PageItem key={index} isActive={index + 1 === searchedCurrentPage}>
-            <PageButton onClick={() => onPageClick(index + 1)}>
-              {index + 1}
-            </PageButton>
-          </PageItem>
-        ))}
-        <li
-          onClick={() =>
-            searchedCurrentPage < searchedTotalPages &&
-            onPageClick(searchedCurrentPage + 1)
-          }
-        >
-          ▶
-        </li>
-      </ul>
+      {searchedTotalPages > 0 && searchedTotalPages !== 1 && (
+        <ul>
+          <li
+            onClick={() =>
+              searchedCurrentPage > 1 && onPageClick(searchedCurrentPage - 1)
+            }
+          >
+            ◀
+          </li>
+          {[...Array(searchedTotalPages)].map((_, index) => (
+            <PageItem key={index} isActive={index + 1 === searchedCurrentPage}>
+              <PageButton onClick={() => onPageClick(index + 1)}>
+                {index + 1}
+              </PageButton>
+            </PageItem>
+          ))}
+          <li
+            onClick={() =>
+              searchedCurrentPage < searchedTotalPages &&
+              onPageClick(searchedCurrentPage + 1)
+            }
+          >
+            ▶
+          </li>
+        </ul>
+      )}
     </PaginationContainer>
   );
 };

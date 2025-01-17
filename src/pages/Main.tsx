@@ -30,6 +30,7 @@ const Main = () => {
   useEffect(() => {
     const params = new URLSearchParams(location.search);
     const pageParam = params.get("page");
+
     if (pageParam) setCurrentPage(Number(pageParam));
   }, [location.search, setCurrentPage]);
 

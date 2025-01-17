@@ -193,6 +193,7 @@ function* searchPosts(action: {
       searchedPosts: result.data.searchedPosts,
       totalSearchedPosts: result.data.totalSearchedPosts,
       searchOption: result.data.searchOption,
+      postNum: result.data.postNum,
     });
   } catch (err: any) {
     console.log(err);

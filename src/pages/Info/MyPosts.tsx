@@ -8,6 +8,7 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { SEARCH_POSTS_REQUEST } from "../../reducer/post";
 import MyPostListRenderer from "../../components/renderer/MyPostListRenderer";
+import { usePagination } from "../../hooks/PaginationProvider";
 
 const MyPosts: React.FC = () => {
   const [posts, setPosts] = useState<PostType[]>([]);
@@ -39,7 +40,8 @@ const MyPosts: React.FC = () => {
         searchOption,
         postId,
       });
-      navigator(`/searchedPost/${postId}`);
+
+      navigator(`/post/${postId}`);
       window.scrollTo({ top: 0, behavior: "auto" });
     },
     [dispatch, navigator]
