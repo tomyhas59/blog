@@ -8,6 +8,7 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { SEARCH_POSTS_REQUEST } from "../../reducer/post";
 import MyPostListRenderer from "../../components/renderer/MyPostListRenderer";
+import { usePagination } from "../../hooks/PaginationProvider";
 
 const MyLikes: React.FC = () => {
   const [posts, setPosts] = useState<PostType[]>([]);
@@ -15,6 +16,9 @@ const MyLikes: React.FC = () => {
   const navigator = useNavigate();
   const dispatch = useDispatch();
   const searchOption = "title";
+  const { postNum } = useSelector((state: RootState) => state.post);
+  const [postId, setPostId] = useState<number | null>(null);
+  const { divisor, setCurrentPage } = usePagination();
 
   useEffect(() => {
     const getUserLikes = async () => {
@@ -38,19 +42,28 @@ const MyLikes: React.FC = () => {
     getUserLikes();
   }, [me]);
 
+  useEffect(() => {
+    if (postNum && postId !== null) {
+      const searchedPostPage = Math.floor(Number(postNum) / divisor) + 1;
+      setCurrentPage(searchedPostPage);
+      navigator(`/post/${postId}`);
+      window.scrollTo({ top: 0, behavior: "auto" });
+
+      dispatch({ type: "RESET_POST_NUM" });
+    }
+  }, [dispatch, postNum, setCurrentPage, divisor, navigator, postId]);
+
   const onSearch = useCallback(
     (title: string, postId: number) => {
-      navigator("/search");
+      setPostId(postId);
       dispatch({
         type: SEARCH_POSTS_REQUEST,
         searchText: title,
         searchOption,
         postId,
       });
-      navigator(`/post/${postId}`);
-      window.scrollTo({ top: 0, behavior: "auto" });
     },
-    [dispatch, navigator]
+    [dispatch]
   );
 
   return (

@@ -24,7 +24,7 @@ const PostDetail = () => {
 
   const { postId } = useParams();
 
-  const { posts, post, totalPosts, postNum } = useSelector(
+  const { posts, post, totalPosts } = useSelector(
     (state: RootState) => state.post
   );
   const [viewedPosts, setViewedPosts] = useState<number[]>([]);
@@ -67,6 +67,27 @@ const PostDetail = () => {
       socket.current?.disconnect();
     };
   }, [me]);
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const commentId = params.get("commentId");
+    const reCommentId = params.get("reCommentId");
+
+    const scrollToElement = (id: string) => {
+      const element = document.getElementById(id);
+      if (element) {
+        element.scrollIntoView({
+          behavior: "auto",
+          block: "center",
+        });
+        element.style.backgroundColor = "#fffae6";
+      }
+    };
+
+    setTimeout(() => {
+      if (commentId) scrollToElement(commentId);
+      if (reCommentId) scrollToElement(reCommentId);
+    }, 200);
+  }, [location.search]);
 
   const {
     searchedPostsLoading,

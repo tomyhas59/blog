@@ -218,6 +218,9 @@ const post = (state = initialState, action: any) => {
       case "RESET_CHAT_MESSAGES":
         draft.chatMessages = [];
         break;
+      case "RESET_POST_NUM":
+        draft.postNum = null;
+        break;
       //------------------------------------------------------
       case GET_POSTS_REQUEST:
         draft.getPostsLoading = true;

@@ -4,6 +4,7 @@ import React, {
   SyntheticEvent,
   ChangeEvent,
   useRef,
+  useState,
 } from "react";
 import styled from "styled-components";
 import { useDispatch, useSelector } from "react-redux";
@@ -22,10 +23,11 @@ const CommentForm = ({
   post: PostType;
   setAddComment: React.Dispatch<React.SetStateAction<Record<number, boolean>>>;
 }) => {
-  const { addCommentDone, totalComments, commentId } = useSelector(
+  const { addCommentDone, totalComments } = useSelector(
     (state: RootState) => state.post
   );
   const [content, , setContent] = useInput();
+  const [addedComment, setAddedComment] = useState<boolean>(false);
 
   const onChangeContent = (e: ChangeEvent<HTMLTextAreaElement>) => {
     setContent(e.target.value);
@@ -69,10 +71,7 @@ const CommentForm = ({
         ? `/searchedPost/${post.id}`
         : `/post/${post.id}`;
 
-      navigator({
-        pathname,
-        search: params.toString(),
-      });
+      navigator({ pathname, search: params.toString() });
     },
     [
       currentPage,
@@ -83,8 +82,6 @@ const CommentForm = ({
       sortBy,
     ]
   );
-
-  const totalCommentPages = Math.ceil(Number(totalComments) / divisor);
 
   const onSubmitComment = useCallback(
     (e: SyntheticEvent) => {
@@ -98,22 +95,31 @@ const CommentForm = ({
         type: ADD_COMMENT_REQUEST,
         data: { content: contentWithBreaks, postId: post.id, userId: id },
       });
+
+      setAddedComment(true);
+    },
+    [content, dispatch, id, post.id]
+  );
+
+  useEffect(() => {
+    if (addedComment) {
+      const totalCommentPages = Math.ceil(Number(totalComments) / divisor);
+
       setAddComment({ [post.id]: false });
       setCurrentCommentsPage(totalCommentPages);
       setParams(totalCommentPages);
-    },
-    [
-      content,
-      dispatch,
-      id,
-      post.id,
-      setAddComment,
-      setCurrentCommentsPage,
-      setParams,
-      totalCommentPages,
-    ]
-  );
-  console.log("--------------", commentId);
+      setAddedComment(false);
+    }
+  }, [
+    post.id,
+    divisor,
+    setAddComment,
+    setCurrentCommentsPage,
+    setParams,
+    totalComments,
+    addedComment,
+  ]);
+
   return (
     <CommentWrapper>
       <Form onSubmit={onSubmitComment}>

@@ -1,10 +1,9 @@
 import React from "react";
 import styled from "styled-components";
 import { usePagination } from "../hooks/PaginationProvider";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const Pagination = ({ totalPosts }: { totalPosts: number }) => {
-  const location = useLocation();
   const navigator = useNavigate();
   const { currentPage, divisor, setCurrentPage, sortBy, currentCommentsPage } =
     usePagination();
@@ -18,7 +17,7 @@ const Pagination = ({ totalPosts }: { totalPosts: number }) => {
     params.set("cPage", currentCommentsPage);
 
     navigator({
-      pathname: location.pathname,
+      pathname: "/",
       search: params.toString(),
     });
   };

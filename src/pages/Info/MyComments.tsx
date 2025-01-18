@@ -8,6 +8,7 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { SEARCH_POSTS_REQUEST } from "../../reducer/post";
 import MyCommentListRenderer from "../../components/renderer/MyCommentListRenderer";
+import { usePagination } from "../../hooks/PaginationProvider";
 
 const MyComments: React.FC = () => {
   const [comments, setComments] = useState<CommentType[]>([]);
@@ -16,6 +17,11 @@ const MyComments: React.FC = () => {
   const navigator = useNavigate();
   const dispatch = useDispatch();
   const searchOption = "comment";
+  const { postNum } = useSelector((state: RootState) => state.post);
+  const [postId, setPostId] = useState<number | null>(null);
+  const [commentId, setCommentId] = useState<number | null>(null);
+  const { divisor, setCurrentPage } = usePagination();
+  const [type, setType] = useState<string>("");
 
   useEffect(() => {
     if (!me) return;
@@ -33,6 +39,31 @@ const MyComments: React.FC = () => {
     getUserComments();
   }, [me]);
 
+  useEffect(() => {
+    if (postNum && postId !== null) {
+      const searchedPostPage = Math.floor(Number(postNum) / divisor) + 1;
+      setCurrentPage(searchedPostPage);
+
+      const queryParam =
+        type === "comment"
+          ? `commentId=comment-content-${commentId}`
+          : `reCommentId=reComment-content-${commentId}`;
+
+      navigator(`/post/${postId}?${queryParam}`);
+
+      dispatch({ type: "RESET_POST_NUM" });
+    }
+  }, [
+    commentId,
+    type,
+    dispatch,
+    postNum,
+    setCurrentPage,
+    divisor,
+    navigator,
+    postId,
+  ]);
+
   const onSearch = useCallback(
     (
       id: number,
@@ -40,20 +71,17 @@ const MyComments: React.FC = () => {
       content: string,
       postId: number
     ) => {
+      setPostId(postId);
+      setCommentId(id);
+      setType(type);
       dispatch({
         type: SEARCH_POSTS_REQUEST,
         searchText: content,
         searchOption,
         postId,
       });
-      const queryParam =
-        type === "comment"
-          ? `commentId=comment-content-${id}`
-          : `reCommentId=reComment-content-${id}`;
-
-      navigator(`/post/${postId}?${queryParam}`);
     },
-    [dispatch, navigator, searchOption]
+    [dispatch, searchOption]
   );
 
   return (

@@ -70,28 +70,6 @@ const SearchedPostDetail = () => {
 
   console.log(searchedPosts);
 
-  useEffect(() => {
-    const params = new URLSearchParams(location.search);
-    const commentId = params.get("commentId");
-    const reCommentId = params.get("reCommentId");
-
-    const scrollToElement = (id: string) => {
-      const element = document.getElementById(id);
-      if (element) {
-        element.scrollIntoView({
-          behavior: "auto",
-          block: "center",
-        });
-        element.style.backgroundColor = "#fffae6";
-      }
-    };
-
-    setTimeout(() => {
-      if (commentId) scrollToElement(commentId);
-      if (reCommentId) scrollToElement(reCommentId);
-    }, 200);
-  }, [location.search]);
-
   const {
     searchedPostsLoading,
     removePostLoading,
