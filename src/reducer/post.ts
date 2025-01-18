@@ -14,6 +14,7 @@ const initialState = {
   totalSearchedPosts: null,
   chatMessages: [] as MessageType[],
   postNum: null,
+  commentNum: null,
 
   commentId: null,
 
@@ -218,8 +219,9 @@ const post = (state = initialState, action: any) => {
       case "RESET_CHAT_MESSAGES":
         draft.chatMessages = [];
         break;
-      case "RESET_POST_NUM":
+      case "RESET_NUM":
         draft.postNum = null;
+        draft.commentNum = null;
         break;
       //------------------------------------------------------
       case GET_POSTS_REQUEST:
@@ -283,6 +285,7 @@ const post = (state = initialState, action: any) => {
         draft.totalSearchedPosts = action.totalSearchedPosts;
         draft.searchOption = action.searchOption;
         draft.postNum = action.postNum;
+        draft.commentNum = action.commentNum;
         break;
       case SEARCH_POSTS_FAILURE:
         draft.searchedPostsLoading = false;

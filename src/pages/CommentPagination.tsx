@@ -56,8 +56,8 @@ const CommnetPagination = ({
 
   return (
     <PaginationContainer>
-      <ul>
-        {totalCommentPages > 0 && (
+      {totalCommentPages > 0 && totalCommentPages !== 1 && (
+        <ul>
           <li
             onClick={() =>
               currentCommentsPage > 1 && onPageClick(currentCommentsPage - 1)
@@ -65,15 +65,13 @@ const CommnetPagination = ({
           >
             ◀
           </li>
-        )}
-        {[...Array(totalCommentPages)].map((_, index) => (
-          <PageItem key={index} isActive={index + 1 === currentCommentsPage}>
-            <PageButton onClick={() => onPageClick(index + 1)}>
-              {index + 1}
-            </PageButton>
-          </PageItem>
-        ))}
-        {totalCommentPages > 0 && (
+          {[...Array(totalCommentPages)].map((_, index) => (
+            <PageItem key={index} isActive={index + 1 === currentCommentsPage}>
+              <PageButton onClick={() => onPageClick(index + 1)}>
+                {index + 1}
+              </PageButton>
+            </PageItem>
+          ))}
           <li
             onClick={() =>
               currentCommentsPage < totalCommentPages &&
@@ -82,8 +80,8 @@ const CommnetPagination = ({
           >
             ▶
           </li>
-        )}
-      </ul>
+        </ul>
+      )}
     </PaginationContainer>
   );
 };

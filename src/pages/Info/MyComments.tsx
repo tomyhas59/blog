@@ -17,11 +17,13 @@ const MyComments: React.FC = () => {
   const navigator = useNavigate();
   const dispatch = useDispatch();
   const searchOption = "comment";
-  const { postNum } = useSelector((state: RootState) => state.post);
+  const { postNum, commentNum } = useSelector((state: RootState) => state.post);
   const [postId, setPostId] = useState<number | null>(null);
-  const [commentId, setCommentId] = useState<number | null>(null);
-  const { divisor, setCurrentPage } = usePagination();
-  const [type, setType] = useState<string>("");
+  const [commentOrReCommentId, setCommentOrReCommentId] = useState<
+    number | null
+  >(null);
+  const { divisor, setCurrentPage, setCurrentCommentsPage } = usePagination();
+  const [category, setCategory] = useState<string>("");
 
   useEffect(() => {
     if (!me) return;
@@ -40,45 +42,55 @@ const MyComments: React.FC = () => {
   }, [me]);
 
   useEffect(() => {
-    if (postNum && postId !== null) {
+    if (
+      postNum &&
+      commentNum &&
+      postId !== null &&
+      commentOrReCommentId !== null
+    ) {
       const searchedPostPage = Math.floor(Number(postNum) / divisor) + 1;
+      const searchedCommentPage = Math.floor(Number(commentNum) / divisor) + 1;
       setCurrentPage(searchedPostPage);
-
+      setCurrentCommentsPage(searchedCommentPage);
       const queryParam =
-        type === "comment"
-          ? `commentId=comment-content-${commentId}`
-          : `reCommentId=reComment-content-${commentId}`;
+        category === "comment"
+          ? `commentId=comment-content-${commentOrReCommentId}`
+          : `reCommentId=reComment-content-${commentOrReCommentId}`;
 
       navigator(`/post/${postId}?${queryParam}`);
 
-      dispatch({ type: "RESET_POST_NUM" });
+      dispatch({ type: "RESET_NUM" });
     }
   }, [
-    commentId,
-    type,
+    commentOrReCommentId,
+    category,
     dispatch,
     postNum,
     setCurrentPage,
     divisor,
     navigator,
     postId,
+    commentNum,
+    setCurrentCommentsPage,
   ]);
 
   const onSearch = useCallback(
     (
       id: number,
-      type: "comment" | "reComment",
+      category: "comment" | "reComment",
       content: string,
       postId: number
     ) => {
       setPostId(postId);
-      setCommentId(id);
-      setType(type);
+      setCommentOrReCommentId(id);
+      setCategory(category);
       dispatch({
         type: SEARCH_POSTS_REQUEST,
+        commentOrReCommentId: id,
         searchText: content,
         searchOption,
         postId,
+        category,
       });
     },
     [dispatch, searchOption]

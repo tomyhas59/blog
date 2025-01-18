@@ -29,7 +29,7 @@ const Pagination = ({ totalPosts }: { totalPosts: number }) => {
 
   return (
     <PaginationContainer>
-      {totalPages !== 1 && (
+      {totalPages > 0 && totalPages !== 1 && (
         <ul>
           <li onClick={() => currentPage > 1 && onPageClick(currentPage - 1)}>
             ◀

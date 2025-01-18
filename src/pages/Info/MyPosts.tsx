@@ -43,7 +43,7 @@ const MyPosts: React.FC = () => {
       navigator(`/post/${postId}`);
       window.scrollTo({ top: 0, behavior: "auto" });
 
-      dispatch({ type: "RESET_POST_NUM" });
+      dispatch({ type: "RESET_NUM" });
     }
   }, [dispatch, postNum, setCurrentPage, divisor, navigator, postId]);
 

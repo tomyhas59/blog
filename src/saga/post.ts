@@ -166,10 +166,15 @@ function searchPostsApi(
   searchOption: string,
   postId?: number,
   page?: number,
-  limit?: number
+  limit?: number,
+  commentOrReCommentId?: number,
+  category?: string
 ) {
   return axios.get(
-    `/post/search?searchText=${searchText}&searchOption=${searchOption}&postId=${postId}&page=${page}&limit=${limit}`
+    `/post/search?searchText=${searchText}&searchOption=${searchOption}&postId=${postId}&page=${page}&limit=${limit}`,
+    {
+      params: { commentOrReCommentId, category },
+    }
   );
 }
 function* searchPosts(action: {
@@ -178,6 +183,8 @@ function* searchPosts(action: {
   postId?: number;
   page?: number;
   limit?: number;
+  commentOrReCommentId?: number;
+  category?: string;
 }): SagaIterator {
   try {
     const result = yield call(
@@ -186,7 +193,9 @@ function* searchPosts(action: {
       action.searchOption,
       action.postId,
       action.page,
-      action.limit
+      action.limit,
+      action.commentOrReCommentId,
+      action.category
     );
     yield put({
       type: SEARCH_POSTS_SUCCESS,
@@ -194,6 +203,7 @@ function* searchPosts(action: {
       totalSearchedPosts: result.data.totalSearchedPosts,
       searchOption: result.data.searchOption,
       postNum: result.data.postNum,
+      commentNum: result.data.commentNum,
     });
   } catch (err: any) {
     console.log(err);
