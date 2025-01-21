@@ -15,10 +15,10 @@ const ContentRenderer = ({ content }: { content: string }) => {
   return (
     <Content>
       {lines.map((line, index) => (
-        <React.Fragment key={index}>
+        <div key={index}>
           {line}
           {index !== lines.length - 1 && <br />}
-        </React.Fragment>
+        </div>
       ))}
     </Content>
   );

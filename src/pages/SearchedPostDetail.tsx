@@ -10,6 +10,7 @@ import { usePagination } from "../hooks/PaginationProvider";
 import SearchedPagination from "./SearchedPagination";
 import SeachedPost from "../components/SeachedPost";
 import CommonPost from "../components/CommonPost";
+import styled from "styled-components";
 
 const SearchedPostDetail = () => {
   const dispatch = useDispatch();
@@ -84,7 +85,7 @@ const SearchedPostDetail = () => {
   } = useSelector((state: RootState) => state.post);
 
   return (
-    <>
+    <SearchedPostDetailContainer>
       {removePostLoading ||
       updatePostLoading ||
       searchedPostsLoading ||
@@ -116,8 +117,12 @@ const SearchedPostDetail = () => {
           />
         </div>
       )}
-    </>
+    </SearchedPostDetailContainer>
   );
 };
 
 export default SearchedPostDetail;
+
+const SearchedPostDetailContainer = styled.div`
+  margin: 0 auto;
+`;
