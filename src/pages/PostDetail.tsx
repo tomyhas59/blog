@@ -101,6 +101,8 @@ const PostDetail = () => {
     likeReCommentLoading,
     unLikeReCommentLoading,
     getCommentsLoading,
+    uploadImagesLoading,
+    removeImageLoading,
   } = useSelector((state: RootState) => state.post);
 
   return (
@@ -115,6 +117,8 @@ const PostDetail = () => {
       likeReCommentLoading ||
       unLikeReCommentLoading ||
       getCommentsLoading ||
+      uploadImagesLoading ||
+      removeImageLoading ||
       unLikePostLoading ? (
         <Spinner />
       ) : null}

@@ -398,7 +398,6 @@ const CommonPost = () => {
           ) : null}
         </InPostWrapper>
       </PostWrapper>
-
       <CommentContainer>
         <CommentHeader>
           <CommentNum>
