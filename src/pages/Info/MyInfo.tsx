@@ -1,4 +1,11 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, {
+  ChangeEvent,
+  SyntheticEvent,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "../../reducer";
 import moment from "moment";
@@ -7,6 +14,8 @@ import axios from "axios";
 import { baseURL } from "../../config";
 import { useDispatch } from "react-redux";
 import Spinner from "../../components/Spinner";
+import useInput from "../../hooks/useInput";
+import { FormGroup, Label, Button, CheckMessage, Input } from "../Sign";
 
 export const DEFAULT_PROFILE_IMAGE =
   "https://cdn.pixabay.com/photo/2023/04/12/01/47/cartoon-7918608_1280.png";
@@ -18,8 +27,40 @@ const MyInfo: React.FC = () => {
   const [previewUrl, setPreviewUrl] = useState<string>("");
   const [imageSrc, setImageSrc] = useState<string>(me?.Image?.src || "");
   const dispatch = useDispatch();
-
   const [isLoading, setIsLoading] = useState(false);
+  const [changePassword, setChangePassword] = useState<boolean>(false);
+
+  const [prevPassword, onChangePrevPassword] = useInput();
+  const [password, onChangePassword] = useInput();
+  const [passwordConfirm, setPasswordConfirm] = useState("");
+  const [passwordError, setPasswordError] = useState(false);
+
+  const handlePasswordConfirmChange = useCallback(
+    (e: ChangeEvent<HTMLInputElement>) => {
+      setPasswordConfirm(e.target.value);
+      setPasswordError(e.target.value !== password);
+    },
+    [password]
+  );
+
+  const changePasswordSubmit = useCallback(
+    (e: SyntheticEvent) => {
+      e.preventDefault();
+      if (!prevPassword || !password || !passwordConfirm) {
+        alert("빈 칸을 확인하세요");
+        return;
+      }
+      if (password !== passwordConfirm) {
+        setPasswordError(true);
+        return;
+      }
+      dispatch({
+        type: "",
+        data: { prevPassword, password, passwordError },
+      });
+    },
+    [dispatch, prevPassword, password, passwordConfirm, passwordError]
+  );
 
   useEffect(() => {
     const fetchProfileImage = async () => {
@@ -82,7 +123,7 @@ const MyInfo: React.FC = () => {
     }
   };
 
-  const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const profileImageSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     if (!file || !me) return;
@@ -121,7 +162,7 @@ const MyInfo: React.FC = () => {
       {isLoading && <Spinner />}
       <InfoContainer>
         <ProfileSection>
-          <form encType="multipart/form-data" onSubmit={onSubmit}>
+          <form encType="multipart/form-data" onSubmit={profileImageSubmit}>
             {imageSrc && !file && (
               <RemoveButton type="button" onClick={onRemoveImage}>
                 ✖
@@ -162,8 +203,50 @@ const MyInfo: React.FC = () => {
             <UserInfo>
               <strong>가입일:</strong> {formattedDate}
             </UserInfo>
+            <UserInfo>
+              <ChangePasswordButton
+                onClick={() => setChangePassword((prev) => !prev)}
+              >
+                비밀번호 변경
+              </ChangePasswordButton>
+            </UserInfo>
           </InfoText>
         </ProfileSection>
+        {changePassword && (
+          <ChangePasswordForm onSubmit={changePasswordSubmit}>
+            <FormGroup>
+              <Label>현재 비밀번호</Label>
+              <Input
+                type="password"
+                value={prevPassword}
+                onChange={onChangePrevPassword}
+                placeholder="현재 비밀번호"
+              />
+            </FormGroup>
+            <FormGroup>
+              <Label>비밀번호</Label>
+              <Input
+                type="password"
+                value={password}
+                onChange={onChangePassword}
+                placeholder="비밀번호"
+              />
+            </FormGroup>
+            <FormGroup>
+              <Label>비밀번호 확인</Label>
+              <Input
+                type="password"
+                value={passwordConfirm}
+                onChange={handlePasswordConfirmChange}
+                placeholder="비밀번호 확인"
+              />
+            </FormGroup>
+            {passwordError && (
+              <CheckMessage>비밀번호가 일치하지 않습니다</CheckMessage>
+            )}
+            <Button type="submit">등록</Button>
+          </ChangePasswordForm>
+        )}
       </InfoContainer>
     </>
   );
@@ -324,4 +407,21 @@ const RemoveButton = styled.button`
     height: 15px;
     font-size: 1em;
   }
+`;
+
+const ChangePasswordButton = styled.button`
+  background-color: ${(props) => props.theme.mainColor};
+  color: #ffffff;
+  padding: 8px;
+  border-radius: 10px;
+  &:hover {
+    background-color: ${(props) => props.theme.subColor};
+  }
+`;
+
+const ChangePasswordForm = styled.form`
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 `;

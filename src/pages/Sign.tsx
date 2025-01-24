@@ -75,7 +75,7 @@ const Sign = () => {
               type="email"
               value={email}
               onChange={onChangeEmail}
-              placeholder="이메일을 입력해주세요"
+              placeholder="이메일"
               autoComplete="email"
             />
           </FormGroup>
@@ -85,7 +85,7 @@ const Sign = () => {
               type="text"
               value={nickname}
               onChange={onChangeNickname}
-              placeholder="닉네임을 입력해주세요"
+              placeholder="닉네임"
               autoComplete="nickname"
             />
           </FormGroup>
@@ -95,7 +95,7 @@ const Sign = () => {
               type="password"
               value={password}
               onChange={onChangePassword}
-              placeholder="비밀번호를 입력해주세요"
+              placeholder="비밀번호"
               autoComplete="new-password"
             />
           </FormGroup>
@@ -105,7 +105,7 @@ const Sign = () => {
               type="password"
               value={passwordConfirm}
               onChange={handlePasswordConfirmChange}
-              placeholder="비밀번호를 다시 입력해주세요"
+              placeholder="비밀번호 확인"
               autoComplete="new-password"
             />
           </FormGroup>
@@ -122,6 +122,9 @@ const Sign = () => {
 export default Sign;
 
 const RegistrationContainer = styled.form`
+  display: flex;
+  flex-direction: column;
+
   max-width: 400px;
   width: 90%;
   margin: 40px auto;
@@ -143,11 +146,11 @@ const Title = styled.h2`
   color: ${(props) => props.theme.mainColor};
 `;
 
-const FormGroup = styled.div`
+export const FormGroup = styled.div`
   margin-bottom: 10px;
 `;
 
-const Label = styled.label`
+export const Label = styled.label`
   display: block;
   margin-bottom: 8px;
   font-weight: bold;
@@ -155,10 +158,10 @@ const Label = styled.label`
   color: ${(props) => props.theme.textColor};
 `;
 
-const Input = styled.input`
+export const Input = styled.input`
   width: 100%;
   padding: 12px;
-  font-size: 16px;
+  font-size: 12px;
   border: 1px solid #ddd;
   border-radius: 8px;
   box-sizing: border-box;
@@ -170,8 +173,7 @@ const Input = styled.input`
   }
 `;
 
-const Button = styled.button`
-  width: 100%;
+export const Button = styled.button`
   padding: 12px;
   font-size: 16px;
   background-color: ${(props) => props.theme.mainColor};
@@ -187,7 +189,7 @@ const Button = styled.button`
   }
 `;
 
-const CheckMessage = styled.div`
+export const CheckMessage = styled.div`
   color: red;
   margin-top: 10px;
   text-align: center;
