@@ -22,9 +22,8 @@ export const DEFAULT_PROFILE_IMAGE =
   "https://cdn.pixabay.com/photo/2023/04/12/01/47/cartoon-7918608_1280.png";
 
 const MyInfo: React.FC = () => {
-  const { me, changePasswordDone, changePasswordError } = useSelector(
-    (state: RootState) => state.user
-  );
+  const { me, changePasswordDone, changePasswordError, changePasswordLoading } =
+    useSelector((state: RootState) => state.user);
   const imageInput = useRef<HTMLInputElement>(null);
   const [file, setFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string>("");
@@ -170,7 +169,7 @@ const MyInfo: React.FC = () => {
 
   return (
     <>
-      {isLoading && <Spinner />}
+      {isLoading || (changePasswordLoading && <Spinner />)}
       <InfoContainer>
         <ProfileSection>
           <form encType="multipart/form-data" onSubmit={profileImageSubmit}>
