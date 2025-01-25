@@ -1,4 +1,7 @@
 import {
+  CHANGE_PASSWORD_FAILURE,
+  CHANGE_PASSWORD_REQUESE,
+  CHANGE_PASSWORD_SUCCESS,
   FOLLOW_FAILURE,
   FOLLOW_REQUEST,
   FOLLOW_SUCCESS,
@@ -79,6 +82,31 @@ function* logIn(action: { data: any }): SagaIterator {
 function* watchLogin() {
   yield takeEvery<any>(LOG_IN_REQUEST, logIn);
 }
+//----------------------------------------------------
+function changePasswordAPI(data: any) {
+  return axios.post("/user/changePassword", data);
+}
+function* changePassword(action: { data: any }): SagaIterator {
+  try {
+    const result = yield call(changePasswordAPI, action.data);
+    console.log(result);
+    yield put({
+      //put은 dispatch
+      type: CHANGE_PASSWORD_SUCCESS,
+    });
+  } catch (err: any) {
+    console.error(err);
+    yield put({
+      type: CHANGE_PASSWORD_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+
+function* watchChangePassword() {
+  yield takeLatest<any>(CHANGE_PASSWORD_REQUESE, changePassword);
+}
+
 //--------------------------------------------------------
 
 function refreshTokenAPI() {
@@ -191,6 +219,7 @@ export default function* userSaga() {
     fork(watchRefreshToken),
     fork(watchFollow),
     fork(watchUnFollow),
+    fork(watchChangePassword),
   ]);
   //fork:  함수의 비동기적인 호출 사용
   //call과 달리 순서 상관없이 실행할 때 사용

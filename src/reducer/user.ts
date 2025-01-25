@@ -15,6 +15,10 @@ export const initialState = {
   signUpDone: false,
   signUpError: null,
 
+  changePasswordLoading: false,
+  changePasswordDone: false,
+  changePasswordError: null,
+
   refreshTokenLoading: false,
   refreshTokenDone: false,
   refreshTokenError: null,
@@ -45,6 +49,10 @@ export const LOG_OUT_SUCCESS = "LOG_OUT_SUCCESS";
 export const SIGN_UP_FAILURE = "SIGN_UP_FAILURE";
 export const SIGN_UP_REQUEST = "SIGN_UP_REQUEST";
 export const SIGN_UP_SUCCESS = "SIGN_UP_SUCCESS";
+
+export const CHANGE_PASSWORD_REQUESE = "CHANGE_PASSWORD_REQUEST";
+export const CHANGE_PASSWORD_SUCCESS = "CHANGE_PASSWORD_SUCCESS";
+export const CHANGE_PASSWORD_FAILURE = "CHANGE_PASSWORD_FAILURE";
 
 export const REFRESH_TOKEN_FAILURE = "REFRESH_TOKEN_FAILURE";
 export const REFRESH_TOKEN_REQUEST = "REFRESH_TOKEN_REQUEST";
@@ -117,6 +125,20 @@ const user = (state = initialState, action: Action) => {
       case SIGN_UP_FAILURE:
         draft.signUpLoading = false;
         draft.signUpError = action.error;
+        break;
+      //--------------------------------------------
+      case CHANGE_PASSWORD_REQUESE:
+        draft.changePasswordError = null;
+        draft.changePasswordLoading = true;
+        draft.changePasswordDone = false;
+        break;
+      case CHANGE_PASSWORD_SUCCESS:
+        draft.changePasswordLoading = false;
+        draft.changePasswordDone = true;
+        break;
+      case CHANGE_PASSWORD_FAILURE:
+        draft.changePasswordLoading = false;
+        draft.changePasswordError = action.error;
         break;
       //--------------------------------------------
       case REFRESH_TOKEN_REQUEST:

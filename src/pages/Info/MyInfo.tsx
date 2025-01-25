@@ -16,12 +16,15 @@ import { useDispatch } from "react-redux";
 import Spinner from "../../components/Spinner";
 import useInput from "../../hooks/useInput";
 import { FormGroup, Label, Button, CheckMessage, Input } from "../Sign";
+import { CHANGE_PASSWORD_REQUESE } from "../../reducer/user";
 
 export const DEFAULT_PROFILE_IMAGE =
   "https://cdn.pixabay.com/photo/2023/04/12/01/47/cartoon-7918608_1280.png";
 
 const MyInfo: React.FC = () => {
-  const { me } = useSelector((state: RootState) => state.user);
+  const { me, changePasswordDone, changePasswordError } = useSelector(
+    (state: RootState) => state.user
+  );
   const imageInput = useRef<HTMLInputElement>(null);
   const [file, setFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string>("");
@@ -31,36 +34,44 @@ const MyInfo: React.FC = () => {
   const [changePassword, setChangePassword] = useState<boolean>(false);
 
   const [prevPassword, onChangePrevPassword] = useInput();
-  const [password, onChangePassword] = useInput();
+  const [newPassword, onChangeNewPassword] = useInput();
   const [passwordConfirm, setPasswordConfirm] = useState("");
   const [passwordError, setPasswordError] = useState(false);
 
   const handlePasswordConfirmChange = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
       setPasswordConfirm(e.target.value);
-      setPasswordError(e.target.value !== password);
+      setPasswordError(e.target.value !== newPassword);
     },
-    [password]
+    [newPassword]
   );
 
   const changePasswordSubmit = useCallback(
     (e: SyntheticEvent) => {
       e.preventDefault();
-      if (!prevPassword || !password || !passwordConfirm) {
+      if (!prevPassword || !newPassword || !passwordConfirm) {
         alert("빈 칸을 확인하세요");
         return;
       }
-      if (password !== passwordConfirm) {
+      if (newPassword !== passwordConfirm) {
         setPasswordError(true);
         return;
       }
       dispatch({
-        type: "",
-        data: { prevPassword, password, passwordError },
+        type: CHANGE_PASSWORD_REQUESE,
+        data: { prevPassword, newPassword, userId: me?.id },
       });
     },
-    [dispatch, prevPassword, password, passwordConfirm, passwordError]
+    [dispatch, prevPassword, newPassword, passwordConfirm, passwordError]
   );
+
+  useEffect(() => {
+    if (changePasswordDone) {
+      alert("비밀번호가 변경되었습니다.");
+      setChangePassword(false);
+    }
+    if (changePasswordError) alert("비밀번호가 다릅니다");
+  }, [changePasswordDone, changePasswordError]);
 
   useEffect(() => {
     const fetchProfileImage = async () => {
@@ -227,8 +238,8 @@ const MyInfo: React.FC = () => {
               <Label>비밀번호</Label>
               <Input
                 type="password"
-                value={password}
-                onChange={onChangePassword}
+                value={newPassword}
+                onChange={onChangeNewPassword}
                 placeholder="비밀번호"
               />
             </FormGroup>
