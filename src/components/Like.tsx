@@ -27,6 +27,16 @@ const Like = ({
   const id = me?.id;
   const liked = item.Likers?.find((liker: LikeType) => liker.id === me?.id);
   const dispatch = useDispatch();
+  const [hearts, setHearts] = useState<{ id: number; isLike: boolean }[]>([]);
+
+  const triggerHeartAnimation = (isLike: boolean) => {
+    const newHeart = Date.now();
+    setHearts((prev) => [...prev, { id: newHeart, isLike }]);
+
+    setTimeout(() => {
+      setHearts((prev) => prev.filter((h) => h.id !== newHeart));
+    }, 1000);
+  };
 
   //좋아요 누른 유저-------------------------
   const [showLikers, setShowLikers] = useState(false);
@@ -34,27 +44,32 @@ const Like = ({
   const onLike = useCallback(
     (e: SyntheticEvent) => {
       e.preventDefault();
-      if (!id) {
-        return alert("로그인이 필요합니다");
-      }
-      if (itemType === "post") {
-        dispatch({
-          type: LIKE_POST_REQUEST,
-          data: item.id,
-        });
-      } else if (itemType === "comment") {
-        dispatch({
-          type: LIKE_COMMENT_REQUEST,
-          data: item.id,
-        });
-      } else if (itemType === "reComment")
-        dispatch({
-          type: LIKE_RECOMMENT_REQUEST,
-          data: {
-            commentId,
-            reCommentId: item.id,
-          },
-        });
+
+      setTimeout(() => {
+        if (!id) {
+          return alert("로그인이 필요합니다");
+        }
+        if (itemType === "post") {
+          dispatch({
+            type: LIKE_POST_REQUEST,
+            data: item.id,
+          });
+        } else if (itemType === "comment") {
+          dispatch({
+            type: LIKE_COMMENT_REQUEST,
+            data: item.id,
+          });
+        } else if (itemType === "reComment")
+          dispatch({
+            type: LIKE_RECOMMENT_REQUEST,
+            data: {
+              commentId,
+              reCommentId: item.id,
+            },
+          });
+      }, 500);
+
+      triggerHeartAnimation(false);
     },
     [dispatch, id, item.id, commentId, itemType]
   );
@@ -83,6 +98,7 @@ const Like = ({
             reCommentId: item.id,
           },
         });
+      triggerHeartAnimation(true);
     },
     [dispatch, id, item.id, commentId, itemType]
   );
@@ -115,6 +131,11 @@ const Like = ({
           ♡
         </LikeButton>
       )}
+
+      {hearts.map(({ id, isLike }) => (
+        <Heart key={id} isLike={isLike} />
+      ))}
+
       {showLikers && item.Likers?.length > 0 && (
         <LikersList>
           {item.Likers.map((liker: LikeType) => (
@@ -158,4 +179,46 @@ const LikersList = styled.ul`
 
 const LikersListItem = styled.li`
   color: ${(props) => props.theme.mainColor};
+`;
+
+const Heart = styled.div<{ isLike: boolean }>`
+  position: absolute;
+  top: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 20px;
+  color: red;
+  animation: ${({ isLike }) => (isLike ? "popUp" : "popDown")} 0.5s ease-out
+    forwards;
+
+  &::before {
+    content: "💖";
+  }
+
+  @keyframes popUp {
+    0% {
+      opacity: 1;
+      transform: translateX(-50%) scale(1);
+    }
+    50% {
+      transform: translateX(-50%) translateY(-20px) scale(1.2);
+    }
+    100% {
+      opacity: 0;
+      transform: translateX(-50%) translateY(-40px) scale(1);
+    }
+  }
+
+  @keyframes popDown {
+    0% {
+      opacity: 1;
+      transform: translateX(-50%) translateY(-40px) scale(1);
+    }
+    50% {
+      transform: translateX(-50%) translateY(-20px) scale(1.2);
+    }
+    100% {
+      opacity: 0;
+    }
+  }
 `;

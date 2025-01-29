@@ -1,5 +1,5 @@
 import axios from "axios";
-import { fork, takeLatest, put, all, call } from "redux-saga/effects";
+import { fork, takeLatest, put, all, call, delay } from "redux-saga/effects";
 import {
   ADD_COMMENT_FAILURE,
   ADD_COMMENT_REQUEST,
@@ -539,6 +539,7 @@ function likePostAPI(data: any) {
 function* likePost(action: { data: any }): SagaIterator {
   try {
     const result = yield call(likePostAPI, action.data);
+
     yield put({
       //put은 dipatch
       type: LIKE_POST_SUCCESS,

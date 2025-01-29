@@ -61,7 +61,7 @@ const MyInfo: React.FC = () => {
         data: { prevPassword, newPassword, userId: me?.id },
       });
     },
-    [dispatch, prevPassword, newPassword, passwordConfirm, passwordError]
+    [dispatch, prevPassword, newPassword, passwordConfirm, me?.id]
   );
 
   useEffect(() => {
