@@ -16,7 +16,7 @@ import { useDispatch } from "react-redux";
 import Spinner from "../../components/Spinner";
 import useInput from "../../hooks/useInput";
 import { FormGroup, Label, Button, CheckMessage, Input } from "../Sign";
-import { CHANGE_PASSWORD_REQUESE } from "../../reducer/user";
+import { CHANGE_PASSWORD_REQUESE, MODIFY_NICKNAME } from "../../reducer/user";
 
 export const DEFAULT_PROFILE_IMAGE =
   "https://cdn.pixabay.com/photo/2023/04/12/01/47/cartoon-7918608_1280.png";
@@ -34,8 +34,12 @@ const MyInfo: React.FC = () => {
 
   const [prevPassword, onChangePrevPassword] = useInput();
   const [newPassword, onChangeNewPassword] = useInput();
+  const [newNickname, onChangeNewNickname] = useInput();
   const [passwordConfirm, setPasswordConfirm] = useState("");
   const [passwordError, setPasswordError] = useState(false);
+
+  const [modifyNickname, setModifyNickname] = useState<boolean>(false);
+  const newNicknameRef = useRef<HTMLInputElement | null>(null);
 
   const handlePasswordConfirmChange = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
@@ -58,7 +62,7 @@ const MyInfo: React.FC = () => {
       }
       dispatch({
         type: CHANGE_PASSWORD_REQUESE,
-        data: { prevPassword, newPassword, userId: me?.id },
+        data: { prevPassword, newPassword },
       });
     },
     [dispatch, prevPassword, newPassword, passwordConfirm, me?.id]
@@ -158,12 +162,34 @@ const MyInfo: React.FC = () => {
       setFile(null);
       setPreviewUrl("");
       alert("등록되었습니다.");
-      setIsLoading(false);
+
       if (imageInput.current) {
         imageInput.current.value = "";
       }
-    } catch (error) {
-      console.error("Error uploading image:", error);
+    } catch (err) {
+      console.error("Error uploading image:", err);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const modifyNicknameSubmit = async (e: SyntheticEvent) => {
+    e.preventDefault();
+    try {
+      if (newNickname === me.nickname || newNickname === "") return;
+
+      setIsLoading(true);
+      await axios.post("/user/modifyNickname", { newNickname });
+      setModifyNickname(false);
+
+      dispatch({
+        type: MODIFY_NICKNAME,
+        data: newNickname,
+      });
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -205,7 +231,25 @@ const MyInfo: React.FC = () => {
           <InfoText>
             <h1>내 정보</h1>
             <UserInfo>
-              <strong>사용자명:</strong> {me.nickname}
+              <strong>사용자명:</strong> {!modifyNickname && me?.nickname}
+              {modifyNickname ? (
+                <ModifyNicknameForm onSubmit={modifyNicknameSubmit}>
+                  <input
+                    ref={newNicknameRef}
+                    type="text"
+                    value={newNickname}
+                    onChange={onChangeNewNickname}
+                  />
+                  <SubmitButton type="submit">등록</SubmitButton>
+                  <CancelButton onClick={() => setModifyNickname(false)}>
+                    취소
+                  </CancelButton>
+                </ModifyNicknameForm>
+              ) : (
+                <ModifyNicknameButton onClick={() => setModifyNickname(true)}>
+                  수정
+                </ModifyNicknameButton>
+              )}
             </UserInfo>
             <UserInfo>
               <strong>이메일:</strong> {me.email}
@@ -314,6 +358,22 @@ const ProfileImage = styled.img`
   }
 `;
 
+const ModifyNicknameForm = styled.form`
+  input {
+    width: 150px;
+  }
+  button {
+  }
+`;
+const ModifyNicknameButton = styled.button`
+  background-color: ${(props) => props.theme.mainColor};
+  color: #ffffff;
+  padding: 8px;
+  border-radius: 10px;
+  &:hover {
+    background-color: ${(props) => props.theme.subColor};
+  }
+`;
 const InfoText = styled.div`
   display: flex;
   flex-direction: column;
@@ -338,7 +398,10 @@ const UserInfo = styled.p`
   font-size: 1em;
   color: #666666;
   margin: 5px 0;
-
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
   > strong {
     font-weight: 600;
     color: #444444;
@@ -358,12 +421,12 @@ const ButtonContainer = styled.div`
 const SubmitButton = styled.button`
   background-color: ${(props) => props.theme.mainColor};
   color: white;
-  padding: 10px 20px;
+  padding: 5px 10px;
   border: none;
   border-radius: 5px;
   cursor: pointer;
   transition: background-color 0.3s ease;
-  margin-right: 10px;
+  margin-right: 2px;
 
   &:hover {
     background-color: ${(props) => props.theme.subColor};
@@ -380,7 +443,7 @@ const SubmitButton = styled.button`
 const CancelButton = styled.button`
   background-color: #f44336;
   color: white;
-  padding: 10px 20px;
+  padding: 5px 10px;
   border: none;
   border-radius: 5px;
   cursor: pointer;

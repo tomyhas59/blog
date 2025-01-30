@@ -89,7 +89,6 @@ function changePasswordAPI(data: any) {
 function* changePassword(action: { data: any }): SagaIterator {
   try {
     const result = yield call(changePasswordAPI, action.data);
-    console.log(result);
     yield put({
       //put은 dispatch
       type: CHANGE_PASSWORD_SUCCESS,

@@ -124,13 +124,12 @@ const PostForm: React.FC<PostFormProps> = ({
         type: ADD_POST_REQUEST,
         data: formData,
       });
+
       setTogglePostForm(false);
       if (textareaRef.current) textareaRef.current.style.height = "auto";
-
       setContent("");
       setTitle("");
       navigator("/");
-      window.location.reload();
     },
 
     [title, content, imagePaths, dispatch, setTogglePostForm, navigator]

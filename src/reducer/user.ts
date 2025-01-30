@@ -70,6 +70,8 @@ export const UNFOLLOW_FAILURE = "UNFOLLOW_FAILURE";
 export const UNFOLLOW_REQUEST = "UNFOLLOW_REQUEST";
 export const UNFOLLOW_SUCCESS = "UNFOLLOW_SUCCESS";
 
+export const MODIFY_NICKNAME = "MODIFY_NICKNAME";
+
 interface Action<T = any> {
   type: string;
   data?: T;
@@ -196,6 +198,10 @@ const user = (state = initialState, action: Action) => {
         draft.unFollowError = action.error;
         break;
       //----------------------------------------------
+      case MODIFY_NICKNAME:
+        if (draft.me) {
+          draft.me.nickname = action.data;
+        }
       case "SET_USER_IMAGE":
         if (draft.me) {
           draft.me.Image = action.data;
