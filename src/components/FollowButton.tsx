@@ -65,7 +65,6 @@ const Button = styled.button`
 
   &:hover {
     transform: translateY(-2px);
-    color: ${({ theme }) => theme.charColor};
   }
 `;
 

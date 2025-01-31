@@ -49,7 +49,7 @@ const AppLayout = ({ children }: any) => {
         (location.pathname === "/" ||
           location.pathname.includes("post") ||
           location.pathname.includes("search")) && (
-          <ShowPostForm onClick={showPostForm}></ShowPostForm>
+          <ShowPostForm onClick={showPostForm}>글쓰기</ShowPostForm>
         )}
       <Footer />
     </LayoutWrapper>
@@ -80,53 +80,26 @@ const ShowPostForm = styled.div`
   align-items: center;
   width: 70px;
   height: 70px;
-  font-size: 50px;
   text-align: center;
   border-radius: 50%;
   background: ${(props) => props.theme.mainColor};
   color: #fff;
-  border: 2px solid ${(props) => props.theme.mainColor};
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   position: fixed;
   bottom: 15%;
   right: 5%;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.5s ease;
   z-index: 98;
   overflow: hidden;
-  &::before {
-    content: "✚";
-    position: absolute;
-    font-size: 1.5rem;
-    opacity: 1;
-    transform: scale(1);
-  }
   &:hover {
-    transform: scale(1.1);
-    background: ${(props) => props.theme.mainColor};
-    border-radius: 15%;
-    &::before {
-      opacity: 0;
-      transform: scale(0);
-    }
-  }
-  &:hover::after {
-    content: "✚";
-    position: absolute;
-    font-size: 2rem;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%) scale(1.2);
-    opacity: 1;
+    transform: translateY(-2px);
+    background-color: ${(props) => props.theme.hoverMainColor};
+    color: ${(props) => props.theme.charColor};
   }
   @media (max-width: 480px) {
     width: 50px;
     height: 50px;
     font-size: 30px;
-    &::before,
-    &::after {
-      font-size: 1rem;
-    }
   }
 `;
 const Overlay = styled.div`

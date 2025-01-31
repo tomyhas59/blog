@@ -444,7 +444,6 @@ const PostTitle = styled.div`
   flex: 1;
   font-size: 15px;
   font-weight: bold;
-  color: #333;
   transition: color 0.3s ease;
   display: flex;
   align-items: center;
@@ -476,7 +475,7 @@ const CommentNum = styled.span`
   font-size: 15px;
   font-weight: bold;
   margin: 5px;
-  color: "#000";
+  color: ${(props) => props.theme.charColor};
 `;
 
 const CommentContainer = styled.div`
@@ -516,7 +515,7 @@ const NicknameButton = styled.button`
   border-radius: 30%;
   align-items: center;
   min-width: 70px;
-  color: ${(props) => props.theme.mainColor};
+  color: ${(props) => props.theme.charColor};
   font-weight: bold;
   transition: transform 0.3s ease, color 0.3s ease;
   img {

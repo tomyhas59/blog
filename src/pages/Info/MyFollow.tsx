@@ -128,10 +128,9 @@ const FollowList = styled.div`
 
 const SectionHeading = styled.h2`
   font-size: 1.5em;
-  color: ${(props) => props.theme.mainColor};
+  color: #000;
   margin: 0;
   padding: 15px;
-  background-color: ${(props) => props.theme.lightBg};
   border-bottom: 2px solid ${(props) => props.theme.mainColor};
   text-align: center;
   font-weight: 600;

@@ -308,6 +308,7 @@ const ListItem = styled.li`
   transition: transform 0.3s ease, color 0.3s ease;
   &:hover {
     transform: translateY(-2px);
+    background-color: ${(props) => props.theme.hoverMainColor};
     color: ${(props) => props.theme.charColor};
   }
   z-index: 0;

@@ -215,7 +215,7 @@ const NavLink = styled.button<NavLinkProps>`
   align-items: center;
   font-weight: 600;
   font-size: 1rem;
-  color: ${(props) => (props.active ? "#007bff" : props.theme.textColor)};
+  color: ${(props) => (props.active ? "#007bff" : props.theme.charColor)};
   text-decoration: none;
   cursor: pointer;
   transition: color 0.3s ease, background-color 0.3s ease;

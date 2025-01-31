@@ -224,12 +224,12 @@ export const Button = styled.button`
   transition: transform 0.3s ease, color 0.3s ease;
   &:hover {
     transform: translateY(-2px);
-    color: ${(props) => props.theme.charColor};
+    color: ${(props) => props.theme.hoverMainColor};
   }
 `;
 
 export const Nickname = styled.span`
-  color: ${(props) => props.theme.mainColor};
+  color: ${(props) => props.theme.charColor};
   font-weight: bold;
   text-align: start;
   width: 50px;

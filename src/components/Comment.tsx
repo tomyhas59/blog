@@ -396,7 +396,7 @@ const Author = styled.button`
   font-weight: bold;
   text-align: center;
   margin-right: 10px;
-  color: ${(props) => props.theme.mainColor};
+  color: ${(props) => props.theme.charColor};
   transition: transform 0.3s ease, color 0.3s ease;
   img {
     display: inline;

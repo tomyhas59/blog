@@ -92,7 +92,7 @@ const PostsContainer = styled.div`
 
 const Heading = styled.h2`
   font-size: 24px;
-  color: ${(props) => props.theme.mainColor};
+  color: ${(props) => props.theme.charColor};
   margin-bottom: 16px;
 
   @media (max-width: 480px) {
