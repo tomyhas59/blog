@@ -22,8 +22,6 @@ const GlobalStyle = createGlobalStyle`
         overflow-wrap: break-word;
         -moz-tab-size: 4;
         tab-size: 4;
-        --myblog--main--color: #00c7ae;
-        --myblog--sub--color: #ffffff;
     }
     html,
     body {

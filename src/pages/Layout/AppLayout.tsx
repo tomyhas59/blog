@@ -64,6 +64,8 @@ const LayoutWrapper = styled.div`
 `;
 
 const ContentWrapper = styled.div`
+  background-color: ${(props) => props.theme.backgroundColor};
+  color: ${(props) => props.theme.textColor};
   flex-grow: 1;
   padding: 5px;
   @media (max-width: 480px) {

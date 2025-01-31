@@ -191,7 +191,7 @@ const ReCommentWrapper = styled.div`
   padding: 5px;
   margin: 0 auto;
   border-top: 1px solid silver;
-  background-color: #edf7f9;
+  background-color: ${(props) => props.theme.backgroundColor};
 `;
 
 const AuthorWrapper = styled.div`

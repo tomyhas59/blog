@@ -121,7 +121,7 @@ const CommentForm = ({
   ]);
 
   return (
-    <CommentWrapper>
+    <CommentFormContainer>
       <Form onSubmit={onSubmitComment}>
         <Textarea
           placeholder="내용을 입력해주세요"
@@ -131,14 +131,15 @@ const CommentForm = ({
         />
         <Button type="submit">등록</Button>
       </Form>
-    </CommentWrapper>
+    </CommentFormContainer>
   );
 };
 
 export default CommentForm;
 
-const CommentWrapper = styled.div`
-  border: 1px solid ${(props) => props.theme.mainColor};
+const CommentFormContainer = styled.div`
+  background: ${(props) => props.theme.backgroundColor};
+  border: 1px solid ${(props) => props.theme.borderColor};
   border-radius: 5px;
   margin: 10px auto;
   padding: 10px;

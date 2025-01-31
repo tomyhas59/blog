@@ -15,8 +15,9 @@ const initialState = {
   chatMessages: [] as MessageType[],
   postNum: null,
   commentNum: null,
-
   commentId: null,
+
+  darkMode: false,
 
   getPostsLoading: false,
   getPostsDone: false,
@@ -222,6 +223,9 @@ const post = (state = initialState, action: any) => {
       case "RESET_NUM":
         draft.postNum = null;
         draft.commentNum = null;
+        break;
+      case "TOGGLE_DARK_MODE":
+        draft.darkMode = !draft.darkMode;
         break;
       //------------------------------------------------------
       case GET_POSTS_REQUEST:

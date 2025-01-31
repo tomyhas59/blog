@@ -147,10 +147,11 @@ const PostContainer = styled.div<{ isActive: boolean }>`
   padding: 5px 10px;
   margin: 0 auto;
   border: 1px solid #f4f4f4;
-  background-color: ${(props) => (props.isActive ? "#e0f7fa" : "#fff")};
+  background-color: ${(props) =>
+    props.isActive ? props.theme.activeColor : props.theme.backgroundColor};
   cursor: pointer;
   &:hover {
-    background-color: ${(props) => (props.isActive ? "#b2ebf2" : "#f4f4f4")};
+    background-color: ${(props) => props.theme.activeColor};
   }
   @media (max-width: 480px) {
     flex-direction: column;
@@ -178,7 +179,7 @@ export const PostTitle = styled.div<{ isViewed: boolean }>`
   display: flex;
   align-items: center;
   gap: 2px;
-  color: ${(props) => (props.isViewed ? "#b0b0b0" : "black")};
+  color: ${(props) => (props.isViewed ? "#b0b0b0" : props.theme.textColor)};
   &:hover {
     color: #007bff;
   }

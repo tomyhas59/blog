@@ -481,7 +481,6 @@ const CommentNum = styled.span`
 
 const CommentContainer = styled.div`
   padding: 10px;
-  background-color: #f9f9f9;
 `;
 
 const CommentHeader = styled.div`

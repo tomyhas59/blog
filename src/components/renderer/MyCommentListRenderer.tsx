@@ -44,9 +44,8 @@ const ListItem = styled.li`
   border: 1px solid #ccc;
   margin-bottom: 0.5rem;
   cursor: pointer;
-
   &:hover {
-    background-color: #f0f0f0;
+    background-color: ${(props) => props.theme.hoverMainColor};
   }
 `;
 

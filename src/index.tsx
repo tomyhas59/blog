@@ -1,21 +1,29 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App";
-import { ThemeProvider } from "styled-components";
-import { theme } from "./style/theme";
-import { Provider } from "react-redux";
+import { ThemeProvider as StyledThemeProvider } from "styled-components";
+import { lightTheme, darkTheme } from "./style/theme";
+import { Provider, useSelector } from "react-redux";
 import configureStore from "./store/store";
 import { Analytics } from "@vercel/analytics/react";
+import { RootState } from "./reducer";
 
 const store = configureStore();
 
 const rootElement = document.getElementById("root");
 
+const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
+  const darkMode = useSelector((state: RootState) => state.post.darkMode);
+  const theme = darkMode ? darkTheme : lightTheme;
+
+  return <StyledThemeProvider theme={theme}>{children}</StyledThemeProvider>;
+};
+
 if (rootElement) {
   const root = ReactDOM.createRoot(rootElement);
   root.render(
     <Provider store={store}>
-      <ThemeProvider theme={theme}>
+      <ThemeProvider>
         <React.StrictMode>
           <App />
           <Analytics />

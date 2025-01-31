@@ -20,7 +20,7 @@ import {
   ViewCount,
 } from "./Post";
 
-const SeachedPost = ({
+const SearchedPost = ({
   post,
   postId,
   viewedPosts,
@@ -149,18 +149,18 @@ const SeachedPost = ({
   }
 };
 
-export default SeachedPost;
+export default SearchedPost;
 
 const SearchedPostContainer = styled.div<{ isActive: boolean }>`
   max-width: 800px;
   padding: 5px 10px;
   margin: 0 auto;
   border: 1px solid #f4f4f4;
-  background-color: ${(props) => (props.isActive ? "#e0f7fa" : "#fff")};
+  background-color: ${(props) =>
+    props.isActive ? props.theme.activeColor : props.theme.backgroundColor};
   cursor: pointer;
-
   &:hover {
-    background-color: ${(props) => (props.isActive ? "#b2ebf2" : "#f4f4f4")};
+    background-color: ${(props) => props.theme.activeColor};
   }
 `;
 

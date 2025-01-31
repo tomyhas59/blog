@@ -271,7 +271,7 @@ const ChatRoomContainer = styled.div`
   flex-direction: column;
   padding: 15px;
   border-radius: 4px;
-  background-color: #fff;
+  background-color: ${(props) => props.theme.mainColor};
   border: 1px solid #ccc;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 `;

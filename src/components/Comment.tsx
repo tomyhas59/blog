@@ -259,7 +259,7 @@ const Comment = ({ post }: { post: PostType }) => {
   ]);
 
   return (
-    <div ref={scrollTargetRef}>
+    <CommentContainer ref={scrollTargetRef}>
       {(removeCommentLoading ||
         updateCommentLoading ||
         addReCommentLoading) && <Spinner />}
@@ -370,11 +370,15 @@ const Comment = ({ post }: { post: PostType }) => {
         totalCommentPages={totalCommentPages}
         scrollTargetRef={scrollTargetRef}
       />
-    </div>
+    </CommentContainer>
   );
 };
 
 export default Comment;
+
+const CommentContainer = styled.div`
+  background-color: ${(props) => props.theme.backgroundColor};
+`;
 
 const FullCommentWrapper = styled.div`
   border-top: 1px solid silver;

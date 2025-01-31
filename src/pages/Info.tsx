@@ -169,7 +169,7 @@ const Container = styled.div`
   border-radius: 8px;
   overflow: hidden;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-  background-color: #fff;
+
   @media (max-width: 480px) {
     flex-direction: column;
     width: 95%;
@@ -180,7 +180,6 @@ const Nav = styled.nav`
   flex: 1;
   padding: 20px;
   border-right: 1px solid #eaeaea;
-  background-color: #f9f9f9;
   @media (max-width: 480px) {
     max-width: 100%;
     border-right: none;
@@ -216,7 +215,7 @@ const NavLink = styled.button<NavLinkProps>`
   align-items: center;
   font-weight: 600;
   font-size: 1rem;
-  color: ${(props) => (props.active ? "#007bff" : "#333")};
+  color: ${(props) => (props.active ? "#007bff" : props.theme.textColor)};
   text-decoration: none;
   cursor: pointer;
   transition: color 0.3s ease, background-color 0.3s ease;
@@ -224,7 +223,7 @@ const NavLink = styled.button<NavLinkProps>`
   border-radius: 4px;
   &:hover {
     color: #0056b3;
-    background-color: #f1f1f1;
+    background-color: ${(props) => props.theme.backgroundColor};
   }
   @media (max-width: 480px) {
     font-size: 0.9rem;
@@ -235,7 +234,6 @@ const NavLink = styled.button<NavLinkProps>`
 const SectionWrapper = styled.div`
   flex: 3;
   padding: 20px;
-  background-color: #fafafa;
   @media (max-width: 480px) {
     padding: 15px;
   }
@@ -249,7 +247,6 @@ const NewFollowersCount = styled.div`
   width: 20px;
   border-radius: 50%;
   text-align: center;
-  color: #fff;
   font-weight: bold;
 `;
 
@@ -276,7 +273,6 @@ const NotificationMessage = styled.div`
   border-radius: 50%;
   padding: 2px;
   text-align: center;
-  color: #fff;
   font-weight: bold;
   animation: ${blinkBackground} 1s infinite;
 `;

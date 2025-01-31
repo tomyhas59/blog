@@ -194,122 +194,119 @@ const MyInfo: React.FC = () => {
   };
 
   return (
-    <>
+    <InfoContainer>
       {isLoading || (changePasswordLoading && <Spinner />)}
-      <InfoContainer>
-        <ProfileSection>
-          <form encType="multipart/form-data" onSubmit={profileImageSubmit}>
-            {imageSrc && !file && (
-              <RemoveButton type="button" onClick={onRemoveImage}>
-                ✖
-              </RemoveButton>
-            )}
-            <ProfileImage
-              onClick={onClickFileUpload}
-              src={
-                previewUrl ||
-                (imageSrc ? `${baseURL}/${imageSrc}` : DEFAULT_PROFILE_IMAGE)
-              }
-              alt="userImage"
-            />
-            <input
-              type="file"
-              name="image"
-              hidden
-              ref={imageInput}
-              onChange={onChangeImages}
-            />
-            {file && (
-              <ButtonContainer>
+      <ProfileSection>
+        <form encType="multipart/form-data" onSubmit={profileImageSubmit}>
+          {imageSrc && !file && (
+            <RemoveButton type="button" onClick={onRemoveImage}>
+              ✖
+            </RemoveButton>
+          )}
+          <ProfileImage
+            onClick={onClickFileUpload}
+            src={
+              previewUrl ||
+              (imageSrc ? `${baseURL}/${imageSrc}` : DEFAULT_PROFILE_IMAGE)
+            }
+            alt="userImage"
+          />
+          <input
+            type="file"
+            name="image"
+            hidden
+            ref={imageInput}
+            onChange={onChangeImages}
+          />
+          {file && (
+            <ButtonContainer>
+              <SubmitButton type="submit">등록</SubmitButton>
+              <CancelButton type="button" onClick={onCancel}>
+                취소
+              </CancelButton>
+            </ButtonContainer>
+          )}
+        </form>
+        <InfoText>
+          <h1>내 정보</h1>
+          <UserInfo>
+            <strong>사용자명:</strong> {!modifyNickname && me?.nickname}
+            {modifyNickname ? (
+              <ModifyNicknameForm onSubmit={modifyNicknameSubmit}>
+                <input
+                  ref={newNicknameRef}
+                  type="text"
+                  value={newNickname}
+                  onChange={onChangeNewNickname}
+                />
                 <SubmitButton type="submit">등록</SubmitButton>
-                <CancelButton type="button" onClick={onCancel}>
+                <CancelButton onClick={() => setModifyNickname(false)}>
                   취소
                 </CancelButton>
-              </ButtonContainer>
+              </ModifyNicknameForm>
+            ) : (
+              <ModifyNicknameButton onClick={() => setModifyNickname(true)}>
+                수정
+              </ModifyNicknameButton>
             )}
-          </form>
-          <InfoText>
-            <h1>내 정보</h1>
-            <UserInfo>
-              <strong>사용자명:</strong> {!modifyNickname && me?.nickname}
-              {modifyNickname ? (
-                <ModifyNicknameForm onSubmit={modifyNicknameSubmit}>
-                  <input
-                    ref={newNicknameRef}
-                    type="text"
-                    value={newNickname}
-                    onChange={onChangeNewNickname}
-                  />
-                  <SubmitButton type="submit">등록</SubmitButton>
-                  <CancelButton onClick={() => setModifyNickname(false)}>
-                    취소
-                  </CancelButton>
-                </ModifyNicknameForm>
-              ) : (
-                <ModifyNicknameButton onClick={() => setModifyNickname(true)}>
-                  수정
-                </ModifyNicknameButton>
-              )}
-            </UserInfo>
-            <UserInfo>
-              <strong>이메일:</strong> {me.email}
-            </UserInfo>
-            <UserInfo>
-              <strong>가입일:</strong> {formattedDate}
-            </UserInfo>
-            <UserInfo>
-              <ChangePasswordButton
-                onClick={() => setChangePassword((prev) => !prev)}
-              >
-                비밀번호 변경
-              </ChangePasswordButton>
-            </UserInfo>
-          </InfoText>
-        </ProfileSection>
-        {changePassword && (
-          <ChangePasswordForm onSubmit={changePasswordSubmit}>
-            <FormGroup>
-              <Label>현재 비밀번호</Label>
-              <Input
-                type="password"
-                value={prevPassword}
-                onChange={onChangePrevPassword}
-                placeholder="현재 비밀번호"
-              />
-            </FormGroup>
-            <FormGroup>
-              <Label>비밀번호</Label>
-              <Input
-                type="password"
-                value={newPassword}
-                onChange={onChangeNewPassword}
-                placeholder="비밀번호"
-              />
-            </FormGroup>
-            <FormGroup>
-              <Label>비밀번호 확인</Label>
-              <Input
-                type="password"
-                value={passwordConfirm}
-                onChange={handlePasswordConfirmChange}
-                placeholder="비밀번호 확인"
-              />
-            </FormGroup>
-            {passwordError && (
-              <CheckMessage>비밀번호가 일치하지 않습니다</CheckMessage>
-            )}
-            <Button type="submit">등록</Button>
-          </ChangePasswordForm>
-        )}
-      </InfoContainer>
-    </>
+          </UserInfo>
+          <UserInfo>
+            <strong>이메일:</strong> {me.email}
+          </UserInfo>
+          <UserInfo>
+            <strong>가입일:</strong> {formattedDate}
+          </UserInfo>
+          <UserInfo>
+            <ChangePasswordButton
+              onClick={() => setChangePassword((prev) => !prev)}
+            >
+              비밀번호 변경
+            </ChangePasswordButton>
+          </UserInfo>
+        </InfoText>
+      </ProfileSection>
+      {changePassword && (
+        <ChangePasswordForm onSubmit={changePasswordSubmit}>
+          <FormGroup>
+            <Label>현재 비밀번호</Label>
+            <Input
+              type="password"
+              value={prevPassword}
+              onChange={onChangePrevPassword}
+              placeholder="현재 비밀번호"
+            />
+          </FormGroup>
+          <FormGroup>
+            <Label>비밀번호</Label>
+            <Input
+              type="password"
+              value={newPassword}
+              onChange={onChangeNewPassword}
+              placeholder="비밀번호"
+            />
+          </FormGroup>
+          <FormGroup>
+            <Label>비밀번호 확인</Label>
+            <Input
+              type="password"
+              value={passwordConfirm}
+              onChange={handlePasswordConfirmChange}
+              placeholder="비밀번호 확인"
+            />
+          </FormGroup>
+          {passwordError && (
+            <CheckMessage>비밀번호가 일치하지 않습니다</CheckMessage>
+          )}
+          <Button type="submit">등록</Button>
+        </ChangePasswordForm>
+      )}
+    </InfoContainer>
   );
 };
 
 export default MyInfo;
 
 const InfoContainer = styled.div`
-  background-color: #ffffff;
   border: 1px solid #e0e0e0;
   border-radius: 10px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
