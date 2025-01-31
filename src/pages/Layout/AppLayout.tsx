@@ -70,7 +70,6 @@ const ContentWrapper = styled.div`
   padding: 5px;
   @media (max-width: 480px) {
     padding: 0;
-    margin-bottom: 100px;
   }
 `;
 
@@ -99,7 +98,7 @@ const ShowPostForm = styled.div`
   @media (max-width: 480px) {
     width: 50px;
     height: 50px;
-    font-size: 30px;
+    font-size: 12px;
   }
 `;
 const Overlay = styled.div`

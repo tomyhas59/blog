@@ -253,7 +253,7 @@ export const HeaderWrapper = styled.header`
     padding: 5px;
     display: grid;
     bottom: 0;
-    grid-template-areas: "a b";
+    grid-template-areas: "a b c";
     z-index: 999;
   }
 `;

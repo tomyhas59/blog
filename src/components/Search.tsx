@@ -77,7 +77,6 @@ const Container = styled.div<{ currentPath: string }>`
   width: 500px;
   height: 1.5rem;
   grid-template-columns: 15% 75% 10%;
-
   @media (max-width: 680px) {
     width: 200px;
   }

@@ -45,30 +45,27 @@ const Like = ({
     (e: SyntheticEvent) => {
       e.preventDefault();
 
-      setTimeout(() => {
-        if (!id) {
-          return alert("로그인이 필요합니다");
-        }
-        if (itemType === "post") {
-          dispatch({
-            type: LIKE_POST_REQUEST,
-            data: item.id,
-          });
-        } else if (itemType === "comment") {
-          dispatch({
-            type: LIKE_COMMENT_REQUEST,
-            data: item.id,
-          });
-        } else if (itemType === "reComment")
-          dispatch({
-            type: LIKE_RECOMMENT_REQUEST,
-            data: {
-              commentId,
-              reCommentId: item.id,
-            },
-          });
-      }, 500);
-
+      if (!id) {
+        return alert("로그인이 필요합니다");
+      }
+      if (itemType === "post") {
+        dispatch({
+          type: LIKE_POST_REQUEST,
+          data: item.id,
+        });
+      } else if (itemType === "comment") {
+        dispatch({
+          type: LIKE_COMMENT_REQUEST,
+          data: item.id,
+        });
+      } else if (itemType === "reComment")
+        dispatch({
+          type: LIKE_RECOMMENT_REQUEST,
+          data: {
+            commentId,
+            reCommentId: item.id,
+          },
+        });
       triggerHeartAnimation(false);
     },
     [dispatch, id, item.id, commentId, itemType]
