@@ -8,7 +8,7 @@ import { RootState } from "../reducer";
 import Spinner from "../components/Spinner";
 import { PostType } from "../types";
 import Post from "../components/Post";
-import Pagination from "./Pagination";
+import Pagination from "../components/pagination/Pagination";
 import { io, Socket } from "socket.io-client";
 import { usePagination } from "../hooks/PaginationProvider";
 import SortButton from "../components/SortButton";

@@ -258,11 +258,6 @@ const CommonPost = () => {
 
   const prevContent = content.replace(/<br\s*\/?>/gi, "\n");
 
-  const totalReComments = comments.reduce(
-    (total, comment) => total + comment.ReComments.length,
-    0
-  );
-
   useEffect(() => {
     if (post.userIdx === me?.id) {
       socket.current?.emit("readComment", [Number(postId), me?.id]);
@@ -400,9 +395,7 @@ const CommonPost = () => {
       </PostWrapper>
       <CommentContainer>
         <CommentHeader>
-          <CommentNum>
-            댓글 {totalComments && totalComments + totalReComments}개
-          </CommentNum>
+          <CommentNum>댓글 {totalComments && totalComments}개</CommentNum>
           <Button onClick={toggleAddCommentForm}>댓글 달기</Button>
         </CommentHeader>
         {addComment[post.id] && (

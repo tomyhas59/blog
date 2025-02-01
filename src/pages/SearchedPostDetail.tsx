@@ -7,7 +7,7 @@ import { RootState } from "../reducer";
 import Spinner from "../components/Spinner";
 import { PostType } from "../types";
 import { usePagination } from "../hooks/PaginationProvider";
-import SearchedPagination from "./SearchedPagination";
+import SearchedPagination from "../components/pagination/SearchedPagination";
 import SeachedPost from "../components/SeachedPost";
 import CommonPost from "../components/CommonPost";
 import styled from "styled-components";

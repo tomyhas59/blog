@@ -1,72 +1,60 @@
 import React from "react";
 import styled from "styled-components";
-import { usePagination } from "../hooks/PaginationProvider";
-import { PostType } from "../types";
+import { usePagination } from "../../hooks/PaginationProvider";
 import { useLocation, useNavigate } from "react-router-dom";
 
-interface propsType {
-  post: PostType;
-  totalCommentPages: number;
-  scrollTargetRef: React.RefObject<HTMLElement>;
-}
-
-const CommnetPagination = ({
-  post,
-  totalCommentPages,
-  scrollTargetRef,
-}: propsType) => {
-  const { currentPage, currentCommentsPage, setCurrentCommentsPage, sortBy } =
-    usePagination();
-
+const SearchedPagination = ({
+  totalSearchedPosts,
+  searchText,
+  searchOption,
+}: {
+  totalSearchedPosts: number;
+  searchText: string;
+  searchOption: string;
+}) => {
   const location = useLocation();
   const navigator = useNavigate();
-  const params = new URLSearchParams(location.search);
-  const searchTextParam = params.get("searchText");
-  const searchOptiontParam = params.get("searchOption");
+  const {
+    searchedCurrentPage,
+    searchedPostsPerPage,
+    setSearchedCurrentPage,
+    currentCommentsPage,
+  } = usePagination();
+
+  const searchedTotalPages = Math.ceil(
+    totalSearchedPosts / searchedPostsPerPage
+  );
 
   const setParams = (number: number) => {
     const params = new URLSearchParams();
-    if (searchTextParam) params.set("searchText", searchTextParam);
-    if (searchOptiontParam) params.set("searchOption", searchOptiontParam);
-    params.set("page", currentPage.toString());
-    params.set("sortBy", sortBy);
-    params.set("cPage", number.toString());
-
-    const pathname = searchOptiontParam
-      ? `/searchedPost/${post.id}`
-      : `/post/${post.id}`;
-
+    params.set("searchText", searchText);
+    params.set("searchOption", searchOption);
+    params.set("page", number.toString());
+    params.set("cPage", currentCommentsPage);
     navigator({
-      pathname,
+      pathname: location.pathname,
       search: params.toString(),
     });
   };
 
   const onPageClick = (number: number) => {
-    setCurrentCommentsPage(number);
+    setSearchedCurrentPage(number);
     setParams(number);
-
-    if (scrollTargetRef.current) {
-      scrollTargetRef.current.scrollIntoView({
-        behavior: "auto",
-        block: "start", // 상단에 위치하게
-      });
-    }
   };
 
   return (
     <PaginationContainer>
-      {totalCommentPages > 0 && totalCommentPages !== 1 && (
+      {searchedTotalPages > 0 && searchedTotalPages !== 1 && (
         <ul>
           <li
             onClick={() =>
-              currentCommentsPage > 1 && onPageClick(currentCommentsPage - 1)
+              searchedCurrentPage > 1 && onPageClick(searchedCurrentPage - 1)
             }
           >
             ◀
           </li>
-          {[...Array(totalCommentPages)].map((_, index) => (
-            <PageItem key={index} isActive={index + 1 === currentCommentsPage}>
+          {[...Array(searchedTotalPages)].map((_, index) => (
+            <PageItem key={index} isActive={index + 1 === searchedCurrentPage}>
               <PageButton onClick={() => onPageClick(index + 1)}>
                 {index + 1}
               </PageButton>
@@ -74,8 +62,8 @@ const CommnetPagination = ({
           ))}
           <li
             onClick={() =>
-              currentCommentsPage < totalCommentPages &&
-              onPageClick(currentCommentsPage + 1)
+              searchedCurrentPage < searchedTotalPages &&
+              onPageClick(searchedCurrentPage + 1)
             }
           >
             ▶
@@ -86,7 +74,7 @@ const CommnetPagination = ({
   );
 };
 
-export default CommnetPagination;
+export default SearchedPagination;
 
 const PaginationContainer = styled.nav`
   display: flex;
@@ -120,7 +108,6 @@ const PageItem = styled.li<PageItemProps>`
       props.isActive ? props.theme.mainColor : "#fff"};
     color: ${(props) => (props.isActive ? "#fff" : "#333")};
     cursor: pointer;
-
     &:hover {
       background-color: ${(props) => !props.isActive && "#D3D3D3"};
     }

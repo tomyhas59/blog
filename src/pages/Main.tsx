@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import Post from "../components/Post";
 import { useDispatch, useSelector } from "react-redux";
 import { GET_POSTS_REQUEST } from "../reducer/post";
-import Pagination from "./Pagination";
+import Pagination from "../components/pagination/Pagination";
 import { usePagination } from "../hooks/PaginationProvider";
 import { RootState } from "../reducer";
 import { PostType } from "../types";

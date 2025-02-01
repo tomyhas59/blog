@@ -224,7 +224,7 @@ export const Button = styled.button`
   transition: transform 0.3s ease, color 0.3s ease;
   &:hover {
     transform: translateY(-2px);
-    color: ${(props) => props.theme.hoverMainColor};
+    color: ${(props) => props.theme.charColor};
   }
 `;
 

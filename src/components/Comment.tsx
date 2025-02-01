@@ -30,7 +30,7 @@ import FollowButton from "./FollowButton";
 import { usePagination } from "../hooks/PaginationProvider";
 import useSetParams from "../hooks/useSetParams";
 import Like from "./Like";
-import CommentPagination from "../pages/CommentPagination";
+import CommentPagination from "./pagination/CommentPagination";
 import { useLocation, useNavigate } from "react-router-dom";
 
 const Comment = ({ post }: { post: PostType }) => {
@@ -136,7 +136,7 @@ const Comment = ({ post }: { post: PostType }) => {
     setContent(""); // "Text" 영역 초기화
   };
 
-  const onModifytComment = useCallback(
+  const onModifyComment = useCallback(
     (commentId: number) => {
       const contentWithBreaks = content.replace(/\n/g, "<br>");
       dispatch({
@@ -316,7 +316,7 @@ const Comment = ({ post }: { post: PostType }) => {
                 )}
                 {isEditing && currentCommentId === comment.id && (
                   <ButtonContainer>
-                    <BlueButton onClick={() => onModifytComment(comment.id)}>
+                    <BlueButton onClick={() => onModifyComment(comment.id)}>
                       수정
                     </BlueButton>
                     <BlueButton onClick={onCancelEditComment}>취소</BlueButton>
@@ -337,13 +337,7 @@ const Comment = ({ post }: { post: PostType }) => {
                       >
                         <FontAwesomeIcon icon={faPen} />
                       </Button>
-                      <Button
-                        onClick={() =>
-                          onRemoveComment(
-                            comment.id /*매개변수를 위의 함수로 전달*/
-                          )
-                        }
-                      >
+                      <Button onClick={() => onRemoveComment(comment.id)}>
                         <FontAwesomeIcon icon={faTrash} />
                       </Button>
                     </>

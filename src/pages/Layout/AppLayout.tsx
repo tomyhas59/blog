@@ -92,6 +92,7 @@ const ShowPostForm = styled.div`
   overflow: hidden;
   &:hover {
     transform: translateY(-2px);
+    border: 1px solid;
     background-color: ${(props) => props.theme.hoverMainColor};
     color: ${(props) => props.theme.charColor};
   }

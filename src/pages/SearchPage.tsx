@@ -3,7 +3,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "../reducer";
 import { PostType } from "../types";
 import Spinner from "../components/Spinner";
-import SearchedPagination from "./SearchedPagination";
+import SearchedPagination from "../components/pagination/SearchedPagination";
 import { useLocation } from "react-router-dom";
 import { usePagination } from "../hooks/PaginationProvider";
 import SeachedPost from "../components/SeachedPost";

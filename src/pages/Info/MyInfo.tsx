@@ -369,6 +369,7 @@ const ModifyNicknameButton = styled.button`
   border-radius: 10px;
   &:hover {
     background-color: ${(props) => props.theme.subColor};
+    color: ${(props) => props.theme.charColor};
   }
 `;
 const InfoText = styled.div`
@@ -485,6 +486,7 @@ const ChangePasswordButton = styled.button`
   padding: 8px;
   border-radius: 10px;
   &:hover {
+    color: ${(props) => props.theme.charColor};
     background-color: ${(props) => props.theme.subColor};
   }
 `;

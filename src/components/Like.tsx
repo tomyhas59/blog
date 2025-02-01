@@ -165,8 +165,6 @@ const LikeButton = styled.button`
 `;
 const LikersList = styled.ul`
   position: absolute;
-  top: 2rem;
-  right: 0;
   list-style-type: none;
   padding: 0.5rem;
   background-color: #ffffff;
@@ -175,6 +173,7 @@ const LikersList = styled.ul`
 `;
 
 const LikersListItem = styled.li`
+  width: 50px;
   color: ${(props) => props.theme.mainColor};
 `;
 

@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { usePagination } from "../hooks/PaginationProvider";
+import { usePagination } from "../../hooks/PaginationProvider";
 import { useNavigate } from "react-router-dom";
 
 const Pagination = ({ totalPosts }: { totalPosts: number }) => {
