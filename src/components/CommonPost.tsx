@@ -45,7 +45,7 @@ const CommonPost = () => {
 
   const { postId } = useParams();
 
-  const { post, imagePaths, comments, totalComments } = useSelector(
+  const { post, imagePaths, totalComments } = useSelector(
     (state: RootState) => state.post
   );
 
@@ -109,7 +109,6 @@ const CommonPost = () => {
   useOutsideClick([infoMenuRef, popupMenuRef, formRef, commentFormRef], () => {
     setShowOptions(false);
     setShowInfo(false);
-    setAddComment({});
     setEditPost(false);
   });
 
@@ -126,23 +125,6 @@ const CommonPost = () => {
       return !prev;
     });
   }, [dispatch, post.content, setContent]);
-
-  //댓글 창, 기존 폼 닫고 새로운 폼 열고 닫기--------------
-  const [addComment, setAddComment] = useState<Record<number, boolean>>({});
-
-  const toggleAddCommentForm = useCallback(() => {
-    if (!id) {
-      alert("로그인이 필요합니다");
-    } else
-      setAddComment((prev) => {
-        const newCommentState: Record<string, boolean> = {};
-        Object.keys(prev).forEach((key) => {
-          newCommentState[key] = false;
-        });
-        newCommentState[post.id] = !prev[post.id];
-        return newCommentState;
-      });
-  }, [id, post.id]);
 
   const onDeletePost = useCallback(() => {
     if (!window.confirm("삭제하시겠습니까?")) return false;
@@ -396,14 +378,9 @@ const CommonPost = () => {
       <CommentContainer>
         <CommentHeader>
           <CommentNum>댓글 {totalComments && totalComments}개</CommentNum>
-          <Button onClick={toggleAddCommentForm}>댓글 달기</Button>
         </CommentHeader>
-        {addComment[post.id] && (
-          <div ref={commentFormRef}>
-            <CommentForm post={post} setAddComment={setAddComment} />
-          </div>
-        )}
         <Comment post={post} />
+        <CommentForm post={post} />
       </CommentContainer>
     </FullPostWrapper>
   );

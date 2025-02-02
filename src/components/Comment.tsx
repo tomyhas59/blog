@@ -5,7 +5,7 @@ import React, {
   useRef,
   useState,
 } from "react";
-import styled from "styled-components";
+import styled, { useTheme } from "styled-components";
 import { useDispatch, useSelector } from "react-redux";
 import {
   GET_COMMENTS_REQUEST,
@@ -43,7 +43,8 @@ const Comment = ({ post }: { post: PostType }) => {
     addReCommentLoading,
     comments,
     totalComments,
-    commentId,
+    commentsCount,
+    newCommentId,
   } = useSelector((state: RootState) => state.post);
   const {
     setSearchedCurrentPage,
@@ -100,7 +101,7 @@ const Comment = ({ post }: { post: PostType }) => {
     setContent(e.target.value);
   };
 
-  const editCommentRef = useRef<HTMLTextAreaElement>(null);
+  const editCommentTextAreaRef = useRef<HTMLTextAreaElement>(null);
 
   // 현재 열려 있는 댓글의 id추적하기 위한 상태 변수
   const [currentCommentId, setCurrentCommentId] = useState<number | null>(null);
@@ -127,7 +128,7 @@ const Comment = ({ post }: { post: PostType }) => {
   );
 
   //수정 시 높이 조정
-  useTextareaAutoHeight(editCommentRef, editComment);
+  useTextareaAutoHeight(editCommentTextAreaRef, editComment);
 
   // "취소" 버튼을 누를 때 호출되는 함수
   const onCancelEditComment = () => {
@@ -189,28 +190,36 @@ const Comment = ({ post }: { post: PostType }) => {
   const popupRef = useRef<HTMLDivElement>(null);
   const reCommentFormRef = useRef<HTMLDivElement>(null);
 
-  useOutsideClick([popupRef, reCommentFormRef, editCommentRef], () => {
+  useOutsideClick([popupRef, reCommentFormRef, editCommentTextAreaRef], () => {
     setShowInfo({});
     setAddReComment({});
     setEditComment({});
   });
 
+  const theme = useTheme();
   useEffect(() => {
     const params = new URLSearchParams(location.search);
     const commentsPageParam = params.get("cPage");
     if (commentsPageParam) setCurrentCommentsPage(Number(commentsPageParam));
   }, [location.search, setCurrentCommentsPage]);
 
-  const scrollToElement = (commentId: string) => {
-    const element = document.getElementById(`comment-${commentId}`);
-    if (element) {
-      element.scrollIntoView({
-        behavior: "auto",
-        block: "center",
-      });
-      element.style.backgroundColor = "#fffae6";
-    }
-  };
+  const scrollToElement = useCallback(
+    (commentId: string) => {
+      const element = document.getElementById(`comment-${commentId}`);
+      if (element) {
+        element.scrollIntoView({
+          behavior: "auto",
+          block: "center",
+        });
+        element.style.backgroundColor = theme.activeColor;
+        setTimeout(() => {
+          element.style.transition = "background-color 1s ease-in-out";
+          element.style.backgroundColor = theme.backgroundColor;
+        }, 1000);
+      }
+    },
+    [theme.activeColor, theme.backgroundColor]
+  );
 
   useEffect(() => {
     dispatch({
@@ -219,10 +228,21 @@ const Comment = ({ post }: { post: PostType }) => {
       postId: post.id,
     });
 
-    if (commentId) scrollToElement(commentId);
-  }, [currentCommentsPage, totalComments, dispatch, post.id, commentId]);
+    if (newCommentId) {
+      setTimeout(() => {
+        scrollToElement(newCommentId);
+      }, 500);
+    }
+  }, [
+    currentCommentsPage,
+    totalComments,
+    dispatch,
+    post.id,
+    newCommentId,
+    scrollToElement,
+  ]);
 
-  const totalCommentPages = Math.ceil(Number(totalComments) / divisor);
+  const totalCommentPages = Math.ceil(Number(commentsCount) / divisor);
 
   useEffect(() => {
     const setParams = (number: number) => {
@@ -266,97 +286,95 @@ const Comment = ({ post }: { post: PostType }) => {
       {comments?.map((comment) => {
         const isEditing = editComment[comment.id];
         return (
-          <div key={comment.id} id={`comment-${comment.id}`}>
-            <FullCommentWrapper key={comment.id}>
-              <AuthorWrapper>
-                <Author onClick={() => toggleShowInfo(comment.id)}>
-                  <img
-                    src={
-                      comment.User.Image
-                        ? `${baseURL}/${comment.User.Image.src}`
-                        : `${DEFAULT_PROFILE_IMAGE}`
-                    }
-                    alt="유저 이미지"
-                  />
-                  <span>{comment.User.nickname.slice(0, 5)}</span>
-                </Author>
-                {showInfo[comment.id] ? (
-                  <PopupMenu ref={popupRef}>
-                    <BlueButton onClick={() => onSearch(comment.User.nickname)}>
-                      작성 글 보기
-                    </BlueButton>
-                    {id !== comment.User.id && (
-                      <FollowButton
-                        userId={comment.User.id}
-                        setShowInfo={
-                          setShowInfo as React.Dispatch<
-                            React.SetStateAction<
-                              boolean | Record<number, boolean>
-                            >
+          <FullCommentWrapper key={comment.id} id={`comment-${comment.id}`}>
+            <AuthorWrapper>
+              <Author onClick={() => toggleShowInfo(comment.id)}>
+                <img
+                  src={
+                    comment.User.Image
+                      ? `${baseURL}/${comment.User.Image.src}`
+                      : `${DEFAULT_PROFILE_IMAGE}`
+                  }
+                  alt="유저 이미지"
+                />
+                <span>{comment.User.nickname.slice(0, 5)}</span>
+              </Author>
+              {showInfo[comment.id] ? (
+                <PopupMenu ref={popupRef}>
+                  <BlueButton onClick={() => onSearch(comment.User.nickname)}>
+                    작성 글 보기
+                  </BlueButton>
+                  {id !== comment.User.id && (
+                    <FollowButton
+                      userId={comment.User.id}
+                      setShowInfo={
+                        setShowInfo as React.Dispatch<
+                          React.SetStateAction<
+                            boolean | Record<number, boolean>
                           >
-                        }
-                      />
-                    )}
-                  </PopupMenu>
-                ) : null}
-                <Date>{moment(comment.createdAt).format("l")}</Date>
-                <Like itemType="comment" item={comment} />
-              </AuthorWrapper>
-              <ContentWrapper>
-                {isEditing && currentCommentId === comment.id ? (
-                  <Textarea
-                    value={prevContent}
-                    onChange={onChangeContent}
-                    ref={editCommentRef}
-                  />
-                ) : (
-                  <Content id={`comment-content-${comment.id}`}>
-                    <ContentRenderer content={comment.content} />
-                  </Content>
-                )}
-                {isEditing && currentCommentId === comment.id && (
-                  <ButtonContainer>
-                    <BlueButton onClick={() => onModifyComment(comment.id)}>
-                      수정
-                    </BlueButton>
-                    <BlueButton onClick={onCancelEditComment}>취소</BlueButton>
-                  </ButtonContainer>
-                )}
-                <CommentOptions>
-                  {id && (
-                    <Button onClick={() => onAddReCommentForm(comment.id)}>
-                      <FontAwesomeIcon icon={faComment} />
-                    </Button>
+                        >
+                      }
+                    />
                   )}
-                  {id === comment.User.id || nickname === "admin" ? (
-                    <>
-                      <Button
-                        onClick={() =>
-                          onEditCommentForm(comment.id, comment.content)
-                        }
-                      >
-                        <FontAwesomeIcon icon={faPen} />
-                      </Button>
-                      <Button onClick={() => onRemoveComment(comment.id)}>
-                        <FontAwesomeIcon icon={faTrash} />
-                      </Button>
-                    </>
-                  ) : null}
-                </CommentOptions>
-              </ContentWrapper>
-              {addReComment[comment.id] && (
-                <div ref={reCommentFormRef}>
-                  <ReCommentForm
-                    post={post}
-                    comment={comment}
-                    reComment={null}
-                    setAddReComment={setAddReComment}
-                  />
-                </div>
+                </PopupMenu>
+              ) : null}
+              <Date>{moment(comment.createdAt).format("l")}</Date>
+              <Like itemType="comment" item={comment} />
+            </AuthorWrapper>
+            <ContentWrapper>
+              {isEditing && currentCommentId === comment.id ? (
+                <Textarea
+                  value={prevContent}
+                  onChange={onChangeContent}
+                  ref={editCommentTextAreaRef}
+                />
+              ) : (
+                <Content id={`comment-content-${comment.id}`}>
+                  <ContentRenderer content={comment.content} />
+                </Content>
               )}
-              <ReComment post={post} comment={comment} />
-            </FullCommentWrapper>
-          </div>
+              {isEditing && currentCommentId === comment.id && (
+                <ButtonContainer>
+                  <BlueButton onClick={() => onModifyComment(comment.id)}>
+                    수정
+                  </BlueButton>
+                  <BlueButton onClick={onCancelEditComment}>취소</BlueButton>
+                </ButtonContainer>
+              )}
+              <CommentOptions>
+                {id && (
+                  <Button onClick={() => onAddReCommentForm(comment.id)}>
+                    <FontAwesomeIcon icon={faComment} />
+                  </Button>
+                )}
+                {id === comment.User.id || nickname === "admin" ? (
+                  <>
+                    <Button
+                      onClick={() =>
+                        onEditCommentForm(comment.id, comment.content)
+                      }
+                    >
+                      <FontAwesomeIcon icon={faPen} />
+                    </Button>
+                    <Button onClick={() => onRemoveComment(comment.id)}>
+                      <FontAwesomeIcon icon={faTrash} />
+                    </Button>
+                  </>
+                ) : null}
+              </CommentOptions>
+            </ContentWrapper>
+            {addReComment[comment.id] && (
+              <div ref={reCommentFormRef}>
+                <ReCommentForm
+                  post={post}
+                  comment={comment}
+                  reComment={null}
+                  setAddReComment={setAddReComment}
+                />
+              </div>
+            )}
+            <ReComment post={post} comment={comment} />
+          </FullCommentWrapper>
         );
       })}
       <CommentPagination

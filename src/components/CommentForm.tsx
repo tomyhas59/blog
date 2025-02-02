@@ -16,13 +16,7 @@ import useTextareaAutoHeight from "../hooks/useTextareaAutoHeight";
 import { useLocation, useNavigate } from "react-router-dom";
 import { usePagination } from "../hooks/PaginationProvider";
 
-const CommentForm = ({
-  post,
-  setAddComment,
-}: {
-  post: PostType;
-  setAddComment: React.Dispatch<React.SetStateAction<Record<number, boolean>>>;
-}) => {
+const CommentForm = ({ post }: { post: PostType }) => {
   const { addCommentDone, totalComments } = useSelector(
     (state: RootState) => state.post
   );
@@ -30,15 +24,15 @@ const CommentForm = ({
   const [addedComment, setAddedComment] = useState<boolean>(false);
 
   const onChangeContent = (e: ChangeEvent<HTMLTextAreaElement>) => {
-    setContent(e.target.value);
+    setContent(e.target.value); //useInput()은 HTMLInputElement라서 HTMLTextAreaElement 따로 만듦
   };
   const { currentPage, divisor, setCurrentCommentsPage, sortBy } =
     usePagination();
 
-  const editCommentRef = useRef<HTMLTextAreaElement>(null);
+  const commentTextAreaRef = useRef<HTMLTextAreaElement>(null);
 
   //입력 시 textarea높이 조정
-  useTextareaAutoHeight(editCommentRef, null);
+  useTextareaAutoHeight(commentTextAreaRef, null);
 
   const dispatch = useDispatch();
   const id = useSelector((state: RootState) => state.user.me?.id);
@@ -46,9 +40,6 @@ const CommentForm = ({
   useEffect(() => {
     if (addCommentDone) {
       setContent("");
-    }
-    if (editCommentRef.current) {
-      editCommentRef.current!.focus();
     }
   }, [addCommentDone, setContent]);
 
@@ -104,8 +95,6 @@ const CommentForm = ({
   useEffect(() => {
     if (addedComment) {
       const totalCommentPages = Math.ceil(Number(totalComments) / divisor);
-
-      setAddComment({ [post.id]: false });
       setCurrentCommentsPage(totalCommentPages);
       setParams(totalCommentPages);
       setAddedComment(false);
@@ -113,23 +102,29 @@ const CommentForm = ({
   }, [
     post.id,
     divisor,
-    setAddComment,
     setCurrentCommentsPage,
     setParams,
     totalComments,
     addedComment,
   ]);
 
+  const commentPlaceholder = id
+    ? "답글을 입력해주세요."
+    : "로그인 후 입력 가능합니다.";
+
   return (
     <CommentFormContainer>
       <Form onSubmit={onSubmitComment}>
         <Textarea
-          placeholder="내용을 입력해주세요"
+          placeholder={commentPlaceholder}
           value={content}
           onChange={onChangeContent}
-          ref={editCommentRef}
+          ref={commentTextAreaRef}
+          disabled={!id}
         />
-        <Button type="submit">등록</Button>
+        <Button type="submit" disabled={!id}>
+          등록
+        </Button>
       </Form>
     </CommentFormContainer>
   );
@@ -146,6 +141,9 @@ const CommentFormContainer = styled.div`
 `;
 
 const Form = styled.form`
+  display: flex;
+  justify-content: center;
+  align-items: center;
   text-align: center;
 `;
 

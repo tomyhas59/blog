@@ -8,6 +8,7 @@ const initialState = {
   post: {} as PostType,
   comments: [] as CommentType[],
   totalComments: null,
+  commentsCount: null,
   imagePaths: [] as string[],
   searchedPosts: [] as PostType[],
   searchOption: "",
@@ -15,7 +16,7 @@ const initialState = {
   chatMessages: [] as MessageType[],
   postNum: null,
   commentNum: null,
-  commentId: null,
+  newCommentId: null, //댓글 등록 후 해당 댓글 id
 
   darkMode: false,
 
@@ -254,6 +255,7 @@ const post = (state = initialState, action: any) => {
         draft.getCommentsDone = true;
         draft.comments = action.data;
         draft.totalComments = action.totalComments;
+        draft.commentsCount = action.commentsCount;
         break;
       case GET_COMMENTS_FAILURE:
         draft.getCommentsLoading = false;
@@ -419,7 +421,7 @@ const post = (state = initialState, action: any) => {
         draft.addCommentLoading = false;
         draft.addCommentDone = true;
         draft.comments.push(action.data);
-        draft.commentId = action.data.id;
+        draft.newCommentId = action.data.id;
         if (draft.totalComments) draft.totalComments++;
 
         break;
@@ -484,7 +486,7 @@ const post = (state = initialState, action: any) => {
           (post: { id: any }) => post.id === action.data.CommentId
         );
         draft.comments[commentIndex].ReComments.push(action.data);
-
+        if (draft.totalComments) draft.totalComments++;
         break;
       }
       case ADD_RECOMMENT_FAILURE:
@@ -510,7 +512,7 @@ const post = (state = initialState, action: any) => {
         ].ReComments.filter(
           (post: { id: any }) => post.id !== action.data.ReCommentId
         );
-
+        if (draft.totalComments) draft.totalComments--;
         break;
       }
       case REMOVE_RECOMMENT_FAILURE:

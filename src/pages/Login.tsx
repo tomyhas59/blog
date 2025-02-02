@@ -153,7 +153,7 @@ const Button = styled.button`
   transition: background-color 0.3s ease, transform 0.3s ease;
 
   &:hover {
-    background-color: ${(props) => props.theme.hoverColor};
+    background-color: ${(props) => props.theme.hoverMainColor};
     transform: translateY(-2px);
   }
 `;

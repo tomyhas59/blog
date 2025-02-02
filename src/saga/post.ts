@@ -1,5 +1,5 @@
 import axios from "axios";
-import { fork, takeLatest, put, all, call, delay } from "redux-saga/effects";
+import { fork, takeLatest, put, all, call } from "redux-saga/effects";
 import {
   ADD_COMMENT_FAILURE,
   ADD_COMMENT_REQUEST,
@@ -123,6 +123,7 @@ function* getComments(action: { page: number; postId: number }): SagaIterator {
       type: GET_COMMENTS_SUCCESS,
       data: result.data.comments,
       totalComments: result.data.totalComments,
+      commentsCount: result.data.commentsCount,
     });
   } catch (err: any) {
     console.log(err);
