@@ -41,15 +41,7 @@ const Main = () => {
       limit: divisor,
       sortBy,
     });
-    setCurrentPage(currentPage);
-  }, [
-    currentPage,
-    divisor,
-    dispatch,
-    sortBy,
-    setCurrentPage,
-    location.pathname,
-  ]);
+  }, [currentPage, divisor, dispatch, sortBy, location.pathname]);
 
   return (
     <MainContainer>
