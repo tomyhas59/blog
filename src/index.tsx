@@ -13,8 +13,8 @@ const store = configureStore();
 const rootElement = document.getElementById("root");
 
 const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
-  const darkMode = useSelector((state: RootState) => state.post.darkMode);
-  const theme = darkMode ? darkTheme : lightTheme;
+  const isDarkMode = useSelector((state: RootState) => state.post.isDarkMode);
+  const theme = isDarkMode ? darkTheme : lightTheme;
 
   return <StyledThemeProvider theme={theme}>{children}</StyledThemeProvider>;
 };

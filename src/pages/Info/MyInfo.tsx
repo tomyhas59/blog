@@ -357,6 +357,7 @@ const ProfileImage = styled.img`
 
 const ModifyNicknameForm = styled.form`
   input {
+    color: ${(props) => props.theme.mainColor};
     width: 150px;
   }
   button {

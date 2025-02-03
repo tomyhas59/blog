@@ -124,7 +124,7 @@ const Label = styled.label`
   display: block;
   margin-bottom: 5px;
   font-weight: bold;
-  color: ${(props) => props.theme.textColor};
+  color: ${(props) => props.theme.mainColor};
 `;
 
 const Input = styled.input`
@@ -135,7 +135,7 @@ const Input = styled.input`
   border-radius: 8px;
   box-sizing: border-box;
   transition: border-color 0.3s ease;
-
+  color: ${(props) => props.theme.mainColor};
   &:focus {
     border-color: ${(props) => props.theme.mainColor};
     outline: none;

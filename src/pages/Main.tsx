@@ -28,6 +28,11 @@ const Main = () => {
   }, []);
 
   useEffect(() => {
+    const currentMode = localStorage.getItem("darkMode") === "enabled";
+    dispatch({ type: "SET_MODE", data: currentMode });
+  }, [dispatch]);
+
+  useEffect(() => {
     const params = new URLSearchParams(location.search);
     const pageParam = params.get("page");
 

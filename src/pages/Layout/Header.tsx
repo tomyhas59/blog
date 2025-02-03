@@ -22,7 +22,7 @@ const Header = () => {
     (state: RootState) => state.user
   );
 
-  const { darkMode } = useSelector((state: RootState) => state.post);
+  const { isDarkMode } = useSelector((state: RootState) => state.post);
   const [chatNotification, setChatNotification] = useState<boolean>(false);
   const [followNotification, setFollowNotification] = useState<boolean>(false);
   const [commentNotification, setCommentNotification] =
@@ -234,7 +234,7 @@ const Header = () => {
           </ListItem>
         </SignList>
       )}
-      <button onClick={toggleDarkMode}>{darkMode ? "🌙" : "☀️"}</button>
+      <button onClick={toggleDarkMode}>{isDarkMode ? "🌙" : "☀️"}</button>
     </HeaderWrapper>
   );
 };

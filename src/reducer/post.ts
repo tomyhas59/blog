@@ -18,7 +18,7 @@ const initialState = {
   commentNum: null,
   newCommentId: null, //댓글 등록 후 해당 댓글 id
 
-  darkMode: false,
+  isDarkMode: localStorage.getItem("darkMode") === "enabled",
 
   getPostsLoading: false,
   getPostsDone: false,
@@ -226,7 +226,14 @@ const post = (state = initialState, action: any) => {
         draft.commentNum = null;
         break;
       case "TOGGLE_DARK_MODE":
-        draft.darkMode = !draft.darkMode;
+        draft.isDarkMode = !draft.isDarkMode;
+        localStorage.setItem(
+          "darkMode",
+          draft.isDarkMode ? "enabled" : "disabled"
+        );
+        break;
+      case "SET_MODE":
+        draft.isDarkMode = action.data;
         break;
       //------------------------------------------------------
       case GET_POSTS_REQUEST:

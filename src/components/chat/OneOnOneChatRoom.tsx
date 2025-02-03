@@ -351,12 +351,14 @@ const MessageItem = styled.li<MessageItemProps>`
 const MessageSender = styled.span<Pick<MessageItemProps, "isSystemMessage">>`
   display: ${(props) => (props.isSystemMessage ? "none" : "inline")};
   font-weight: bold;
+  color: ${(props) => props.theme.mainColor};
   line-height: 1.5;
 `;
 
 const MessageText = styled.p<MessageItemProps>`
   margin: 5px 0;
   padding: 5px 10px;
+
   background-color: ${(props) =>
     props.isSystemMessage ? "transparent" : props.isMe ? "#d4f1f4" : "#f0f0f0"};
   color: ${(props) => (props.isSystemMessage ? "red" : "#000")};
@@ -392,7 +394,7 @@ const MessageInput = styled.input`
   font-size: 16px;
   border: 1px solid #ccc;
   border-radius: 4px 0 0 4px;
-
+  color: ${(props) => props.theme.mainColor};
   @media (max-width: 480px) {
     padding: 8px;
     font-size: 14px;
