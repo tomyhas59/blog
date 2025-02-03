@@ -6,7 +6,7 @@ import Spinner from "../components/Spinner";
 import SearchedPagination from "../components/pagination/SearchedPagination";
 import { useLocation } from "react-router-dom";
 import { usePagination } from "../hooks/PaginationProvider";
-import SeachedPost from "../components/SeachedPost";
+import SearchedPost from "../components/SearchedPost";
 import styled from "styled-components";
 import { useDispatch } from "react-redux";
 import { SEARCH_POSTS_REQUEST } from "../reducer/post";
@@ -71,7 +71,7 @@ const SearchPage = () => {
             <ResultContainer>
               {searchedPosts.map((post: PostType) => (
                 <div key={post.id}>
-                  <SeachedPost post={post} viewedPosts={viewedPosts} />
+                  <SearchedPost post={post} viewedPosts={viewedPosts} />
                 </div>
               ))}
               <SearchedPagination

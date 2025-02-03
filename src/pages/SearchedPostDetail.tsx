@@ -8,7 +8,7 @@ import Spinner from "../components/Spinner";
 import { PostType } from "../types";
 import { usePagination } from "../hooks/PaginationProvider";
 import SearchedPagination from "../components/pagination/SearchedPagination";
-import SeachedPost from "../components/SeachedPost";
+import SeachedPost from "../components/SearchedPost";
 import CommonPost from "../components/CommonPost";
 import styled from "styled-components";
 
