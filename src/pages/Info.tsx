@@ -97,12 +97,12 @@ const Info = () => {
   const goToMyFollow = () => {
     setNewFollowersCount(undefined);
     setActiveSection("myFollow");
-    socket.current?.emit("followNotiRead", me?.id);
+    socket.current?.emit("followNotificationRead", me?.id);
   };
 
   const notRead = me?.Notifications.filter(
-    (noti) => noti.type === "SYSTEM"
-  ).some((noti) => noti.isRead === false);
+    (notification) => notification.type === "SYSTEM"
+  ).some((notification) => notification.isRead === false);
 
   return (
     <Container>
@@ -122,7 +122,7 @@ const Info = () => {
               active={activeSection === "myPosts"}
             >
               내가 쓴 글
-              {notRead && <NotificationMessage>New</NotificationMessage>}
+              {notRead && <NotificationMessage>🔔</NotificationMessage>}
             </NavLink>
           </NavItem>
           <NavItem>

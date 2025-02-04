@@ -15,7 +15,7 @@ import { READ_CHAT_REQUEST } from "../../reducer/post";
 import styled from "styled-components";
 import { UserRoomList } from "../../pages/Chat";
 
-interface OneOnOneChatRoomProps {
+interface ChatRoomProps {
   me: UserType | null;
   selectedUserId: number | null;
   room: UserRoomList | null;
@@ -23,13 +23,13 @@ interface OneOnOneChatRoomProps {
   setUserRoomList: React.Dispatch<React.SetStateAction<UserRoomList[]>>;
 }
 
-const OneOnOneChatRoom = ({
+const ChatRoom = ({
   me,
   room,
   selectedUserId,
   setActiveRoom,
   setUserRoomList,
-}: OneOnOneChatRoomProps) => {
+}: ChatRoomProps) => {
   const [messages, setMessages] = useState<MessageType[]>([]);
   const { chatMessages } = useSelector((state: RootState) => state.post);
   const dispatch = useDispatch();
@@ -179,15 +179,17 @@ const OneOnOneChatRoom = ({
 
   return (
     <ChatRoomContainer>
-      <CloseRoom onClick={() => setActiveRoom(null)}></CloseRoom>
+      <ChatRoomCloseButton
+        onClick={() => setActiveRoom(null)}
+      ></ChatRoomCloseButton>
       <RoomHeader>
-        <RoomName>{roomName}님과의 채팅</RoomName>
+        <ChatPartnerName>{roomName}님과의 채팅</ChatPartnerName>
         <ExitButton onClick={oneExit}>나가기</ExitButton>
       </RoomHeader>
       <MessageListContainer ref={messageListContainerRef}>
         <MessageList>
           {messages.length === 0 ? (
-            <Placeholder>메시지가 없습니다</Placeholder>
+            <EmptyMessage>메시지가 없습니다</EmptyMessage>
           ) : (
             messages.map((message, i) => {
               const isSystemMessage = message.content.includes("systemMessage");
@@ -206,36 +208,36 @@ const OneOnOneChatRoom = ({
                     messages[i - 1].createdAt,
                     "day"
                   ) ? (
-                    <DateSeparator>
+                    <DateDivider>
                       {moment(message.createdAt).format("YYYY-MM-DD")}
-                    </DateSeparator>
+                    </DateDivider>
                   ) : null}
                   <MessageItem
                     isMe={message.User?.id === me?.id}
                     isSystemMessage={isSystemMessage}
                   >
-                    <MessageSender isSystemMessage={isSystemMessage}>
+                    <SenderName isSystemMessage={isSystemMessage}>
                       {message.User?.nickname.slice(0, 5)}
-                    </MessageSender>
-                    <MessageText
+                    </SenderName>
+                    <MessageContent
                       isMe={message.User?.id === me?.id}
                       isSystemMessage={isSystemMessage}
                       onClick={() => onMessageClick(message.id)}
                     >
                       {messageContent}
-                    </MessageText>
-                    <MessageTime isSystemMessage={isSystemMessage}>
+                    </MessageContent>
+                    <MessageTimestamp isSystemMessage={isSystemMessage}>
                       {moment(message.createdAt).format("HH:mm")}
-                    </MessageTime>
+                    </MessageTimestamp>
                     {message.UserId === me?.id &&
                       selectedMessageId === message.id && (
-                        <DeleteMessage
+                        <DeleteMessageButton
                           onClick={() =>
                             onDeleteMessage(message.id, message.content)
                           }
                         >
                           삭제
-                        </DeleteMessage>
+                        </DeleteMessageButton>
                       )}
                   </MessageItem>
                 </React.Fragment>
@@ -263,7 +265,7 @@ const OneOnOneChatRoom = ({
   );
 };
 
-export default OneOnOneChatRoom;
+export default ChatRoom;
 
 const ChatRoomContainer = styled.div`
   position: relative;
@@ -276,7 +278,7 @@ const ChatRoomContainer = styled.div`
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 `;
 
-const CloseRoom = styled.button`
+const ChatRoomCloseButton = styled.button`
   position: absolute;
   top: 0;
   left: 50%;
@@ -294,7 +296,7 @@ const RoomHeader = styled.div`
   margin-bottom: 10px;
 `;
 
-const RoomName = styled.h2`
+const ChatPartnerName = styled.h2`
   color: ${(props) => props.theme.mainColor};
   font-size: 24px;
 
@@ -348,14 +350,14 @@ const MessageItem = styled.li<MessageItemProps>`
     props.isSystemMessage ? "center" : "flex-start"};
 `;
 
-const MessageSender = styled.span<Pick<MessageItemProps, "isSystemMessage">>`
+const SenderName = styled.span<Pick<MessageItemProps, "isSystemMessage">>`
   display: ${(props) => (props.isSystemMessage ? "none" : "inline")};
   font-weight: bold;
   color: ${(props) => props.theme.mainColor};
   line-height: 1.5;
 `;
 
-const MessageText = styled.p<MessageItemProps>`
+const MessageContent = styled.p<MessageItemProps>`
   margin: 5px 0;
   padding: 5px 10px;
 
@@ -372,7 +374,7 @@ const MessageText = styled.p<MessageItemProps>`
   }
 `;
 
-const MessageTime = styled.span<Pick<MessageItemProps, "isSystemMessage">>`
+const MessageTimestamp = styled.span<Pick<MessageItemProps, "isSystemMessage">>`
   display: ${(props) => (props.isSystemMessage ? "none" : "inline")};
   font-size: 12px;
   color: #999;
@@ -421,14 +423,14 @@ const MessageButton = styled.button`
   }
 `;
 
-const DeleteMessage = styled.button`
+const DeleteMessageButton = styled.button`
   background: transparent;
   border: none;
   color: red;
   cursor: pointer;
 `;
 
-const DateSeparator = styled.div`
+const DateDivider = styled.div`
   width: 100%;
   font-size: 10px;
   color: #ccc;
@@ -442,7 +444,7 @@ const DateSeparator = styled.div`
   }
 `;
 
-const Placeholder = styled.div`
+const EmptyMessage = styled.div`
   text-align: center;
   color: #999;
   font-size: 16px;

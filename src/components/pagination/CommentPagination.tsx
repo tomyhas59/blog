@@ -10,7 +10,7 @@ interface propsType {
   scrollTargetRef: React.RefObject<HTMLElement>;
 }
 
-const CommnetPagination = ({
+const CommentPagination = ({
   post,
   totalCommentPages,
   scrollTargetRef,
@@ -22,17 +22,17 @@ const CommnetPagination = ({
   const navigator = useNavigate();
   const params = new URLSearchParams(location.search);
   const searchTextParam = params.get("searchText");
-  const searchOptiontParam = params.get("searchOption");
+  const searchOptionParam = params.get("searchOption");
 
   const setParams = (number: number) => {
     const params = new URLSearchParams();
     if (searchTextParam) params.set("searchText", searchTextParam);
-    if (searchOptiontParam) params.set("searchOption", searchOptiontParam);
+    if (searchOptionParam) params.set("searchOption", searchOptionParam);
     params.set("page", currentPage.toString());
     params.set("sortBy", sortBy);
     params.set("cPage", number.toString());
 
-    const pathname = searchOptiontParam
+    const pathname = searchOptionParam
       ? `/searchedPost/${post.id}`
       : `/post/${post.id}`;
 
@@ -42,7 +42,7 @@ const CommnetPagination = ({
     });
   };
 
-  const onPageClick = (number: number) => {
+  const handlePageChange = (number: number) => {
     setCurrentCommentsPage(number);
     setParams(number);
 
@@ -60,14 +60,15 @@ const CommnetPagination = ({
         <ul>
           <li
             onClick={() =>
-              currentCommentsPage > 1 && onPageClick(currentCommentsPage - 1)
+              currentCommentsPage > 1 &&
+              handlePageChange(currentCommentsPage - 1)
             }
           >
             ◀
           </li>
           {[...Array(totalCommentPages)].map((_, index) => (
             <PageItem key={index} isActive={index + 1 === currentCommentsPage}>
-              <PageButton onClick={() => onPageClick(index + 1)}>
+              <PageButton onClick={() => handlePageChange(index + 1)}>
                 {index + 1}
               </PageButton>
             </PageItem>
@@ -75,7 +76,7 @@ const CommnetPagination = ({
           <li
             onClick={() =>
               currentCommentsPage < totalCommentPages &&
-              onPageClick(currentCommentsPage + 1)
+              handlePageChange(currentCommentsPage + 1)
             }
           >
             ▶
@@ -86,7 +87,7 @@ const CommnetPagination = ({
   );
 };
 
-export default CommnetPagination;
+export default CommentPagination;
 
 const PaginationContainer = styled.nav`
   display: flex;

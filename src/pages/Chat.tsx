@@ -6,7 +6,7 @@ import { RootState } from "../reducer";
 import { MessageType } from "../types";
 import useOutsideClick from "../hooks/useOutsideClick";
 import axios from "axios";
-import OneOnOneChatRoom from "../components/chat/OneOnOneChatRoom";
+import ChatRoom from "../components/chat/ChatRoom";
 import FollowButton from "../components/FollowButton";
 
 export interface UserRoomList {
@@ -80,7 +80,7 @@ const Chat = () => {
     setActiveUserOption((prev) => (prev === nickname ? null : nickname));
   }, []);
 
-  const userOptoinRef = useRef<HTMLDivElement>(null);
+  const userOptionRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     socket.current?.on("newRoom", (newRoom: UserRoomList) => {
@@ -134,14 +134,14 @@ const Chat = () => {
     [me, userRoomList]
   );
 
-  useOutsideClick([userOptoinRef], () => {
+  useOutsideClick([userOptionRef], () => {
     setActiveUserOption(null);
   });
 
   const renderRoom = () => {
     if (activeRoom === room && room?.id) {
       return (
-        <OneOnOneChatRoom
+        <ChatRoom
           me={me}
           room={room}
           selectedUserId={selectedUserId}
@@ -180,7 +180,7 @@ const Chat = () => {
                   {user.nickname.slice(0, 5)}
                 </button>
                 {user.id !== me?.id && activeUserOption === user.nickname && (
-                  <UserOption ref={userOptoinRef}>
+                  <UserOption ref={userOptionRef}>
                     <button
                       onClick={() => {
                         onUserClick(user);

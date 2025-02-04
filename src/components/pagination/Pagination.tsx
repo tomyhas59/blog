@@ -22,7 +22,7 @@ const Pagination = ({ totalPosts }: { totalPosts: number }) => {
     });
   };
 
-  const onPageClick = (number: number) => {
+  const handlePageChange = (number: number) => {
     setCurrentPage(number);
     setParams(number);
   };
@@ -31,13 +31,15 @@ const Pagination = ({ totalPosts }: { totalPosts: number }) => {
     <PaginationContainer>
       {totalPages > 0 && totalPages !== 1 && (
         <ul>
-          <li onClick={() => currentPage > 1 && onPageClick(currentPage - 1)}>
+          <li
+            onClick={() => currentPage > 1 && handlePageChange(currentPage - 1)}
+          >
             ◀
           </li>
 
           {[...Array(totalPages)].map((_, index) => (
             <PageItem key={index} isActive={index + 1 === currentPage}>
-              <PageButton onClick={() => onPageClick(index + 1)}>
+              <PageButton onClick={() => handlePageChange(index + 1)}>
                 {index + 1}
               </PageButton>
             </PageItem>
@@ -45,7 +47,7 @@ const Pagination = ({ totalPosts }: { totalPosts: number }) => {
 
           <li
             onClick={() =>
-              currentPage < totalPages && onPageClick(currentPage + 1)
+              currentPage < totalPages && handlePageChange(currentPage + 1)
             }
           >
             ▶

@@ -37,7 +37,7 @@ const SearchedPagination = ({
     });
   };
 
-  const onPageClick = (number: number) => {
+  const handlePageChange = (number: number) => {
     setSearchedCurrentPage(number);
     setParams(number);
   };
@@ -48,14 +48,15 @@ const SearchedPagination = ({
         <ul>
           <li
             onClick={() =>
-              searchedCurrentPage > 1 && onPageClick(searchedCurrentPage - 1)
+              searchedCurrentPage > 1 &&
+              handlePageChange(searchedCurrentPage - 1)
             }
           >
             ◀
           </li>
           {[...Array(searchedTotalPages)].map((_, index) => (
             <PageItem key={index} isActive={index + 1 === searchedCurrentPage}>
-              <PageButton onClick={() => onPageClick(index + 1)}>
+              <PageButton onClick={() => handlePageChange(index + 1)}>
                 {index + 1}
               </PageButton>
             </PageItem>
@@ -63,7 +64,7 @@ const SearchedPagination = ({
           <li
             onClick={() =>
               searchedCurrentPage < searchedTotalPages &&
-              onPageClick(searchedCurrentPage + 1)
+              handlePageChange(searchedCurrentPage + 1)
             }
           >
             ▶
