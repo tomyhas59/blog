@@ -251,7 +251,6 @@ function* uploadImages(action: { data: any }): SagaIterator {
   try {
     const result = yield call(uploadImagesAPI, action.data);
     yield put({
-      //put은 dipatch
       type: UPLOAD_IMAGES_SUCCESS,
       data: result.data,
     });
@@ -276,7 +275,6 @@ function* removeImages(action: { data: any }): SagaIterator {
   try {
     const result = yield call(removeImagesAPI, action.data);
     yield put({
-      //put은 dipatch
       type: REMOVE_IMAGE_SUCCESS,
       data: result.data,
     });
@@ -301,7 +299,6 @@ function* deleteImages(action: { data: any }): SagaIterator {
   try {
     const result = yield call(deleteImagesAPI, action.data);
     yield put({
-      //put은 dipatch
       type: DELETE_IMAGE_SUCCESS,
       data: result.data,
     });
@@ -373,7 +370,7 @@ function addCommentApi(data: { postId: any }) {
   return axios.post(`/post/${data.postId}/comment`, data);
 }
 
-function* addCommnet(action: { data: any }): SagaIterator {
+function* addComment(action: { data: any }): SagaIterator {
   try {
     const result = yield call(addCommentApi, action.data);
     yield put({
@@ -389,17 +386,17 @@ function* addCommnet(action: { data: any }): SagaIterator {
   }
 }
 function* watchAddComment() {
-  yield takeLatest<any>(ADD_COMMENT_REQUEST, addCommnet);
+  yield takeLatest<any>(ADD_COMMENT_REQUEST, addComment);
 }
 
 //-----------------------------------------------------
 
 function removeCommentApi(data: { postId: any; commentId: any }) {
-  return axios.delete(`/post/${data.postId}/comment/${data.commentId}`); //component에서 주는 data
+  return axios.delete(`/post/${data.postId}/comment/${data.commentId}`);
 }
 function* removeComment(action: { data: any }): SagaIterator {
   try {
-    const result = yield call(removeCommentApi, action.data); //서버 json에서 주는 data값이 담김
+    const result = yield call(removeCommentApi, action.data);
     console.log(result.data);
     yield put({
       type: REMOVE_COMMENT_SUCCESS,
@@ -453,7 +450,7 @@ function addReCommentApi(data: { postId: any; commentId: any }) {
 function* addReComment(action: { data: any }): SagaIterator {
   try {
     const result = yield call(addReCommentApi, action.data);
-    console.log(result.data); //서버 json에서 주는 data값이 담김
+    console.log(result.data);
     yield put({
       type: ADD_RECOMMENT_SUCCESS,
       data: result.data,
@@ -479,11 +476,11 @@ function removeReCommentApi(data: {
 }) {
   return axios.delete(
     `/post/${data.postId}/comment/${data.commentId}/reComment/${data.reCommentId}`
-  ); //component에서 주는 data
+  );
 }
 function* removeReComment(action: { data: any }): SagaIterator {
   try {
-    const result = yield call(removeReCommentApi, action.data); //서버 json에서 주는 data값이 담김
+    const result = yield call(removeReCommentApi, action.data);
     console.log(result.data);
     yield put({
       type: REMOVE_RECOMMENT_SUCCESS,
@@ -542,7 +539,6 @@ function* likePost(action: { data: any }): SagaIterator {
     const result = yield call(likePostAPI, action.data);
 
     yield put({
-      //put은 dipatch
       type: LIKE_POST_SUCCESS,
       data: result.data,
     });
@@ -568,7 +564,6 @@ function* unLikePost(action: { data: any }): SagaIterator {
   try {
     const result = yield call(unLikePostAPI, action.data);
     yield put({
-      //put은 dipatch
       type: UNLIKE_POST_SUCCESS,
       data: result.data,
     });
@@ -594,9 +589,8 @@ function likeCommentAPI(data: any) {
 function* likeComment(action: { data: any }): SagaIterator {
   try {
     const result = yield call(likeCommentAPI, action.data);
-    console.log("------------", result.data);
+
     yield put({
-      //put은 dipatch
       type: LIKE_COMMENT_SUCCESS,
       data: result.data,
     });
@@ -622,7 +616,6 @@ function* unLikeComment(action: { data: any }): SagaIterator {
   try {
     const result = yield call(unLikeCommentAPI, action.data);
     yield put({
-      //put은 dipatch
       type: UNLIKE_COMMENT_SUCCESS,
       data: result.data,
     });
@@ -650,7 +643,6 @@ function* likeReComment(action: { data: any }): SagaIterator {
   try {
     const result = yield call(likeReCommentAPI, action.data);
     yield put({
-      //put은 dipatch
       type: LIKE_RECOMMENT_SUCCESS,
       data: result.data,
     });
@@ -678,7 +670,6 @@ function* unLikeReComment(action: { data: any }): SagaIterator {
   try {
     const result = yield call(unLikeReCommentAPI, action.data);
     yield put({
-      //put은 dipatch
       type: UNLIKE_RECOMMENT_SUCCESS,
       data: result.data,
     });
@@ -726,7 +717,7 @@ function deleteAllChatApi() {
   return axios.delete("/post/chat/delete");
 }
 
-function* deleteAllChat(action: { data: any }): SagaIterator {
+function* deleteAllChat(): SagaIterator {
   try {
     const result = yield call(deleteAllChatApi);
     yield put({

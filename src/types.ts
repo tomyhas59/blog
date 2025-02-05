@@ -68,8 +68,8 @@ export type DataType = {
   PostId: number;
   UserId: number;
   updatePost: PostType;
-  CommnetId: number;
-  ReCommnetId: number;
+  CommentId: number;
+  ReCommentId: number;
   content: string;
 };
 

@@ -42,7 +42,6 @@ function* signUp(action: { data: any }): SagaIterator {
     const result = yield call(signUpAPI, action.data);
     console.log(result);
     yield put({
-      //put은 dispatch
       type: SIGN_UP_SUCCESS,
     });
   } catch (err: any) {
@@ -67,7 +66,6 @@ function* logIn(action: { data: any }): SagaIterator {
     sessionStorage.setItem("accessToken", result.data.accessToken);
     sessionStorage.setItem("refreshToken", result.data.refreshToken);
     yield put({
-      //put은 dipatch
       type: LOG_IN_SUCCESS,
       data: result.data,
     });
@@ -90,7 +88,6 @@ function* changePassword(action: { data: any }): SagaIterator {
   try {
     const result = yield call(changePasswordAPI, action.data);
     yield put({
-      //put은 dispatch
       type: CHANGE_PASSWORD_SUCCESS,
     });
   } catch (err: any) {
@@ -144,7 +141,6 @@ function* logOut() {
     sessionStorage.removeItem("accessToken");
     sessionStorage.removeItem("refreshToken");
     yield put({
-      //put은 dipatch
       type: LOG_OUT_SUCCESS,
     });
   } catch (err: any) {
