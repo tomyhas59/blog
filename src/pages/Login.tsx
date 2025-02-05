@@ -13,8 +13,8 @@ function Login() {
   const navigate = useNavigate();
   const { setCurrentPage } = usePagination();
 
-  const [email, onChangeEmail] = useInput();
-  const [password, onChangePassword] = useInput();
+  const [email, handleEmailChange] = useInput();
+  const [password, handlePasswordChange] = useInput();
 
   const { logInLoading, logInDone } = useSelector(
     (state: RootState) => state.user
@@ -29,7 +29,7 @@ function Login() {
     }
   }, [dispatch, logInDone, navigate, setCurrentPage]);
 
-  const onLogin = useCallback(
+  const handleLogin = useCallback(
     (e: SyntheticEvent) => {
       e.preventDefault();
       if (!email || !password) {
@@ -44,27 +44,27 @@ function Login() {
     [dispatch, email, password]
   );
 
-  const onEnterKeyPress = useCallback(
+  const handleEnterKeyPress = useCallback(
     (e: React.KeyboardEvent<HTMLInputElement>) => {
       if (e.key === "Enter") {
-        onLogin(e);
+        handleLogin(e);
       }
     },
-    [onLogin]
+    [handleLogin]
   );
 
   return (
     <>
       {logInLoading ? <Spinner /> : null}
       <LoginContainer>
-        <Form onSubmit={onLogin}>
+        <Form onSubmit={handleLogin}>
           <Title>로그인</Title>
           <InputGroup>
             <Label>이메일</Label>
             <Input
               type="text"
               value={email}
-              onChange={onChangeEmail}
+              onChange={handleEmailChange}
               placeholder="이메일을 입력해주세요"
               autoComplete="email"
             />
@@ -74,9 +74,9 @@ function Login() {
             <Input
               type="password"
               value={password}
-              onChange={onChangePassword}
+              onChange={handlePasswordChange}
               placeholder="비밀번호를 입력해주세요"
-              onKeyUp={onEnterKeyPress}
+              onKeyUp={handleEnterKeyPress}
               autoComplete="current-password"
             />
           </InputGroup>

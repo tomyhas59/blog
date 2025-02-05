@@ -40,7 +40,8 @@ const PostForm: React.FC<PostFormProps> = ({
   } = useSelector((state: RootState) => state.post);
   const { me } = useSelector((state: RootState) => state.user);
   const [content, setContent] = useState("");
-  const onChangeContent = useCallback(
+
+  const handleContentChange = useCallback(
     (e: ChangeEvent<HTMLTextAreaElement>) => {
       setContent(e.target.value);
     },
@@ -50,21 +51,21 @@ const PostForm: React.FC<PostFormProps> = ({
 
   const [title, setTitle] = useState("");
 
-  const onChangeTitle = useCallback(
+  const handleTitleChange = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
       setTitle(e.target.value);
     },
     [setTitle]
   );
 
-  const imageInput = useRef<HTMLInputElement>(null);
+  const imageInputRef = useRef<HTMLInputElement>(null);
   const [active, setActive] = useState(false);
 
-  const onClickFileUpload = useCallback(() => {
-    imageInput.current!.click();
+  const handleClickFileUpload = useCallback(() => {
+    imageInputRef.current!.click();
   }, []);
 
-  const onChangeImages = useCallback(
+  const handleImagesChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       console.log("images", e.target.files);
       const imageFormData = new FormData();
@@ -72,9 +73,9 @@ const PostForm: React.FC<PostFormProps> = ({
       // 중복된 이미지 파일명을 방지하기 위해 Set 사용
       const addedImageNames = new Set();
 
-      const filse = e.target.files as FileList;
+      const files = e.target.files as FileList;
 
-      [].forEach.call(filse /*선택한 파일들 */, (f: File) => {
+      [].forEach.call(files /*선택한 파일들 */, (f: File) => {
         // 이미 추가된 이미지인지 확인하고 추가되지 않은 경우에만 처리
         if (!addedImageNames.has(f.name)) {
           addedImageNames.add(f.name);
@@ -92,7 +93,7 @@ const PostForm: React.FC<PostFormProps> = ({
     [dispatch]
   );
 
-  const onRemoveImage = useCallback(
+  const handleRemoveImage = useCallback(
     (filename: string) => {
       if (filename) {
         dispatch({
@@ -104,7 +105,7 @@ const PostForm: React.FC<PostFormProps> = ({
     [dispatch]
   );
 
-  const onSubmit = useCallback(
+  const handleAddPost = useCallback(
     (e: SyntheticEvent) => {
       e.preventDefault();
       if (!title || !title.trim() || !content || !content.trim()) {
@@ -144,20 +145,22 @@ const PostForm: React.FC<PostFormProps> = ({
         <Spinner />
       ) : null}
       {me ? (
-        <FormWrapper ref={postFormRef}>
-          <CloseForm onClick={() => setTogglePostForm(false)}>✖</CloseForm>
+        <FormContainer ref={postFormRef}>
+          <CloseFormButton onClick={() => setTogglePostForm(false)}>
+            ✖
+          </CloseFormButton>
           <Title>글쓰기</Title>
-          <Form encType="multipart/form-data" onSubmit={onSubmit}>
+          <Form encType="multipart/form-data" onSubmit={handleAddPost}>
             <TitleInput
               value={title}
               placeholder="제목을 입력해 주세요"
-              onChange={onChangeTitle}
+              onChange={handleTitleChange}
               ref={titleRef}
             />
             <TextArea
               placeholder="내용을 입력해주세요"
               value={content}
-              onChange={onChangeContent}
+              onChange={handleContentChange}
               ref={textareaRef}
             ></TextArea>
             <input
@@ -165,29 +168,29 @@ const PostForm: React.FC<PostFormProps> = ({
               name="image"
               multiple
               hidden
-              ref={imageInput}
-              onChange={onChangeImages}
+              ref={imageInputRef}
+              onChange={handleImagesChange}
             />
-            <FileButton type="button" onClick={onClickFileUpload}>
+            <FileUploadButton type="button" onClick={handleClickFileUpload}>
               파일 첨부
-            </FileButton>
-            <ImageGrid>
+            </FileUploadButton>
+            <ImageContainer>
               {active &&
                 imagePaths.map((filename, index) => (
-                  <ImageContainer key={index}>
+                  <ImageItem key={index}>
                     <Image src={`${baseURL}/${filename}`} alt="img" />
                     <RemoveButton
                       type="button"
-                      onClick={() => onRemoveImage(filename)}
+                      onClick={() => handleRemoveImage(filename)}
                     >
                       ✖
                     </RemoveButton>
-                  </ImageContainer>
+                  </ImageItem>
                 ))}
-            </ImageGrid>
+            </ImageContainer>
             <SubmitButton type="submit">등록</SubmitButton>
           </Form>
-        </FormWrapper>
+        </FormContainer>
       ) : null}
     </>
   );
@@ -195,7 +198,7 @@ const PostForm: React.FC<PostFormProps> = ({
 
 export default PostForm;
 
-const FormWrapper = styled.div`
+const FormContainer = styled.div`
   position: fixed;
   top: 40%;
   left: 50%;
@@ -213,7 +216,7 @@ const FormWrapper = styled.div`
   }
 `;
 
-const CloseForm = styled.button`
+const CloseFormButton = styled.button`
   position: absolute;
   top: 2%;
   right: 3%;
@@ -261,7 +264,7 @@ const TextArea = styled.textarea`
   grid-area: b;
 `;
 
-export const FileButton = styled.button`
+export const FileUploadButton = styled.button`
   padding: 6px;
   width: 100px;
   background-color: ${(props) => props.theme.mainColor};
@@ -283,7 +286,7 @@ export const FileButton = styled.button`
   }
 `;
 
-const ImageGrid = styled.div`
+const ImageContainer = styled.div`
   padding: 10px;
   max-height: 400px;
   overflow-y: auto;
@@ -297,7 +300,7 @@ const ImageGrid = styled.div`
   }
 `;
 
-const ImageContainer = styled.div`
+const ImageItem = styled.div`
   position: relative;
   display: inline-block;
   width: 100px;

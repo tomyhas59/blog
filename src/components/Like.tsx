@@ -41,7 +41,7 @@ const Like = ({
   //좋아요 누른 유저-------------------------
   const [showLikers, setShowLikers] = useState(false);
 
-  const onLike = useCallback(
+  const handleLike = useCallback(
     (e: SyntheticEvent) => {
       e.preventDefault();
 
@@ -71,7 +71,7 @@ const Like = ({
     [dispatch, id, item.id, commentId, itemType]
   );
 
-  const onUnLike = useCallback(
+  const handleUnLike = useCallback(
     (e: SyntheticEvent) => {
       e.preventDefault();
       if (!id) {
@@ -113,7 +113,7 @@ const Like = ({
       <Liked>{item.Likers?.length}</Liked>
       {liked ? (
         <LikeButton
-          onClick={onUnLike}
+          onClick={handleUnLike}
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
         >
@@ -121,7 +121,7 @@ const Like = ({
         </LikeButton>
       ) : (
         <LikeButton
-          onClick={onLike}
+          onClick={handleLike}
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
         >

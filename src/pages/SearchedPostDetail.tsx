@@ -69,8 +69,6 @@ const SearchedPostDetail = () => {
     setSearchedCurrentPage,
   ]);
 
-  console.log(searchedPosts);
-
   const {
     searchedPostsLoading,
     removePostLoading,

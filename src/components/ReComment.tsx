@@ -33,9 +33,12 @@ const ReComment = ({
     (state: RootState) => state.post
   );
   const { setSearchedCurrentPage } = usePagination();
-  const [showInfo, setShowInfo] = useState<Record<number, boolean>>({});
-  const toggleShowInfo = useCallback((ReCommentId: number) => {
-    setShowInfo((prev) => {
+  const [showAuthorMenu, setShowAuthorMenu] = useState<Record<number, boolean>>(
+    {}
+  );
+
+  const toggleShowAuthorMenu = useCallback((ReCommentId: number) => {
+    setShowAuthorMenu((prev) => {
       const updatedPopupState: Record<number, boolean> = { ...prev };
       for (const key in updatedPopupState) {
         updatedPopupState[key] = false;
@@ -48,7 +51,7 @@ const ReComment = ({
   //대댓글 쓰기 창,map 안에서 하나만 작동 및 폼 중복 방지 코드---------------------
   const [addReComment, setAddReComment] = useState<Record<string, boolean>>({});
 
-  const onAddReCommentForm = useCallback((reCommentId: number) => {
+  const showReCommentForm = useCallback((reCommentId: number) => {
     setAddReComment((prev) => {
       const newReCommentState: Record<string, boolean> = {};
       Object.keys(prev).forEach((key) => {
@@ -60,7 +63,7 @@ const ReComment = ({
   }, []);
 
   //---대댓글 삭제----------------------------------------
-  const onRemoveReComment = useCallback(
+  const handleRemoveReComment = useCallback(
     (reCommentId: number) => {
       if (!window.confirm("삭제하시겠습니까?")) return false;
       dispatch({
@@ -80,22 +83,22 @@ const ReComment = ({
     page: 1,
   });
 
-  const onSearch = useCallback(
+  const searchByNickname = useCallback(
     (userNickname: string) => {
       setSearchedCurrentPage(1);
       setParams({ searchText: userNickname });
-      setShowInfo({});
+      setShowAuthorMenu({});
       window.scrollTo({ top: 0, behavior: "auto" });
     },
     [setSearchedCurrentPage, setParams]
   );
 
   //OutsideClick----------------------------------------------
-  const popupRef = useRef<HTMLDivElement>(null);
+  const authorMenuRef = useRef<HTMLDivElement>(null);
   const reCommentFormRef = useRef<HTMLDivElement>(null);
 
-  useOutsideClick([popupRef, reCommentFormRef], () => {
-    setShowInfo({});
+  useOutsideClick([authorMenuRef, reCommentFormRef], () => {
+    setShowAuthorMenu({});
     setAddReComment({});
   });
 
@@ -109,9 +112,9 @@ const ReComment = ({
         const userContent = reComment.content.replace(regex, "");
 
         return (
-          <ReCommentWrapper key={reComment.id}>
-            <AuthorWrapper>
-              <Author onClick={() => toggleShowInfo(reComment.id)}>
+          <ReCommentContainer key={reComment.id}>
+            <ReCommentHeader>
+              <Author onClick={() => toggleShowAuthorMenu(reComment.id)}>
                 ↪
                 <img
                   src={
@@ -123,16 +126,18 @@ const ReComment = ({
                 />
                 {reComment.User.nickname.slice(0, 5)}
               </Author>
-              {showInfo[reComment.id] ? (
-                <PopupMenu ref={popupRef}>
-                  <BlueButton onClick={() => onSearch(reComment.User.nickname)}>
+              {showAuthorMenu[reComment.id] ? (
+                <AuthorMenu ref={authorMenuRef}>
+                  <BlueButton
+                    onClick={() => searchByNickname(reComment.User.nickname)}
+                  >
                     작성 글 보기
                   </BlueButton>
                   {id !== reComment.User.id && (
                     <FollowButton
                       userId={reComment.User.id}
-                      setShowInfo={
-                        setShowInfo as React.Dispatch<
+                      setShowAuthorMenu={
+                        setShowAuthorMenu as React.Dispatch<
                           React.SetStateAction<
                             boolean | Record<number, boolean>
                           >
@@ -140,7 +145,7 @@ const ReComment = ({
                       }
                     />
                   )}
-                </PopupMenu>
+                </AuthorMenu>
               ) : null}
               <Date>{moment(reComment.createdAt).format("l")}</Date>
               <Like
@@ -148,7 +153,7 @@ const ReComment = ({
                 item={reComment}
                 commentId={comment.id}
               />
-            </AuthorWrapper>
+            </ReCommentHeader>
             <ContentWrapper>
               <Content id={`reComment-content-${reComment.id}`}>
                 <span>{userNickname}</span>
@@ -156,15 +161,15 @@ const ReComment = ({
               </Content>
               <ReCommentOptions>
                 {id && (
-                  <Toggle onClick={() => onAddReCommentForm(reComment.id)}>
+                  <Button onClick={() => showReCommentForm(reComment.id)}>
                     <FontAwesomeIcon icon={faComment} />
-                  </Toggle>
+                  </Button>
                 )}
 
                 {id === reComment.User.id || nickname === "admin" ? (
-                  <Toggle onClick={() => onRemoveReComment(reComment.id)}>
+                  <Button onClick={() => handleRemoveReComment(reComment.id)}>
                     <FontAwesomeIcon icon={faCircleXmark} />
-                  </Toggle>
+                  </Button>
                 ) : null}
               </ReCommentOptions>
             </ContentWrapper>
@@ -178,7 +183,7 @@ const ReComment = ({
                 />
               </div>
             )}
-          </ReCommentWrapper>
+          </ReCommentContainer>
         );
       })}
     </>
@@ -186,7 +191,7 @@ const ReComment = ({
 };
 export default ReComment;
 
-const ReCommentWrapper = styled.div`
+const ReCommentContainer = styled.div`
   width: 90%;
   padding: 5px;
   margin: 0 auto;
@@ -194,7 +199,7 @@ const ReCommentWrapper = styled.div`
   background-color: ${(props) => props.theme.backgroundColor};
 `;
 
-const AuthorWrapper = styled.div`
+const ReCommentHeader = styled.div`
   position: relative;
   display: flex;
   align-items: center;
@@ -236,8 +241,13 @@ const Content = styled.div`
   }
 `;
 
-const Toggle = styled.button`
+const Button = styled.button`
   font-size: 10px;
+  transition: transform 0.3s ease, color 0.3s ease;
+  &:hover {
+    transform: translateY(-2px);
+    color: ${(props) => props.theme.hoverMainColor};
+  }
 `;
 
 const Date = styled.span`
@@ -252,7 +262,7 @@ const ReCommentOptions = styled.div`
   }
 `;
 
-const PopupMenu = styled.div`
+const AuthorMenu = styled.div`
   position: absolute;
   display: flex;
   flex-direction: column;

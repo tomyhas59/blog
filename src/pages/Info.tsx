@@ -105,44 +105,44 @@ const Info = () => {
   ).some((notification) => notification.isRead === false);
 
   return (
-    <Container>
-      <Nav>
-        <NavList>
-          <NavItem>
-            <NavLink
+    <InfoContainer>
+      <Menu>
+        <MenuList>
+          <MenuItem>
+            <MenuButton
               onClick={() => setActiveSection("myInfo")}
               active={activeSection === "myInfo"}
             >
               내 정보
-            </NavLink>
-          </NavItem>
-          <NavItem>
-            <NavLink
+            </MenuButton>
+          </MenuItem>
+          <MenuItem>
+            <MenuButton
               onClick={() => setActiveSection("myPosts")}
               active={activeSection === "myPosts"}
             >
               내가 쓴 글
               {notRead && <NotificationMessage>🔔</NotificationMessage>}
-            </NavLink>
-          </NavItem>
-          <NavItem>
-            <NavLink
+            </MenuButton>
+          </MenuItem>
+          <MenuItem>
+            <MenuButton
               onClick={() => setActiveSection("myComments")}
               active={activeSection === "myComments"}
             >
               내가 쓴 댓글
-            </NavLink>
-          </NavItem>
-          <NavItem>
-            <NavLink
+            </MenuButton>
+          </MenuItem>
+          <MenuItem>
+            <MenuButton
               onClick={() => setActiveSection("myLikes")}
               active={activeSection === "myLikes"}
             >
               좋아요 글
-            </NavLink>
-          </NavItem>
-          <NavItem>
-            <NavLink
+            </MenuButton>
+          </MenuItem>
+          <MenuItem>
+            <MenuButton
               onClick={goToMyFollow}
               active={activeSection === "myFollow"}
             >
@@ -150,18 +150,18 @@ const Info = () => {
                 <NewFollowersCount>{newFollowersCount}</NewFollowersCount>
               )}
               팔로우
-            </NavLink>
-          </NavItem>
-        </NavList>
-      </Nav>
+            </MenuButton>
+          </MenuItem>
+        </MenuList>
+      </Menu>
       <SectionWrapper>{renderSection}</SectionWrapper>
-    </Container>
+    </InfoContainer>
   );
 };
 
 export default Info;
 
-const Container = styled.div`
+const InfoContainer = styled.div`
   width: 80%;
   max-width: 1200px;
   margin: 0 auto;
@@ -176,7 +176,7 @@ const Container = styled.div`
   }
 `;
 
-const Nav = styled.nav`
+const Menu = styled.nav`
   flex: 1;
   padding: 20px;
   border-right: 1px solid #eaeaea;
@@ -187,7 +187,7 @@ const Nav = styled.nav`
   }
 `;
 
-const NavList = styled.ul`
+const MenuList = styled.ul`
   display: flex;
   flex-direction: column;
   list-style: none;
@@ -198,7 +198,7 @@ const NavList = styled.ul`
   }
 `;
 
-const NavItem = styled.li`
+const MenuItem = styled.li`
   margin-bottom: 15px;
   @media (max-width: 480px) {
     margin-bottom: 0;
@@ -208,7 +208,7 @@ const NavItem = styled.li`
 interface NavLinkProps {
   active?: boolean;
 }
-const NavLink = styled.button<NavLinkProps>`
+const MenuButton = styled.button<NavLinkProps>`
   position: relative;
   display: flex;
   justify-content: center;

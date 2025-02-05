@@ -29,7 +29,8 @@ const ReCommentForm = ({
   const editReCommentRef = useRef<HTMLTextAreaElement>(null);
 
   const [reCommentContent, , setContent] = useInput();
-  const onChangeContent = useCallback(
+
+  const handleContentChange = useCallback(
     (e: ChangeEvent<HTMLTextAreaElement>) => {
       setContent(e.target.value);
     },
@@ -48,7 +49,7 @@ const ReCommentForm = ({
     }
   }, [addReCommentDone, editReCommentRef, setContent]);
 
-  const onSubmitReComment = useCallback(
+  const handleAddReComment = useCallback(
     (e: SyntheticEvent) => {
       e.preventDefault();
       if (reCommentContent === "") {
@@ -85,11 +86,11 @@ const ReCommentForm = ({
   );
 
   return (
-    <Form onSubmit={onSubmitReComment}>
+    <Form onSubmit={handleAddReComment}>
       <Textarea
         placeholder="내용을 입력해주세요"
         value={reCommentContent}
-        onChange={onChangeContent}
+        onChange={handleContentChange}
         ref={editReCommentRef}
       />
       <Button type="submit">등록</Button>

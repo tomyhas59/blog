@@ -53,20 +53,20 @@ const Post = ({
   );
 
   //---닉네임 클릭 정보 보기-------------------------------------
-  const [showInfo, setShowInfo] = useState<boolean | {}>(false);
-  const toggleShowInfo = useCallback(
+  const [showAuthorMenu, setShowAuthorMenu] = useState<boolean | {}>(false);
+  const toggleShowAuthorMenu = useCallback(
     (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
       e.stopPropagation();
-      setShowInfo((prevShowInfo) => !prevShowInfo);
+      setShowAuthorMenu((prev) => !prev);
     },
     []
   );
 
   //OutsideClick----------------------------------------------
-  const infoMenuRef = useRef<HTMLDivElement>(null);
+  const authorMenuRef = useRef<HTMLDivElement>(null);
 
-  useOutsideClick([infoMenuRef], () => {
-    setShowInfo(false);
+  useOutsideClick([authorMenuRef], () => {
+    setShowAuthorMenu(false);
   });
 
   const setParams = useSetParams({
@@ -74,7 +74,7 @@ const Post = ({
     page: 1,
   });
 
-  const onSearch = useCallback(
+  const searchByNickname = useCallback(
     (e: React.MouseEvent) => {
       e.stopPropagation();
       setSearchedCurrentPage(1);
@@ -84,7 +84,7 @@ const Post = ({
     [post.User.nickname, setSearchedCurrentPage, setParams]
   );
 
-  const totalReComments = post.Comments.reduce(
+  const totalReCommentsCount = post.Comments.reduce(
     (total, comment) => total + comment.ReComments.length,
     0
   );
@@ -94,8 +94,8 @@ const Post = ({
       onClick={() => goToPostDetail(post.id)}
       isActive={postId === post.id}
     >
-      <PostHeaderFlex>
-        <NicknameButton onClick={toggleShowInfo}>
+      <PostHeaderLeftSection>
+        <NicknameButton onClick={toggleShowAuthorMenu}>
           <img
             src={
               post.User.Image
@@ -106,18 +106,21 @@ const Post = ({
           />
           <Nickname>{post.User.nickname.slice(0, 5)}</Nickname>
         </NicknameButton>
-        {showInfo && (
-          <InfoMenu ref={infoMenuRef}>
-            <Button onClick={onSearch}>작성 글 보기</Button>
+        {showAuthorMenu && (
+          <AuthorMenu ref={authorMenuRef}>
+            <Button onClick={searchByNickname}>작성 글 보기</Button>
             {id !== post.User.id && (
-              <FollowButton userId={post.User.id} setShowInfo={setShowInfo} />
+              <FollowButton
+                userId={post.User.id}
+                setShowAuthorMenu={setShowAuthorMenu}
+              />
             )}
-          </InfoMenu>
+          </AuthorMenu>
         )}
         <PostTitle isViewed={viewedPosts?.includes(post.id) as boolean}>
           {post.title}
           <span style={{ fontSize: "12px" }}>
-            [{post.Comments.length + totalReComments}]
+            [{post.Comments.length + totalReCommentsCount}]
           </span>
           <span>
             {post.Images.length > 0 && (
@@ -127,12 +130,12 @@ const Post = ({
             )}
           </span>
         </PostTitle>
-      </PostHeaderFlex>
-      <PostInfo>
+      </PostHeaderLeftSection>
+      <PostMetaInfo>
         <Date>{moment(post.createdAt).format("l")}</Date>
         <Liked>{post.Likers.length === 0 ? "" : post.Likers.length}</Liked>
         <ViewCount>{post.viewCount}</ViewCount>
-      </PostInfo>
+      </PostMetaInfo>
     </PostContainer>
   );
 };
@@ -158,7 +161,7 @@ const PostContainer = styled.div<{ isActive: boolean }>`
   }
 `;
 
-export const PostHeaderFlex = styled.div`
+export const PostHeaderLeftSection = styled.div`
   display: flex;
   width: 80%;
   justify-content: space-between;
@@ -204,7 +207,7 @@ export const NicknameButton = styled.button`
   }
 `;
 
-const InfoMenu = styled.div`
+const AuthorMenu = styled.div`
   position: absolute;
   top: 30px;
   left: 50px;
@@ -235,7 +238,7 @@ export const Nickname = styled.span`
   width: 50px;
 `;
 
-export const PostInfo = styled.div`
+export const PostMetaInfo = styled.div`
   font-size: 12px;
   color: silver;
   display: flex;

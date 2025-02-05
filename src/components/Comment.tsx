@@ -62,13 +62,15 @@ const Comment = ({ post }: { post: PostType }) => {
   const navigator = useNavigate();
   const params = new URLSearchParams(location.search);
   const searchTextParam = params.get("searchText");
-  const searchOptiontParam = params.get("searchOption");
+  const searchOptionParam = params.get("searchOption");
 
   //---닉네임 클릭 정보 보기-------------------------------------
-  const [showInfo, setShowInfo] = useState<Record<number, boolean>>({});
+  const [showAuthorMenu, setShowAuthorMenu] = useState<Record<number, boolean>>(
+    {}
+  );
 
-  const toggleShowInfo = useCallback((commentId: number) => {
-    setShowInfo((prev) => {
+  const toggleShowAuthorMenu = useCallback((commentId: number) => {
+    setShowAuthorMenu((prev) => {
       const updatedPopupState: Record<number, boolean> = { ...prev };
       for (const key in updatedPopupState) {
         updatedPopupState[key] = false;
@@ -83,11 +85,11 @@ const Comment = ({ post }: { post: PostType }) => {
     page: 1,
   });
 
-  const onSearch = useCallback(
+  const searchByNickname = useCallback(
     (userNickname: string) => {
       setSearchedCurrentPage(1);
       setParams({ searchText: userNickname });
-      setShowInfo({});
+      setShowAuthorMenu({});
       window.scrollTo({ top: 0, behavior: "auto" });
     },
     [setSearchedCurrentPage, setParams]
@@ -97,7 +99,7 @@ const Comment = ({ post }: { post: PostType }) => {
   const [editComment, setEditComment] = useState<Record<number, boolean>>({});
   const [content, , setContent] = useInput();
 
-  const onChangeContent = (e: ChangeEvent<HTMLTextAreaElement>) => {
+  const handleContentChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
     setContent(e.target.value);
   };
 
@@ -106,7 +108,7 @@ const Comment = ({ post }: { post: PostType }) => {
   // 현재 열려 있는 댓글의 id추적하기 위한 상태 변수
   const [currentCommentId, setCurrentCommentId] = useState<number | null>(null);
 
-  const onEditCommentForm = useCallback(
+  const handleEditClick = useCallback(
     (commentId: number, commentContent: string) => {
       // 기존 댓글 닫기
       if (currentCommentId !== null) {
@@ -131,13 +133,13 @@ const Comment = ({ post }: { post: PostType }) => {
   useTextareaAutoHeight(editCommentTextAreaRef, editComment);
 
   // "취소" 버튼을 누를 때 호출되는 함수
-  const onCancelEditComment = () => {
+  const handleCancelEdit = () => {
     setEditComment({});
     setCurrentCommentId(null);
     setContent(""); // "Text" 영역 초기화
   };
 
-  const onModifyComment = useCallback(
+  const handleEditComment = useCallback(
     (commentId: number) => {
       const contentWithBreaks = content.replace(/\n/g, "<br>");
       dispatch({
@@ -160,7 +162,7 @@ const Comment = ({ post }: { post: PostType }) => {
   //대댓글 쓰기 창,map 안에서 하나만 작동 및 폼 중복 방지 코드---------------------
   const [addReComment, setAddReComment] = useState<Record<string, boolean>>({});
 
-  const onAddReCommentForm = useCallback((commentId: number) => {
+  const showReCommentForm = useCallback((commentId: number) => {
     setAddReComment((prev) => {
       const newReCommentState: Record<string, boolean> = {};
       Object.keys(prev).forEach((key) => {
@@ -172,7 +174,7 @@ const Comment = ({ post }: { post: PostType }) => {
   }, []);
 
   //---댓글 삭제-----------------------------------------------------
-  const onRemoveComment = useCallback(
+  const handleRemoveComment = useCallback(
     (commentId: number) => {
       if (!window.confirm("삭제하시겠습니까?")) return false;
       dispatch({
@@ -187,14 +189,17 @@ const Comment = ({ post }: { post: PostType }) => {
   );
 
   //OutsideClick----------------------------------------------
-  const popupRef = useRef<HTMLDivElement>(null);
+  const authorMenuRef = useRef<HTMLDivElement>(null);
   const reCommentFormRef = useRef<HTMLDivElement>(null);
 
-  useOutsideClick([popupRef, reCommentFormRef, editCommentTextAreaRef], () => {
-    setShowInfo({});
-    setAddReComment({});
-    setEditComment({});
-  });
+  useOutsideClick(
+    [authorMenuRef, reCommentFormRef, editCommentTextAreaRef],
+    () => {
+      setShowAuthorMenu({});
+      setAddReComment({});
+      setEditComment({});
+    }
+  );
 
   const theme = useTheme();
   useEffect(() => {
@@ -248,12 +253,12 @@ const Comment = ({ post }: { post: PostType }) => {
     const setParams = (number: number) => {
       const params = new URLSearchParams();
       if (searchTextParam) params.set("searchText", searchTextParam);
-      if (searchOptiontParam) params.set("searchOption", searchOptiontParam);
+      if (searchOptionParam) params.set("searchOption", searchOptionParam);
       params.set("page", currentPage.toString());
       params.set("sortBy", sortBy);
       params.set("cPage", number.toString());
 
-      const pathname = searchOptiontParam
+      const pathname = searchOptionParam
         ? `/searchedPost/${post.id}`
         : `/post/${post.id}`;
 
@@ -271,7 +276,7 @@ const Comment = ({ post }: { post: PostType }) => {
     currentPage,
     navigator,
     post.id,
-    searchOptiontParam,
+    searchOptionParam,
     searchTextParam,
     setCurrentCommentsPage,
     sortBy,
@@ -286,9 +291,9 @@ const Comment = ({ post }: { post: PostType }) => {
       {comments?.map((comment) => {
         const isEditing = editComment[comment.id];
         return (
-          <FullCommentWrapper key={comment.id} id={`comment-${comment.id}`}>
-            <AuthorWrapper>
-              <Author onClick={() => toggleShowInfo(comment.id)}>
+          <CommentItem key={comment.id} id={`comment-${comment.id}`}>
+            <CommentHeader>
+              <Author onClick={() => toggleShowAuthorMenu(comment.id)}>
                 <img
                   src={
                     comment.User.Image
@@ -299,16 +304,18 @@ const Comment = ({ post }: { post: PostType }) => {
                 />
                 <span>{comment.User.nickname.slice(0, 5)}</span>
               </Author>
-              {showInfo[comment.id] ? (
-                <PopupMenu ref={popupRef}>
-                  <BlueButton onClick={() => onSearch(comment.User.nickname)}>
+              {showAuthorMenu[comment.id] ? (
+                <AuthorMenu ref={authorMenuRef}>
+                  <BlueButton
+                    onClick={() => searchByNickname(comment.User.nickname)}
+                  >
                     작성 글 보기
                   </BlueButton>
                   {id !== comment.User.id && (
                     <FollowButton
                       userId={comment.User.id}
-                      setShowInfo={
-                        setShowInfo as React.Dispatch<
+                      setShowAuthorMenu={
+                        setShowAuthorMenu as React.Dispatch<
                           React.SetStateAction<
                             boolean | Record<number, boolean>
                           >
@@ -316,16 +323,16 @@ const Comment = ({ post }: { post: PostType }) => {
                       }
                     />
                   )}
-                </PopupMenu>
+                </AuthorMenu>
               ) : null}
               <Date>{moment(comment.createdAt).format("l")}</Date>
               <Like itemType="comment" item={comment} />
-            </AuthorWrapper>
+            </CommentHeader>
             <ContentWrapper>
               {isEditing && currentCommentId === comment.id ? (
                 <Textarea
                   value={prevContent}
-                  onChange={onChangeContent}
+                  onChange={handleContentChange}
                   ref={editCommentTextAreaRef}
                 />
               ) : (
@@ -334,16 +341,16 @@ const Comment = ({ post }: { post: PostType }) => {
                 </Content>
               )}
               {isEditing && currentCommentId === comment.id && (
-                <ButtonContainer>
-                  <BlueButton onClick={() => onModifyComment(comment.id)}>
+                <ButtonGroup>
+                  <BlueButton onClick={() => handleEditComment(comment.id)}>
                     수정
                   </BlueButton>
-                  <BlueButton onClick={onCancelEditComment}>취소</BlueButton>
-                </ButtonContainer>
+                  <BlueButton onClick={handleCancelEdit}>취소</BlueButton>
+                </ButtonGroup>
               )}
               <CommentOptions>
                 {id && (
-                  <Button onClick={() => onAddReCommentForm(comment.id)}>
+                  <Button onClick={() => showReCommentForm(comment.id)}>
                     <FontAwesomeIcon icon={faComment} />
                   </Button>
                 )}
@@ -351,12 +358,12 @@ const Comment = ({ post }: { post: PostType }) => {
                   <>
                     <Button
                       onClick={() =>
-                        onEditCommentForm(comment.id, comment.content)
+                        handleEditClick(comment.id, comment.content)
                       }
                     >
                       <FontAwesomeIcon icon={faPen} />
                     </Button>
-                    <Button onClick={() => onRemoveComment(comment.id)}>
+                    <Button onClick={() => handleRemoveComment(comment.id)}>
                       <FontAwesomeIcon icon={faTrash} />
                     </Button>
                   </>
@@ -374,7 +381,7 @@ const Comment = ({ post }: { post: PostType }) => {
               </div>
             )}
             <ReComment post={post} comment={comment} />
-          </FullCommentWrapper>
+          </CommentItem>
         );
       })}
       <CommentPagination
@@ -392,16 +399,29 @@ const CommentContainer = styled.div`
   background-color: ${(props) => props.theme.backgroundColor};
 `;
 
-const FullCommentWrapper = styled.div`
+const CommentItem = styled.div`
   border-top: 1px solid silver;
   font-size: 15px;
 `;
 
-const AuthorWrapper = styled.div`
+const CommentHeader = styled.div`
   position: relative;
   display: flex;
   align-items: center;
   margin-top: 15px;
+`;
+
+const AuthorMenu = styled.div`
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  top: 30px;
+  left: 0;
+  transition: transform 0.3s ease, color 0.3s ease;
+  &:hover {
+    transform: translateY(-2px);
+    color: ${(props) => props.theme.charColor};
+  }
 `;
 
 const Author = styled.button`
@@ -443,7 +463,7 @@ const Textarea = styled.textarea`
   font-size: 0.8rem;
 `;
 
-const ButtonContainer = styled.div`
+const ButtonGroup = styled.div`
   height: 30px;
   text-align: center;
 `;
@@ -459,6 +479,11 @@ const CommentOptions = styled.div`
 
 const Button = styled.button`
   font-weight: bold;
+  transition: transform 0.3s ease, color 0.3s ease;
+  &:hover {
+    transform: translateY(-2px);
+    color: ${(props) => props.theme.hoverMainColor};
+  }
 `;
 
 const Date = styled.span`
@@ -476,19 +501,6 @@ const BlueButton = styled.button`
   padding: 6px;
   border-radius: 6px;
   cursor: pointer;
-  transition: transform 0.3s ease, color 0.3s ease;
-  &:hover {
-    transform: translateY(-2px);
-    color: ${(props) => props.theme.charColor};
-  }
-`;
-
-const PopupMenu = styled.div`
-  position: absolute;
-  display: flex;
-  flex-direction: column;
-  top: 30px;
-  left: 0;
   transition: transform 0.3s ease, color 0.3s ease;
   &:hover {
     transform: translateY(-2px);

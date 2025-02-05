@@ -29,11 +29,17 @@ import useOutsideClick from "../hooks/useOutsideClick";
 import useTextareaAutoHeight from "../hooks/useTextareaAutoHeight";
 import FollowButton from "../components/FollowButton";
 import { DEFAULT_PROFILE_IMAGE } from "../pages/Info/MyInfo";
-import { FileButton } from "../components/PostForm";
+import { FileUploadButton } from "../components/PostForm";
 import { useNavigate } from "react-router-dom";
 import { io, Socket } from "socket.io-client";
 import { usePagination } from "../hooks/PaginationProvider";
-import { Date, PostInfo, ViewCount, PostHeaderFlex, Button } from "./Post";
+import {
+  Date,
+  PostMetaInfo,
+  ViewCount,
+  PostHeaderLeftSection,
+  Button,
+} from "./Post";
 import Like from "./Like";
 
 const CommonPost = () => {
@@ -72,7 +78,8 @@ const CommonPost = () => {
   const [editPost, setEditPost] = useState(false);
   const [content, setContent] = useState("");
   const navigator = useNavigate();
-  const onChangeContent = useCallback(
+
+  const handleContentChange = useCallback(
     (e: ChangeEvent<HTMLTextAreaElement>) => {
       setContent(e.target.value);
     },
@@ -82,35 +89,38 @@ const CommonPost = () => {
   const id = me?.id;
   const nickname = useSelector((state: RootState) => state.user.me?.nickname);
 
-  const imageInput = useRef<HTMLInputElement>(null);
+  const imageInputRef = useRef<HTMLInputElement>(null);
   const editPostRef = useRef<HTMLTextAreaElement>(null);
 
   //---닉네임 클릭 정보 보기-------------------------------------
-  const [showInfo, setShowInfo] = useState<boolean | {}>(false);
-  const toggleShowInfo = useCallback(() => {
-    setShowInfo((prevShowInfo) => !prevShowInfo);
+  const [showAuthorMenu, setShowAuthorMenu] = useState<boolean | {}>(false);
+  const toggleShowAuthorMenu = useCallback(() => {
+    setShowAuthorMenu((prev) => !prev);
   }, []);
 
   //---게시글 수정, 삭제 토글-------------------------------------
   const [showOptions, setShowOptions] = useState(false);
   const toggleShowOptions = useCallback(() => {
-    setShowOptions((prevShowOptions) => !prevShowOptions);
+    setShowOptions((prev) => !prev);
   }, []);
 
   //수정 시 높이 조정
   useTextareaAutoHeight(editPostRef, editPost);
 
   //OutsideClick----------------------------------------------
-  const infoMenuRef = useRef<HTMLDivElement>(null);
-  const popupMenuRef = useRef<HTMLDivElement>(null);
+  const authorMenuRef = useRef<HTMLDivElement>(null);
+  const postOptionsRef = useRef<HTMLDivElement>(null);
   const commentFormRef = useRef<HTMLDivElement>(null);
-  const formRef = useRef<HTMLFormElement>(null);
+  const editFormRef = useRef<HTMLFormElement>(null);
 
-  useOutsideClick([infoMenuRef, popupMenuRef, formRef, commentFormRef], () => {
-    setShowOptions(false);
-    setShowInfo(false);
-    setEditPost(false);
-  });
+  useOutsideClick(
+    [authorMenuRef, postOptionsRef, editFormRef, commentFormRef],
+    () => {
+      setShowOptions(false);
+      setShowAuthorMenu(false);
+      setEditPost(false);
+    }
+  );
 
   //-----게시글 수정 및 취소-------------------------
   const toggleEditPostForm = useCallback(() => {
@@ -126,7 +136,7 @@ const CommonPost = () => {
     });
   }, [dispatch, post.content, setContent]);
 
-  const onDeletePost = useCallback(() => {
+  const handleRemovePost = useCallback(() => {
     if (!window.confirm("삭제하시겠습니까?")) return false;
     dispatch({
       type: REMOVE_POST_REQUEST,
@@ -147,7 +157,7 @@ const CommonPost = () => {
     });
   }, [navigator, post.User?.nickname]);
 
-  const onSearch = useCallback(
+  const searchByNickname = useCallback(
     (e: React.MouseEvent) => {
       e.stopPropagation();
       dispatch({
@@ -162,7 +172,7 @@ const CommonPost = () => {
     [dispatch, post.User?.nickname, setSearchedCurrentPage, setParams]
   );
 
-  const onRemoveImage = useCallback(
+  const handleRemoveImage = useCallback(
     (filename: string) => () => {
       if (filename) {
         dispatch({
@@ -174,7 +184,7 @@ const CommonPost = () => {
     [dispatch]
   );
 
-  const onDeleteImage = useCallback(
+  const handleDeleteImage = useCallback(
     (filename: string) => () => {
       if (filename) {
         dispatch({
@@ -189,11 +199,11 @@ const CommonPost = () => {
     [dispatch, post.id]
   );
 
-  const onClickFileUpload = useCallback(() => {
-    imageInput.current!.click();
+  const handleClickFileUpload = useCallback(() => {
+    imageInputRef.current!.click();
   }, []);
 
-  const onChangeImages = useCallback(
+  const handleImagesChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       console.log("images", e.target.files);
 
@@ -219,7 +229,7 @@ const CommonPost = () => {
     [dispatch]
   );
 
-  const onModifyPost = useCallback(
+  const handleEditPost = useCallback(
     (e: SyntheticEvent) => {
       e.preventDefault();
 
@@ -247,11 +257,11 @@ const CommonPost = () => {
   }, [me?.id, post.userIdx, postId]);
 
   return (
-    <FullPostWrapper>
-      <PostWrapper>
+    <PostContainer>
+      <PostItem>
         <PostHeader>
-          <PostHeaderFlex>
-            <NicknameButton onClick={toggleShowInfo}>
+          <PostHeaderLeftSection>
+            <NicknameButton onClick={toggleShowAuthorMenu}>
               <img
                 src={
                   post.User?.Image
@@ -262,37 +272,37 @@ const CommonPost = () => {
               />
               {post.User?.nickname.slice(0, 5)}
             </NicknameButton>
-            {showInfo && (
-              <InfoMenu ref={infoMenuRef}>
-                <Button onClick={onSearch}>작성 글 보기</Button>
+            {showAuthorMenu && (
+              <AuthorMenu ref={authorMenuRef}>
+                <Button onClick={searchByNickname}>작성 글 보기</Button>
                 {id !== post.User.id && (
                   <FollowButton
                     userId={post.User.id}
-                    setShowInfo={setShowInfo}
+                    setShowAuthorMenu={setShowAuthorMenu}
                   />
                 )}
-              </InfoMenu>
+              </AuthorMenu>
             )}
             <PostTitle>{post.title}</PostTitle>
-          </PostHeaderFlex>
-          <PostInfo>
+          </PostHeaderLeftSection>
+          <PostMetaInfo>
             <Date>{moment(post.createdAt).format("l")}</Date>
             <Like itemType="post" item={post} />
             <ViewCount>조회 수 {post.viewCount}</ViewCount>
-          </PostInfo>
+          </PostMetaInfo>
         </PostHeader>
-        <InPostWrapper>
+        <PostContent>
           {editPost ? (
             <>
               <Form
                 encType="multipart/form-data"
-                onSubmit={(e) => onModifyPost(e)}
-                ref={formRef}
+                onSubmit={(e) => handleEditPost(e)}
+                ref={editFormRef}
               >
                 <TextArea
                   placeholder="입력해주세요"
                   value={prevContent}
-                  onChange={onChangeContent}
+                  onChange={handleContentChange}
                   ref={editPostRef}
                 />
                 <>
@@ -301,42 +311,45 @@ const CommonPost = () => {
                     name="image"
                     multiple
                     hidden
-                    ref={imageInput}
-                    onChange={onChangeImages}
+                    ref={imageInputRef}
+                    onChange={handleImagesChange}
                   />
-                  <FileButton type="button" onClick={onClickFileUpload}>
+                  <FileUploadButton
+                    type="button"
+                    onClick={handleClickFileUpload}
+                  >
                     파일 첨부
-                  </FileButton>
+                  </FileUploadButton>
                 </>
-                <ImageGrid>
+                <ImageContainer>
                   {/**기존 이미지 */}
                   {post.Images?.map((image, index) => (
-                    <ImageContainer key={index}>
-                      <ModifyImage
+                    <ImageItem key={index}>
+                      <EditImage
                         src={`${baseURL}/${image.src}`}
                         alt={image.src}
                       />
                       <RemoveButton
                         type="button"
-                        onClick={onDeleteImage(image.src)}
+                        onClick={handleDeleteImage(image.src)}
                       >
                         x
                       </RemoveButton>
-                    </ImageContainer>
+                    </ImageItem>
                   ))}
                   {/**파일 첨부 시 이미지 */}
                   {imagePaths.map((filename, index) => (
-                    <ImageContainer key={index}>
-                      <ModifyImage src={`${baseURL}/${filename}`} alt="img" />
+                    <ImageItem key={index}>
+                      <EditImage src={`${baseURL}/${filename}`} alt="img" />
                       <RemoveButton
                         type="button"
-                        onClick={onRemoveImage(filename)}
+                        onClick={handleRemoveImage(filename)}
                       >
                         x
                       </RemoveButton>
-                    </ImageContainer>
+                    </ImageItem>
                   ))}
-                </ImageGrid>
+                </ImageContainer>
                 <Button type="submit">적용</Button>
                 <Button onClick={toggleEditPostForm}>취소</Button>
               </Form>
@@ -364,17 +377,17 @@ const CommonPost = () => {
                 <EditToggle onClick={toggleShowOptions}>
                   ⋮
                   {showOptions && (
-                    <PopupMenu ref={popupMenuRef}>
+                    <PostOptions ref={postOptionsRef}>
                       <Button onClick={toggleEditPostForm}>수정</Button>
-                      <Button onClick={onDeletePost}>삭제</Button>
-                    </PopupMenu>
+                      <Button onClick={handleRemovePost}>삭제</Button>
+                    </PostOptions>
                   )}
                 </EditToggle>
               )}
             </div>
           ) : null}
-        </InPostWrapper>
-      </PostWrapper>
+        </PostContent>
+      </PostItem>
       <CommentContainer>
         <CommentHeader>
           <CommentNum>댓글 {totalComments && totalComments}개</CommentNum>
@@ -382,19 +395,19 @@ const CommonPost = () => {
         <Comment post={post} />
         <CommentForm post={post} />
       </CommentContainer>
-    </FullPostWrapper>
+    </PostContainer>
   );
 };
 
 export default CommonPost;
-const FullPostWrapper = styled.div`
+const PostContainer = styled.div`
   max-width: 800px;
   border-top: 1px solid silver;
   border-bottom: 1px solid silver;
   margin: 10px auto;
 `;
 
-const PostWrapper = styled.div`
+const PostItem = styled.div`
   margin: 10px auto;
 `;
 
@@ -420,7 +433,7 @@ const PostTitle = styled.div`
   gap: 2px;
 `;
 
-const InPostWrapper = styled.div`
+const PostContent = styled.div`
   border-radius: 5px;
   margin: 10px auto;
   padding: 10px;
@@ -500,7 +513,7 @@ const NicknameButton = styled.button`
   }
 `;
 
-const InfoMenu = styled.div`
+const AuthorMenu = styled.div`
   position: absolute;
   top: 30px;
   left: 50px;
@@ -508,7 +521,7 @@ const InfoMenu = styled.div`
   flex-direction: column;
 `;
 
-const PopupMenu = styled.div`
+const PostOptions = styled.div`
   position: absolute;
   top: 20px;
   left: -30px;
@@ -516,13 +529,13 @@ const PopupMenu = styled.div`
   display: flex;
   flex-direction: column;
 `;
-const ImageGrid = styled.div`
+const ImageContainer = styled.div`
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 20px;
 `;
 
-const ImageContainer = styled.div`
+const ImageItem = styled.div`
   position: relative;
   display: inline-block;
   width: 200px;
@@ -530,7 +543,7 @@ const ImageContainer = styled.div`
   margin: 2px;
 `;
 
-const ModifyImage = styled.img`
+const EditImage = styled.img`
   width: 100%;
   height: 100%;
   border-radius: 8px;

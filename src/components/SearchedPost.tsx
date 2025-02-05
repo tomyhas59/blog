@@ -10,11 +10,11 @@ import moment from "moment";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faImage, faImages } from "@fortawesome/free-solid-svg-icons";
 import {
-  PostHeaderFlex,
+  PostHeaderLeftSection,
   PostTitle,
   NicknameButton,
   Nickname,
-  PostInfo,
+  PostMetaInfo,
   Date,
   Liked,
   ViewCount,
@@ -32,7 +32,7 @@ const SearchedPost = ({
   const location = useLocation();
   const params = new URLSearchParams(location.search);
   const searchTextParam = params.get("searchText");
-  const searchOptiontParam = params.get("searchOption");
+  const searchOptionParam = params.get("searchOption");
   const pageParam = params.get("page");
 
   const highlightText = (text: string) => {
@@ -52,7 +52,7 @@ const SearchedPost = ({
     }
   };
   const setParams = useSetParams({
-    searchOption: searchOptiontParam || "",
+    searchOption: searchOptionParam || "",
     page: Number(pageParam),
     postId: post.id,
   });
@@ -79,7 +79,7 @@ const SearchedPost = ({
         isActive={postId === post.id}
       >
         <PostContainer>
-          <PostHeaderFlex>
+          <PostHeaderLeftSection>
             <NicknameButton>
               <img
                 src={
@@ -90,7 +90,7 @@ const SearchedPost = ({
                 alt="유저 이미지"
               />
               <Nickname>
-                {((searchOptiontParam === "author" || "all") &&
+                {((searchOptionParam === "author" || "all") &&
                   highlightText(post.User.nickname.slice(0, 5))) ||
                   post.User.nickname.slice(0, 5)}
               </Nickname>
@@ -108,19 +108,19 @@ const SearchedPost = ({
                 )}
               </span>
             </PostTitle>
-          </PostHeaderFlex>
-          <PostInfo>
+          </PostHeaderLeftSection>
+          <PostMetaInfo>
             <Date>{moment(post.createdAt).format("l")}</Date>
             <Liked>{post.Likers.length === 0 ? "" : post.Likers.length}</Liked>
             <ViewCount>{post.viewCount}</ViewCount>
-          </PostInfo>
+          </PostMetaInfo>
         </PostContainer>
 
         <Content>
-          {searchOptiontParam === "all" && (
+          {searchOptionParam === "all" && (
             <div>{highlightText(post.content)}</div>
           )}
-          {searchOptiontParam === "all" &&
+          {searchOptionParam === "all" &&
             post.Comments.map((comment) => (
               <Comment key={comment.id}>
                 {comment.content.includes(searchTextParam) && (
@@ -129,12 +129,12 @@ const SearchedPost = ({
                     {highlightText(comment.content)}
                   </div>
                 )}
-                {comment.ReComments.map((recomment) => (
-                  <ReComment key={recomment.id}>
-                    {recomment.content.includes(searchTextParam) && (
+                {comment.ReComments.map((reComment) => (
+                  <ReComment key={reComment.id}>
+                    {reComment.content.includes(searchTextParam) && (
                       <div>
-                        <Nickname>{recomment.User.nickname} : </Nickname>
-                        {highlightText(recomment.content)}
+                        <Nickname>{reComment.User.nickname} : </Nickname>
+                        {highlightText(reComment.content)}
                       </div>
                     )}
                   </ReComment>

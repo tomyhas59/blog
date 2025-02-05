@@ -23,7 +23,7 @@ const CommentForm = ({ post }: { post: PostType }) => {
   const [content, , setContent] = useInput();
   const [addedComment, setAddedComment] = useState<boolean>(false);
 
-  const onChangeContent = (e: ChangeEvent<HTMLTextAreaElement>) => {
+  const handleContentChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
     setContent(e.target.value); //useInput()은 HTMLInputElement라서 HTMLTextAreaElement 따로 만듦
   };
   const { currentPage, divisor, setCurrentCommentsPage, sortBy } =
@@ -47,18 +47,18 @@ const CommentForm = ({ post }: { post: PostType }) => {
   const navigator = useNavigate();
   const params = new URLSearchParams(location.search);
   const searchTextParam = params.get("searchText");
-  const searchOptiontParam = params.get("searchOption");
+  const searchOptionParam = params.get("searchOption");
 
   const setParams = useCallback(
     (number: number) => {
       const params = new URLSearchParams();
       if (searchTextParam) params.set("searchText", searchTextParam);
-      if (searchOptiontParam) params.set("searchOption", searchOptiontParam);
+      if (searchOptionParam) params.set("searchOption", searchOptionParam);
       params.set("page", currentPage.toString());
       params.set("sortBy", sortBy);
       params.set("cPage", number.toString());
 
-      const pathname = searchOptiontParam
+      const pathname = searchOptionParam
         ? `/searchedPost/${post.id}`
         : `/post/${post.id}`;
 
@@ -68,13 +68,13 @@ const CommentForm = ({ post }: { post: PostType }) => {
       currentPage,
       navigator,
       post.id,
-      searchOptiontParam,
+      searchOptionParam,
       searchTextParam,
       sortBy,
     ]
   );
 
-  const onSubmitComment = useCallback(
+  const handleAddComment = useCallback(
     (e: SyntheticEvent) => {
       e.preventDefault();
       if (content === "") {
@@ -114,11 +114,11 @@ const CommentForm = ({ post }: { post: PostType }) => {
 
   return (
     <CommentFormContainer>
-      <Form onSubmit={onSubmitComment}>
+      <Form onSubmit={handleAddComment}>
         <Textarea
           placeholder={commentPlaceholder}
           value={content}
-          onChange={onChangeContent}
+          onChange={handleContentChange}
           ref={commentTextAreaRef}
           disabled={!id}
         />

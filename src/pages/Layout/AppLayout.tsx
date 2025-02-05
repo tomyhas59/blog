@@ -49,7 +49,7 @@ const AppLayout = ({ children }: any) => {
         (location.pathname === "/" ||
           location.pathname.includes("post") ||
           location.pathname.includes("search")) && (
-          <ShowPostForm onClick={showPostForm}>글쓰기</ShowPostForm>
+          <ShowPostFormButton onClick={showPostForm}>글쓰기</ShowPostFormButton>
         )}
       <Footer />
     </LayoutWrapper>
@@ -73,7 +73,7 @@ const ContentWrapper = styled.div`
   }
 `;
 
-const ShowPostForm = styled.div`
+const ShowPostFormButton = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;

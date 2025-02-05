@@ -74,7 +74,7 @@ const MyComments: React.FC = () => {
     setCurrentCommentsPage,
   ]);
 
-  const onSearch = useCallback(
+  const searchByCommentType = useCallback(
     (
       id: number,
       category: "comment" | "reComment",
@@ -104,7 +104,7 @@ const MyComments: React.FC = () => {
         <MyCommentListRenderer
           items={comments}
           onItemClick={(id, content, postId) =>
-            onSearch(id, "comment", content, postId)
+            searchByCommentType(id, "comment", content, postId)
           }
         />
       </CommentList>
@@ -114,7 +114,7 @@ const MyComments: React.FC = () => {
         <MyCommentListRenderer
           items={reComments}
           onItemClick={(id, content, postId) =>
-            onSearch(id, "reComment", content, postId)
+            searchByCommentType(id, "reComment", content, postId)
           }
         />
       </CommentList>

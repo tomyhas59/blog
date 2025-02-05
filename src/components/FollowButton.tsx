@@ -6,7 +6,7 @@ import { RootState } from "../reducer";
 
 interface FollowButtonProps {
   userId: number;
-  setShowInfo?: React.Dispatch<
+  setShowAuthorMenu?: React.Dispatch<
     React.SetStateAction<boolean | Record<number, boolean>>
   >;
   setActiveUserOption?: React.Dispatch<React.SetStateAction<string | null>>;
@@ -14,16 +14,16 @@ interface FollowButtonProps {
 
 const FollowButton: React.FC<FollowButtonProps> = ({
   userId,
-  setShowInfo,
+  setShowAuthorMenu,
   setActiveUserOption,
 }) => {
   const dispatch = useDispatch();
   const me = useSelector((state: RootState) => state.user.me);
 
   const resetInfoAndOption = useCallback(() => {
-    setShowInfo?.((prev) => (typeof prev === "boolean" ? false : {}));
+    setShowAuthorMenu?.((prev) => (typeof prev === "boolean" ? false : {}));
     setActiveUserOption?.(null);
-  }, [setShowInfo, setActiveUserOption]);
+  }, [setShowAuthorMenu, setActiveUserOption]);
 
   const handleFollow = useCallback(
     (isFollowing: boolean) => (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -62,9 +62,9 @@ const Button = styled.button`
   border-radius: 6px;
   cursor: pointer;
   transition: transform 0.3s ease, color 0.3s ease;
-
   &:hover {
     transform: translateY(-2px);
+    color: ${(props) => props.theme.charColor};
   }
 `;
 

@@ -32,9 +32,9 @@ const MyInfo: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [changePassword, setChangePassword] = useState<boolean>(false);
 
-  const [prevPassword, onChangePrevPassword] = useInput();
-  const [newPassword, onChangeNewPassword] = useInput();
-  const [newNickname, onChangeNewNickname] = useInput();
+  const [prevPassword, handlePrevPasswordChange] = useInput();
+  const [newPassword, handleNewPasswordChange] = useInput();
+  const [newNickname, handleNewNicknameChange] = useInput();
   const [passwordConfirm, setPasswordConfirm] = useState("");
   const [passwordError, setPasswordError] = useState(false);
 
@@ -49,7 +49,7 @@ const MyInfo: React.FC = () => {
     [newPassword]
   );
 
-  const changePasswordSubmit = useCallback(
+  const handleChangePassword = useCallback(
     (e: SyntheticEvent) => {
       e.preventDefault();
       if (!prevPassword || !newPassword || !passwordConfirm) {
@@ -97,13 +97,13 @@ const MyInfo: React.FC = () => {
   const createdAtDate = moment(createdAt);
   const formattedDate = createdAtDate.format("l");
 
-  const onClickFileUpload = () => {
+  const handleClickFileUpload = () => {
     if (imageInput.current) {
       imageInput.current.click();
     }
   };
 
-  const onChangeImages = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImagesChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = e.target.files?.[0];
     if (selectedFile) {
       setFile(selectedFile);
@@ -111,7 +111,7 @@ const MyInfo: React.FC = () => {
     }
   };
 
-  const onCancel = () => {
+  const handleCancel = () => {
     setFile(null);
     setPreviewUrl("");
     if (imageInput.current) {
@@ -119,7 +119,7 @@ const MyInfo: React.FC = () => {
     }
   };
 
-  const onRemoveImage = async () => {
+  const handleRemoveImage = async () => {
     const confirmRemoval = window.confirm("정말 제거하시겠습니까?");
     if (!confirmRemoval) {
       return;
@@ -137,7 +137,9 @@ const MyInfo: React.FC = () => {
     }
   };
 
-  const profileImageSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleProfileImageSubmit = async (
+    e: React.FormEvent<HTMLFormElement>
+  ) => {
     e.preventDefault();
 
     if (!file || !me) return;
@@ -173,7 +175,7 @@ const MyInfo: React.FC = () => {
     }
   };
 
-  const modifyNicknameSubmit = async (e: SyntheticEvent) => {
+  const handleEditNickname = async (e: SyntheticEvent) => {
     e.preventDefault();
     try {
       if (newNickname === me.nickname || newNickname === "") return;
@@ -197,14 +199,14 @@ const MyInfo: React.FC = () => {
     <InfoContainer>
       {isLoading || (changePasswordLoading && <Spinner />)}
       <ProfileSection>
-        <form encType="multipart/form-data" onSubmit={profileImageSubmit}>
+        <form encType="multipart/form-data" onSubmit={handleProfileImageSubmit}>
           {imageSrc && !file && (
-            <RemoveButton type="button" onClick={onRemoveImage}>
+            <RemoveButton type="button" onClick={handleRemoveImage}>
               ✖
             </RemoveButton>
           )}
           <ProfileImage
-            onClick={onClickFileUpload}
+            onClick={handleCancel}
             src={
               previewUrl ||
               (imageSrc ? `${baseURL}/${imageSrc}` : DEFAULT_PROFILE_IMAGE)
@@ -216,34 +218,34 @@ const MyInfo: React.FC = () => {
             name="image"
             hidden
             ref={imageInput}
-            onChange={onChangeImages}
+            onChange={handleImagesChange}
           />
           {file && (
             <ButtonContainer>
               <SubmitButton type="submit">등록</SubmitButton>
-              <CancelButton type="button" onClick={onCancel}>
+              <CancelButton type="button" onClick={handleCancel}>
                 취소
               </CancelButton>
             </ButtonContainer>
           )}
         </form>
-        <InfoText>
+        <InfoContent>
           <h1>내 정보</h1>
           <UserInfo>
             <strong>사용자명:</strong> {!modifyNickname && me?.nickname}
             {modifyNickname ? (
-              <ModifyNicknameForm onSubmit={modifyNicknameSubmit}>
+              <EditNicknameForm onSubmit={handleEditNickname}>
                 <input
                   ref={newNicknameRef}
                   type="text"
                   value={newNickname}
-                  onChange={onChangeNewNickname}
+                  onChange={handleNewNicknameChange}
                 />
                 <SubmitButton type="submit">등록</SubmitButton>
                 <CancelButton onClick={() => setModifyNickname(false)}>
                   취소
                 </CancelButton>
-              </ModifyNicknameForm>
+              </EditNicknameForm>
             ) : (
               <ModifyNicknameButton onClick={() => setModifyNickname(true)}>
                 수정
@@ -263,16 +265,16 @@ const MyInfo: React.FC = () => {
               비밀번호 변경
             </ChangePasswordButton>
           </UserInfo>
-        </InfoText>
+        </InfoContent>
       </ProfileSection>
       {changePassword && (
-        <ChangePasswordForm onSubmit={changePasswordSubmit}>
+        <ChangePasswordForm onSubmit={handleChangePassword}>
           <FormGroup>
             <Label>현재 비밀번호</Label>
             <Input
               type="password"
               value={prevPassword}
-              onChange={onChangePrevPassword}
+              onChange={handlePrevPasswordChange}
               placeholder="현재 비밀번호"
             />
           </FormGroup>
@@ -281,7 +283,7 @@ const MyInfo: React.FC = () => {
             <Input
               type="password"
               value={newPassword}
-              onChange={onChangeNewPassword}
+              onChange={handleNewPasswordChange}
               placeholder="비밀번호"
             />
           </FormGroup>
@@ -355,7 +357,7 @@ const ProfileImage = styled.img`
   }
 `;
 
-const ModifyNicknameForm = styled.form`
+const EditNicknameForm = styled.form`
   input {
     color: ${(props) => props.theme.mainColor};
     width: 150px;
@@ -373,7 +375,7 @@ const ModifyNicknameButton = styled.button`
     color: ${(props) => props.theme.charColor};
   }
 `;
-const InfoText = styled.div`
+const InfoContent = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;

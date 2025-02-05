@@ -14,9 +14,9 @@ import { RootState } from "../reducer";
 import Spinner from "../components/Spinner";
 
 const Sign = () => {
-  const [nickname, onChangeNickname] = useInput();
-  const [email, onChangeEmail] = useInput();
-  const [password, onChangePassword] = useInput();
+  const [nickname, handleNicknameChange] = useInput();
+  const [email, handleEmailChange] = useInput();
+  const [password, handlePasswordChange] = useInput();
   const [passwordConfirm, setPasswordConfirm] = useState("");
   const [passwordError, setPasswordError] = useState(false);
 
@@ -43,7 +43,7 @@ const Sign = () => {
     }
   }, [signUpDone, navigate, dispatch]);
 
-  const handleSubmit = useCallback(
+  const handleSignUp = useCallback(
     (e: SyntheticEvent) => {
       e.preventDefault();
       if (!email || !nickname || !password || !passwordConfirm) {
@@ -67,14 +67,14 @@ const Sign = () => {
       {signUpLoading ? (
         <Spinner />
       ) : (
-        <RegistrationContainer onSubmit={handleSubmit}>
+        <SignUpContainer onSubmit={handleSignUp}>
           <Title>회원가입</Title>
           <FormGroup>
             <Label>Email</Label>
             <Input
               type="email"
               value={email}
-              onChange={onChangeEmail}
+              onChange={handleEmailChange}
               placeholder="이메일"
               autoComplete="email"
             />
@@ -84,7 +84,7 @@ const Sign = () => {
             <Input
               type="text"
               value={nickname}
-              onChange={onChangeNickname}
+              onChange={handleNicknameChange}
               placeholder="닉네임"
               autoComplete="nickname"
             />
@@ -94,7 +94,7 @@ const Sign = () => {
             <Input
               type="password"
               value={password}
-              onChange={onChangePassword}
+              onChange={handlePasswordChange}
               placeholder="비밀번호"
               autoComplete="new-password"
             />
@@ -113,7 +113,7 @@ const Sign = () => {
             <CheckMessage>비밀번호가 일치하지 않습니다</CheckMessage>
           )}
           <Button type="submit">회원가입</Button>
-        </RegistrationContainer>
+        </SignUpContainer>
       )}
     </>
   );
@@ -121,7 +121,7 @@ const Sign = () => {
 
 export default Sign;
 
-const RegistrationContainer = styled.form`
+const SignUpContainer = styled.form`
   display: flex;
   flex-direction: column;
 

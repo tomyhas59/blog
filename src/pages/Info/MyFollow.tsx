@@ -1,19 +1,12 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "../../reducer";
 import styled from "styled-components";
-import useOutsideClick from "../../hooks/useOutsideClick";
 import FollowButton from "../../components/FollowButton";
 import { io, Socket } from "socket.io-client";
 
 const MyFollow: React.FC = () => {
   const { me } = useSelector((state: RootState) => state.user);
-  const [activeUserOption, setActiveUserOption] = useState<string | null>(null);
-  const userOptionRef = useRef<HTMLDivElement>(null);
-
-  const onUserOptionClick = useCallback((nickname: string) => {
-    setActiveUserOption((prev) => (prev === nickname ? null : nickname));
-  }, []);
 
   const socket = useRef<Socket | null>(null);
 
@@ -28,15 +21,11 @@ const MyFollow: React.FC = () => {
     };
   }, [me]);
 
-  useOutsideClick([userOptionRef], () => {
-    setActiveUserOption(null);
-  });
-
   useEffect(() => {
-    socket.current?.emit("followNotiRead", me?.id);
+    socket.current?.emit("followNotificationRead", me?.id);
 
     return () => {
-      socket.current?.off("followNotiRead");
+      socket.current?.off("followNotificationRead");
     };
   }, [me, socket]);
 
@@ -53,14 +42,7 @@ const MyFollow: React.FC = () => {
             return (
               <FollowItem key={follower.id}>
                 <Nickname>{follower.nickname}</Nickname>
-                {!isFollowing && (
-                  <UserOption ref={userOptionRef}>
-                    <FollowButton
-                      userId={follower.id}
-                      setActiveUserOption={setActiveUserOption}
-                    />
-                  </UserOption>
-                )}
+                {!isFollowing && <FollowButton userId={follower.id} />}
               </FollowItem>
             );
           })}
@@ -70,19 +52,9 @@ const MyFollow: React.FC = () => {
         <SectionHeading>팔로잉 ({me?.Followings.length})</SectionHeading>
         <FollowList>
           {me?.Followings.map((following) => (
-            <FollowItem
-              key={following.id}
-              onClick={() => onUserOptionClick(following.nickname)}
-            >
+            <FollowItem key={following.id}>
               <Nickname>{following.nickname}</Nickname>
-              {activeUserOption === following.nickname && (
-                <UserOption ref={userOptionRef}>
-                  <FollowButton
-                    userId={following.id}
-                    setActiveUserOption={setActiveUserOption}
-                  />
-                </UserOption>
-              )}
+              <FollowButton userId={following.id} />
             </FollowItem>
           ))}
         </FollowList>
@@ -142,6 +114,7 @@ const SectionHeading = styled.h2`
 
 const FollowItem = styled.div`
   display: flex;
+  justify-content: space-between;
   align-items: center;
   padding: 12px;
   border-bottom: 1px solid #e0e0e0;
@@ -164,35 +137,5 @@ const Nickname = styled.span`
 
   @media (max-width: 768px) {
     font-size: 0.9em;
-  }
-`;
-
-const UserOption = styled.div`
-  position: absolute;
-  right: 10px;
-  top: 50%;
-  transform: translateY(-50%);
-  background-color: ${(props) => props.theme.mainColor};
-  border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-  color: #fff;
-  font-size: 0.9em;
-  z-index: 1000;
-  padding: 5px;
-  display: flex;
-  align-items: center;
-
-  & button {
-    cursor: pointer;
-    transition: transform 0.3s ease, color 0.3s ease;
-
-    &:hover {
-      transform: scale(1.1);
-      color: ${(props) => props.theme.charColor};
-    }
-  }
-
-  @media (max-width: 768px) {
-    width: 70px;
   }
 `;

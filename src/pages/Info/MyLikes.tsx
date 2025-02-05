@@ -53,7 +53,7 @@ const MyLikes: React.FC = () => {
     }
   }, [dispatch, postNum, setCurrentPage, divisor, navigator, postId]);
 
-  const onSearch = useCallback(
+  const searchByTitle = useCallback(
     (title: string, postId: number) => {
       setPostId(postId);
       dispatch({
@@ -71,7 +71,7 @@ const MyLikes: React.FC = () => {
       <Heading>◈좋아요 한 글◈</Heading>
       <MyPostListRenderer
         items={posts}
-        onItemClick={(title, postId) => onSearch(title, postId)}
+        onItemClick={(title, postId) => searchByTitle(title, postId)}
       />
     </PostsContainer>
   );

@@ -6,7 +6,7 @@ import React from "react";
 const Footer = () => {
   return (
     <FooterContainer>
-      <Footertxt>
+      <FooterLeft>
         <p>
           YH
           <br />
@@ -18,7 +18,7 @@ const Footer = () => {
           <br />
           Copyright 2023, Ltd. All rights reserved.
         </p>
-      </Footertxt>
+      </FooterLeft>
       <FooterRight>
         <ul>
           <li>
@@ -53,7 +53,7 @@ export const FooterContainer = styled.footer`
   }
 `;
 
-export const Footertxt = styled.div`
+export const FooterLeft = styled.div`
   width: 30%;
   color: #fff;
   p {

@@ -65,7 +65,7 @@ const Chat = () => {
     };
   }, [me]);
 
-  const createOneOnOneChatRoom = async (user2Id: number) => {
+  const createChatRoom = async (user2Id: number) => {
     try {
       const response = await axios.post("/post/chatRoom", { user2Id });
       console.log(response.data);
@@ -76,7 +76,7 @@ const Chat = () => {
     }
   };
 
-  const onUserOptionClick = useCallback((nickname: string) => {
+  const handleUserOptionClick = useCallback((nickname: string) => {
     setActiveUserOption((prev) => (prev === nickname ? null : nickname));
   }, []);
 
@@ -111,11 +111,11 @@ const Chat = () => {
     };
   }, []);
 
-  const onUserClick = useCallback(
+  const handleChatStart = useCallback(
     async (user: { id: number; nickname: string }) => {
       try {
         if (me && user.id !== me.id) {
-          const chatRoom = await createOneOnOneChatRoom(user.id);
+          const chatRoom = await createChatRoom(user.id);
           console.log(chatRoom);
           if (chatRoom) {
             setRoom(chatRoom);
@@ -170,20 +170,20 @@ const Chat = () => {
 
   return (
     <ChatContainer>
-      <ListContainer>
+      <ListWrapper>
         <FollowList>
           <h1>친구 목록</h1>
           <ul>
             {mutualUsers.map((user) => (
               <li key={user.id}>
-                <button onClick={() => onUserOptionClick(user.nickname)}>
+                <button onClick={() => handleUserOptionClick(user.nickname)}>
                   {user.nickname.slice(0, 5)}
                 </button>
                 {user.id !== me?.id && activeUserOption === user.nickname && (
                   <UserOption ref={userOptionRef}>
                     <button
                       onClick={() => {
-                        onUserClick(user);
+                        handleChatStart(user);
                       }}
                     >
                       1:1 채팅하기
@@ -202,7 +202,7 @@ const Chat = () => {
           <h1>채팅방 목록</h1>
           {userRoomList.map((userRoom) => {
             const currentUserId = me?.id;
-            const seletedUserId =
+            const selectedUserId =
               userRoom.User1.id === currentUserId
                 ? userRoom.User2.id
                 : userRoom.User1.id;
@@ -215,7 +215,7 @@ const Chat = () => {
               <RoomItem
                 key={userRoom.id}
                 onClick={() => {
-                  setSelectedUserId(seletedUserId);
+                  setSelectedUserId(selectedUserId);
                   setRoom(userRoom);
                   setActiveRoom(userRoom);
                 }}
@@ -229,7 +229,7 @@ const Chat = () => {
             );
           })}
         </RoomList>
-      </ListContainer>
+      </ListWrapper>
       <ContentWrapper>{renderRoom()}</ContentWrapper>
     </ChatContainer>
   );
@@ -249,7 +249,7 @@ const ChatContainer = styled.div`
   }
 `;
 
-const ListContainer = styled.div`
+const ListWrapper = styled.div`
   display: flex;
   justify-content: space-around;
   gap: 40px;

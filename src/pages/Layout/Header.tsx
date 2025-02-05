@@ -117,7 +117,7 @@ const Header = () => {
     }
   }, [dispatch, logOutDone, navigator]);
 
-  const onLogout = useCallback(() => {
+  const handleLogout = useCallback(() => {
     socket.current?.emit("logoutUser", me?.id);
     dispatch({
       type: LOG_OUT_REQUEST,
@@ -125,13 +125,13 @@ const Header = () => {
     setChatNotification(false);
   }, [dispatch, me?.id, socket]);
 
-  const onGoHome = useCallback(() => {
+  const goToHome = useCallback(() => {
     setCurrentPage(1);
     navigator("/");
     window.location.reload();
   }, [navigator, setCurrentPage]);
 
-  const onGoToChat = () => {
+  const goToChat = () => {
     if (!me) return alert("로그인이 필요합니다");
     navigator("/chat");
   };
@@ -193,12 +193,11 @@ const Header = () => {
   };
 
   return (
-    <HeaderWrapper>
-      <LogoContainer>
-        <HeaderLogoBtn onClick={onGoHome}>TMS</HeaderLogoBtn>
-
+    <HeaderContainer>
+      <HeaderLeftSection>
+        <HeaderLogoBtn onClick={goToHome}>TMS</HeaderLogoBtn>
         <Search />
-      </LogoContainer>
+      </HeaderLeftSection>
       {!isLoggedIn && (
         <SignList>
           <ListItem>
@@ -212,7 +211,7 @@ const Header = () => {
 
       {isLoggedIn && (
         <SignList>
-          <ProfileImageContainer>
+          <ProfileImageWrapper>
             <ProfileImage
               onClick={() => navigator("/info")}
               src={
@@ -224,23 +223,25 @@ const Header = () => {
             {(followNotification || commentNotification) && (
               <Notification>🔔</Notification>
             )}
-          </ProfileImageContainer>
-          <ListItem onClick={onGoToChat}>
+          </ProfileImageWrapper>
+          <ListItem onClick={goToChat}>
             <span>채팅</span>
             {chatNotification && <Notification>🔔</Notification>}
           </ListItem>
           <ListItem>
-            <button onClick={onLogout}>로그아웃</button>
+            <button onClick={handleLogout}>로그아웃</button>
           </ListItem>
         </SignList>
       )}
-      <button onClick={toggleDarkMode}>{isDarkMode ? "🌙" : "☀️"}</button>
-    </HeaderWrapper>
+      <DarkModeButton onClick={toggleDarkMode}>
+        {isDarkMode ? "🌙" : "☀️"}
+      </DarkModeButton>
+    </HeaderContainer>
   );
 };
 export default Header;
 
-export const HeaderWrapper = styled.header`
+export const HeaderContainer = styled.header`
   width: 100%;
   padding: 5px;
   background-color: ${(props) => props.theme.subColor};
@@ -258,7 +259,7 @@ export const HeaderWrapper = styled.header`
   }
 `;
 
-const LogoContainer = styled.div`
+const HeaderLeftSection = styled.div`
   display: flex;
   gap: 10px;
   @media (max-width: 480px) {
@@ -349,7 +350,7 @@ const Notification = styled.span`
   animation: ${blinkBackground} 1s infinite;
 `;
 
-const ProfileImageContainer = styled.div`
+const ProfileImageWrapper = styled.div`
   position: relative;
   display: flex;
   justify-content: center;
@@ -377,5 +378,13 @@ const ProfileImage = styled.img`
     &:hover {
       color: ${(props) => props.theme.charColor};
     }
+  }
+`;
+
+const DarkModeButton = styled.button`
+  font-size: 20px;
+  transition: transform 0.3s ease, border-color 0.3s ease;
+  &:hover {
+    transform: scale(1.3);
   }
 `;

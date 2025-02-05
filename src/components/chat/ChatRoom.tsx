@@ -135,7 +135,7 @@ const ChatRoom = ({
     }
   }, [messages]);
 
-  const onMessageSubmit = (e: SyntheticEvent) => {
+  const handleMessageSubmit = (e: SyntheticEvent) => {
     e.preventDefault();
     if (inputValue.trim() !== "") {
       const messageData = {
@@ -149,22 +149,22 @@ const ChatRoom = ({
     }
   };
 
-  const onInputChange = (e: ChangeEvent<HTMLInputElement>) => {
+  const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     setInputValue(e.target.value);
   };
 
-  const oneExit = () => {
+  const onExit = () => {
     if (window.confirm("정말 나가겠습니까?")) {
       socket.current?.emit("outRoom", currentRoomId, me);
       setActiveRoom(null);
     }
   };
 
-  const onMessageClick = (messageId: number) => {
+  const toggleDeleteButton = (messageId: number) => {
     setSelectedMessageId(selectedMessageId === messageId ? null : messageId);
   };
 
-  const onDeleteMessage = (messageId: number, message: string) => {
+  const handleDeleteMessage = (messageId: number, message: string) => {
     setMessages((prev) =>
       prev.map((msg) =>
         msg.id === messageId ? { ...msg, content: "삭제된 메시지입니다" } : msg
@@ -184,7 +184,7 @@ const ChatRoom = ({
       ></ChatRoomCloseButton>
       <RoomHeader>
         <ChatPartnerName>{roomName}님과의 채팅</ChatPartnerName>
-        <ExitButton onClick={oneExit}>나가기</ExitButton>
+        <ExitButton onClick={onExit}>나가기</ExitButton>
       </RoomHeader>
       <MessageListContainer ref={messageListContainerRef}>
         <MessageList>
@@ -222,7 +222,7 @@ const ChatRoom = ({
                     <MessageContent
                       isMe={message.User?.id === me?.id}
                       isSystemMessage={isSystemMessage}
-                      onClick={() => onMessageClick(message.id)}
+                      onClick={() => toggleDeleteButton(message.id)}
                     >
                       {messageContent}
                     </MessageContent>
@@ -233,7 +233,7 @@ const ChatRoom = ({
                       selectedMessageId === message.id && (
                         <DeleteMessageButton
                           onClick={() =>
-                            onDeleteMessage(message.id, message.content)
+                            handleDeleteMessage(message.id, message.content)
                           }
                         >
                           삭제
@@ -246,7 +246,7 @@ const ChatRoom = ({
           )}
         </MessageList>
       </MessageListContainer>
-      <MessageForm onSubmit={onMessageSubmit}>
+      <MessageForm onSubmit={handleMessageSubmit}>
         <MessageInput
           type="text"
           placeholder={
@@ -254,7 +254,7 @@ const ChatRoom = ({
           }
           value={inputValue}
           ref={messageRef}
-          onChange={onInputChange}
+          onChange={handleInputChange}
           disabled={chatDisable}
         />
         <MessageButton type="submit" disabled={chatDisable}>
