@@ -58,18 +58,17 @@ const AppLayout = ({ children }: any) => {
 
 const LayoutContainer = styled.div`
   position: relative;
-  display: flex;
-  flex-direction: column;
   min-height: 100vh;
 `;
 
-const ContentWrapper = styled.div`
+const ContentWrapper = styled.main`
   background-color: ${(props) => props.theme.backgroundColor};
   color: ${(props) => props.theme.textColor};
-  flex-grow: 1;
   padding: 5px;
+  min-height: 80vh;
   @media (max-width: 480px) {
-    padding: 0;
+    padding: 7vh 0 0;
+    min-height: 100vh;
   }
 `;
 

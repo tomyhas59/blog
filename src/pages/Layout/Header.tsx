@@ -194,10 +194,8 @@ const Header = () => {
 
   return (
     <HeaderContainer>
-      <HeaderLeftSection>
-        <HeaderLogoBtn onClick={goToHome}>TMS</HeaderLogoBtn>
-        <Search />
-      </HeaderLeftSection>
+      <HeaderLogoBtn onClick={goToHome}>TMS</HeaderLogoBtn>
+      <Search />
       {!isLoggedIn && (
         <SignList>
           <ListItem>
@@ -243,7 +241,7 @@ export default Header;
 
 export const HeaderContainer = styled.header`
   width: 100%;
-  padding: 5px;
+  min-height: 7vh;
   background-color: ${(props) => props.theme.subColor};
   display: flex;
   justify-content: center;
@@ -251,19 +249,17 @@ export const HeaderContainer = styled.header`
   gap: 10px;
   @media (max-width: 480px) {
     position: fixed;
-    padding: 5px;
     display: grid;
-    bottom: 0;
-    grid-template-areas: "a b c";
-    z-index: 999;
-  }
-`;
-
-const HeaderLeftSection = styled.div`
-  display: flex;
-  gap: 10px;
-  @media (max-width: 480px) {
-    grid-area: b;
+    grid-template-areas:
+      "a b c"
+      "d d d";
+    top: 0;
+    left: 0;
+    width: 100%;
+    min-height: 7vh;
+    z-index: 1000;
+    padding: 5px;
+    gap: 5px;
   }
 `;
 
@@ -281,6 +277,7 @@ export const HeaderLogoBtn = styled.button`
     color: ${(props) => props.theme.charColor};
   }
   @media (max-width: 480px) {
+    grid-area: a;
     font-size: 14px;
     font-weight: bold;
     background: none;
@@ -295,6 +292,9 @@ export const SignList = styled.ul`
   align-items: center;
   color: #fff;
   gap: 10px;
+  @media (max-width: 480px) {
+    grid-area: b;
+  }
 `;
 
 const ListItem = styled.li`
@@ -386,5 +386,8 @@ const DarkModeButton = styled.button`
   transition: transform 0.3s ease, border-color 0.3s ease;
   &:hover {
     transform: scale(1.3);
+  }
+  @media (max-width: 480px) {
+    grid-area: c;
   }
 `;

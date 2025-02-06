@@ -48,7 +48,7 @@ const Search = () => {
   );
 
   return (
-    <Container currentPath={location.pathname}>
+    <SearchContainer currentPath={location.pathname}>
       <Select
         value={searchOption}
         onChange={(e) => setSearchOption(e.target.value)}
@@ -66,30 +66,19 @@ const Search = () => {
       <SearchButton onClick={handleSearchWithOptions}>
         <FontAwesomeIcon icon={faMagnifyingGlass} />
       </SearchButton>
-    </Container>
+    </SearchContainer>
   );
 };
 
 export default Search;
 
-const Container = styled.div<{ currentPath: string }>`
+const SearchContainer = styled.div<{ currentPath: string }>`
   display: grid;
   width: 500px;
-  height: 1.5rem;
   grid-template-columns: 15% 75% 10%;
-  @media (max-width: 680px) {
-    width: 200px;
-  }
-
   @media (max-width: 480px) {
-    display: ${({ currentPath }) =>
-      currentPath === "/" || currentPath.includes("/search") ? "grid" : "none"};
-    position: absolute;
-    width: 250px;
-    text-align: center;
-    grid-template-columns: 30% 60% 10%;
-    top: -30px;
-    left: 0;
+    width: 300px;
+    grid-area: d;
   }
 `;
 
