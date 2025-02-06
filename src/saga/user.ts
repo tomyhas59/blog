@@ -1,6 +1,6 @@
 import {
   CHANGE_PASSWORD_FAILURE,
-  CHANGE_PASSWORD_REQUESE,
+  CHANGE_PASSWORD_REQUEST,
   CHANGE_PASSWORD_SUCCESS,
   FOLLOW_FAILURE,
   FOLLOW_REQUEST,
@@ -89,6 +89,7 @@ function* changePassword(action: { data: any }): SagaIterator {
     const result = yield call(changePasswordAPI, action.data);
     yield put({
       type: CHANGE_PASSWORD_SUCCESS,
+      data: result.data,
     });
   } catch (err: any) {
     console.error(err);
@@ -100,7 +101,7 @@ function* changePassword(action: { data: any }): SagaIterator {
 }
 
 function* watchChangePassword() {
-  yield takeLatest<any>(CHANGE_PASSWORD_REQUESE, changePassword);
+  yield takeLatest<any>(CHANGE_PASSWORD_REQUEST, changePassword);
 }
 
 //--------------------------------------------------------

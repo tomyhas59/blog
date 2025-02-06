@@ -23,7 +23,7 @@ const Sign = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const { signUpDone, signUpLoading } = useSelector(
+  const { signUpDone, signUpLoading, signUpError } = useSelector(
     (state: RootState) => state.user
   );
 
@@ -41,7 +41,10 @@ const Sign = () => {
       navigate("/login");
       dispatch({ type: "INITIALIZE_STATE" });
     }
-  }, [signUpDone, navigate, dispatch]);
+    if (signUpError) {
+      alert(signUpError);
+    }
+  }, [signUpDone, navigate, dispatch, signUpError]);
 
   const handleSignUp = useCallback(
     (e: SyntheticEvent) => {

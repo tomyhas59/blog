@@ -375,7 +375,7 @@ const ContentWrapper = styled.div`
   @media (max-width: 480px) {
     position: absolute;
     width: 100%;
-    top: 1%;
+    top: 0;
     left: 0;
   }
 `;

@@ -244,6 +244,7 @@ const NewFollowersCount = styled.div`
   top: 0;
   right: -10px;
   background-color: red;
+  color: #fff;
   width: 20px;
   border-radius: 50%;
   text-align: center;

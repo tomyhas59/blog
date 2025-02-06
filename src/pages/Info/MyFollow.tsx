@@ -42,7 +42,11 @@ const MyFollow: React.FC = () => {
             return (
               <FollowItem key={follower.id}>
                 <Nickname>{follower.nickname}</Nickname>
-                {!isFollowing && <FollowButton userId={follower.id} />}
+                {isFollowing ? (
+                  <span>✔️</span>
+                ) : (
+                  <FollowButton userId={follower.id} />
+                )}
               </FollowItem>
             );
           })}
@@ -67,14 +71,10 @@ export default MyFollow;
 
 const FollowContainer = styled.div`
   display: flex;
-  justify-content: space-between;
-  flex-wrap: wrap;
+  flex-direction: column;
   padding: 20px;
-  background-color: #f7f7f7;
   border-radius: 12px;
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
   gap: 20px;
-
   @media (max-width: 768px) {
     flex-direction: column;
     gap: 10px;
@@ -82,17 +82,16 @@ const FollowContainer = styled.div`
 `;
 
 const FollowSection = styled.div`
-  flex: 1;
-  min-width: 280px;
   background-color: #fff;
+  height: 300px;
   border-radius: 10px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  overflow: hidden;
+  overflow-y: auto;
 `;
 
 const FollowList = styled.div`
-  max-height: 300px;
-  overflow-y: auto;
+  display: flex;
+  flex-wrap: wrap;
   padding: 15px;
   border-top: 1px solid #eee;
   background-color: #fff;
@@ -106,22 +105,22 @@ const SectionHeading = styled.h2`
   border-bottom: 2px solid ${(props) => props.theme.mainColor};
   text-align: center;
   font-weight: 600;
-
   @media (max-width: 768px) {
     font-size: 1.3em;
   }
 `;
 
 const FollowItem = styled.div`
+  width: 200px;
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 12px;
-  border-bottom: 1px solid #e0e0e0;
+  border-right: 1px solid #e0e0e0;
   cursor: pointer;
   position: relative;
   transition: background-color 0.3s ease;
-
+  gap: 20px;
   &:hover {
     background-color: #f0f0f0;
   }

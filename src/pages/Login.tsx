@@ -16,7 +16,7 @@ function Login() {
   const [email, handleEmailChange] = useInput();
   const [password, handlePasswordChange] = useInput();
 
-  const { logInLoading, logInDone } = useSelector(
+  const { logInLoading, logInDone, logInError } = useSelector(
     (state: RootState) => state.user
   );
 
@@ -27,7 +27,10 @@ function Login() {
       navigate("/");
       window.scrollTo({ top: 0, behavior: "smooth" });
     }
-  }, [dispatch, logInDone, navigate, setCurrentPage]);
+    if (logInError) {
+      alert(logInError);
+    }
+  }, [dispatch, logInDone, navigate, setCurrentPage, logInError]);
 
   const handleLogin = useCallback(
     (e: SyntheticEvent) => {

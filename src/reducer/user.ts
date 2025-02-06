@@ -50,7 +50,7 @@ export const SIGN_UP_FAILURE = "SIGN_UP_FAILURE";
 export const SIGN_UP_REQUEST = "SIGN_UP_REQUEST";
 export const SIGN_UP_SUCCESS = "SIGN_UP_SUCCESS";
 
-export const CHANGE_PASSWORD_REQUESE = "CHANGE_PASSWORD_REQUEST";
+export const CHANGE_PASSWORD_REQUEST = "CHANGE_PASSWORD_REQUEST";
 export const CHANGE_PASSWORD_SUCCESS = "CHANGE_PASSWORD_SUCCESS";
 export const CHANGE_PASSWORD_FAILURE = "CHANGE_PASSWORD_FAILURE";
 
@@ -129,7 +129,7 @@ const user = (state = initialState, action: Action) => {
         draft.signUpError = action.error;
         break;
       //--------------------------------------------
-      case CHANGE_PASSWORD_REQUESE:
+      case CHANGE_PASSWORD_REQUEST:
         draft.changePasswordError = null;
         draft.changePasswordLoading = true;
         draft.changePasswordDone = false;
@@ -202,6 +202,7 @@ const user = (state = initialState, action: Action) => {
         if (draft.me) {
           draft.me.nickname = action.data;
         }
+        break;
       case "SET_USER_IMAGE":
         if (draft.me) {
           draft.me.Image = action.data;

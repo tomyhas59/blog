@@ -16,7 +16,7 @@ import { useDispatch } from "react-redux";
 import Spinner from "../../components/Spinner";
 import useInput from "../../hooks/useInput";
 import { FormGroup, Label, Button, CheckMessage, Input } from "../Sign";
-import { CHANGE_PASSWORD_REQUESE, MODIFY_NICKNAME } from "../../reducer/user";
+import { CHANGE_PASSWORD_REQUEST, MODIFY_NICKNAME } from "../../reducer/user";
 
 export const DEFAULT_PROFILE_IMAGE =
   "https://cdn.pixabay.com/photo/2023/04/12/01/47/cartoon-7918608_1280.png";
@@ -61,7 +61,7 @@ const MyInfo: React.FC = () => {
         return;
       }
       dispatch({
-        type: CHANGE_PASSWORD_REQUESE,
+        type: CHANGE_PASSWORD_REQUEST,
         data: { prevPassword, newPassword },
       });
     },
@@ -206,7 +206,7 @@ const MyInfo: React.FC = () => {
             </RemoveButton>
           )}
           <ProfileImage
-            onClick={handleCancel}
+            onClick={handleClickFileUpload}
             src={
               previewUrl ||
               (imageSrc ? `${baseURL}/${imageSrc}` : DEFAULT_PROFILE_IMAGE)

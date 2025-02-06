@@ -287,6 +287,9 @@ const ChatRoomCloseButton = styled.button`
   width: 100px;
   height: 10px;
   border-radius: 0 0 5px 5px;
+  &:hover {
+    background-color: #ddd;
+  }
 `;
 
 const RoomHeader = styled.div`
@@ -328,7 +331,7 @@ const MessageListContainer = styled.div`
   height: 60vh;
   position: relative;
   @media (max-width: 480px) {
-    height: 70vh;
+    height: 82vh;
   }
 `;
 

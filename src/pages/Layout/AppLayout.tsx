@@ -32,7 +32,7 @@ const AppLayout = ({ children }: any) => {
   });
 
   return (
-    <LayoutWrapper>
+    <LayoutContainer>
       {togglePostForm && (
         <>
           <Overlay />
@@ -52,11 +52,11 @@ const AppLayout = ({ children }: any) => {
           <ShowPostFormButton onClick={showPostForm}>글쓰기</ShowPostFormButton>
         )}
       <Footer />
-    </LayoutWrapper>
+    </LayoutContainer>
   );
 };
 
-const LayoutWrapper = styled.div`
+const LayoutContainer = styled.div`
   position: relative;
   display: flex;
   flex-direction: column;
