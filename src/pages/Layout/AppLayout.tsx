@@ -68,8 +68,8 @@ const ContentWrapper = styled.main`
   padding: 5px;
   min-height: 80vh;
   @media (max-width: 480px) {
-    padding: 10vh 0 0;
-    min-height: 90vh;
+    padding: 11vh 0 0;
+    min-height: 89vh;
   }
 `;
 

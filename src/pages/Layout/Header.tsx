@@ -249,7 +249,7 @@ export const HeaderContainer = styled.header`
   gap: 10px;
   @media (max-width: 480px) {
     position: fixed;
-    height: 10vh;
+    height: 11vh;
     display: grid;
     grid-template-areas:
       "a b c"

@@ -67,10 +67,9 @@ const SortLabel = styled.label`
   cursor: pointer;
   padding: 5px;
   transition: background-color 0.3s ease;
-
+  border-radius: 5px;
   &:hover {
-    background-color: #f1f1f1;
-    border-radius: 5px;
+    background-color: ${(props) => props.theme.hoverMainColor};
   }
 
   input {

@@ -390,7 +390,7 @@ const CommonPost = () => {
       </PostItem>
       <CommentContainer>
         <CommentHeader>
-          <CommentNum>댓글 {totalComments && totalComments}개</CommentNum>
+          <CommentsCount>댓글 {totalComments && totalComments}개</CommentsCount>
         </CommentHeader>
         <Comment post={post} />
         <CommentForm post={post} />
@@ -454,11 +454,11 @@ const ContentWrapper = styled.div`
   width: 97%;
 `;
 
-const CommentNum = styled.span`
+const CommentsCount = styled.span`
   font-size: 15px;
   font-weight: bold;
   margin: 5px;
-  color: ${(props) => props.theme.charColor};
+  color: ${(props) => props.theme.textColor};
 `;
 
 const CommentContainer = styled.div`
@@ -498,7 +498,7 @@ const NicknameButton = styled.button`
   border-radius: 30%;
   align-items: center;
   min-width: 70px;
-  color: ${(props) => props.theme.charColor};
+  color: ${(props) => props.theme.textColor};
   font-weight: bold;
   transition: transform 0.3s ease, color 0.3s ease;
   img {

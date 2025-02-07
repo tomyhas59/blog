@@ -232,7 +232,7 @@ export const Button = styled.button`
 `;
 
 export const Nickname = styled.span`
-  color: ${(props) => props.theme.charColor};
+  color: ${(props) => props.theme.textColor};
   font-weight: bold;
   text-align: start;
   width: 50px;

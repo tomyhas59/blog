@@ -144,7 +144,7 @@ const CommentList = styled.div`
 
 const Heading = styled.h2`
   font-size: 24px;
-  color: ${(props) => props.theme.charColor};
+  color: ${(props) => props.theme.textColor};
   margin-bottom: 16px;
 
   @media (max-width: 480px) {

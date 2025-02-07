@@ -383,7 +383,7 @@ const InfoContent = styled.div`
   > h1 {
     font-size: 1.5em;
     font-weight: bold;
-    color: ${(props) => props.theme.charColor};
+    color: ${(props) => props.theme.textColor};
     margin-bottom: 15px;
   }
 
@@ -397,7 +397,7 @@ const InfoContent = styled.div`
 
 const UserInfo = styled.p`
   font-size: 1em;
-  color: ${(props) => props.theme.charColor};
+  color: ${(props) => props.theme.textColor};
   margin: 5px 0;
   display: flex;
   justify-content: center;
@@ -405,7 +405,7 @@ const UserInfo = styled.p`
   gap: 5px;
   > strong {
     font-weight: 600;
-    color: ${(props) => props.theme.charColor};
+    color: ${(props) => props.theme.textColor};
   }
 
   @media (max-width: 480px) {

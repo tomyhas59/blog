@@ -19,5 +19,5 @@ export const darkTheme = {
   textColor: "#f5f5f5",
   borderColor: "#2c4d7b",
   activeColor: "#3d5a80",
-  charColor: "#e5e5e5",
+  charColor: "#000",
 };

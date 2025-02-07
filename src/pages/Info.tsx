@@ -215,7 +215,7 @@ const MenuButton = styled.button<NavLinkProps>`
   align-items: center;
   font-weight: 600;
   font-size: 1rem;
-  color: ${(props) => (props.active ? "#007bff" : props.theme.charColor)};
+  color: ${(props) => (props.active ? "#007bff" : props.theme.textColor)};
   text-decoration: none;
   cursor: pointer;
   transition: color 0.3s ease, background-color 0.3s ease;
