@@ -276,6 +276,9 @@ const ChatRoomContainer = styled.div`
   background-color: #fff;
   border: 1px solid #ccc;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  @media (max-width: 480px) {
+    margin-top: 10vh;
+  }
 `;
 
 const ChatRoomCloseButton = styled.button`
@@ -331,7 +334,7 @@ const MessageListContainer = styled.div`
   height: 60vh;
   position: relative;
   @media (max-width: 480px) {
-    height: 82vh;
+    height: 75vh;
   }
 `;
 

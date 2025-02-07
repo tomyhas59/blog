@@ -256,10 +256,9 @@ export const HeaderContainer = styled.header`
     top: 0;
     left: 0;
     width: 100%;
-    min-height: 7vh;
     z-index: 1000;
     padding: 5px;
-    gap: 5px;
+    gap: 2px;
   }
 `;
 
