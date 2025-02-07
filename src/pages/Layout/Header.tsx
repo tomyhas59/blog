@@ -249,6 +249,7 @@ export const HeaderContainer = styled.header`
   gap: 10px;
   @media (max-width: 480px) {
     position: fixed;
+    height: 10vh;
     display: grid;
     grid-template-areas:
       "a b c"
@@ -257,7 +258,6 @@ export const HeaderContainer = styled.header`
     left: 0;
     width: 100%;
     z-index: 1000;
-    padding: 5px;
     gap: 2px;
   }
 `;

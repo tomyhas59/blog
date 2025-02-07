@@ -277,7 +277,8 @@ const ChatRoomContainer = styled.div`
   border: 1px solid #ccc;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   @media (max-width: 480px) {
-    margin-top: 10vh;
+    min-height: 100vh;
+    z-index: 2000;
   }
 `;
 
@@ -334,7 +335,7 @@ const MessageListContainer = styled.div`
   height: 60vh;
   position: relative;
   @media (max-width: 480px) {
-    height: 75vh;
+    min-height: 80vh;
   }
 `;
 

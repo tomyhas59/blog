@@ -58,7 +58,8 @@ const AppLayout = ({ children }: any) => {
 
 const LayoutContainer = styled.div`
   position: relative;
-  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
 `;
 
 const ContentWrapper = styled.main`
@@ -67,8 +68,8 @@ const ContentWrapper = styled.main`
   padding: 5px;
   min-height: 80vh;
   @media (max-width: 480px) {
-    padding: 12vh 0 0;
-    min-height: 100vh;
+    padding: 10vh 0 0;
+    min-height: 90vh;
   }
 `;
 
