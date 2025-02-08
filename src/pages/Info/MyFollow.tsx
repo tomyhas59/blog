@@ -72,10 +72,10 @@ export default MyFollow;
 const FollowContainer = styled.div`
   display: flex;
   flex-direction: column;
-  padding: 20px;
+  padding: 5px;
   border-radius: 12px;
   gap: 20px;
-  @media (max-width: 768px) {
+  @media (max-width: 480px) {
     flex-direction: column;
     gap: 10px;
   }
@@ -105,7 +105,7 @@ const SectionHeading = styled.h2`
   border-bottom: 2px solid ${(props) => props.theme.mainColor};
   text-align: center;
   font-weight: 600;
-  @media (max-width: 768px) {
+  @media (max-width: 480px) {
     font-size: 1.3em;
   }
 `;
@@ -125,16 +125,17 @@ const FollowItem = styled.div`
     background-color: #f0f0f0;
   }
 
-  @media (max-width: 768px) {
-    padding: 10px;
+  @media (max-width: 480px) {
+    width: 130px;
+    padding: 5px;
   }
 `;
 
 const Nickname = styled.span`
-  font-size: 1em;
+  width: 100px;
   color: #333;
-
-  @media (max-width: 768px) {
-    font-size: 0.9em;
+  @media (max-width: 480px) {
+    width: 30px;
+    font-size: 0.8em;
   }
 `;

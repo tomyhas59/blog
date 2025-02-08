@@ -1,6 +1,6 @@
 import { useLocation, useParams } from "react-router-dom";
 import React, { useEffect, useRef, useState } from "react";
-import styled from "styled-components";
+import styled, { useTheme } from "styled-components";
 import { useDispatch, useSelector } from "react-redux";
 import { GET_POSTS_REQUEST } from "../reducer/post";
 import "moment/locale/ko";
@@ -67,6 +67,9 @@ const PostDetail = () => {
       socket.current?.disconnect();
     };
   }, [me]);
+
+  const theme = useTheme();
+
   useEffect(() => {
     const params = new URLSearchParams(location.search);
     const commentId = params.get("commentId");
@@ -79,7 +82,7 @@ const PostDetail = () => {
           behavior: "auto",
           block: "center",
         });
-        element.style.backgroundColor = "#fffae6";
+        element.style.backgroundColor = theme.hoverMainColor;
       }
     };
 
@@ -87,7 +90,7 @@ const PostDetail = () => {
       if (commentId) scrollToElement(commentId);
       if (reCommentId) scrollToElement(reCommentId);
     }, 200);
-  }, [location.search]);
+  }, [location.search, theme.hoverMainColor]);
 
   const {
     searchedPostsLoading,

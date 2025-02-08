@@ -77,7 +77,7 @@ const SearchContainer = styled.div<{ currentPath: string }>`
   width: 500px;
   grid-template-columns: 15% 75% 10%;
   @media (max-width: 480px) {
-    width: 300px;
+    width: 330px;
     grid-area: d;
   }
 `;

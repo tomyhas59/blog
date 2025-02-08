@@ -236,6 +236,9 @@ export const Nickname = styled.span`
   font-weight: bold;
   text-align: start;
   width: 50px;
+  @media (max-width: 480px) {
+    font-size: 12px;
+  }
 `;
 
 export const PostMetaInfo = styled.div`

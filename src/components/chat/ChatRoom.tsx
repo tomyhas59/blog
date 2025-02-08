@@ -183,7 +183,7 @@ const ChatRoom = ({
         onClick={() => setActiveRoom(null)}
       ></ChatRoomCloseButton>
       <RoomHeader>
-        <ChatPartnerName>{roomName}님과의 채팅</ChatPartnerName>
+        <ChatPartnerName>{roomName} 님과의 채팅</ChatPartnerName>
         <ExitButton onClick={onExit}>나가기</ExitButton>
       </RoomHeader>
       <MessageListContainer ref={messageListContainerRef}>
@@ -271,7 +271,7 @@ const ChatRoomContainer = styled.div`
   position: relative;
   display: flex;
   flex-direction: column;
-  padding: 15px;
+  padding: 10px;
   border-radius: 4px;
   background-color: #fff;
   border: 1px solid #ccc;
@@ -301,6 +301,7 @@ const RoomHeader = styled.div`
   justify-content: space-between;
   align-items: center;
   margin-bottom: 10px;
+  height: 30px;
 `;
 
 const ChatPartnerName = styled.h2`
@@ -335,7 +336,7 @@ const MessageListContainer = styled.div`
   height: 60vh;
   position: relative;
   @media (max-width: 480px) {
-    min-height: 80vh;
+    height: calc(100vh - 100px);
   }
 `;
 
@@ -395,6 +396,7 @@ const MessageTimestamp = styled.span<Pick<MessageItemProps, "isSystemMessage">>`
 
 const MessageForm = styled.form`
   display: flex;
+  height: 40px;
 `;
 
 const MessageInput = styled.input`

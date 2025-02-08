@@ -218,7 +218,7 @@ const Comment = ({ post }: { post: PostType }) => {
         });
         element.style.backgroundColor = theme.activeColor;
         setTimeout(() => {
-          element.style.transition = "background-color 1s ease-in-out";
+          element.style.transition = "background-color 2s ease-in-out";
           element.style.backgroundColor = theme.backgroundColor;
         }, 1000);
       }
@@ -428,7 +428,7 @@ const Author = styled.button`
   font-weight: bold;
   text-align: center;
   margin-right: 10px;
-  color: ${(props) => props.theme.charColor};
+  color: ${(props) => props.theme.textColor};
   transition: transform 0.3s ease, color 0.3s ease;
   img {
     display: inline;

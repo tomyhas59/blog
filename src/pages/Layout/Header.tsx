@@ -209,6 +209,13 @@ const Header = () => {
 
       {isLoggedIn && (
         <SignList>
+          <ListItem onClick={goToChat}>
+            <span>채팅</span>
+            {chatNotification && <Notification>🔔</Notification>}
+          </ListItem>
+          <ListItem>
+            <button onClick={handleLogout}>로그아웃</button>
+          </ListItem>
           <ProfileImageWrapper>
             <ProfileImage
               onClick={() => navigator("/info")}
@@ -222,13 +229,6 @@ const Header = () => {
               <Notification>🔔</Notification>
             )}
           </ProfileImageWrapper>
-          <ListItem onClick={goToChat}>
-            <span>채팅</span>
-            {chatNotification && <Notification>🔔</Notification>}
-          </ListItem>
-          <ListItem>
-            <button onClick={handleLogout}>로그아웃</button>
-          </ListItem>
         </SignList>
       )}
       <DarkModeButton onClick={toggleDarkMode}>
@@ -241,7 +241,7 @@ export default Header;
 
 export const HeaderContainer = styled.header`
   width: 100%;
-  min-height: 7vh;
+  height: 7vh;
   background-color: ${(props) => props.theme.subColor};
   display: flex;
   justify-content: center;
@@ -249,7 +249,7 @@ export const HeaderContainer = styled.header`
   gap: 10px;
   @media (max-width: 480px) {
     position: fixed;
-    height: 11vh;
+    height: 10vh;
     display: grid;
     grid-template-areas:
       "a b c"
@@ -354,8 +354,8 @@ const ProfileImageWrapper = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 50px;
-  height: 50px;
+  width: 40px;
+  height: 40px;
 `;
 
 const ProfileImage = styled.img`
@@ -371,9 +371,6 @@ const ProfileImage = styled.img`
   }
 
   @media (max-width: 480px) {
-    width: 40px;
-    height: 40px;
-
     &:hover {
       color: ${(props) => props.theme.charColor};
     }

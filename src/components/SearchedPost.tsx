@@ -195,6 +195,6 @@ const ReComment = styled.div`
 `;
 
 const HighlightedText = styled.span`
-  background-color: yellow;
+  background-color: ${(props) => props.theme.hoverMainColor};
   font-weight: bold;
 `;
