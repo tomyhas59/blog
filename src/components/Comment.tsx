@@ -45,6 +45,7 @@ const Comment = ({ post }: { post: PostType }) => {
     totalComments,
     commentsCount,
     newCommentId,
+    top3Comments,
   } = useSelector((state: RootState) => state.post);
   const {
     setSearchedCurrentPage,
@@ -190,10 +191,16 @@ const Comment = ({ post }: { post: PostType }) => {
 
   //OutsideClick----------------------------------------------
   const authorMenuRef = useRef<HTMLDivElement>(null);
+  const top3AuthorMenuRef = useRef<HTMLDivElement>(null);
   const reCommentFormRef = useRef<HTMLDivElement>(null);
 
   useOutsideClick(
-    [authorMenuRef, reCommentFormRef, editCommentTextAreaRef],
+    [
+      authorMenuRef,
+      reCommentFormRef,
+      editCommentTextAreaRef,
+      top3AuthorMenuRef,
+    ],
     () => {
       setShowAuthorMenu({});
       setAddReComment({});
@@ -283,15 +290,71 @@ const Comment = ({ post }: { post: PostType }) => {
     totalCommentPages,
   ]);
 
+  //좋아요 3개 이상이 있을 떄 Top3 표시
+  const hasLikersInTop3 = top3Comments.some(
+    (comment) => comment.Likers.length > 2
+  );
+
   return (
     <CommentContainer ref={scrollTargetRef}>
       {(removeCommentLoading ||
         updateCommentLoading ||
         addReCommentLoading) && <Spinner />}
+      {hasLikersInTop3 &&
+        top3Comments.map((comment, i) => (
+          <CommentItem key={comment.id} isTop3Commnets={true}>
+            <RankLabel>Top {i + 1}</RankLabel>
+            <CommentHeader>
+              <Author onClick={() => toggleShowAuthorMenu(comment.id)}>
+                <img
+                  src={
+                    comment.User.Image
+                      ? `${baseURL}/${comment.User.Image.src}`
+                      : `${DEFAULT_PROFILE_IMAGE}`
+                  }
+                  alt="유저 이미지"
+                />
+                <span>{comment.User.nickname.slice(0, 5)}</span>
+              </Author>
+              {showAuthorMenu[comment.id] ? (
+                <AuthorMenu ref={top3AuthorMenuRef}>
+                  <BlueButton
+                    onClick={() => searchByNickname(comment.User.nickname)}
+                  >
+                    작성 글 보기
+                  </BlueButton>
+                  {id !== comment.User.id && (
+                    <FollowButton
+                      userId={comment.User.id}
+                      setShowAuthorMenu={
+                        setShowAuthorMenu as React.Dispatch<
+                          React.SetStateAction<
+                            boolean | Record<number, boolean>
+                          >
+                        >
+                      }
+                    />
+                  )}
+                </AuthorMenu>
+              ) : null}
+              <Date>{moment(comment.createdAt).format("l")}</Date>
+              <Like itemType="comment" item={comment} isTop3Comments={true} />
+            </CommentHeader>
+            <ContentWrapper>
+              <Content>
+                <ContentRenderer content={comment.content} />
+              </Content>
+            </ContentWrapper>
+          </CommentItem>
+        ))}
       {comments?.map((comment) => {
         const isEditing = editComment[comment.id];
         return (
-          <CommentItem key={comment.id} id={`comment-${comment.id}`}>
+          <CommentItem
+            isTop3Commnets={false}
+            key={comment.id}
+            id={`comment-${comment.id}`}
+          >
             <CommentHeader>
               <Author onClick={() => toggleShowAuthorMenu(comment.id)}>
                 <img
@@ -399,16 +462,27 @@ const CommentContainer = styled.div`
   background-color: ${(props) => props.theme.backgroundColor};
 `;
 
-const CommentItem = styled.div`
+const RankLabel = styled.div`
+  font-size: 16px;
+  font-weight: bold;
+  color: #ff6f61;
+  border-radius: 5px;
+  text-align: center;
+  width: fit-content;
+`;
+
+const CommentItem = styled.div<{ isTop3Commnets: boolean }>`
   border-top: 1px solid silver;
   font-size: 15px;
+  background-color: ${(props) =>
+    props.isTop3Commnets ? props.theme.activeColor : "none"};
 `;
 
 const CommentHeader = styled.div`
   position: relative;
   display: flex;
   align-items: center;
-  margin-top: 15px;
+  margin-top: 5px;
 `;
 
 const AuthorMenu = styled.div`

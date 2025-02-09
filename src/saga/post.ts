@@ -124,6 +124,7 @@ function* getComments(action: { page: number; postId: number }): SagaIterator {
       data: result.data.comments,
       totalComments: result.data.totalComments,
       commentsCount: result.data.commentsCount,
+      top3Comments: result.data.top3Comments,
     });
   } catch (err: any) {
     console.log(err);
@@ -586,13 +587,18 @@ function likeCommentAPI(data: any) {
   return axios.patch(`/post/${data}/commentLike`); //patch 일부분 수정
 }
 
-function* likeComment(action: { data: any }): SagaIterator {
+function* likeComment(action: {
+  data: any;
+  isTop3Comments?: boolean;
+}): SagaIterator {
   try {
     const result = yield call(likeCommentAPI, action.data);
+    const { isTop3Comments } = action;
 
     yield put({
       type: LIKE_COMMENT_SUCCESS,
       data: result.data,
+      isTop3Comments,
     });
   } catch (err: any) {
     console.error(err);
@@ -612,12 +618,18 @@ function unLikeCommentAPI(data: any) {
   return axios.delete(`/post/${data}/commentLike`);
 }
 
-function* unLikeComment(action: { data: any }): SagaIterator {
+function* unLikeComment(action: {
+  data: any;
+  isTop3Comments: boolean;
+}): SagaIterator {
   try {
     const result = yield call(unLikeCommentAPI, action.data);
+    const { isTop3Comments } = action;
+
     yield put({
       type: UNLIKE_COMMENT_SUCCESS,
       data: result.data,
+      isTop3Comments,
     });
   } catch (err: any) {
     console.error(err);

@@ -6,17 +6,24 @@ const initialState = {
   posts: [] as PostType[],
   totalPosts: null,
   post: {} as PostType,
+
   comments: [] as CommentType[],
   totalComments: null,
+
   commentsCount: null,
+
   imagePaths: [] as string[],
   searchedPosts: [] as PostType[],
   searchOption: "",
   totalSearchedPosts: null,
+
   chatMessages: [] as MessageType[],
+
   postNum: null,
   commentNum: null,
   newCommentId: null, //댓글 등록 후 해당 댓글 id
+
+  top3Comments: [] as CommentType[],
 
   isDarkMode: localStorage.getItem("darkMode") === "enabled",
 
@@ -235,6 +242,7 @@ const post = (state = initialState, action: any) => {
       case "SET_MODE":
         draft.isDarkMode = action.data;
         break;
+
       //------------------------------------------------------
       case GET_POSTS_REQUEST:
         draft.getPostsLoading = true;
@@ -263,6 +271,7 @@ const post = (state = initialState, action: any) => {
         draft.comments = action.data;
         draft.totalComments = action.totalComments;
         draft.commentsCount = action.commentsCount;
+        draft.top3Comments = action.top3Comments;
         break;
       case GET_COMMENTS_FAILURE:
         draft.getCommentsLoading = false;
@@ -620,6 +629,19 @@ const post = (state = initialState, action: any) => {
           nickname: action.data.nickname,
         });
 
+        //top3 Comments UI
+        if (action.isTop3Comments) {
+          const topCommentIndex = draft.top3Comments.findIndex(
+            (comment) => comment.id === action.data.CommentId
+          );
+          if (topCommentIndex === -1) {
+            return;
+          }
+          draft.top3Comments[topCommentIndex].Likers.push({
+            id: action.data.UserId,
+            nickname: action.data.nickname,
+          });
+        }
         draft.likeCommentLoading = false;
         draft.likeCommentDone = true;
         break;
@@ -648,7 +670,20 @@ const post = (state = initialState, action: any) => {
         ].Likers.filter(
           (liker: { id: any }) => liker.id !== action.data.UserId
         );
-
+        //top3 Comments UI
+        if (action.isTop3Comments) {
+          const topCommentIndex = draft.top3Comments.findIndex(
+            (comment) => comment.id === action.data.CommentId
+          );
+          if (topCommentIndex === -1) {
+            return;
+          }
+          draft.top3Comments[topCommentIndex].Likers = draft.top3Comments[
+            topCommentIndex
+          ].Likers.filter(
+            (liker: { id: any }) => liker.id !== action.data.UserId
+          );
+        }
         draft.unLikeCommentLoading = false;
         draft.unLikeCommentDone = true;
         break;

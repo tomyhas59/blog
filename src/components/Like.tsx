@@ -18,10 +18,12 @@ const Like = ({
   itemType,
   item,
   commentId,
+  isTop3Comments,
 }: {
   itemType: string;
   item: any;
   commentId?: number;
+  isTop3Comments?: boolean;
 }) => {
   const me = useSelector((state: RootState) => state.user.me);
   const id = me?.id;
@@ -57,6 +59,7 @@ const Like = ({
         dispatch({
           type: LIKE_COMMENT_REQUEST,
           data: item.id,
+          isTop3Comments,
         });
       } else if (itemType === "reComment")
         dispatch({
@@ -68,7 +71,7 @@ const Like = ({
         });
       triggerHeartAnimation(false);
     },
-    [dispatch, id, item.id, commentId, itemType]
+    [id, itemType, dispatch, commentId, item.id, isTop3Comments]
   );
 
   const handleUnLike = useCallback(
@@ -86,6 +89,7 @@ const Like = ({
         dispatch({
           type: UNLIKE_COMMENT_REQUEST,
           data: item.id,
+          isTop3Comments,
         });
       } else if (itemType === "reComment")
         dispatch({
@@ -97,7 +101,7 @@ const Like = ({
         });
       triggerHeartAnimation(true);
     },
-    [dispatch, id, item.id, commentId, itemType]
+    [id, itemType, dispatch, commentId, item.id, isTop3Comments]
   );
 
   const handleMouseEnter = () => {
