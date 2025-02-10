@@ -7,7 +7,7 @@ import MyFollow from "./Info/MyFollow";
 import styled, { keyframes } from "styled-components";
 import { useSelector } from "react-redux";
 import { RootState } from "../reducer";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { io, Socket } from "socket.io-client";
 import { useDispatch } from "react-redux";
@@ -20,6 +20,10 @@ const Info = () => {
   const [newFollowersCount, setNewFollowersCount] = useState<number>();
   const navigate = useNavigate();
   const socket = useRef<Socket | null>(null);
+
+  const location = useLocation();
+  const params = new URLSearchParams(location.search);
+  const categoryParam = params.get("category");
 
   useEffect(() => {
     socket.current =
@@ -56,10 +60,6 @@ const Info = () => {
   }, [dispatch]);
 
   useEffect(() => {
-    if (!me) navigate("/");
-  }, [me, navigate]);
-
-  useEffect(() => {
     const fetchNewFollowers = async () => {
       if (!me) return;
 
@@ -94,15 +94,21 @@ const Info = () => {
     }
   }, [activeSection]);
 
-  const goToMyFollow = () => {
-    setNewFollowersCount(undefined);
-    setActiveSection("myFollow");
-    socket.current?.emit("followNotificationRead", me?.id);
-  };
-
   const notRead = me?.Notifications.filter(
     (notification) => notification.type === "SYSTEM"
   ).some((notification) => notification.isRead === false);
+
+  const handleSetActiveSection = (category: string) => {
+    if (category === "myFollow") {
+      setNewFollowersCount(undefined);
+      socket.current?.emit("followNotificationRead", me?.id);
+    }
+    navigate(`/info?category=${category}`);
+  };
+
+  useEffect(() => {
+    if (categoryParam) setActiveSection(categoryParam);
+  }, [categoryParam]);
 
   return (
     <InfoContainer>
@@ -110,7 +116,7 @@ const Info = () => {
         <MenuList>
           <MenuItem>
             <MenuButton
-              onClick={() => setActiveSection("myInfo")}
+              onClick={() => handleSetActiveSection("myInfo")}
               active={activeSection === "myInfo"}
             >
               내 정보
@@ -118,7 +124,7 @@ const Info = () => {
           </MenuItem>
           <MenuItem>
             <MenuButton
-              onClick={() => setActiveSection("myPosts")}
+              onClick={() => handleSetActiveSection("myPosts")}
               active={activeSection === "myPosts"}
             >
               내가 쓴 글
@@ -127,7 +133,7 @@ const Info = () => {
           </MenuItem>
           <MenuItem>
             <MenuButton
-              onClick={() => setActiveSection("myComments")}
+              onClick={() => handleSetActiveSection("myComments")}
               active={activeSection === "myComments"}
             >
               내가 쓴 댓글
@@ -135,7 +141,7 @@ const Info = () => {
           </MenuItem>
           <MenuItem>
             <MenuButton
-              onClick={() => setActiveSection("myLikes")}
+              onClick={() => handleSetActiveSection("myLikes")}
               active={activeSection === "myLikes"}
             >
               좋아요 글
@@ -143,7 +149,7 @@ const Info = () => {
           </MenuItem>
           <MenuItem>
             <MenuButton
-              onClick={goToMyFollow}
+              onClick={() => handleSetActiveSection("myFollow")}
               active={activeSection === "myFollow"}
             >
               {newFollowersCount && newFollowersCount > 0 && (

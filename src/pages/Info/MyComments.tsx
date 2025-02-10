@@ -42,25 +42,32 @@ const MyComments: React.FC = () => {
   }, [me]);
 
   useEffect(() => {
-    if (
-      postNum &&
-      commentNum &&
-      postId !== null &&
-      commentOrReCommentId !== null
-    ) {
-      const searchedPostPage = Math.floor(Number(postNum) / divisor) + 1;
-      const searchedCommentPage = Math.floor(Number(commentNum) / divisor) + 1;
-      setCurrentPage(searchedPostPage);
-      setCurrentCommentsPage(searchedCommentPage);
-      const queryParam =
-        category === "comment"
-          ? `commentId=comment-content-${commentOrReCommentId}`
-          : `reCommentId=reComment-content-${commentOrReCommentId}`;
+    const fetchData = async () => {
+      if (
+        postNum &&
+        commentNum &&
+        postId !== null &&
+        commentOrReCommentId !== null
+      ) {
+        const searchedPostPage = Math.floor(Number(postNum) / divisor) + 1;
+        const searchedCommentPage =
+          Math.floor(Number(commentNum) / divisor) + 1;
 
-      navigator(`/post/${postId}?${queryParam}`);
+        setCurrentPage(searchedPostPage);
+        setCurrentCommentsPage(searchedCommentPage);
 
-      dispatch({ type: "RESET_NUM" });
-    }
+        const queryParam =
+          category === "comment"
+            ? `commentId=comment-content-${commentOrReCommentId}`
+            : `reCommentId=reComment-content-${commentOrReCommentId}`;
+
+        navigator(`/post/${postId}?${queryParam}`);
+
+        dispatch({ type: "RESET_NUM" });
+      }
+    };
+
+    fetchData();
   }, [
     commentOrReCommentId,
     category,

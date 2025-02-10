@@ -42,10 +42,10 @@ const Comment = ({ post }: { post: PostType }) => {
     updateCommentLoading,
     addReCommentLoading,
     comments,
-    totalComments,
     commentsCount,
     newCommentId,
     top3Comments,
+    getCommentsDone,
   } = useSelector((state: RootState) => state.post);
   const {
     setSearchedCurrentPage,
@@ -215,8 +215,9 @@ const Comment = ({ post }: { post: PostType }) => {
     if (commentsPageParam) setCurrentCommentsPage(Number(commentsPageParam));
   }, [location.search, setCurrentCommentsPage]);
 
-  const scrollToElement = useCallback(
-    (commentId: string) => {
+  //새 댓글 등록 시 마지막 댓글 페이지 이동
+  useEffect(() => {
+    const scrollToElement = (commentId: string) => {
       const element = document.getElementById(`comment-${commentId}`);
       if (element) {
         element.scrollIntoView({
@@ -229,9 +230,11 @@ const Comment = ({ post }: { post: PostType }) => {
           element.style.backgroundColor = theme.backgroundColor;
         }, 1000);
       }
-    },
-    [theme.activeColor, theme.backgroundColor]
-  );
+    };
+    if (newCommentId && getCommentsDone) {
+      scrollToElement(newCommentId);
+    }
+  }, [getCommentsDone, newCommentId, theme.activeColor, theme.backgroundColor]);
 
   useEffect(() => {
     dispatch({
@@ -239,20 +242,7 @@ const Comment = ({ post }: { post: PostType }) => {
       page: currentCommentsPage,
       postId: post.id,
     });
-
-    if (newCommentId) {
-      setTimeout(() => {
-        scrollToElement(newCommentId);
-      }, 500);
-    }
-  }, [
-    currentCommentsPage,
-    totalComments,
-    dispatch,
-    post.id,
-    newCommentId,
-    scrollToElement,
-  ]);
+  }, [currentCommentsPage, dispatch, newCommentId, post.id]);
 
   const totalCommentPages = Math.ceil(Number(commentsCount) / divisor);
 

@@ -24,7 +24,7 @@ const PostDetail = () => {
 
   const { postId } = useParams();
 
-  const { posts, post, totalPosts } = useSelector(
+  const { posts, post, totalPosts, getCommentsDone } = useSelector(
     (state: RootState) => state.post
   );
   const [viewedPosts, setViewedPosts] = useState<number[]>([]);
@@ -86,11 +86,9 @@ const PostDetail = () => {
       }
     };
 
-    setTimeout(() => {
-      if (commentId) scrollToElement(commentId);
-      if (reCommentId) scrollToElement(reCommentId);
-    }, 200);
-  }, [location.search, theme.hoverMainColor]);
+    if (commentId && getCommentsDone) scrollToElement(commentId);
+    if (reCommentId && getCommentsDone) scrollToElement(reCommentId);
+  }, [getCommentsDone, location.search, theme.hoverMainColor]);
 
   const {
     searchedPostsLoading,
