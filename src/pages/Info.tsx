@@ -110,10 +110,34 @@ const Info = () => {
     if (categoryParam) setActiveSection(categoryParam);
   }, [categoryParam]);
 
+  const [isMouseDown, setIsMouseDown] = useState(false);
+  const [startX, setStartX] = useState(0);
+  const [scrollLeft, setScrollLeft] = useState(0);
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    setIsMouseDown(true);
+    setStartX(e.touches[0].clientX);
+    setScrollLeft(e.currentTarget.scrollLeft);
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    if (!isMouseDown) return;
+    const distance = e.touches[0].clientX - startX;
+    e.currentTarget.scrollLeft = scrollLeft - distance;
+  };
+
+  const handleTouchEnd = () => {
+    setIsMouseDown(false);
+  };
+
   return (
     <InfoContainer>
       <Menu>
-        <MenuList>
+        <MenuList
+          onTouchStart={handleTouchStart}
+          onTouchMove={handleTouchMove}
+          onTouchEnd={handleTouchEnd}
+        >
           <MenuItem>
             <MenuButton
               onClick={() => handleSetActiveSection("myInfo")}
@@ -200,7 +224,7 @@ const MenuList = styled.ul`
   padding: 0;
   @media (max-width: 480px) {
     flex-direction: row;
-    flex-wrap: wrap;
+    overflow-x: hidden;
   }
 `;
 

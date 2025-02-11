@@ -33,29 +33,30 @@ const MyCommentListRenderer: React.FC<ListRendererProps> = ({
 
 export default MyCommentListRenderer;
 
-const List = styled.ul`
-  list-style-type: none;
-  padding: 0;
+export const List = styled.ul`
+  display: flex;
+  flex-direction: column;
 `;
 
-const ListItem = styled.li`
+export const ListItem = styled.li`
   align-items: center;
-  padding: 1rem;
+  padding: 5px;
   border: 1px solid #ccc;
-  margin-bottom: 0.5rem;
+  margin-bottom: 5px;
+  font-size: 0.7rem;
   cursor: pointer;
   &:hover {
     background-color: ${(props) => props.theme.hoverMainColor};
   }
 `;
 
-const EmptyMessage = styled.p`
+export const EmptyMessage = styled.p`
   color: #777;
   font-style: italic;
 `;
 
-const CreatedAt = styled.div`
-  font-size: 0.8rem;
+export const CreatedAt = styled.div`
+  font-size: 0.6rem;
   color: #999;
   text-align: right;
 `;

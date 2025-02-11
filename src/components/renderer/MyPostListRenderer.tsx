@@ -3,6 +3,12 @@ import styled from "styled-components";
 import ContentRenderer from "./ContentRenderer";
 import moment from "moment";
 import { NotificationType } from "../../types";
+import {
+  List,
+  ListItem,
+  CreatedAt,
+  EmptyMessage,
+} from "./MyCommentListRenderer";
 
 interface ListRendererProps {
   items: {
@@ -44,34 +50,6 @@ const MyPostListRenderer: React.FC<ListRendererProps> = ({
 };
 
 export default MyPostListRenderer;
-
-const List = styled.ul`
-  list-style-type: none;
-  padding: 0;
-`;
-
-const ListItem = styled.li`
-  align-items: center;
-  padding: 1rem;
-  border: 1px solid #ccc;
-  margin-bottom: 0.5rem;
-  cursor: pointer;
-
-  &:hover {
-    background-color: ${(props) => props.theme.hoverMainColor};
-  }
-`;
-
-const EmptyMessage = styled.p`
-  color: #777;
-  font-style: italic;
-`;
-
-const CreatedAt = styled.div`
-  font-size: 0.8rem;
-  color: #999;
-  text-align: right;
-`;
 
 const NotificationMessage = styled.div`
   font-size: 10px;
