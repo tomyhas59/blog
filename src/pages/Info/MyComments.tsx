@@ -103,28 +103,43 @@ const MyComments: React.FC = () => {
     [dispatch, searchOption]
   );
 
+  const [isMyComments, setIsMyComments] = useState(true);
+
   return (
     <CommentsContainer>
-      <Heading>◈내가 쓴 댓글◈</Heading>
-      <CommentList>
-        <Heading>댓글</Heading>
-        <MyCommentListRenderer
-          items={comments}
-          onItemClick={(id, content, postId) =>
-            searchByCommentType(id, "comment", content, postId)
-          }
-        />
-      </CommentList>
-
-      <CommentList>
-        <Heading>대댓글</Heading>
-        <MyCommentListRenderer
-          items={reComments}
-          onItemClick={(id, content, postId) =>
-            searchByCommentType(id, "reComment", content, postId)
-          }
-        />
-      </CommentList>
+      <Heading>
+        <MyCommentsTitle
+          isMyComments={isMyComments}
+          onClick={() => setIsMyComments(true)}
+        >
+          내가 쓴 댓글
+        </MyCommentsTitle>
+        <MyReComments
+          isMyComments={isMyComments}
+          onClick={() => setIsMyComments(false)}
+        >
+          내가 쓴 대댓글
+        </MyReComments>
+      </Heading>
+      {isMyComments ? (
+        <CommentList>
+          <MyCommentListRenderer
+            items={comments}
+            onItemClick={(id, content, postId) =>
+              searchByCommentType(id, "comment", content, postId)
+            }
+          />
+        </CommentList>
+      ) : (
+        <CommentList>
+          <MyCommentListRenderer
+            items={reComments}
+            onItemClick={(id, content, postId) =>
+              searchByCommentType(id, "reComment", content, postId)
+            }
+          />
+        </CommentList>
+      )}
     </CommentsContainer>
   );
 };
@@ -141,21 +156,45 @@ const CommentsContainer = styled.div`
   }
 `;
 
-const CommentList = styled.div`
-  margin-bottom: 20px;
-
-  @media (max-width: 480px) {
-    margin-bottom: 15px;
-  }
-`;
-
 const Heading = styled.h2`
+  display: flex;
+  justify-content: space-between;
   font-size: 24px;
-  color: ${(props) => props.theme.textColor};
   margin-bottom: 16px;
 
   @media (max-width: 480px) {
     font-size: 18px;
     margin-bottom: 12px;
+  }
+`;
+
+const MyCommentsTitle = styled.button<{ isMyComments: boolean }>`
+  padding: 8px;
+  border-radius: 10px;
+  background-color: ${(props) =>
+    props.isMyComments ? props.theme.mainColor : "transparent"};
+  color: ${(props) => (props.isMyComments ? "#fff" : props.theme.textColor)};
+  &:hover {
+    background-color: ${(props) => props.theme.hoverMainColor};
+    color: white;
+  }
+`;
+const MyReComments = styled.button<{ isMyComments: boolean }>`
+  padding: 8px;
+  border-radius: 10px;
+  background-color: ${(props) =>
+    !props.isMyComments ? props.theme.mainColor : "transparent"};
+  color: ${(props) => (!props.isMyComments ? "#fff" : props.theme.textColor)};
+  &:hover {
+    background-color: ${(props) => props.theme.hoverMainColor};
+    color: white;
+  }
+`;
+
+const CommentList = styled.div`
+  margin-bottom: 20px;
+
+  @media (max-width: 480px) {
+    margin-bottom: 15px;
   }
 `;

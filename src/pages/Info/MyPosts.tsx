@@ -62,7 +62,7 @@ const MyPosts: React.FC = () => {
 
   return (
     <PostsContainer>
-      <Heading>◈내가 쓴 글◈</Heading>
+      <Heading>내가 쓴 글</Heading>
       <MyPostListRenderer
         items={posts}
         onItemClick={(title, postId) => searchByTitle(title, postId)}
@@ -84,11 +84,14 @@ const PostsContainer = styled.div`
   }
 `;
 
-const Heading = styled.h2`
+export const Heading = styled.h2`
   font-size: 24px;
-  color: ${(props) => props.theme.textColor};
+  color: white;
   margin-bottom: 16px;
-
+  padding: 8px;
+  border-radius: 10px;
+  background-color: ${(props) => props.theme.mainColor};
+  width: fit-content;
   @media (max-width: 480px) {
     font-size: 18px;
     margin-bottom: 12px;

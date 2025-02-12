@@ -9,6 +9,7 @@ import { useDispatch } from "react-redux";
 import { SEARCH_POSTS_REQUEST } from "../../reducer/post";
 import MyPostListRenderer from "../../components/renderer/MyPostListRenderer";
 import { usePagination } from "../../hooks/PaginationProvider";
+import { Heading } from "./MyPosts";
 
 const MyLikes: React.FC = () => {
   const [posts, setPosts] = useState<PostType[]>([]);
@@ -68,7 +69,7 @@ const MyLikes: React.FC = () => {
 
   return (
     <PostsContainer>
-      <Heading>◈좋아요 한 글◈</Heading>
+      <Heading>좋아요 한 글</Heading>
       <MyPostListRenderer
         items={posts}
         onItemClick={(title, postId) => searchByTitle(title, postId)}
@@ -87,16 +88,5 @@ const PostsContainer = styled.div`
   @media (max-width: 480px) {
     padding: 10px;
     width: 100%;
-  }
-`;
-
-const Heading = styled.h2`
-  font-size: 24px;
-  color: ${(props) => props.theme.textColor};
-  margin-bottom: 16px;
-
-  @media (max-width: 480px) {
-    font-size: 18px;
-    margin-bottom: 12px;
   }
 `;

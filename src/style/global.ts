@@ -47,7 +47,7 @@ const GlobalStyle = createGlobalStyle`
         border-collapse: collapse;
         border-spacing: 0;
     }
-    ul {
+    ul, li{
         list-style: none;
     }
 

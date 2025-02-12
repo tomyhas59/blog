@@ -47,6 +47,7 @@ export const ListItem = styled.li`
   cursor: pointer;
   &:hover {
     background-color: ${(props) => props.theme.hoverMainColor};
+    color: white;
   }
 `;
 
