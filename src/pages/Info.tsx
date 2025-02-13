@@ -113,6 +113,23 @@ const Info = () => {
   const [isMouseDown, setIsMouseDown] = useState(false);
   const [startX, setStartX] = useState(0);
   const [scrollLeft, setScrollLeft] = useState(0);
+  const menuListRef = useRef<HTMLUListElement | null>(null);
+
+  const handleScroll = (direction: "left" | "right") => {
+    if (menuListRef.current) {
+      const scrollAmount = 200; // 스크롤 이동 거리
+      const currentScroll = menuListRef.current.scrollLeft;
+      const newScroll =
+        direction === "left"
+          ? currentScroll - scrollAmount
+          : currentScroll + scrollAmount;
+
+      menuListRef.current.scrollTo({
+        left: newScroll,
+        behavior: "smooth",
+      });
+    }
+  };
 
   const handleTouchStart = (e: React.TouchEvent) => {
     setIsMouseDown(true);
@@ -133,7 +150,11 @@ const Info = () => {
   return (
     <InfoContainer>
       <Menu>
+        <div>
+          <ScrollButton onClick={() => handleScroll("left")}>◀</ScrollButton>{" "}
+        </div>
         <MenuList
+          ref={menuListRef}
           onTouchStart={handleTouchStart}
           onTouchMove={handleTouchMove}
           onTouchEnd={handleTouchEnd}
@@ -183,6 +204,9 @@ const Info = () => {
             </MenuButton>
           </MenuItem>
         </MenuList>
+        <div>
+          <ScrollButton onClick={() => handleScroll("right")}>▶</ScrollButton>
+        </div>
       </Menu>
       <SectionWrapper>{renderSection}</SectionWrapper>
     </InfoContainer>
@@ -196,23 +220,25 @@ const InfoContainer = styled.div`
   max-width: 1200px;
   margin: 0 auto;
   display: flex;
+  justify-content: center;
   border-radius: 8px;
   overflow: hidden;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 
   @media (max-width: 480px) {
     flex-direction: column;
-    width: 95%;
+    width: 100%;
   }
 `;
 
 const Menu = styled.nav`
+  position: relative;
   flex: 1;
   padding: 20px;
   border-right: 1px solid #eaeaea;
   @media (max-width: 480px) {
-    max-width: 100%;
     border-right: none;
+    display: flex;
     border-bottom: 1px solid #eaeaea;
   }
 `;
@@ -221,7 +247,8 @@ const MenuList = styled.ul`
   display: flex;
   flex-direction: column;
   list-style: none;
-  padding: 0;
+  width: 90%;
+  margin: 0 5px;
   @media (max-width: 480px) {
     flex-direction: row;
     overflow-x: hidden;
@@ -235,29 +262,46 @@ const MenuItem = styled.li`
   }
 `;
 
-interface NavLinkProps {
-  active?: boolean;
-}
-const MenuButton = styled.button<NavLinkProps>`
+const MenuButton = styled.button<{ active: boolean }>`
   position: relative;
   display: flex;
   justify-content: center;
   align-items: center;
   font-weight: 600;
   font-size: 1rem;
-  color: ${(props) => (props.active ? "#007bff" : props.theme.textColor)};
-  text-decoration: none;
+  color: ${(props) =>
+    props.active ? props.theme.activeColor : props.theme.textColor};
+  background-size: 0 4px;
+  margin-right: 10px;
+  ${(props) =>
+    props.active &&
+    `
+    background-repeat: no-repeat;
+    background-size: 100% 4px;
+    background-image: linear-gradient(to right, ${props.theme.activeColor}, ${props.theme.activeColor});
+    background-position: bottom;
+
+`}
   cursor: pointer;
-  transition: color 0.3s ease, background-color 0.3s ease;
-  padding: 10px;
-  border-radius: 4px;
+  transition: background-size 0.4s ease;
+  padding-bottom: 10px;
   &:hover {
-    color: #0056b3;
-    background-color: ${(props) => props.theme.backgroundColor};
+    color: ${(props) => props.theme.activeColor};
   }
   @media (max-width: 480px) {
     font-size: 0.9rem;
     text-align: center;
+  }
+`;
+
+const ScrollButton = styled.button`
+  display: none;
+  @media (max-width: 480px) {
+    display: inline;
+    color: #fff;
+    &:hover {
+      color: ${({ theme }) => theme.hoverMainColor};
+    }
   }
 `;
 

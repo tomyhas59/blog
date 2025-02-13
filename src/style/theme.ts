@@ -6,8 +6,8 @@ export const lightTheme = {
   backgroundColor: "#ffffff",
   textColor: "#333333",
   borderColor: "#b0c4de",
-  activeColor: "#e0f7fa",
   charColor: "#000",
+  activeColor: "#2980b9",
 };
 
 export const darkTheme = {
@@ -18,6 +18,6 @@ export const darkTheme = {
   backgroundColor: "#2a2a2a",
   textColor: "#f5f5f5",
   borderColor: "#2c4d7b",
-  activeColor: "#3d5a80",
   charColor: "#000",
+  activeColor: "#5dade2",
 };
