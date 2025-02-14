@@ -43,11 +43,13 @@ export const ListItem = styled.li`
   padding: 5px;
   border: 1px solid #ccc;
   margin-bottom: 5px;
-  font-size: 0.7rem;
   cursor: pointer;
   &:hover {
     background-color: ${(props) => props.theme.hoverMainColor};
     color: white;
+  }
+  @media (max-width: 480px) {
+    font-size: 0.8rem;
   }
 `;
 
@@ -57,7 +59,9 @@ export const EmptyMessage = styled.p`
 `;
 
 export const CreatedAt = styled.div`
-  font-size: 0.6rem;
   color: #999;
   text-align: right;
+  @media (max-width: 480px) {
+    font-size: 0.8rem;
+  }
 `;

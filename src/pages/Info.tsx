@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import MyInfo from "./Info/MyInfo";
 import MyPosts from "./Info/MyPosts";
 import MyComments from "./Info/MyComments";
@@ -72,31 +72,31 @@ const Info = () => {
         console.error("Error fetching user chat rooms:", error);
       }
     };
-    if (me) {
-      fetchNewFollowers();
-    }
+    fetchNewFollowers();
   }, [me]);
-
-  const renderSection = useMemo(() => {
-    switch (activeSection) {
-      case "myInfo":
-        return <MyInfo />;
-      case "myPosts":
-        return <MyPosts />;
-      case "myComments":
-        return <MyComments />;
-      case "myLikes":
-        return <MyLikes />;
-      case "myFollow":
-        return <MyFollow />;
-      default:
-        return <MyInfo />;
-    }
-  }, [activeSection]);
 
   const notRead = me?.Notifications.filter(
     (notification) => notification.type === "SYSTEM"
   ).some((notification) => notification.isRead === false);
+
+  const sections = [
+    { menu: "myInfo", label: "내 정보" },
+    { menu: "myPosts", label: "내가 쓴 글", notRead },
+    { menu: "myComments", label: "내가 쓴 댓글" },
+    { menu: "myLikes", label: "좋아요 글" },
+    { menu: "myFollow", label: "팔로우", newFollowersCount },
+  ];
+
+  const renderSection = () => {
+    const sections: { [menu: string]: JSX.Element } = {
+      myInfo: <MyInfo />,
+      myPosts: <MyPosts />,
+      myComments: <MyComments />,
+      myLikes: <MyLikes />,
+      myFollow: <MyFollow />,
+    };
+    return sections[activeSection] || <MyInfo />;
+  };
 
   const handleSetActiveSection = (category: string) => {
     if (category === "myFollow") {
@@ -151,7 +151,7 @@ const Info = () => {
     <InfoContainer>
       <Menu>
         <div>
-          <ScrollButton onClick={() => handleScroll("left")}>◀</ScrollButton>{" "}
+          <ScrollButton onClick={() => handleScroll("left")}>◀</ScrollButton>
         </div>
         <MenuList
           ref={menuListRef}
@@ -159,56 +159,26 @@ const Info = () => {
           onTouchMove={handleTouchMove}
           onTouchEnd={handleTouchEnd}
         >
-          <MenuItem>
-            <MenuButton
-              onClick={() => handleSetActiveSection("myInfo")}
-              active={activeSection === "myInfo"}
-            >
-              내 정보
-            </MenuButton>
-          </MenuItem>
-          <MenuItem>
-            <MenuButton
-              onClick={() => handleSetActiveSection("myPosts")}
-              active={activeSection === "myPosts"}
-            >
-              내가 쓴 글
-              {notRead && <NotificationMessage>🔔</NotificationMessage>}
-            </MenuButton>
-          </MenuItem>
-          <MenuItem>
-            <MenuButton
-              onClick={() => handleSetActiveSection("myComments")}
-              active={activeSection === "myComments"}
-            >
-              내가 쓴 댓글
-            </MenuButton>
-          </MenuItem>
-          <MenuItem>
-            <MenuButton
-              onClick={() => handleSetActiveSection("myLikes")}
-              active={activeSection === "myLikes"}
-            >
-              좋아요 글
-            </MenuButton>
-          </MenuItem>
-          <MenuItem>
-            <MenuButton
-              onClick={() => handleSetActiveSection("myFollow")}
-              active={activeSection === "myFollow"}
-            >
-              {newFollowersCount && newFollowersCount > 0 && (
-                <NewFollowersCount>{newFollowersCount}</NewFollowersCount>
-              )}
-              팔로우
-            </MenuButton>
-          </MenuItem>
+          {sections.map(({ menu, label, notRead, newFollowersCount }) => (
+            <MenuItem key={menu}>
+              <MenuButton
+                onClick={() => handleSetActiveSection(menu)}
+                active={activeSection === menu}
+              >
+                {label}
+                {notRead && <NotificationMessage>🔔</NotificationMessage>}
+                {newFollowersCount && newFollowersCount > 0 && (
+                  <NewFollowersCount>{newFollowersCount}</NewFollowersCount>
+                )}
+              </MenuButton>
+            </MenuItem>
+          ))}
         </MenuList>
         <div>
           <ScrollButton onClick={() => handleScroll("right")}>▶</ScrollButton>
         </div>
       </Menu>
-      <SectionWrapper>{renderSection}</SectionWrapper>
+      <SectionWrapper>{renderSection()}</SectionWrapper>
     </InfoContainer>
   );
 };
@@ -298,7 +268,7 @@ const ScrollButton = styled.button`
   display: none;
   @media (max-width: 480px) {
     display: inline;
-    color: #fff;
+    color: ${(props) => props.theme.textColor};
     &:hover {
       color: ${({ theme }) => theme.hoverMainColor};
     }
