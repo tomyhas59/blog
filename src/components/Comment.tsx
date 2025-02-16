@@ -292,9 +292,9 @@ const Comment = ({ post }: { post: PostType }) => {
         addReCommentLoading) && <Spinner />}
       {hasLikersInTop3 &&
         top3Comments.map((comment, i) => (
-          <CommentItem key={comment.id} isTop3Commnets={true}>
-            <RankLabel>Top {i + 1}</RankLabel>
+          <CommentItem key={comment.id} isTop3Comments={true}>
             <CommentHeader>
+              <RankLabel>Top {i + 1}</RankLabel>
               <Author onClick={() => toggleShowAuthorMenu(comment.id)}>
                 <img
                   src={
@@ -341,7 +341,7 @@ const Comment = ({ post }: { post: PostType }) => {
         const isEditing = editComment[comment.id];
         return (
           <CommentItem
-            isTop3Commnets={false}
+            isTop3Comments={false}
             key={comment.id}
             id={`comment-${comment.id}`}
           >
@@ -453,19 +453,18 @@ const CommentContainer = styled.div`
 `;
 
 const RankLabel = styled.div`
-  font-size: 16px;
   font-weight: bold;
   color: #ff6f61;
   border-radius: 5px;
   text-align: center;
-  width: fit-content;
+  align-self: start;
 `;
 
-const CommentItem = styled.div<{ isTop3Commnets: boolean }>`
+const CommentItem = styled.div<{ isTop3Comments: boolean }>`
   border-top: 1px solid silver;
   font-size: 15px;
   background-color: ${(props) =>
-    props.isTop3Commnets ? props.theme.activeColor : "none"};
+    props.isTop3Comments ? props.theme.activeColor : "none"};
 `;
 
 const CommentHeader = styled.div`
