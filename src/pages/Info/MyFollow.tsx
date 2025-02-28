@@ -75,7 +75,7 @@ const FollowContainer = styled.div`
   padding: 5px;
   border-radius: 12px;
   gap: 20px;
-  @media (max-width: 480px) {
+  @media (max-width: 768px) {
     flex-direction: column;
     gap: 10px;
   }
@@ -105,7 +105,7 @@ const SectionHeading = styled.h2`
   border-bottom: 2px solid ${(props) => props.theme.mainColor};
   text-align: center;
   font-weight: 600;
-  @media (max-width: 480px) {
+  @media (max-width: 768px) {
     font-size: 1.3em;
   }
 `;
@@ -125,7 +125,7 @@ const FollowItem = styled.div`
     background-color: #f0f0f0;
   }
 
-  @media (max-width: 480px) {
+  @media (max-width: 768px) {
     width: 130px;
     padding: 5px;
   }
@@ -134,7 +134,7 @@ const FollowItem = styled.div`
 const Nickname = styled.span`
   width: 100px;
   color: #333;
-  @media (max-width: 480px) {
+  @media (max-width: 768px) {
     width: 30px;
     font-size: 0.8em;
   }

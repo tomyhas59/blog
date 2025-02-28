@@ -195,7 +195,7 @@ const InfoContainer = styled.div`
   overflow: hidden;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 
-  @media (max-width: 480px) {
+  @media (max-width: 768px) {
     flex-direction: column;
     width: 100%;
   }
@@ -206,7 +206,7 @@ const Menu = styled.nav`
   flex: 1;
   padding: 20px;
   border-right: 1px solid #eaeaea;
-  @media (max-width: 480px) {
+  @media (max-width: 768px) {
     border-right: none;
     display: flex;
     border-bottom: 1px solid #eaeaea;
@@ -219,7 +219,7 @@ const MenuList = styled.ul`
   list-style: none;
   width: 90%;
   margin: 0 5px;
-  @media (max-width: 480px) {
+  @media (max-width: 768px) {
     flex-direction: row;
     overflow-x: hidden;
   }
@@ -227,7 +227,7 @@ const MenuList = styled.ul`
 
 const MenuItem = styled.li`
   margin-bottom: 15px;
-  @media (max-width: 480px) {
+  @media (max-width: 768px) {
     margin-bottom: 0;
   }
 `;
@@ -258,7 +258,7 @@ const MenuButton = styled.button<{ active: boolean }>`
   &:hover {
     color: ${(props) => props.theme.activeColor};
   }
-  @media (max-width: 480px) {
+  @media (max-width: 768px) {
     font-size: 0.9rem;
     text-align: center;
   }
@@ -266,7 +266,7 @@ const MenuButton = styled.button<{ active: boolean }>`
 
 const ScrollButton = styled.button`
   display: none;
-  @media (max-width: 480px) {
+  @media (max-width: 768px) {
     display: inline;
     color: ${(props) => props.theme.textColor};
     &:hover {
@@ -278,7 +278,7 @@ const ScrollButton = styled.button`
 const SectionWrapper = styled.div`
   flex: 3;
   padding: 20px;
-  @media (max-width: 480px) {
+  @media (max-width: 768px) {
     padding: 15px;
   }
 `;

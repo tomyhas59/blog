@@ -156,7 +156,7 @@ const PostContainer = styled.div<{ isActive: boolean }>`
   &:hover {
     background-color: ${(props) => props.theme.activeColor};
   }
-  @media (max-width: 480px) {
+  @media (max-width: 768px) {
     flex-direction: column;
   }
 `;
@@ -168,7 +168,7 @@ export const PostHeaderLeftSection = styled.div`
   align-items: center;
   position: relative;
   gap: 10px;
-  @media (max-width: 480px) {
+  @media (max-width: 768px) {
     width: 100%;
   }
 `;
@@ -236,7 +236,7 @@ export const Nickname = styled.span`
   font-weight: bold;
   text-align: start;
   width: 50px;
-  @media (max-width: 480px) {
+  @media (max-width: 768px) {
     font-size: 12px;
   }
 `;
@@ -266,7 +266,7 @@ export const Liked = styled.span`
 export const ViewCount = styled.span`
   color: silver;
   min-width: 20px;
-  @media (max-width: 480px) {
+  @media (max-width: 768px) {
     font-size: 12px;
   }
 `;

@@ -242,7 +242,7 @@ const ChatContainer = styled.div`
   justify-content: center;
   align-items: flex-start;
   gap: 50px;
-  @media (max-width: 480px) {
+  @media (max-width: 768px) {
     width: 100%;
     flex-direction: column;
     align-items: stretch;
@@ -258,7 +258,7 @@ const ListWrapper = styled.div`
   background-color: #f4f4f9;
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  @media (max-width: 480px) {
+  @media (max-width: 768px) {
     width: 50%;
     gap: 20px;
   }
@@ -301,7 +301,7 @@ const FollowList = styled.div`
       }
     }
   }
-  @media (max-width: 480px) {
+  @media (max-width: 768px) {
     width: 100%;
     ul {
       display: flex;
@@ -323,7 +323,7 @@ const RoomList = styled.ul`
     font-weight: bold;
     text-align: center;
   }
-  @media (max-width: 480px) {
+  @media (max-width: 768px) {
     width: 100%;
     display: flex;
     flex-direction: column;
@@ -346,7 +346,7 @@ const RoomItem = styled.li`
     transform: translateY(-2px);
     color: ${(props) => props.theme.charColor};
   }
-  @media (max-width: 480px) {
+  @media (max-width: 768px) {
     font-size: 12px;
     padding: 8px;
   }
@@ -372,7 +372,7 @@ const UnReadMessageCount = styled.div<MyComponentProps>`
 
 const ContentWrapper = styled.div`
   width: 500px;
-  @media (max-width: 480px) {
+  @media (max-width: 768px) {
     position: absolute;
     width: 100%;
     top: 0;
@@ -403,7 +403,7 @@ const UserOption = styled.div`
       color: ${(props) => props.theme.charColor};
     }
   }
-  @media (max-width: 480px) {
+  @media (max-width: 768px) {
     z-index: 999;
     width: 70px;
     top: 30px;
@@ -420,7 +420,7 @@ const ChatPlaceholder = styled.div`
   height: 200px;
   line-height: 200px;
   font-size: 24px;
-  @media (max-width: 480px) {
+  @media (max-width: 768px) {
     display: none;
   }
 `;

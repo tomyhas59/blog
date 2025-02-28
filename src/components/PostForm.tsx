@@ -211,7 +211,7 @@ const FormContainer = styled.div`
   border-radius: 10px;
   background-color: #f5f5f5;
   z-index: 200;
-  @media (max-width: 480px) {
+  @media (max-width: 768px) {
     width: 300px;
   }
 `;
@@ -279,7 +279,7 @@ export const FileUploadButton = styled.button`
     transform: translateY(-2px);
     color: ${(props) => props.theme.charColor};
   }
-  @media (max-width: 480px) {
+  @media (max-width: 768px) {
     width: 70px;
     font-size: 12px;
     padding: 5px;
@@ -294,7 +294,7 @@ const ImageContainer = styled.div`
   grid-template-columns: repeat(6, 1fr);
   gap: 10px;
   grid-area: e;
-  @media (max-width: 480px) {
+  @media (max-width: 768px) {
     grid-template-columns: repeat(2, 1fr);
     max-height: 200px;
   }
@@ -305,7 +305,7 @@ const ImageItem = styled.div`
   display: inline-block;
   width: 100px;
   height: 100px;
-  @media (max-width: 480px) {
+  @media (max-width: 768px) {
     width: 100px;
     height: 100px;
   }
@@ -332,7 +332,7 @@ const RemoveButton = styled.button`
   &:hover {
     background-color: #c0392b;
   }
-  @media (max-width: 480px) {
+  @media (max-width: 768px) {
     font-size: 8px;
     padding: 2px 5px;
   }

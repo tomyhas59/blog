@@ -67,7 +67,7 @@ const ContentWrapper = styled.main`
   color: ${(props) => props.theme.textColor};
   padding: 5px;
   min-height: 80vh;
-  @media (max-width: 480px) {
+  @media (max-width: 768px) {
     margin-top: 10vh;
     min-height: 90vh;
   }
@@ -95,7 +95,7 @@ const ShowPostFormButton = styled.div`
     border: 1px solid;
     color: ${(props) => props.theme.textColor};
   }
-  @media (max-width: 480px) {
+  @media (max-width: 768px) {
     width: 50px;
     height: 50px;
     font-size: 12px;

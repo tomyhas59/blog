@@ -235,7 +235,7 @@ const Content = styled.div`
   & span {
     color: #b3b0b0;
   }
-  @media (max-width: 480px) {
+  @media (max-width: 768px) {
     font-size: 13px;
   }
 `;

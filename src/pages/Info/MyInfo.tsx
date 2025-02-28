@@ -320,7 +320,7 @@ const InfoContainer = styled.div`
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
   }
 
-  @media (max-width: 480px) {
+  @media (max-width: 768px) {
     padding: 15px;
     margin-bottom: 15px;
   }
@@ -351,7 +351,7 @@ const ProfileImage = styled.img`
     border-color: #888888;
   }
 
-  @media (max-width: 480px) {
+  @media (max-width: 768px) {
     width: 80px;
     height: 80px;
   }
@@ -387,7 +387,7 @@ const InfoContent = styled.div`
     margin-bottom: 15px;
   }
 
-  @media (max-width: 480px) {
+  @media (max-width: 768px) {
     > h1 {
       font-size: 1.2em;
       margin-bottom: 10px;
@@ -408,7 +408,7 @@ const UserInfo = styled.p`
     color: ${(props) => props.theme.textColor};
   }
 
-  @media (max-width: 480px) {
+  @media (max-width: 768px) {
     font-size: 0.9em;
   }
 `;
@@ -433,7 +433,7 @@ const SubmitButton = styled.button`
     background-color: ${(props) => props.theme.subColor};
   }
 
-  @media (max-width: 480px) {
+  @media (max-width: 768px) {
     padding: 8px 16px;
     font-size: 0.9em;
     margin-right: 0;
@@ -454,7 +454,7 @@ const CancelButton = styled.button`
     background-color: #d32f2f;
   }
 
-  @media (max-width: 480px) {
+  @media (max-width: 768px) {
     padding: 8px 16px;
     font-size: 0.9em;
   }
@@ -476,7 +476,7 @@ const RemoveButton = styled.button`
     transform: scale(1.1);
     font-weight: bold;
   }
-  @media (max-width: 480px) {
+  @media (max-width: 768px) {
     width: 15px;
     height: 15px;
     font-size: 1em;

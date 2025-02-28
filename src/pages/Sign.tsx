@@ -136,7 +136,7 @@ const SignUpContainer = styled.form`
   border-radius: 8px;
   background-color: #fff;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  @media (max-width: 480px) {
+  @media (max-width: 768px) {
     padding: 20px;
     transform: scale(0.9);
   }

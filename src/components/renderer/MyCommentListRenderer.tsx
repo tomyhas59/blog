@@ -48,7 +48,7 @@ export const ListItem = styled.li`
     background-color: ${(props) => props.theme.hoverMainColor};
     color: white;
   }
-  @media (max-width: 480px) {
+  @media (max-width: 768px) {
     font-size: 0.8rem;
   }
 `;
@@ -61,7 +61,7 @@ export const EmptyMessage = styled.p`
 export const CreatedAt = styled.div`
   color: #999;
   text-align: right;
-  @media (max-width: 480px) {
+  @media (max-width: 768px) {
     font-size: 0.8rem;
   }
 `;

@@ -85,7 +85,7 @@ const PostsContainer = styled.div`
   margin: 0 auto;
   padding: 20px;
 
-  @media (max-width: 480px) {
+  @media (max-width: 768px) {
     padding: 10px;
     width: 100%;
   }

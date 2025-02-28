@@ -247,7 +247,7 @@ export const HeaderContainer = styled.header`
   justify-content: center;
   align-items: center;
   gap: 10px;
-  @media (max-width: 480px) {
+  @media (max-width: 768px) {
     position: fixed;
     height: 10vh;
     display: grid;
@@ -275,7 +275,7 @@ export const HeaderLogoBtn = styled.button`
     transform: translateY(-2px);
     color: ${(props) => props.theme.charColor};
   }
-  @media (max-width: 480px) {
+  @media (max-width: 768px) {
     grid-area: a;
     font-size: 14px;
     font-weight: bold;
@@ -291,7 +291,7 @@ export const SignList = styled.ul`
   align-items: center;
   color: #fff;
   gap: 10px;
-  @media (max-width: 480px) {
+  @media (max-width: 768px) {
     grid-area: b;
   }
 `;
@@ -312,7 +312,7 @@ const ListItem = styled.li`
     color: ${(props) => props.theme.charColor};
   }
   z-index: 0;
-  @media (max-width: 480px) {
+  @media (max-width: 768px) {
     font-size: 14px;
     background: none;
     position: relative;
@@ -370,7 +370,7 @@ const ProfileImage = styled.img`
     border-color: gray;
   }
 
-  @media (max-width: 480px) {
+  @media (max-width: 768px) {
     &:hover {
       color: ${(props) => props.theme.charColor};
     }
@@ -383,7 +383,7 @@ const DarkModeButton = styled.button`
   &:hover {
     transform: scale(1.3);
   }
-  @media (max-width: 480px) {
+  @media (max-width: 768px) {
     grid-area: c;
   }
 `;

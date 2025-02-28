@@ -171,7 +171,7 @@ const PostContainer = styled.div`
   max-width: 800px;
   padding: 5px 10px;
   margin: 0 auto;
-  @media (max-width: 480px) {
+  @media (max-width: 768px) {
     flex-direction: column;
     align-items: start;
   }

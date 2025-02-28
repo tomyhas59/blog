@@ -276,7 +276,7 @@ const ChatRoomContainer = styled.div`
   background-color: #fff;
   border: 1px solid #ccc;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  @media (max-width: 480px) {
+  @media (max-width: 768px) {
     min-height: 100vh;
     z-index: 2000;
   }
@@ -308,7 +308,7 @@ const ChatPartnerName = styled.h2`
   color: ${(props) => props.theme.mainColor};
   font-size: 24px;
 
-  @media (max-width: 480px) {
+  @media (max-width: 768px) {
     font-size: 18px;
   }
 `;
@@ -325,7 +325,7 @@ const ExitButton = styled.button`
     color: ${(props) => props.theme.charColor};
   }
 
-  @media (max-width: 480px) {
+  @media (max-width: 768px) {
     padding: 3px;
     font-size: 12px;
   }
@@ -335,7 +335,7 @@ const MessageListContainer = styled.div`
   overflow-y: auto;
   height: 60vh;
   position: relative;
-  @media (max-width: 480px) {
+  @media (max-width: 768px) {
     height: calc(100vh - 100px);
   }
 `;
@@ -377,7 +377,7 @@ const MessageContent = styled.p<MessageItemProps>`
   word-break: keep-all;
   cursor: pointer;
 
-  @media (max-width: 480px) {
+  @media (max-width: 768px) {
     font-size: 14px;
   }
 `;
@@ -389,7 +389,7 @@ const MessageTimestamp = styled.span<Pick<MessageItemProps, "isSystemMessage">>`
   align-self: flex-end;
   margin-left: 5px;
 
-  @media (max-width: 480px) {
+  @media (max-width: 768px) {
     font-size: 10px;
   }
 `;
@@ -406,7 +406,7 @@ const MessageInput = styled.input`
   border: 1px solid #ccc;
   border-radius: 4px 0 0 4px;
   color: ${(props) => props.theme.mainColor};
-  @media (max-width: 480px) {
+  @media (max-width: 768px) {
     padding: 8px;
     font-size: 14px;
   }
@@ -426,7 +426,7 @@ const MessageButton = styled.button`
     color: ${(props) => props.theme.charColor};
   }
 
-  @media (max-width: 480px) {
+  @media (max-width: 768px) {
     font-size: 12px;
     padding: 8px;
   }
@@ -447,7 +447,7 @@ const DateDivider = styled.div`
   margin: 10px 0;
   text-align: center;
 
-  @media (max-width: 480px) {
+  @media (max-width: 768px) {
     font-size: 8px;
     margin: 5px 0;
   }

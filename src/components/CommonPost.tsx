@@ -418,7 +418,7 @@ const PostHeader = styled.div`
   align-items: center;
   border-bottom: 1px solid silver;
   padding: 10px;
-  @media (max-width: 480px) {
+  @media (max-width: 768px) {
     flex-direction: column;
   }
 `;
@@ -481,7 +481,7 @@ const ContentImg = styled.img`
   border-radius: 4px;
   margin: 1px;
   cursor: pointer;
-  @media (max-width: 480px) {
+  @media (max-width: 768px) {
     width: 100px;
     height: 100px;
   }

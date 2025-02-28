@@ -76,7 +76,7 @@ const SearchContainer = styled.div<{ currentPath: string }>`
   display: grid;
   width: 500px;
   grid-template-columns: 15% 75% 10%;
-  @media (max-width: 480px) {
+  @media (max-width: 768px) {
     width: 330px;
     grid-area: d;
   }
@@ -85,7 +85,7 @@ const SearchContainer = styled.div<{ currentPath: string }>`
 const Select = styled.select`
   text-align: center;
   border-radius: 4px;
-  @media (max-width: 480px) {
+  @media (max-width: 768px) {
     height: 30px;
   }
 `;
@@ -96,7 +96,7 @@ const Input = styled.input`
   font-size: 16px;
   border: 1px solid #ccc;
   border-radius: 4px 0 0 4px;
-  @media (max-width: 480px) {
+  @media (max-width: 768px) {
     height: 30px;
   }
 `;
@@ -113,7 +113,7 @@ const SearchButton = styled.button`
       color: ${(props) => props.theme.charColor};
     }
   }
-  @media (max-width: 480px) {
+  @media (max-width: 768px) {
     height: 30px;
   }
 `;

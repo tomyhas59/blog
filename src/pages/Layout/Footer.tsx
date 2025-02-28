@@ -51,7 +51,7 @@ export const FooterContainer = styled.footer`
   align-items: center;
   gap: 20px;
   border: 1px solid;
-  @media (max-width: 480px) {
+  @media (max-width: 768px) {
     display: none;
   }
 `;

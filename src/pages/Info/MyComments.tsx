@@ -151,7 +151,7 @@ const CommentsContainer = styled.div`
   margin: 0 auto;
   padding: 20px;
 
-  @media (max-width: 480px) {
+  @media (max-width: 768px) {
     padding: 10px;
   }
 `;
@@ -162,7 +162,7 @@ const Heading = styled.h2`
   font-size: 24px;
   margin-bottom: 16px;
 
-  @media (max-width: 480px) {
+  @media (max-width: 768px) {
     font-size: 18px;
     margin-bottom: 12px;
   }
@@ -194,7 +194,7 @@ const MyReComments = styled.button<{ isMyComments: boolean }>`
 const CommentList = styled.div`
   margin-bottom: 20px;
 
-  @media (max-width: 480px) {
+  @media (max-width: 768px) {
     margin-bottom: 15px;
   }
 `;

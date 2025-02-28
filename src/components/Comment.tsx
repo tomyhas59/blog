@@ -552,7 +552,7 @@ const Button = styled.button`
 const Date = styled.span`
   color: gray;
   font-size: 12px;
-  @media (max-width: 480px) {
+  @media (max-width: 768px) {
     width: 20%;
   }
 `;
