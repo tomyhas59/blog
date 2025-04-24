@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import Spinner from "../Spinner";
+import Spinner from "../ui/Spinner";
 
 const ContentRenderer = ({ content }: { content: string }) => {
   if (!content) {

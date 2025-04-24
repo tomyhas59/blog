@@ -3,10 +3,10 @@ import styled from "styled-components";
 import { useSelector } from "react-redux";
 import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { RootState } from "../reducer";
+import { RootState } from "../../reducer";
 import { useLocation } from "react-router-dom";
-import { usePagination } from "../hooks/PaginationProvider";
-import useSetParams from "../hooks/useSetParams";
+import { usePagination } from "../../hooks/PaginationProvider";
+import useSetParams from "../../hooks/useSetParams";
 
 const Search = () => {
   const [searchOption, setSearchOption] = useState("all");

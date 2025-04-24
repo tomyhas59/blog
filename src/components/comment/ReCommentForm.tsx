@@ -7,10 +7,10 @@ import React, {
 } from "react";
 import styled from "styled-components";
 import { useDispatch, useSelector } from "react-redux";
-import { ADD_RECOMMENT_REQUEST } from "../reducer/post";
-import useInput from "../hooks/useInput";
-import { CommentType, PostType, ReCommentType } from "../types";
-import { RootState } from "../reducer";
+import { ADD_RECOMMENT_REQUEST } from "../../reducer/post";
+import useInput from "../../hooks/useInput";
+import { CommentType, PostType, ReCommentType } from "../../types";
+import { RootState } from "../../reducer";
 
 const ReCommentForm = ({
   post,

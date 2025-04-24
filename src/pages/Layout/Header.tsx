@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useCallback, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { LOG_OUT_REQUEST, REFRESH_TOKEN_REQUEST } from "../../reducer/user";
-import Search from "../../components/Search";
+import Search from "../../components/search/Search";
 import { usePagination } from "../../hooks/PaginationProvider";
 import { RootState } from "../../reducer";
 import io, { Socket } from "socket.io-client";

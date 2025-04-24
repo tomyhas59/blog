@@ -8,8 +8,8 @@ import React, {
   useRef,
   useState,
 } from "react";
-import CommentForm from "../components/CommentForm";
-import Comment from "../components/Comment";
+import CommentForm from "../comment/CommentForm";
+import Comment from "../comment/Comment";
 import { useDispatch, useSelector } from "react-redux";
 import {
   REMOVE_POST_REQUEST,
@@ -19,20 +19,20 @@ import {
   REMOVE_IMAGE_REQUEST,
   SEARCH_POSTS_REQUEST,
   GET_POST_REQUEST,
-} from "../reducer/post";
+} from "../../reducer/post";
 import moment from "moment";
 import "moment/locale/ko";
-import { RootState } from "../reducer";
-import { baseURL } from "../config";
-import ContentRenderer from "../components/renderer/ContentRenderer";
-import useOutsideClick from "../hooks/useOutsideClick";
-import useTextareaAutoHeight from "../hooks/useTextareaAutoHeight";
-import FollowButton from "../components/FollowButton";
-import { DEFAULT_PROFILE_IMAGE } from "../pages/Info/MyInfo";
-import { FileUploadButton } from "../components/PostForm";
+import { RootState } from "../../reducer";
+import { baseURL } from "../../config";
+import ContentRenderer from "../renderer/ContentRenderer";
+import useOutsideClick from "../../hooks/useOutsideClick";
+import useTextareaAutoHeight from "../../hooks/useTextareaAutoHeight";
+import FollowButton from "../ui/FollowButton";
+import { DEFAULT_PROFILE_IMAGE } from "../../pages/Info/MyInfo";
+import { FileUploadButton } from "./PostForm";
 import { useNavigate } from "react-router-dom";
 import { io, Socket } from "socket.io-client";
-import { usePagination } from "../hooks/PaginationProvider";
+import { usePagination } from "../../hooks/PaginationProvider";
 import {
   Date,
   PostMetaInfo,
@@ -40,7 +40,7 @@ import {
   PostHeaderLeftSection,
   Button,
 } from "./Post";
-import Like from "./Like";
+import Like from "../ui/Like";
 
 const CommonPost = () => {
   const socket = useRef<Socket | null>(null);

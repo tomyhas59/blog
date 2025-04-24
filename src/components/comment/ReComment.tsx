@@ -1,23 +1,23 @@
 import React, { useRef } from "react";
 import { useState, useCallback } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { REMOVE_RECOMMENT_REQUEST } from "../reducer/post";
+import { REMOVE_RECOMMENT_REQUEST } from "../../reducer/post";
 import styled from "styled-components";
 import moment from "moment";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleXmark, faComment } from "@fortawesome/free-solid-svg-icons";
-import { CommentType, PostType } from "../types";
-import { RootState } from "../reducer";
+import { CommentType, PostType } from "../../types";
+import { RootState } from "../../reducer";
 import ReCommentForm from "./ReCommentForm";
-import Spinner from "./Spinner";
-import ContentRenderer from "./renderer/ContentRenderer";
-import useOutsideClick from "../hooks/useOutsideClick";
-import { baseURL } from "../config";
-import { DEFAULT_PROFILE_IMAGE } from "../pages/Info/MyInfo";
-import FollowButton from "./FollowButton";
-import { usePagination } from "../hooks/PaginationProvider";
-import useSetParams from "../hooks/useSetParams";
-import Like from "./Like";
+import Spinner from "../ui/Spinner";
+import ContentRenderer from "../renderer/ContentRenderer";
+import useOutsideClick from "../../hooks/useOutsideClick";
+import { baseURL } from "../../config";
+import { DEFAULT_PROFILE_IMAGE } from "../../pages/Info/MyInfo";
+import FollowButton from "../ui/FollowButton";
+import { usePagination } from "../../hooks/PaginationProvider";
+import useSetParams from "../../hooks/useSetParams";
+import Like from "../ui/Like";
 
 const ReComment = ({
   post,

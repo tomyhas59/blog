@@ -4,12 +4,12 @@ import { useDispatch, useSelector } from "react-redux";
 import { SEARCH_POSTS_REQUEST } from "../reducer/post";
 import "moment/locale/ko";
 import { RootState } from "../reducer";
-import Spinner from "../components/Spinner";
+import Spinner from "../components/ui/Spinner";
 import { PostType } from "../types";
 import { usePagination } from "../hooks/PaginationProvider";
 import SearchedPagination from "../components/pagination/SearchedPagination";
-import SearchedPost from "../components/SearchedPost";
-import CommonPost from "../components/CommonPost";
+import SearchedPost from "../components/post/SearchedPost";
+import CommonPost from "../components/post/CommonPost";
 import styled from "styled-components";
 
 const SearchedPostDetail = () => {

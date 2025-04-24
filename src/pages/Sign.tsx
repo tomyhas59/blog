@@ -11,7 +11,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { SIGN_UP_REQUEST } from "../reducer/user";
 import { useNavigate } from "react-router-dom";
 import { RootState } from "../reducer";
-import Spinner from "../components/Spinner";
+import Spinner from "../components/ui/Spinner";
 
 const Sign = () => {
   const [nickname, handleNicknameChange] = useInput();

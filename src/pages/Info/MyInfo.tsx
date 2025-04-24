@@ -13,7 +13,7 @@ import styled from "styled-components";
 import axios from "axios";
 import { baseURL } from "../../config";
 import { useDispatch } from "react-redux";
-import Spinner from "../../components/Spinner";
+import Spinner from "../../components/ui/Spinner";
 import useInput from "../../hooks/useInput";
 import { FormGroup, Label, Button, CheckMessage, Input } from "../Sign";
 import { CHANGE_PASSWORD_REQUEST, MODIFY_NICKNAME } from "../../reducer/user";

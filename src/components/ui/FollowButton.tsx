@@ -1,8 +1,8 @@
 import React, { useCallback } from "react";
 import styled from "styled-components";
-import { FOLLOW_REQUEST, UNFOLLOW_REQUEST } from "../reducer/user";
+import { FOLLOW_REQUEST, UNFOLLOW_REQUEST } from "../../reducer/user";
 import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../reducer";
+import { RootState } from "../../reducer";
 
 interface FollowButtonProps {
   userId: number;

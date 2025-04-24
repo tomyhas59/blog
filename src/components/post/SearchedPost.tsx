@@ -1,11 +1,11 @@
 import React, { useCallback } from "react";
 import styled from "styled-components";
 import "moment/locale/ko";
-import { PostType } from "../types";
+import { PostType } from "../../types";
 import { useLocation } from "react-router-dom";
-import { baseURL } from "../config";
-import { DEFAULT_PROFILE_IMAGE } from "../pages/Info/MyInfo";
-import useSetParams from "../hooks/useSetParams";
+import { baseURL } from "../../config";
+import { DEFAULT_PROFILE_IMAGE } from "../../pages/Info/MyInfo";
+import useSetParams from "../../hooks/useSetParams";
 import moment from "moment";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faImage, faImages } from "@fortawesome/free-solid-svg-icons";

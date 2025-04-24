@@ -5,14 +5,14 @@ import { useDispatch, useSelector } from "react-redux";
 import { GET_POSTS_REQUEST } from "../reducer/post";
 import "moment/locale/ko";
 import { RootState } from "../reducer";
-import Spinner from "../components/Spinner";
+import Spinner from "../components/ui/Spinner";
 import { PostType } from "../types";
-import Post from "../components/Post";
+import Post from "../components/post/Post";
 import Pagination from "../components/pagination/Pagination";
 import { io, Socket } from "socket.io-client";
 import { usePagination } from "../hooks/PaginationProvider";
-import SortButton from "../components/SortButton";
-import CommonPost from "../components/CommonPost";
+import SortButton from "../components/ui/SortButton";
+import CommonPost from "../components/post/CommonPost";
 
 const PostDetail = () => {
   const socket = useRef<Socket | null>(null);

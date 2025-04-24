@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { usePagination } from "../hooks/PaginationProvider";
 import { RootState } from "../reducer";
-import Spinner from "../components/Spinner";
+import Spinner from "../components/ui/Spinner";
 
 function Login() {
   const dispatch = useDispatch();

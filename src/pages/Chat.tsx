@@ -7,7 +7,7 @@ import { MessageType } from "../types";
 import useOutsideClick from "../hooks/useOutsideClick";
 import axios from "axios";
 import ChatRoom from "../components/chat/ChatRoom";
-import FollowButton from "../components/FollowButton";
+import FollowButton from "../components/ui/FollowButton";
 
 export interface UserRoomList {
   id: number;

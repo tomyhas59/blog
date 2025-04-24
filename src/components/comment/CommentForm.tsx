@@ -8,13 +8,13 @@ import React, {
 } from "react";
 import styled from "styled-components";
 import { useDispatch, useSelector } from "react-redux";
-import useInput from "../hooks/useInput";
-import { ADD_COMMENT_REQUEST } from "../reducer/post";
-import { PostType } from "../types";
-import { RootState } from "../reducer";
-import useTextareaAutoHeight from "../hooks/useTextareaAutoHeight";
+import useInput from "../../hooks/useInput";
+import { ADD_COMMENT_REQUEST } from "../../reducer/post";
+import { PostType } from "../../types";
+import { RootState } from "../../reducer";
+import useTextareaAutoHeight from "../../hooks/useTextareaAutoHeight";
 import { useLocation, useNavigate } from "react-router-dom";
-import { usePagination } from "../hooks/PaginationProvider";
+import { usePagination } from "../../hooks/PaginationProvider";
 
 const CommentForm = ({ post }: { post: PostType }) => {
   const { addCommentDone, totalComments } = useSelector(

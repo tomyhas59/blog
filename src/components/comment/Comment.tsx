@@ -11,26 +11,26 @@ import {
   GET_COMMENTS_REQUEST,
   REMOVE_COMMENT_REQUEST,
   UPDATE_COMMENT_REQUEST,
-} from "../reducer/post";
+} from "../../reducer/post";
 import moment from "moment";
-import useInput from "../hooks/useInput";
+import useInput from "../../hooks/useInput";
 import ReCommentForm from "./ReCommentForm";
 import ReComment from "./ReComment";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faComment, faPen, faTrash } from "@fortawesome/free-solid-svg-icons";
-import { PostType } from "../types";
-import { RootState } from "../reducer";
-import Spinner from "./Spinner";
-import ContentRenderer from "./renderer/ContentRenderer";
-import useOutsideClick from "../hooks/useOutsideClick";
-import useTextareaAutoHeight from "../hooks/useTextareaAutoHeight";
-import { baseURL } from "../config";
-import { DEFAULT_PROFILE_IMAGE } from "../pages/Info/MyInfo";
-import FollowButton from "./FollowButton";
-import { usePagination } from "../hooks/PaginationProvider";
-import useSetParams from "../hooks/useSetParams";
-import Like from "./Like";
-import CommentPagination from "./pagination/CommentPagination";
+import { PostType } from "../../types";
+import { RootState } from "../../reducer";
+import Spinner from "../ui/Spinner";
+import ContentRenderer from "../renderer/ContentRenderer";
+import useOutsideClick from "../../hooks/useOutsideClick";
+import useTextareaAutoHeight from "../../hooks/useTextareaAutoHeight";
+import { baseURL } from "../../config";
+import { DEFAULT_PROFILE_IMAGE } from "../../pages/Info/MyInfo";
+import FollowButton from "../ui/FollowButton";
+import { usePagination } from "../../hooks/PaginationProvider";
+import useSetParams from "../../hooks/useSetParams";
+import Like from "../ui/Like";
+import CommentPagination from "../pagination/CommentPagination";
 import { useLocation, useNavigate } from "react-router-dom";
 
 const Comment = ({ post }: { post: PostType }) => {

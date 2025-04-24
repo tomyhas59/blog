@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "../../reducer";
 import styled from "styled-components";
-import FollowButton from "../../components/FollowButton";
+import FollowButton from "../../components/ui/FollowButton";
 import { io, Socket } from "socket.io-client";
 
 const MyFollow: React.FC = () => {

@@ -1,19 +1,20 @@
 import React, { useCallback, useRef, useState } from "react";
 import styled from "styled-components";
 import "moment/locale/ko";
-import { PostType } from "../types";
+import { PostType } from "../../types";
 import { useNavigate } from "react-router-dom";
-import { baseURL } from "../config";
-import { DEFAULT_PROFILE_IMAGE } from "../pages/Info/MyInfo";
-import useOutsideClick from "../hooks/useOutsideClick";
+import { baseURL } from "../../config";
+import { DEFAULT_PROFILE_IMAGE } from "../../pages/Info/MyInfo";
+import useOutsideClick from "../../hooks/useOutsideClick";
 import { useSelector } from "react-redux";
-import { RootState } from "../reducer";
-import FollowButton from "./FollowButton";
-import { usePagination } from "../hooks/PaginationProvider";
-import useSetParams from "../hooks/useSetParams";
+import { RootState } from "../../reducer";
+
+import { usePagination } from "../../hooks/PaginationProvider";
+import useSetParams from "../../hooks/useSetParams";
 import moment from "moment";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faImage, faImages } from "@fortawesome/free-solid-svg-icons";
+import FollowButton from "../ui/FollowButton";
 
 const Post = ({
   post,
@@ -235,7 +236,7 @@ export const Nickname = styled.span`
   color: ${(props) => props.theme.textColor};
   font-weight: bold;
   text-align: start;
-  width: 50px;
+  width: 52px;
   @media (max-width: 768px) {
     font-size: 12px;
   }

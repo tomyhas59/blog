@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from "react";
-import Post from "../components/Post";
+import Post from "../components/post/Post";
 import { useDispatch, useSelector } from "react-redux";
 import { GET_POSTS_REQUEST } from "../reducer/post";
 import Pagination from "../components/pagination/Pagination";
 import { usePagination } from "../hooks/PaginationProvider";
 import { RootState } from "../reducer";
 import { PostType } from "../types";
-import Spinner from "../components/Spinner";
+import Spinner from "../components/ui/Spinner";
 import { useLocation } from "react-router-dom";
 import styled from "styled-components";
-import SortButton from "../components/SortButton";
+import SortButton from "../components/ui/SortButton";
 
 const Main = () => {
   const dispatch = useDispatch();

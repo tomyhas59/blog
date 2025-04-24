@@ -1,9 +1,9 @@
 import React, { SyntheticEvent, useCallback, useState } from "react";
 import styled from "styled-components";
-import { Liked } from "./Post";
+import { Liked } from "../post/Post";
 import { useSelector } from "react-redux";
-import { RootState } from "../reducer";
-import { LikeType } from "../types";
+import { RootState } from "../../reducer";
+import { LikeType } from "../../types";
 import { useDispatch } from "react-redux";
 import {
   LIKE_COMMENT_REQUEST,
@@ -12,7 +12,7 @@ import {
   UNLIKE_COMMENT_REQUEST,
   UNLIKE_POST_REQUEST,
   UNLIKE_RECOMMENT_REQUEST,
-} from "../reducer/post";
+} from "../../reducer/post";
 
 const Like = ({
   itemType,

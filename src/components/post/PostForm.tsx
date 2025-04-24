@@ -11,12 +11,12 @@ import {
   ADD_POST_REQUEST,
   REMOVE_IMAGE_REQUEST,
   UPLOAD_IMAGES_REQUEST,
-} from "../reducer/post";
+} from "../../reducer/post";
 
-import { RootState } from "../reducer";
-import Spinner from "./Spinner";
-import useTextareaAutoHeight from "../hooks/useTextareaAutoHeight";
-import { baseURL } from "../config";
+import { RootState } from "../../reducer";
+import Spinner from "../ui/Spinner";
+import useTextareaAutoHeight from "../../hooks/useTextareaAutoHeight";
+import { baseURL } from "../../config";
 
 import { useNavigate } from "react-router-dom";
 
