@@ -42,6 +42,10 @@ import {
 } from "./Post";
 import Like from "../ui/Like";
 
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
+import Slider from "react-slick";
+
 const CommonPost = () => {
   const socket = useRef<Socket | null>(null);
   const me = useSelector((state: RootState) => state.user.me);
@@ -256,6 +260,15 @@ const CommonPost = () => {
     }
   }, [me?.id, post.userIdx, postId]);
 
+  const settings = {
+    infinite: true,
+    dots: true,
+    arrows: true,
+    speed: 500,
+    slidesToShow: 1,
+    slidesToScroll: 1,
+  };
+
   return (
     <PostContainer>
       <PostItem>
@@ -356,19 +369,27 @@ const CommonPost = () => {
             </>
           ) : (
             <ContentWrapper>
-              <ContentRenderer content={post.content} />
-              <ContentImgWrapper>
-                {post.Images?.map((image) => (
-                  <ContentImg
-                    key={image.id}
-                    src={`${baseURL}/${image.src}`}
-                    alt={image.src}
-                    onClick={() => {
-                      window.open(`${baseURL}/${image.src}`, "_blank");
-                    }}
+              {post.Images?.length <= 1 ? (
+                post.Images.length === 1 ? (
+                  <SlideImage
+                    src={`${baseURL}/${post.Images[0].src}`}
+                    alt={post.Images[0].src}
                   />
-                ))}
-              </ContentImgWrapper>
+                ) : null
+              ) : (
+                <StyledSlider {...settings}>
+                  {post.Images?.map((image) => (
+                    <div key={image.id}>
+                      <SlideImage
+                        src={`${baseURL}/${image.src}`}
+                        alt={image.src}
+                      />
+                    </div>
+                  ))}
+                </StyledSlider>
+              )}
+
+              <ContentRenderer content={post.content} />
             </ContentWrapper>
           )}
           {id === post.User?.id || nickname === "admin" ? (
@@ -451,6 +472,7 @@ const TextArea = styled.textarea`
   margin-bottom: 10px;
 `;
 const ContentWrapper = styled.div`
+  position: relative;
   width: 97%;
 `;
 
@@ -475,23 +497,6 @@ const CommentHeader = styled.div`
   color: #333;
 `;
 
-const ContentImg = styled.img`
-  width: 200px;
-  height: 200px;
-  border-radius: 4px;
-  margin: 1px;
-  cursor: pointer;
-  @media (max-width: 768px) {
-    width: 100px;
-    height: 100px;
-  }
-`;
-
-const ContentImgWrapper = styled.div`
-  margin-top: 15px;
-  display: flex;
-  flex-wrap: wrap;
-`;
 const NicknameButton = styled.button`
   display: flex;
   justify-content: space-around;
@@ -574,4 +579,65 @@ const EditToggle = styled.div`
 const Form = styled.form`
   width: 100%;
   text-align: center;
+`;
+
+const SlideImage = styled.img`
+  width: 100%;
+  object-fit: contain;
+  cursor: pointer;
+`;
+
+const StyledSlider = styled(Slider)`
+  .slick-prev,
+  .slick-next {
+    z-index: 10;
+    width: 40px;
+    height: 40px;
+    background: rgba(0, 0, 0, 0.6);
+    border-radius: 50%;
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .slick-prev:hover,
+  .slick-next:hover {
+    background: rgba(0, 0, 0, 0.8);
+  }
+
+  .slick-prev:before,
+  .slick-next:before {
+    font-size: 20px;
+    color: white;
+    opacity: 1;
+  }
+
+  .slick-prev {
+    left: 10px;
+  }
+
+  .slick-next {
+    right: 10px;
+  }
+  @media (max-width: 768px) {
+    .slick-prev,
+    .slick-next {
+      width: 30px;
+      height: 30px;
+    }
+
+    .slick-prev:before,
+    .slick-next:before {
+      font-size: 16px;
+    }
+
+    .slick-prev {
+      left: 5px;
+    }
+
+    .slick-next {
+      right: 5px;
+    }
+  }
+  margin-bottom: 40px;
 `;
