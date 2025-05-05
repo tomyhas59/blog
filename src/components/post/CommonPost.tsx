@@ -260,6 +260,7 @@ const CommonPost = () => {
     }
   }, [me?.id, post.userIdx, postId]);
 
+  //슬라이더 세팅
   const settings = {
     infinite: true,
     dots: true,
