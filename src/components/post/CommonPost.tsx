@@ -58,6 +58,7 @@ const CommonPost = () => {
   const { post, imagePaths, totalComments } = useSelector(
     (state: RootState) => state.post
   );
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
   useEffect(() => {
     if (postId) {
@@ -337,8 +338,8 @@ const CommonPost = () => {
                 </>
                 <ImageContainer>
                   {/**기존 이미지 */}
-                  {post.Images?.map((image, index) => (
-                    <ImageItem key={index}>
+                  {post.Images?.map((image) => (
+                    <ImageItem key={image.id}>
                       <EditImage
                         src={`${baseURL}/${image.src}`}
                         alt={image.src}
@@ -378,16 +379,24 @@ const CommonPost = () => {
                   />
                 ) : null
               ) : (
-                <StyledSlider {...settings}>
-                  {post.Images?.map((image) => (
-                    <div key={image.id}>
-                      <SlideImage
-                        src={`${baseURL}/${image.src}`}
-                        alt={image.src}
-                      />
-                    </div>
-                  ))}
-                </StyledSlider>
+                <>
+                  <ImageCount>
+                    {currentImageIndex + 1}/{post.Images?.length || 0}
+                  </ImageCount>
+                  <StyledSlider
+                    {...settings}
+                    afterChange={(index) => setCurrentImageIndex(index)}
+                  >
+                    {post.Images?.map((image) => (
+                      <div key={image.id}>
+                        <SlideImage
+                          src={`${baseURL}/${image.src}`}
+                          alt={image.src}
+                        />
+                      </div>
+                    ))}
+                  </StyledSlider>
+                </>
               )}
 
               <ContentRenderer content={post.content} />
@@ -641,4 +650,16 @@ const StyledSlider = styled(Slider)`
     }
   }
   margin-bottom: 40px;
+`;
+
+const ImageCount = styled.div`
+  position: absolute;
+  top: 8px;
+  right: 12px;
+  background: rgba(0, 0, 0, 0.5);
+  color: white;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+  z-index: 10;
 `;
