@@ -67,6 +67,7 @@ const CommonPost = () => {
         postId: postId,
       });
     }
+    setAllImagesLoaded(true);
   }, [dispatch, postId]);
 
   useEffect(() => {
@@ -161,6 +162,9 @@ const CommonPost = () => {
       search: params.toString(),
     });
   }, [navigator, post.User?.nickname]);
+
+  //이미지 로딩
+  const [allImagesLoaded, setAllImagesLoaded] = useState(false);
 
   const searchByNickname = useCallback(
     (e: React.MouseEvent) => {
@@ -380,10 +384,11 @@ const CommonPost = () => {
                 ) : null
               ) : (
                 <>
-                  <ImageCount>
+                  <ImageCount className={allImagesLoaded ? "loaded" : ""}>
                     {currentImageIndex + 1}/{post.Images?.length || 0}
                   </ImageCount>
                   <StyledSlider
+                    className={allImagesLoaded ? "loaded" : ""}
                     {...settings}
                     afterChange={(index) => setCurrentImageIndex(index)}
                   >
@@ -598,6 +603,12 @@ const SlideImage = styled.img`
 `;
 
 const StyledSlider = styled(Slider)`
+  visibility: hidden;
+
+  &.loaded {
+    visibility: visible;
+  }
+
   .slick-prev,
   .slick-next {
     z-index: 10;
@@ -653,6 +664,10 @@ const StyledSlider = styled(Slider)`
 `;
 
 const ImageCount = styled.div`
+  visibility: hidden;
+  &.loaded {
+    visibility: visible;
+  }
   position: absolute;
   top: 8px;
   right: 12px;

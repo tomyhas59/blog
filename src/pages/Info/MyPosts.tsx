@@ -57,7 +57,7 @@ const MyPosts: React.FC = () => {
         postId,
       });
     },
-    [dispatch]
+    [dispatch, searchOption]
   );
 
   return (

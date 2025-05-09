@@ -1,12 +1,12 @@
 import React, { useEffect, useRef, useState } from "react";
-import MyInfo from "./Info/MyInfo";
-import MyPosts from "./Info/MyPosts";
-import MyComments from "./Info/MyComments";
-import MyLikes from "./Info/MyLikes";
-import MyFollow from "./Info/MyFollow";
+import MyInfo from "./MyInfo";
+import MyPosts from "./MyPosts";
+import MyComments from "./MyComments";
+import MyLikes from "./MyLikes";
+import MyFollow from "./MyFollow";
 import styled, { keyframes } from "styled-components";
 import { useSelector } from "react-redux";
-import { RootState } from "../reducer";
+import { RootState } from "../../reducer";
 import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { io, Socket } from "socket.io-client";
