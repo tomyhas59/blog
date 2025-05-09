@@ -1,22 +1,11 @@
 import styled from "styled-components";
 import { useParams } from "react-router-dom";
-import React, {
-  ChangeEvent,
-  SyntheticEvent,
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import CommentForm from "../comment/CommentForm";
 import Comment from "../comment/Comment";
 import { useDispatch, useSelector } from "react-redux";
 import {
   REMOVE_POST_REQUEST,
-  UPDATE_POST_REQUEST,
-  DELETE_IMAGE_REQUEST,
-  UPLOAD_IMAGES_REQUEST,
-  REMOVE_IMAGE_REQUEST,
   SEARCH_POSTS_REQUEST,
   GET_POST_REQUEST,
 } from "../../reducer/post";
@@ -29,7 +18,7 @@ import useOutsideClick from "../../hooks/useOutsideClick";
 import useTextareaAutoHeight from "../../hooks/useTextareaAutoHeight";
 import FollowButton from "../ui/FollowButton";
 import { DEFAULT_PROFILE_IMAGE } from "../../pages/Info/MyInfo";
-import { FileUploadButton } from "./PostForm";
+
 import { useNavigate } from "react-router-dom";
 import { io, Socket } from "socket.io-client";
 import { usePagination } from "../../hooks/PaginationProvider";
@@ -45,6 +34,7 @@ import Like from "../ui/Like";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import Slider from "react-slick";
+import PostEditForm from "./PostEditForm";
 
 const CommonPost = () => {
   const socket = useRef<Socket | null>(null);
@@ -55,9 +45,8 @@ const CommonPost = () => {
 
   const { postId } = useParams();
 
-  const { post, imagePaths, totalComments } = useSelector(
-    (state: RootState) => state.post
-  );
+  const { post, totalComments } = useSelector((state: RootState) => state.post);
+
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
   useEffect(() => {
@@ -85,17 +74,9 @@ const CommonPost = () => {
   const [content, setContent] = useState("");
   const navigator = useNavigate();
 
-  const handleContentChange = useCallback(
-    (e: ChangeEvent<HTMLTextAreaElement>) => {
-      setContent(e.target.value);
-    },
-    [setContent]
-  );
-
   const id = me?.id;
   const nickname = useSelector((state: RootState) => state.user.me?.nickname);
 
-  const imageInputRef = useRef<HTMLInputElement>(null);
   const editPostRef = useRef<HTMLTextAreaElement>(null);
 
   //---닉네임 클릭 정보 보기-------------------------------------
@@ -116,17 +97,11 @@ const CommonPost = () => {
   //OutsideClick----------------------------------------------
   const authorMenuRef = useRef<HTMLDivElement>(null);
   const postOptionsRef = useRef<HTMLDivElement>(null);
-  const commentFormRef = useRef<HTMLDivElement>(null);
-  const editFormRef = useRef<HTMLFormElement>(null);
 
-  useOutsideClick(
-    [authorMenuRef, postOptionsRef, editFormRef, commentFormRef],
-    () => {
-      setShowOptions(false);
-      setShowAuthorMenu(false);
-      setEditPost(false);
-    }
-  );
+  useOutsideClick([authorMenuRef, postOptionsRef], () => {
+    setShowOptions(false);
+    setShowAuthorMenu(false);
+  });
 
   //-----게시글 수정 및 취소-------------------------
   const toggleEditPostForm = useCallback(() => {
@@ -181,84 +156,6 @@ const CommonPost = () => {
     [dispatch, post.User?.nickname, setSearchedCurrentPage, setParams]
   );
 
-  const handleRemoveImage = useCallback(
-    (filename: string) => () => {
-      if (filename) {
-        dispatch({
-          type: REMOVE_IMAGE_REQUEST,
-          data: filename,
-        });
-      }
-    },
-    [dispatch]
-  );
-
-  const handleDeleteImage = useCallback(
-    (filename: string) => () => {
-      if (filename) {
-        dispatch({
-          type: DELETE_IMAGE_REQUEST,
-          data: {
-            postId: post.id,
-            filename,
-          },
-        });
-      }
-    },
-    [dispatch, post.id]
-  );
-
-  const handleClickFileUpload = useCallback(() => {
-    imageInputRef.current!.click();
-  }, []);
-
-  const handleImagesChange = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      console.log("images", e.target.files);
-
-      const imageFormData = new FormData();
-      // 중복된 이미지 파일명을 방지하기 위해 Set 사용
-      const addedImageNames = new Set();
-
-      const files = e.target.files as FileList;
-      [].forEach.call(files /*선택한 파일들 */, (f: File) => {
-        // 이미 추가된 이미지인지 확인하고 추가되지 않은 경우에만 처리
-        if (!addedImageNames.has(f.name)) {
-          addedImageNames.add(f.name);
-          imageFormData.append("image" /*키값 */, f);
-        }
-      });
-
-      dispatch({
-        type: UPLOAD_IMAGES_REQUEST,
-        data: imageFormData,
-      });
-    },
-
-    [dispatch]
-  );
-
-  const handleEditPost = useCallback(
-    (e: SyntheticEvent) => {
-      e.preventDefault();
-
-      const contentWithBreaks = content.replace(/\n/g, "<br>");
-      dispatch({
-        type: UPDATE_POST_REQUEST,
-        data: {
-          postId: post.id,
-          content: contentWithBreaks,
-          imagePaths: imagePaths,
-        },
-      });
-
-      setEditPost(false);
-    },
-    [content, dispatch, imagePaths, post.id]
-  );
-
-  const prevContent = content.replace(/<br\s*\/?>/gi, "\n");
-
   useEffect(() => {
     if (post.userIdx === me?.id) {
       socket.current?.emit("readComment", [Number(postId), me?.id]);
@@ -312,67 +209,13 @@ const CommonPost = () => {
         </PostHeader>
         <PostContent>
           {editPost ? (
-            <>
-              <Form
-                encType="multipart/form-data"
-                onSubmit={(e) => handleEditPost(e)}
-                ref={editFormRef}
-              >
-                <TextArea
-                  placeholder="입력해주세요"
-                  value={prevContent}
-                  onChange={handleContentChange}
-                  ref={editPostRef}
-                />
-                <>
-                  <input
-                    type="file"
-                    name="image"
-                    multiple
-                    hidden
-                    ref={imageInputRef}
-                    onChange={handleImagesChange}
-                  />
-                  <FileUploadButton
-                    type="button"
-                    onClick={handleClickFileUpload}
-                  >
-                    파일 첨부
-                  </FileUploadButton>
-                </>
-                <ImageContainer>
-                  {/**기존 이미지 */}
-                  {post.Images?.map((image) => (
-                    <ImageItem key={image.id}>
-                      <EditImage
-                        src={`${baseURL}/${image.src}`}
-                        alt={image.src}
-                      />
-                      <RemoveButton
-                        type="button"
-                        onClick={handleDeleteImage(image.src)}
-                      >
-                        x
-                      </RemoveButton>
-                    </ImageItem>
-                  ))}
-                  {/**파일 첨부 시 이미지 */}
-                  {imagePaths.map((filename, index) => (
-                    <ImageItem key={index}>
-                      <EditImage src={`${baseURL}/${filename}`} alt="img" />
-                      <RemoveButton
-                        type="button"
-                        onClick={handleRemoveImage(filename)}
-                      >
-                        x
-                      </RemoveButton>
-                    </ImageItem>
-                  ))}
-                </ImageContainer>
-                <Button type="submit">적용</Button>
-                <Button onClick={toggleEditPostForm}>취소</Button>
-              </Form>
-            </>
+            <PostEditForm
+              content={content}
+              setContent={setContent}
+              post={post}
+              setEditPost={setEditPost}
+              toggleEditPostForm={toggleEditPostForm}
+            />
           ) : (
             <ContentWrapper>
               {post.Images?.length <= 1 ? (
@@ -436,6 +279,7 @@ const CommonPost = () => {
 };
 
 export default CommonPost;
+
 const PostContainer = styled.div`
   max-width: 800px;
   border-top: 1px solid silver;
@@ -477,15 +321,6 @@ const PostContent = styled.div`
   justify-content: space-between;
 `;
 
-const TextArea = styled.textarea`
-  max-width: 100%;
-  min-width: 100%;
-  padding: 12px;
-  font-size: 16px;
-  border: 2px solid #ccc;
-  border-radius: 8px;
-  margin-bottom: 10px;
-`;
 const ContentWrapper = styled.div`
   position: relative;
   width: 97%;
@@ -549,41 +384,6 @@ const PostOptions = styled.div`
   display: flex;
   flex-direction: column;
 `;
-const ImageContainer = styled.div`
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 20px;
-`;
-
-const ImageItem = styled.div`
-  position: relative;
-  display: inline-block;
-  width: 200px;
-  height: 200px;
-  margin: 2px;
-`;
-
-const EditImage = styled.img`
-  width: 100%;
-  height: 100%;
-  border-radius: 8px;
-`;
-
-const RemoveButton = styled.button`
-  position: absolute;
-  top: 0;
-  right: 0px;
-  padding: 5px 10px;
-  background-color: #e74c3c;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-
-  &:hover {
-    background-color: #c0392b;
-  }
-`;
 
 const EditToggle = styled.div`
   position: relative;
@@ -591,15 +391,14 @@ const EditToggle = styled.div`
   cursor: pointer;
 `;
 
-const Form = styled.form`
-  width: 100%;
-  text-align: center;
-`;
-
 const SlideImage = styled.img`
   width: 100%;
-  object-fit: contain;
+  height: 500px;
+  object-fit: fill;
   cursor: pointer;
+  @media (max-width: 768px) {
+    height: 250px;
+  }
 `;
 
 const StyledSlider = styled(Slider)`

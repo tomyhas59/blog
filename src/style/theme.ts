@@ -7,7 +7,7 @@ export const lightTheme = {
   textColor: "#333333",
   borderColor: "#b0c4de",
   charColor: "#000",
-  activeColor: "#b3d9f2",
+  activeColor: "#d6ecf8",
 };
 
 export const darkTheme = {
@@ -19,5 +19,5 @@ export const darkTheme = {
   textColor: "#f5f5f5",
   borderColor: "#2c4d7b",
   charColor: "#000",
-  activeColor: "#3e5c7d",
+  activeColor: "#56789c",
 };

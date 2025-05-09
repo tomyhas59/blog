@@ -32,6 +32,7 @@ import useSetParams from "../../hooks/useSetParams";
 import Like from "../ui/Like";
 import CommentPagination from "../pagination/CommentPagination";
 import { useLocation, useNavigate } from "react-router-dom";
+import Top3Comment from "./Top3Comment";
 
 const Comment = ({ post }: { post: PostType }) => {
   const dispatch = useDispatch();
@@ -44,9 +45,10 @@ const Comment = ({ post }: { post: PostType }) => {
     comments,
     commentsCount,
     newCommentId,
-    top3Comments,
+
     getCommentsDone,
   } = useSelector((state: RootState) => state.post);
+
   const {
     setSearchedCurrentPage,
     currentPage,
@@ -191,22 +193,12 @@ const Comment = ({ post }: { post: PostType }) => {
 
   //OutsideClick----------------------------------------------
   const authorMenuRef = useRef<HTMLDivElement>(null);
-  const top3AuthorMenuRef = useRef<HTMLDivElement>(null);
   const reCommentFormRef = useRef<HTMLDivElement>(null);
 
-  useOutsideClick(
-    [
-      authorMenuRef,
-      reCommentFormRef,
-      editCommentTextAreaRef,
-      top3AuthorMenuRef,
-    ],
-    () => {
-      setShowAuthorMenu({});
-      setAddReComment({});
-      setEditComment({});
-    }
-  );
+  useOutsideClick([authorMenuRef, reCommentFormRef], () => {
+    setShowAuthorMenu({});
+    setAddReComment({});
+  });
 
   const theme = useTheme();
   useEffect(() => {
@@ -280,63 +272,12 @@ const Comment = ({ post }: { post: PostType }) => {
     totalCommentPages,
   ]);
 
-  //좋아요 3개 이상이 있을 떄 Top3 표시
-  const hasLikersInTop3 = top3Comments.some(
-    (comment) => comment.Likers.length > 2
-  );
-
   return (
     <CommentContainer ref={scrollTargetRef}>
       {(removeCommentLoading ||
         updateCommentLoading ||
         addReCommentLoading) && <Spinner />}
-      {hasLikersInTop3 &&
-        top3Comments.map((comment, i) => (
-          <CommentItem key={comment.id} isTop3Comments={true}>
-            <CommentHeader>
-              <RankLabel>Top {i + 1}</RankLabel>
-              <Author onClick={() => toggleShowAuthorMenu(comment.id)}>
-                <img
-                  src={
-                    comment.User.Image
-                      ? `${baseURL}/${comment.User.Image.src}`
-                      : `${DEFAULT_PROFILE_IMAGE}`
-                  }
-                  alt="유저 이미지"
-                />
-                <span>{comment.User.nickname.slice(0, 5)}</span>
-              </Author>
-              {showAuthorMenu[comment.id] ? (
-                <AuthorMenu ref={top3AuthorMenuRef}>
-                  <BlueButton
-                    onClick={() => searchByNickname(comment.User.nickname)}
-                  >
-                    작성 글 보기
-                  </BlueButton>
-                  {id !== comment.User.id && (
-                    <FollowButton
-                      userId={comment.User.id}
-                      setShowAuthorMenu={
-                        setShowAuthorMenu as React.Dispatch<
-                          React.SetStateAction<
-                            boolean | Record<number, boolean>
-                          >
-                        >
-                      }
-                    />
-                  )}
-                </AuthorMenu>
-              ) : null}
-              <Date>{moment(comment.createdAt).format("l")}</Date>
-              <Like itemType="comment" item={comment} isTop3Comments={true} />
-            </CommentHeader>
-            <ContentWrapper>
-              <Content>
-                <ContentRenderer content={comment.content} />
-              </Content>
-            </ContentWrapper>
-          </CommentItem>
-        ))}
+      <Top3Comment />
       {comments?.map((comment) => {
         const isEditing = editComment[comment.id];
         return (
@@ -452,42 +393,35 @@ const CommentContainer = styled.div`
   background-color: ${(props) => props.theme.backgroundColor};
 `;
 
-const RankLabel = styled.div`
-  font-weight: bold;
-  color: #ff6f61;
-  border-radius: 5px;
-  text-align: center;
-  align-self: start;
-`;
-
-const CommentItem = styled.div<{ isTop3Comments: boolean }>`
+export const CommentItem = styled.div<{ isTop3Comments: boolean }>`
   border-top: 1px solid silver;
   font-size: 15px;
   background-color: ${(props) =>
     props.isTop3Comments ? props.theme.activeColor : "none"};
 `;
 
-const CommentHeader = styled.div`
+export const CommentHeader = styled.div`
   position: relative;
   display: flex;
   align-items: center;
   margin-top: 5px;
 `;
 
-const AuthorMenu = styled.div`
+export const AuthorMenu = styled.div`
   position: absolute;
   display: flex;
   flex-direction: column;
   top: 30px;
-  left: 0;
+  left: 50px;
   transition: transform 0.3s ease, color 0.3s ease;
   &:hover {
     transform: translateY(-2px);
     color: ${(props) => props.theme.charColor};
   }
+  z-index: 999;
 `;
 
-const Author = styled.button`
+export const Author = styled.button`
   font-weight: bold;
   text-align: center;
   margin-right: 10px;
@@ -506,13 +440,13 @@ const Author = styled.button`
   }
 `;
 
-const ContentWrapper = styled.div`
+export const ContentWrapper = styled.div`
   padding: 5px;
   justify-content: space-between;
   align-items: end;
 `;
 
-const Content = styled.div`
+export const Content = styled.div`
   width: 90%;
   font-size: 0.8rem;
   display: flex;
@@ -549,7 +483,7 @@ const Button = styled.button`
   }
 `;
 
-const Date = styled.span`
+export const Date = styled.span`
   color: gray;
   font-size: 12px;
   @media (max-width: 768px) {
@@ -557,7 +491,7 @@ const Date = styled.span`
   }
 `;
 
-const BlueButton = styled.button`
+export const BlueButton = styled.button`
   background-color: ${(props) => props.theme.mainColor};
   font-size: 12px;
   color: #fff;
