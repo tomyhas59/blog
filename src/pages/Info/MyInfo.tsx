@@ -415,7 +415,8 @@ const UserInfo = styled.p`
 
 const ButtonContainer = styled.div`
   display: flex;
-  align-items: flex-start;
+  justify-content: center;
+  align-items: center;
   margin-top: 20px;
 `;
 
