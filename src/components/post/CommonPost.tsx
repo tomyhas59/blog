@@ -49,6 +49,8 @@ const CommonPost = () => {
 
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
+  const imageCountRef = useRef<HTMLDivElement>(null);
+
   useEffect(() => {
     if (postId) {
       dispatch({
@@ -56,7 +58,9 @@ const CommonPost = () => {
         postId: postId,
       });
     }
-    setAllImagesLoaded(true);
+    setTimeout(() => {
+      if (imageCountRef.current) imageCountRef.current.style.opacity = "1";
+    }, 500);
   }, [dispatch, postId]);
 
   useEffect(() => {
@@ -138,9 +142,6 @@ const CommonPost = () => {
     });
   }, [navigator, post.User?.nickname]);
 
-  //이미지 로딩
-  const [allImagesLoaded, setAllImagesLoaded] = useState(false);
-
   const searchByNickname = useCallback(
     (e: React.MouseEvent) => {
       e.stopPropagation();
@@ -162,15 +163,26 @@ const CommonPost = () => {
     }
   }, [me?.id, post.userIdx, postId]);
 
+  const [showArrows, setShowArrows] = useState(false);
+
   //슬라이더 세팅
   const settings = {
     infinite: true,
     dots: true,
-    arrows: true,
+    arrows: showArrows,
     speed: 500,
     slidesToShow: 1,
     slidesToScroll: 1,
   };
+
+  useEffect(() => {
+    setTimeout(() => {
+      if (imageCountRef.current) {
+        imageCountRef.current.style.opacity = "1";
+      }
+      setShowArrows(true);
+    }, 500);
+  }, []);
 
   return (
     <PostContainer>
@@ -227,11 +239,10 @@ const CommonPost = () => {
                 ) : null
               ) : (
                 <>
-                  <ImageCount className={allImagesLoaded ? "loaded" : ""}>
+                  <ImageCount ref={imageCountRef}>
                     {currentImageIndex + 1}/{post.Images?.length || 0}
                   </ImageCount>
                   <StyledSlider
-                    className={allImagesLoaded ? "loaded" : ""}
                     {...settings}
                     afterChange={(index) => setCurrentImageIndex(index)}
                   >
@@ -402,17 +413,11 @@ const SlideImage = styled.img`
 `;
 
 const StyledSlider = styled(Slider)`
-  visibility: hidden;
-
-  &.loaded {
-    visibility: visible;
-  }
-
   .slick-prev,
   .slick-next {
     z-index: 10;
-    width: 40px;
-    height: 40px;
+    width: 30px;
+    height: 30px;
     background: rgba(0, 0, 0, 0.6);
     border-radius: 50%;
     display: flex !important;
@@ -423,13 +428,6 @@ const StyledSlider = styled(Slider)`
   .slick-prev:hover,
   .slick-next:hover {
     background: rgba(0, 0, 0, 0.8);
-  }
-
-  .slick-prev:before,
-  .slick-next:before {
-    font-size: 20px;
-    color: white;
-    opacity: 1;
   }
 
   .slick-prev {
@@ -463,10 +461,6 @@ const StyledSlider = styled(Slider)`
 `;
 
 const ImageCount = styled.div`
-  visibility: hidden;
-  &.loaded {
-    visibility: visible;
-  }
   position: absolute;
   top: 8px;
   right: 12px;
@@ -476,4 +470,6 @@ const ImageCount = styled.div`
   border-radius: 12px;
   font-size: 12px;
   z-index: 10;
+  opacity: 0;
+  transition: opacity 0.5s;
 `;
