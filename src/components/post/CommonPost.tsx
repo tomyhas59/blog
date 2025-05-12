@@ -114,7 +114,7 @@ const CommonPost = () => {
         setContent(post.content);
       } else {
         dispatch({
-          type: "CANCEL_MODIFY",
+          type: "RESET_IMAGE_PATHS",
         });
       }
       return !prev;

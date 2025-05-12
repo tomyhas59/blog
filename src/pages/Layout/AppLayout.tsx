@@ -6,7 +6,6 @@ import PostForm from "../../components/post/PostForm";
 import { useLocation } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { RootState } from "../../reducer";
-import useOutsideClick from "../../hooks/useOutsideClick";
 
 const AppLayout = ({ children }: any) => {
   const { me } = useSelector((state: RootState) => state.user);
@@ -24,23 +23,12 @@ const AppLayout = ({ children }: any) => {
     }
   }, [togglePostForm]);
 
-  //OutsideClick----------------------------------------------
-  const postFormRef = useRef<HTMLDivElement>(null);
-
-  useOutsideClick([postFormRef], () => {
-    setTogglePostForm(false);
-  });
-
   return (
     <LayoutContainer>
       {togglePostForm && (
         <>
           <Overlay />
-          <PostForm
-            postFormRef={postFormRef}
-            titleRef={titleRef}
-            setTogglePostForm={setTogglePostForm}
-          />
+          <PostForm titleRef={titleRef} setTogglePostForm={setTogglePostForm} />
         </>
       )}
       <Header />

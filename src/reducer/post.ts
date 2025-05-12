@@ -222,7 +222,7 @@ const post = (state = initialState, action: any) => {
     switch (action.type) {
       case "REFRESH":
         return initialState;
-      case "CANCEL_MODIFY":
+      case "RESET_IMAGE_PATHS":
         draft.imagePaths = [];
         break;
       case "RESET_CHAT_MESSAGES":

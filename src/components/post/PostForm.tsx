@@ -19,18 +19,14 @@ import useTextareaAutoHeight from "../../hooks/useTextareaAutoHeight";
 import { baseURL } from "../../config";
 
 import { useNavigate } from "react-router-dom";
+import useOutsideClick from "../../hooks/useOutsideClick";
 
 interface PostFormProps {
-  postFormRef: React.Ref<HTMLDivElement>;
   titleRef: React.Ref<HTMLInputElement>;
   setTogglePostForm: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const PostForm: React.FC<PostFormProps> = ({
-  postFormRef,
-  titleRef,
-  setTogglePostForm,
-}) => {
+const PostForm: React.FC<PostFormProps> = ({ titleRef, setTogglePostForm }) => {
   const dispatch = useDispatch();
   const {
     imagePaths,
@@ -105,6 +101,19 @@ const PostForm: React.FC<PostFormProps> = ({
     [dispatch]
   );
 
+  const handleRemoveImages = useCallback(() => {
+    imagePaths.forEach((filename) => {
+      dispatch({
+        type: REMOVE_IMAGE_REQUEST,
+        data: filename,
+      });
+    });
+    dispatch({
+      type: "RESET_IMAGE_PATHS",
+    });
+    setTogglePostForm(false);
+  }, [dispatch, imagePaths]);
+
   const handleAddPost = useCallback(
     (e: SyntheticEvent) => {
       e.preventDefault();
@@ -136,6 +145,13 @@ const PostForm: React.FC<PostFormProps> = ({
 
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
+  //OutsideClick----------------------------------------------
+  const postFormRef = useRef<HTMLDivElement>(null);
+
+  useOutsideClick([postFormRef], () => {
+    handleRemoveImages();
+  });
+
   //입력 시 textarea높이 조정
   useTextareaAutoHeight(textareaRef, null);
 
@@ -146,9 +162,7 @@ const PostForm: React.FC<PostFormProps> = ({
       ) : null}
       {me ? (
         <FormContainer ref={postFormRef}>
-          <CloseFormButton onClick={() => setTogglePostForm(false)}>
-            ✖
-          </CloseFormButton>
+          <CloseFormButton onClick={handleRemoveImages}>✖</CloseFormButton>
           <Title>글쓰기</Title>
           <Form encType="multipart/form-data" onSubmit={handleAddPost}>
             <TitleInput
