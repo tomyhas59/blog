@@ -4,11 +4,13 @@ import React, {
   SetStateAction,
   SyntheticEvent,
   useCallback,
+  useEffect,
   useRef,
+  useState,
 } from "react";
 import styled from "styled-components";
-import { Button } from "./Post";
-import { FileUploadButton } from "./PostForm";
+import { StyledButton } from "./Post";
+import { FileUploadButton, TitleInput } from "./PostForm";
 import { useDispatch, useSelector } from "react-redux";
 import {
   DELETE_IMAGE_REQUEST,
@@ -22,24 +24,31 @@ import { RootState } from "../../reducer";
 import { PostType } from "../../types";
 
 interface PostEditFormProps {
-  content: string;
-  setContent: Dispatch<SetStateAction<string>>;
   post: PostType;
   setEditPost: Dispatch<SetStateAction<boolean>>;
   toggleEditPostForm: () => void;
 }
 
 const PostEditForm = ({
-  content,
-  setContent,
   post,
   setEditPost,
   toggleEditPostForm,
 }: PostEditFormProps) => {
   const { imagePaths } = useSelector((state: RootState) => state.post);
 
-  const prevContent = content.replace(/<br\s*\/?>/gi, "\n");
+  const prevTitle = post?.title;
+  const prevContent = post?.content.replace(/<br\s*\/?>/gi, "\n");
   const dispatch = useDispatch();
+
+  const [title, setTitle] = useState(prevTitle);
+  const [content, setContent] = useState(prevContent);
+
+  const handleTitleChange = useCallback(
+    (e: ChangeEvent<HTMLInputElement>) => {
+      setTitle(e.target.value);
+    },
+    [setTitle]
+  );
 
   const handleContentChange = useCallback(
     (e: ChangeEvent<HTMLTextAreaElement>) => {
@@ -75,6 +84,7 @@ const PostEditForm = ({
     [dispatch, post.id]
   );
 
+  const imageInputRef = useRef<HTMLInputElement>(null);
   const handleClickFileUpload = useCallback(() => {
     imageInputRef.current!.click();
   }, []);
@@ -114,6 +124,7 @@ const PostEditForm = ({
         type: UPDATE_POST_REQUEST,
         data: {
           postId: post.id,
+          title: title,
           content: contentWithBreaks,
           imagePaths: imagePaths,
         },
@@ -121,61 +132,69 @@ const PostEditForm = ({
 
       setEditPost(false);
     },
-    [content, dispatch, imagePaths, post.id, setEditPost]
+    [content, dispatch, imagePaths, post.id, setEditPost, title]
   );
 
-  const imageInputRef = useRef<HTMLInputElement>(null);
-  const editPostRef = useRef<HTMLTextAreaElement>(null);
+  const titleRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    titleRef.current?.focus();
+  }, []);
 
   return (
-    <div>
-      <Form encType="multipart/form-data" onSubmit={(e) => handleEditPost(e)}>
-        <TextArea
-          placeholder="입력해주세요"
-          value={prevContent}
-          onChange={handleContentChange}
-          ref={editPostRef}
+    <Form encType="multipart/form-data" onSubmit={(e) => handleEditPost(e)}>
+      <TitleInput
+        placeholder="제목을 입력해주세요"
+        value={title}
+        onChange={handleTitleChange}
+        ref={titleRef}
+      />
+      <TextArea
+        placeholder="내용을 입력해주세요"
+        value={content}
+        onChange={handleContentChange}
+      />
+      <>
+        <input
+          type="file"
+          name="image"
+          multiple
+          hidden
+          ref={imageInputRef}
+          onChange={handleImagesChange}
         />
-        <>
-          <input
-            type="file"
-            name="image"
-            multiple
-            hidden
-            ref={imageInputRef}
-            onChange={handleImagesChange}
-          />
-          <FileUploadButton type="button" onClick={handleClickFileUpload}>
-            파일 첨부
-          </FileUploadButton>
-        </>
-        <ImageContainer>
-          {/**기존 이미지 */}
-          {post.Images?.map((image) => (
-            <ImageItem key={image.id}>
-              <EditImage src={`${baseURL}/${image.src}`} alt={image.src} />
-              <RemoveButton
-                type="button"
-                onClick={handleDeleteImage(image.src)}
-              >
-                x
-              </RemoveButton>
-            </ImageItem>
-          ))}
-          {/**파일 첨부 시 이미지 */}
-          {imagePaths.map((filename, index) => (
-            <ImageItem key={index}>
-              <EditImage src={`${baseURL}/${filename}`} alt="img" />
-              <RemoveButton type="button" onClick={handleRemoveImage(filename)}>
-                x
-              </RemoveButton>
-            </ImageItem>
-          ))}
-        </ImageContainer>
-        <Button type="submit">적용</Button>
-        <Button onClick={toggleEditPostForm}>취소</Button>
-      </Form>
-    </div>
+        <FileUploadButton type="button" onClick={handleClickFileUpload}>
+          파일 첨부
+        </FileUploadButton>
+      </>
+      <ImageContainer>
+        {/**기존 이미지 */}
+        {post.Images?.map((image) => (
+          <ImageItem key={image.id}>
+            <EditImage src={`${baseURL}/${image.src}`} alt={image.src} />
+            <RemoveButton type="button" onClick={handleDeleteImage(image.src)}>
+              x
+            </RemoveButton>
+          </ImageItem>
+        ))}
+        {/**파일 첨부 시 이미지 */}
+        {imagePaths.map((filename, index) => (
+          <ImageItem key={index}>
+            <EditImage src={`${baseURL}/${filename}`} alt="img" />
+            <RemoveButton type="button" onClick={handleRemoveImage(filename)}>
+              x
+            </RemoveButton>
+          </ImageItem>
+        ))}
+      </ImageContainer>
+
+      <StyledButton style={{ width: "47px" }} type="submit">
+        적용
+      </StyledButton>
+      <StyledButton style={{ width: "47px" }} onClick={toggleEditPostForm}>
+        취소
+      </StyledButton>
+    </Form>
   );
 };
 

@@ -342,13 +342,13 @@ function* watchRemovePost() {
 
 //-----------------------------------------------------
 
-function updateApi(data: { postId: any }) {
+function updatePostApi(data: { postId: any }) {
   return axios.put(`/post/${data.postId}`, data);
 }
 
 function* updatePost(action: { data: any }): SagaIterator {
   try {
-    const result = yield call(updateApi, action.data);
+    const result = yield call(updatePostApi, action.data);
     yield put({
       type: UPDATE_POST_SUCCESS,
       data: result.data,

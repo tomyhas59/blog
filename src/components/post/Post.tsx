@@ -109,7 +109,7 @@ const Post = ({
         </NicknameButton>
         {showAuthorMenu && (
           <AuthorMenu ref={authorMenuRef}>
-            <Button onClick={searchByNickname}>작성 글 보기</Button>
+            <StyledButton onClick={searchByNickname}>작성 글 보기</StyledButton>
             {id !== post.User.id && (
               <FollowButton
                 userId={post.User.id}
@@ -217,7 +217,7 @@ const AuthorMenu = styled.div`
   z-index: 999;
 `;
 
-export const Button = styled.button`
+export const StyledButton = styled.button`
   background-color: ${(props) => props.theme.mainColor};
   margin: 2px;
   font-size: 12px;

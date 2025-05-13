@@ -27,7 +27,7 @@ import {
   PostMetaInfo,
   ViewCount,
   PostHeaderLeftSection,
-  Button,
+  StyledButton,
 } from "./Post";
 import Like from "../ui/Like";
 
@@ -75,7 +75,7 @@ const CommonPost = () => {
   }, [me]);
 
   const [editPost, setEditPost] = useState(false);
-  const [content, setContent] = useState("");
+
   const navigator = useNavigate();
 
   const id = me?.id;
@@ -111,7 +111,7 @@ const CommonPost = () => {
   const toggleEditPostForm = useCallback(() => {
     setEditPost((prev) => {
       if (!prev) {
-        setContent(post.content);
+        console.log("open editForm");
       } else {
         dispatch({
           type: "RESET_IMAGE_PATHS",
@@ -119,7 +119,7 @@ const CommonPost = () => {
       }
       return !prev;
     });
-  }, [dispatch, post.content, setContent]);
+  }, [dispatch]);
 
   const handleRemovePost = useCallback(() => {
     if (!window.confirm("삭제하시겠습니까?")) return false;
@@ -132,7 +132,7 @@ const CommonPost = () => {
 
   const setParams = useCallback(() => {
     const params = new URLSearchParams();
-    params.set("searchText", post.User?.nickname);
+    params.set("searchText", post?.User?.nickname);
     params.set("searchOption", "author");
     params.set("page", "1");
 
@@ -140,7 +140,7 @@ const CommonPost = () => {
       pathname: `/search`,
       search: params.toString(),
     });
-  }, [navigator, post.User?.nickname]);
+  }, [navigator, post?.User?.nickname]);
 
   const searchByNickname = useCallback(
     (e: React.MouseEvent) => {
@@ -202,7 +202,9 @@ const CommonPost = () => {
             </NicknameButton>
             {showAuthorMenu && (
               <AuthorMenu ref={authorMenuRef}>
-                <Button onClick={searchByNickname}>작성 글 보기</Button>
+                <StyledButton onClick={searchByNickname}>
+                  작성 글 보기
+                </StyledButton>
                 {id !== post.User.id && (
                   <FollowButton
                     userId={post.User.id}
@@ -222,8 +224,6 @@ const CommonPost = () => {
         <PostContent>
           {editPost ? (
             <PostEditForm
-              content={content}
-              setContent={setContent}
               post={post}
               setEditPost={setEditPost}
               toggleEditPostForm={toggleEditPostForm}
@@ -268,8 +268,12 @@ const CommonPost = () => {
                   ⋮
                   {showOptions && (
                     <PostOptions ref={postOptionsRef}>
-                      <Button onClick={toggleEditPostForm}>수정</Button>
-                      <Button onClick={handleRemovePost}>삭제</Button>
+                      <StyledButton onClick={toggleEditPostForm}>
+                        수정
+                      </StyledButton>
+                      <StyledButton onClick={handleRemovePost}>
+                        삭제
+                      </StyledButton>
                     </PostOptions>
                   )}
                 </EditToggle>

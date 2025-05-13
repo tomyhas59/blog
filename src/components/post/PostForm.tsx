@@ -112,7 +112,7 @@ const PostForm: React.FC<PostFormProps> = ({ titleRef, setTogglePostForm }) => {
       type: "RESET_IMAGE_PATHS",
     });
     setTogglePostForm(false);
-  }, [dispatch, imagePaths]);
+  }, [dispatch, imagePaths, setTogglePostForm]);
 
   const handleAddPost = useCallback(
     (e: SyntheticEvent) => {
@@ -256,7 +256,7 @@ const Form = styled.form`
   gap: 5px;
 `;
 
-const TitleInput = styled.input`
+export const TitleInput = styled.input`
   width: 100%;
   padding: 5px;
   border: 2px solid #ccc;

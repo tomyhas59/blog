@@ -418,7 +418,7 @@ const post = (state = initialState, action: any) => {
       case UPDATE_POST_SUCCESS: {
         draft.updatePostLoading = false;
         draft.updatePostDone = true;
-        draft.post = action.data.updatePost;
+        draft.post = action.data.updatedPost;
         draft.imagePaths = [];
         break;
       }
