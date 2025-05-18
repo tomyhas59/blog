@@ -11,16 +11,10 @@ import React, {
 import styled from "styled-components";
 import { StyledButton } from "./Post";
 import { FileUploadButton, TitleInput } from "./PostForm";
-import { useDispatch, useSelector } from "react-redux";
-import {
-  DELETE_IMAGE_REQUEST,
-  REMOVE_IMAGE_REQUEST,
-  UPDATE_POST_REQUEST,
-  UPLOAD_IMAGES_REQUEST,
-} from "../../reducer/post";
+import { useDispatch } from "react-redux";
+import { DELETE_IMAGE_REQUEST, UPDATE_POST_REQUEST } from "../../reducer/post";
 
 import { baseURL } from "../../config";
-import { RootState } from "../../reducer";
 import { PostType } from "../../types";
 
 interface PostEditFormProps {
@@ -29,19 +23,48 @@ interface PostEditFormProps {
   toggleEditPostForm: () => void;
 }
 
+interface PreviewImage {
+  src: string;
+  isNew: boolean;
+}
+
 const PostEditForm = ({
   post,
   setEditPost,
   toggleEditPostForm,
 }: PostEditFormProps) => {
-  const { imagePaths } = useSelector((state: RootState) => state.post);
-
   const prevTitle = post?.title;
   const prevContent = post?.content.replace(/<br\s*\/?>/gi, "\n");
   const dispatch = useDispatch();
 
   const [title, setTitle] = useState(prevTitle);
   const [content, setContent] = useState(prevContent);
+
+  const imageInputRef = useRef<HTMLInputElement>(null);
+  const handleClickFileUpload = useCallback(() => {
+    imageInputRef.current!.click();
+  }, []);
+
+  const titleRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    titleRef.current?.focus();
+  }, []);
+
+  const [selectedImages, setSelectedImages] = useState<File[]>([]); // 새로 선택한 이미지
+  const [previewImages, setPreviewImages] = useState<PreviewImage[]>([]);
+  const [removedOriginalImages, setRemovedOriginalImages] = useState<string[]>(
+    []
+  ); // 삭제된 기존 이미지
+
+  // 초기 이미지 세팅
+  useEffect(() => {
+    const original = post.Images.map((img) => ({
+      src: img.src,
+      isNew: false,
+    }));
+    setPreviewImages(original);
+  }, [post]);
 
   const handleTitleChange = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
@@ -57,62 +80,43 @@ const PostEditForm = ({
     [setContent]
   );
 
-  const handleRemoveImage = useCallback(
-    (filename: string) => () => {
-      if (filename) {
-        dispatch({
-          type: REMOVE_IMAGE_REQUEST,
-          data: filename,
-        });
-      }
-    },
-    [dispatch]
-  );
-
-  const handleDeleteImage = useCallback(
-    (filename: string) => () => {
-      if (filename) {
-        dispatch({
-          type: DELETE_IMAGE_REQUEST,
-          data: {
-            postId: post.id,
-            filename,
-          },
-        });
-      }
-    },
-    [dispatch, post.id]
-  );
-
-  const imageInputRef = useRef<HTMLInputElement>(null);
-  const handleClickFileUpload = useCallback(() => {
-    imageInputRef.current!.click();
+  // 이미지 추가
+  const handleImagesChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
+      const files = Array.from(e.target.files);
+      const newPreview = files.map((file) => ({
+        src: URL.createObjectURL(file),
+        isNew: true,
+      }));
+      setSelectedImages((prev) => [...prev, ...files]);
+      setPreviewImages((prev) => [...prev, ...newPreview]);
+    }
   }, []);
 
-  const handleImagesChange = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      console.log("images", e.target.files);
+  // 이미지 삭제
+  const handleRemoveImage = useCallback(
+    (index: number) => {
+      const target = previewImages[index];
 
-      const imageFormData = new FormData();
-      // 중복된 이미지 파일명을 방지하기 위해 Set 사용
-      const addedImageNames = new Set();
+      if (!target.isNew) {
+        // 기존 이미지면 삭제 목록에 추가
+        setRemovedOriginalImages((prev) => [...prev, target.src]);
+      } else {
+        // 새 이미지면 selectedImages에서도 제거
+        const selectedIndex = previewImages
+          .filter((img) => img.isNew)
+          .findIndex((img) => img.src === target.src);
 
-      const files = e.target.files as FileList;
-      [].forEach.call(files /*선택한 파일들 */, (f: File) => {
-        // 이미 추가된 이미지인지 확인하고 추가되지 않은 경우에만 처리
-        if (!addedImageNames.has(f.name)) {
-          addedImageNames.add(f.name);
-          imageFormData.append("image" /*키값 */, f);
+        if (selectedIndex !== -1) {
+          setSelectedImages((prev) =>
+            prev.filter((_, i) => i !== selectedIndex)
+          );
         }
-      });
+      }
 
-      dispatch({
-        type: UPLOAD_IMAGES_REQUEST,
-        data: imageFormData,
-      });
+      setPreviewImages((prev) => prev.filter((_, i) => i !== index));
     },
-
-    [dispatch]
+    [previewImages]
   );
 
   const handleEditPost = useCallback(
@@ -120,26 +124,50 @@ const PostEditForm = ({
       e.preventDefault();
 
       const contentWithBreaks = content.replace(/\n/g, "<br>");
+
+      // 삭제된 기존 이미지 제거 요청
+      removedOriginalImages.forEach((src) => {
+        dispatch({
+          type: DELETE_IMAGE_REQUEST,
+          data: { postId: post.id, filename: src },
+        });
+      });
+      const formData = new FormData();
+      formData.append("title", title);
+      formData.append("content", contentWithBreaks);
+      formData.append("postId", String(post.id));
+      // 새로 추가된 이미지 파일들
+      selectedImages.forEach((file) => {
+        formData.append("image", file);
+      });
+
       dispatch({
         type: UPDATE_POST_REQUEST,
-        data: {
-          postId: post.id,
-          title: title,
-          content: contentWithBreaks,
-          imagePaths: imagePaths,
-        },
+        data: formData,
       });
 
       setEditPost(false);
     },
-    [content, dispatch, imagePaths, post.id, setEditPost, title]
+    [
+      content,
+      dispatch,
+      post.id,
+      setEditPost,
+      title,
+      selectedImages,
+      removedOriginalImages,
+    ]
   );
 
-  const titleRef = useRef<HTMLInputElement>(null);
-
   useEffect(() => {
-    titleRef.current?.focus();
-  }, []);
+    return () => {
+      previewImages.forEach((img) => {
+        if (img.isNew) {
+          URL.revokeObjectURL(img.src);
+        }
+      });
+    };
+  }, [previewImages]);
 
   return (
     <Form encType="multipart/form-data" onSubmit={(e) => handleEditPost(e)}>
@@ -168,20 +196,16 @@ const PostEditForm = ({
         </FileUploadButton>
       </>
       <ImageContainer>
-        {/**기존 이미지 */}
-        {post.Images?.map((image) => (
-          <ImageItem key={image.id}>
-            <EditImage src={`${baseURL}/${image.src}`} alt={image.src} />
-            <RemoveButton type="button" onClick={handleDeleteImage(image.src)}>
-              x
-            </RemoveButton>
-          </ImageItem>
-        ))}
-        {/**파일 첨부 시 이미지 */}
-        {imagePaths.map((filename, index) => (
+        {previewImages.map((image, index) => (
           <ImageItem key={index}>
-            <EditImage src={`${baseURL}/${filename}`} alt="img" />
-            <RemoveButton type="button" onClick={handleRemoveImage(filename)}>
+            <EditImage
+              src={image.isNew ? image.src : `${baseURL}/${image.src}`}
+              alt={`preview-${index}`}
+            />
+            <RemoveButton
+              type="button"
+              onClick={() => handleRemoveImage(index)}
+            >
               x
             </RemoveButton>
           </ImageItem>

@@ -2,6 +2,7 @@ import React, {
   ChangeEvent,
   SyntheticEvent,
   useCallback,
+  useEffect,
   useRef,
   useState,
 } from "react";
@@ -96,7 +97,7 @@ const PostForm: React.FC<PostFormProps> = ({ titleRef, setTogglePostForm }) => {
       const contentWithBreaks = content.replace(/\n/g, "<br>");
 
       selectedImages.forEach((file) => {
-        formData.append("image", file); //req.body.image
+        formData.append("image", file); //req.files
       });
 
       formData.append("title", title); //req.body.title
@@ -119,6 +120,12 @@ const PostForm: React.FC<PostFormProps> = ({ titleRef, setTogglePostForm }) => {
 
     [title, content, selectedImages, dispatch, setTogglePostForm, navigator]
   );
+
+  useEffect(() => {
+    return () => {
+      previewImages.forEach((url) => URL.revokeObjectURL(url));
+    };
+  }, [previewImages]);
 
   return (
     <>

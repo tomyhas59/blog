@@ -89,6 +89,14 @@ const MyInfo: React.FC = () => {
     fetchProfileImage();
   }, [imageSrc]);
 
+  useEffect(() => {
+    return () => {
+      if (previewUrl) {
+        URL.revokeObjectURL(previewUrl);
+      }
+    };
+  }, [previewUrl]);
+
   if (!me) {
     return <div>사용자 정보를 불러오는 중입니다...</div>;
   }

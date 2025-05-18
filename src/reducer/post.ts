@@ -11,7 +11,6 @@ const initialState = {
   totalComments: null,
   commentsCount: null,
 
-  imagePaths: [] as string[],
   searchedPosts: [] as PostType[],
   searchOption: "",
   totalSearchedPosts: null,
@@ -41,14 +40,6 @@ const initialState = {
   searchedPostsLoading: false,
   searchedPostsDone: false,
   searchedPostsError: null,
-
-  uploadImagesLoading: false,
-  uploadImagesDone: false,
-  uploadImagesError: null,
-
-  removeImageLoading: false,
-  removeImageDone: false,
-  removeImageError: null,
 
   deleteImageLoading: false,
   deleteImageDone: false,
@@ -136,14 +127,6 @@ export const ADD_POST_REQUEST = "ADD_POST_REQUEST";
 export const ADD_POST_SUCCESS = "ADD_POST_SUCCESS";
 export const ADD_POST_FAILURE = "ADD_POST_FAILURE";
 
-export const UPLOAD_IMAGES_FAILURE = "UPLOAD_IMAGES_FAILURE";
-export const UPLOAD_IMAGES_REQUEST = "UPLOAD_IMAGES_REQUEST";
-export const UPLOAD_IMAGES_SUCCESS = "UPLOAD_IMAGES_SUCCESS";
-
-export const REMOVE_IMAGE_REQUEST = "REMOVE_IMAGE_REQUEST";
-export const REMOVE_IMAGE_SUCCESS = "REMOVE_IMAGE_SUCCESS";
-export const REMOVE_IMAGE_FAILURE = "REMOVE_IMAGE_FAILURE";
-
 export const DELETE_IMAGE_REQUEST = "DELETE_IMAGE_REQUEST";
 export const DELETE_IMAGE_SUCCESS = "DELETE_IMAGE_SUCCESS";
 export const DELETE_IMAGE_FAILURE = "DELETE_IMAGE_FAILURE";
@@ -221,9 +204,6 @@ const post = (state = initialState, action: any) => {
     switch (action.type) {
       case "REFRESH":
         return initialState;
-      case "RESET_IMAGE_PATHS":
-        draft.imagePaths = [];
-        break;
       case "RESET_CHAT_MESSAGES":
         draft.chatMessages = [];
         break;
@@ -323,45 +303,11 @@ const post = (state = initialState, action: any) => {
         draft.addPostLoading = false;
         draft.addPostDone = true;
         draft.posts.unshift(action.data);
-        draft.imagePaths = [];
 
         break;
       case ADD_POST_FAILURE:
         draft.addPostLoading = false;
         draft.addPostError = action.error;
-        break;
-      //-------------------------------------------------------------------
-      case UPLOAD_IMAGES_REQUEST:
-        draft.uploadImagesLoading = true;
-        draft.uploadImagesDone = false;
-        draft.uploadImagesError = null;
-        break;
-      case UPLOAD_IMAGES_SUCCESS:
-        draft.imagePaths = [...draft.imagePaths, ...action.data];
-        draft.uploadImagesLoading = false;
-        draft.uploadImagesDone = true;
-        break;
-      case UPLOAD_IMAGES_FAILURE:
-        draft.uploadImagesLoading = false;
-        draft.uploadImagesError = action.error;
-        break;
-      //------------------------------------------------------
-      case REMOVE_IMAGE_REQUEST:
-        draft.removeImageLoading = true;
-        draft.removeImageDone = false;
-        draft.removeImageError = null;
-        break;
-      case REMOVE_IMAGE_SUCCESS: {
-        draft.removeImageLoading = false;
-        draft.imagePaths = draft.imagePaths.filter(
-          (imagePath) => imagePath !== action.data.filename
-        );
-        draft.removeImageDone = true;
-        break;
-      }
-      case REMOVE_IMAGE_FAILURE:
-        draft.removeImageLoading = false;
-        draft.removeImageError = action.error;
         break;
       //------------------------------------------------------
       case DELETE_IMAGE_REQUEST:
@@ -418,7 +364,6 @@ const post = (state = initialState, action: any) => {
         draft.updatePostLoading = false;
         draft.updatePostDone = true;
         draft.post = action.data.updatedPost;
-        draft.imagePaths = [];
         break;
       }
       case UPDATE_POST_FAILURE:

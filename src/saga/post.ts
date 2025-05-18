@@ -40,9 +40,6 @@ import {
   REMOVE_COMMENT_FAILURE,
   REMOVE_COMMENT_REQUEST,
   REMOVE_COMMENT_SUCCESS,
-  REMOVE_IMAGE_FAILURE,
-  REMOVE_IMAGE_REQUEST,
-  REMOVE_IMAGE_SUCCESS,
   REMOVE_POST_FAILURE,
   REMOVE_POST_REQUEST,
   REMOVE_POST_SUCCESS,
@@ -70,9 +67,6 @@ import {
   UPDATE_RECOMMENT_FAILURE,
   UPDATE_RECOMMENT_REQUEST,
   UPDATE_RECOMMENT_SUCCESS,
-  UPLOAD_IMAGES_FAILURE,
-  UPLOAD_IMAGES_REQUEST,
-  UPLOAD_IMAGES_SUCCESS,
 } from "../reducer/post";
 import { SagaIterator } from "redux-saga";
 //-----------------------------------------------------
@@ -243,54 +237,7 @@ function* addPost(action: { data: any }): SagaIterator {
 function* watchAddPost() {
   yield takeLatest<any>(ADD_POST_REQUEST, addPost);
 }
-//-------------------------------------------------------------
-function uploadImagesAPI(data: any) {
-  return axios.post("/post/images", data);
-}
 
-function* uploadImages(action: { data: any }): SagaIterator {
-  try {
-    const result = yield call(uploadImagesAPI, action.data);
-    yield put({
-      type: UPLOAD_IMAGES_SUCCESS,
-      data: result.data,
-    });
-  } catch (err: any) {
-    console.error(err);
-    yield put({
-      type: UPLOAD_IMAGES_FAILURE,
-      error: err.response.data,
-    });
-  }
-}
-
-function* watchUploadImages() {
-  yield takeLatest<any>(UPLOAD_IMAGES_REQUEST, uploadImages);
-}
-//-------------------------------------------------------------
-function removeImagesAPI(data: any) {
-  return axios.delete(`/post/images/${data}`);
-}
-
-function* removeImages(action: { data: any }): SagaIterator {
-  try {
-    const result = yield call(removeImagesAPI, action.data);
-    yield put({
-      type: REMOVE_IMAGE_SUCCESS,
-      data: result.data,
-    });
-  } catch (err: any) {
-    console.error(err);
-    yield put({
-      type: REMOVE_IMAGE_FAILURE,
-      error: err.response.data,
-    });
-  }
-}
-
-function* watchRemoveImages() {
-  yield takeLatest<any>(REMOVE_IMAGE_REQUEST, removeImages);
-}
 //-------------------------------------------------------------
 function deleteImagesAPI(data: { postId: any; filename: any }) {
   return axios.delete(`/post/${data.postId}/images/${data.filename}`);
@@ -342,8 +289,8 @@ function* watchRemovePost() {
 
 //-----------------------------------------------------
 
-function updatePostApi(data: { postId: any }) {
-  return axios.put(`/post/${data.postId}`, data);
+function updatePostApi(data: any) {
+  return axios.put(`/post/update`, data);
 }
 
 function* updatePost(action: { data: any }): SagaIterator {
@@ -767,8 +714,6 @@ export default function* postSaga() {
     fork(watchUnLikeComment),
     fork(watchLikeReComment),
     fork(watchUnLikeReComment),
-    fork(watchUploadImages),
-    fork(watchRemoveImages),
     fork(watchSearchPosts),
     fork(watchDeleteImages),
     fork(watchReadChat),
