@@ -9,7 +9,6 @@ const initialState = {
 
   comments: [] as CommentType[],
   totalComments: null,
-
   commentsCount: null,
 
   imagePaths: [] as string[],

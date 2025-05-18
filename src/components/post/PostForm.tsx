@@ -7,16 +7,11 @@ import React, {
 } from "react";
 import styled from "styled-components";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  ADD_POST_REQUEST,
-  REMOVE_IMAGE_REQUEST,
-  UPLOAD_IMAGES_REQUEST,
-} from "../../reducer/post";
+import { ADD_POST_REQUEST } from "../../reducer/post";
 
 import { RootState } from "../../reducer";
 import Spinner from "../ui/Spinner";
 import useTextareaAutoHeight from "../../hooks/useTextareaAutoHeight";
-import { baseURL } from "../../config";
 
 import { useNavigate } from "react-router-dom";
 import useOutsideClick from "../../hooks/useOutsideClick";
@@ -28,123 +23,19 @@ interface PostFormProps {
 
 const PostForm: React.FC<PostFormProps> = ({ titleRef, setTogglePostForm }) => {
   const dispatch = useDispatch();
-  const {
-    imagePaths,
-    addPostLoading,
-    uploadImagesLoading,
-    removeImageLoading,
-  } = useSelector((state: RootState) => state.post);
+  const { addPostLoading } = useSelector((state: RootState) => state.post);
   const { me } = useSelector((state: RootState) => state.user);
-  const [content, setContent] = useState("");
-
-  const handleContentChange = useCallback(
-    (e: ChangeEvent<HTMLTextAreaElement>) => {
-      setContent(e.target.value);
-    },
-    [setContent]
-  );
-  const navigator = useNavigate();
 
   const [title, setTitle] = useState("");
+  const [content, setContent] = useState("");
 
-  const handleTitleChange = useCallback(
-    (e: ChangeEvent<HTMLInputElement>) => {
-      setTitle(e.target.value);
-    },
-    [setTitle]
-  );
-
-  const imageInputRef = useRef<HTMLInputElement>(null);
+  const [selectedImages, setSelectedImages] = useState<File[]>([]);
+  const [previewImages, setPreviewImages] = useState<string[]>([]);
   const [active, setActive] = useState(false);
 
-  const handleClickFileUpload = useCallback(() => {
-    imageInputRef.current!.click();
-  }, []);
-
-  const handleImagesChange = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      console.log("images", e.target.files);
-      const imageFormData = new FormData();
-
-      // 중복된 이미지 파일명을 방지하기 위해 Set 사용
-      const addedImageNames = new Set();
-
-      const files = e.target.files as FileList;
-
-      [].forEach.call(files /*선택한 파일들 */, (f: File) => {
-        // 이미 추가된 이미지인지 확인하고 추가되지 않은 경우에만 처리
-        if (!addedImageNames.has(f.name)) {
-          addedImageNames.add(f.name);
-          imageFormData.append("image" /*키값 */, f);
-        }
-      });
-
-      dispatch({
-        type: UPLOAD_IMAGES_REQUEST,
-        data: imageFormData,
-      });
-      setActive(true);
-    },
-
-    [dispatch]
-  );
-
-  const handleRemoveImage = useCallback(
-    (filename: string) => {
-      if (filename) {
-        dispatch({
-          type: REMOVE_IMAGE_REQUEST,
-          data: filename,
-        });
-      }
-    },
-    [dispatch]
-  );
-
-  const handleRemoveImages = useCallback(() => {
-    imagePaths.forEach((filename) => {
-      dispatch({
-        type: REMOVE_IMAGE_REQUEST,
-        data: filename,
-      });
-    });
-    dispatch({
-      type: "RESET_IMAGE_PATHS",
-    });
-    setTogglePostForm(false);
-  }, [dispatch, imagePaths, setTogglePostForm]);
-
-  const handleAddPost = useCallback(
-    (e: SyntheticEvent) => {
-      e.preventDefault();
-      if (!title || !title.trim() || !content || !content.trim()) {
-        return alert("제목 또는 게시글을 작성하세요.");
-      }
-      const formData = new FormData();
-      const contentWithBreaks = content.replace(/\n/g, "<br>");
-      imagePaths.forEach((p) => {
-        formData.append("image", p); //req.body.image
-      });
-      formData.append("title", title); //req.body.title
-      formData.append("content", contentWithBreaks); //req.body.content
-      setActive(false);
-      dispatch({
-        type: ADD_POST_REQUEST,
-        data: formData,
-      });
-
-      setTogglePostForm(false);
-      if (textareaRef.current) textareaRef.current.style.height = "auto";
-      setContent("");
-      setTitle("");
-      navigator("/");
-    },
-
-    [title, content, imagePaths, dispatch, setTogglePostForm, navigator]
-  );
-
+  const navigator = useNavigate();
+  const imageInputRef = useRef<HTMLInputElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
-
   //OutsideClick----------------------------------------------
   const postFormRef = useRef<HTMLDivElement>(null);
 
@@ -155,11 +46,83 @@ const PostForm: React.FC<PostFormProps> = ({ titleRef, setTogglePostForm }) => {
   //입력 시 textarea높이 조정
   useTextareaAutoHeight(textareaRef, null);
 
+  const handleTitleChange = useCallback(
+    (e: ChangeEvent<HTMLInputElement>) => {
+      setTitle(e.target.value);
+    },
+    [setTitle]
+  );
+
+  const handleContentChange = useCallback(
+    (e: ChangeEvent<HTMLTextAreaElement>) => {
+      setContent(e.target.value);
+    },
+    [setContent]
+  );
+
+  const handleClickFileUpload = useCallback(() => {
+    imageInputRef.current!.click();
+  }, []);
+
+  const handleImagesChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const files = Array.from(e.target.files || []);
+      const urls = files.map((file) => URL.createObjectURL(file));
+      setSelectedImages((prev) => [...prev, ...files]);
+      setPreviewImages((prev) => [...prev, ...urls]);
+      setActive(true);
+    },
+    []
+  );
+
+  const handleRemoveImage = useCallback((index: number) => {
+    setSelectedImages((prev) => prev.filter((_, i) => i !== index));
+    setPreviewImages((prev) => prev.filter((_, i) => i !== index));
+  }, []);
+
+  const handleRemoveImages = useCallback(() => {
+    setSelectedImages([]);
+    setPreviewImages([]);
+    setTogglePostForm(false);
+  }, [setTogglePostForm]);
+
+  const handleAddPost = useCallback(
+    (e: SyntheticEvent) => {
+      e.preventDefault();
+      if (!title || !title.trim() || !content || !content.trim()) {
+        return alert("제목 또는 게시글을 작성하세요.");
+      }
+      const formData = new FormData();
+      const contentWithBreaks = content.replace(/\n/g, "<br>");
+
+      selectedImages.forEach((file) => {
+        formData.append("image", file); //req.body.image
+      });
+
+      formData.append("title", title); //req.body.title
+      formData.append("content", contentWithBreaks); //req.body.content
+
+      dispatch({
+        type: ADD_POST_REQUEST,
+        data: formData,
+      });
+
+      setActive(false);
+      setSelectedImages([]);
+      setPreviewImages([]);
+      setTogglePostForm(false);
+      if (textareaRef.current) textareaRef.current.style.height = "auto";
+      setContent("");
+      setTitle("");
+      navigator("/");
+    },
+
+    [title, content, selectedImages, dispatch, setTogglePostForm, navigator]
+  );
+
   return (
     <>
-      {addPostLoading || uploadImagesLoading || removeImageLoading ? (
-        <Spinner />
-      ) : null}
+      {addPostLoading ? <Spinner /> : null}
       {me ? (
         <FormContainer ref={postFormRef}>
           <CloseFormButton onClick={handleRemoveImages}>✖</CloseFormButton>
@@ -190,12 +153,12 @@ const PostForm: React.FC<PostFormProps> = ({ titleRef, setTogglePostForm }) => {
             </FileUploadButton>
             <ImageContainer>
               {active &&
-                imagePaths.map((filename, index) => (
+                previewImages.map((url, index) => (
                   <ImageItem key={index}>
-                    <Image src={`${baseURL}/${filename}`} alt="img" />
+                    <Image src={url} alt="preview" />
                     <RemoveButton
                       type="button"
-                      onClick={() => handleRemoveImage(filename)}
+                      onClick={() => handleRemoveImage(index)}
                     >
                       ✖
                     </RemoveButton>
