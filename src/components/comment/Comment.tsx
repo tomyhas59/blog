@@ -201,6 +201,7 @@ const Comment = ({ post }: { post: PostType }) => {
   });
 
   const theme = useTheme();
+
   useEffect(() => {
     const params = new URLSearchParams(location.search);
     const commentsPageParam = params.get("cPage");
@@ -398,6 +399,7 @@ export const CommentItem = styled.div<{ isTop3Comments: boolean }>`
   font-size: 15px;
   background-color: ${(props) =>
     props.isTop3Comments ? props.theme.activeColor : "none"};
+  transition: all 1s ease-in-out;
 `;
 
 export const CommentHeader = styled.div`
@@ -441,9 +443,9 @@ export const Author = styled.button`
 `;
 
 export const ContentWrapper = styled.div`
-  padding: 5px;
-  justify-content: space-between;
-  align-items: end;
+  display: flex;
+  position: relative;
+  flex-direction: column;
 `;
 
 export const Content = styled.div`
@@ -480,6 +482,9 @@ const Button = styled.button`
   &:hover {
     transform: translateY(-2px);
     color: ${(props) => props.theme.hoverMainColor};
+  }
+  @media (max-width: 768px) {
+    font-size: 10px;
   }
 `;
 
