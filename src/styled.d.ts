@@ -11,5 +11,6 @@ declare module "styled-components" {
     borderColor: string;
     activeColor: string;
     charColor: string;
+    top3Color: string;
   }
 }

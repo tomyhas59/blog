@@ -79,7 +79,7 @@ const MainContainer = styled.div`
 `;
 
 const Banner = styled.div`
-  background-color: #4caf50;
+  background-color: ${(props) => props.theme.subColor};
   color: white;
   text-align: center;
   padding: 20px;

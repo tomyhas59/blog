@@ -186,11 +186,11 @@ const Header = () => {
     };
   }, [me]);
 
-  const toggleDarkMode = () => {
+  const toggleDarkMode = useCallback(() => {
     dispatch({
       type: "TOGGLE_DARK_MODE",
     });
-  };
+  }, [dispatch]);
 
   return (
     <HeaderContainer>

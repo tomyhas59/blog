@@ -16,26 +16,42 @@ import { baseURL } from "../../config";
 import { DEFAULT_PROFILE_IMAGE } from "../../pages/Info/MyInfo";
 import moment from "moment";
 import styled, { useTheme } from "styled-components";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const Top3Comment = () => {
   //좋아요 3개 이상이 있을 때 Top3 표시
   const { top3Comments } = useSelector((state: RootState) => state.post);
 
   const theme = useTheme();
-
+  const navigate = useNavigate();
   const hasLikersInTop3 = top3Comments.some(
     (comment) => comment.Likers.length > 2
   );
 
-  const scrollToComment = (commentId: number) => {
+  const scrollToComment = async (postId: number, commentId: number) => {
     const target = document.getElementById(`comment-${commentId}`);
 
     if (target) {
-      target.scrollIntoView({ behavior: "smooth", block: "start" });
+      target.scrollIntoView({ behavior: "smooth", block: "center" });
       target.style.backgroundColor = theme.activeColor;
       setTimeout(() => {
         target.style.backgroundColor = "";
       }, 3000);
+    } else {
+      const res = await axios.get("/post/getCommentPage", {
+        params: { postId, commentId },
+      });
+      const targetCommentPage = res.data.page;
+
+      const params = new URLSearchParams();
+      const page = params.get("page") || "1";
+      const sortBy = params.get("sortBy") || "comment";
+      params.set("page", page.toString());
+      params.set("sortBy", sortBy.toString());
+      params.set("cPage", targetCommentPage.toString());
+      params.set("commentId", commentId.toString());
+      navigate(`/post/${postId}?${params.toString()}`);
     }
   };
 
@@ -64,7 +80,9 @@ const Top3Comment = () => {
               <Content>
                 <ContentRenderer content={comment.content} />
               </Content>
-              <MoveButton onClick={() => scrollToComment(comment.id)}>
+              <MoveButton
+                onClick={() => scrollToComment(comment.PostId, comment.id)}
+              >
                 댓글로 이동
               </MoveButton>
             </ContentWrapper>
@@ -85,7 +103,7 @@ const RankLabel = styled.div`
 `;
 
 const MoveButton = styled.button`
-  color: ${(props) => props.theme.mainColor};
+  color: ${(props) => props.theme.textColor};
   border: none;
   position: absolute;
   bottom: 1%;

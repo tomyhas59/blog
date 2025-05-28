@@ -2,6 +2,7 @@ import React, {
   ChangeEvent,
   useCallback,
   useEffect,
+  useMemo,
   useRef,
   useState,
 } from "react";
@@ -45,7 +46,6 @@ const Comment = ({ post }: { post: PostType }) => {
     comments,
     commentsCount,
     newCommentId,
-
     getCommentsDone,
   } = useSelector((state: RootState) => state.post);
 
@@ -63,7 +63,11 @@ const Comment = ({ post }: { post: PostType }) => {
 
   const location = useLocation();
   const navigator = useNavigate();
-  const params = new URLSearchParams(location.search);
+  const params = useMemo(
+    () => new URLSearchParams(location.search),
+    [location.search]
+  );
+
   const searchTextParam = params.get("searchText");
   const searchOptionParam = params.get("searchOption");
 
@@ -208,26 +212,45 @@ const Comment = ({ post }: { post: PostType }) => {
     if (commentsPageParam) setCurrentCommentsPage(Number(commentsPageParam));
   }, [location.search, setCurrentCommentsPage]);
 
-  //새 댓글 등록 시 마지막 댓글 페이지 이동
+  const activeColorRef = useRef(theme.activeColor);
+  const backgroundColorRef = useRef(theme.backgroundColor);
+
   useEffect(() => {
-    const scrollToElement = (commentId: string) => {
-      const element = document.getElementById(`comment-${commentId}`);
-      if (element) {
-        element.scrollIntoView({
-          behavior: "auto",
-          block: "center",
-        });
-        element.style.backgroundColor = theme.activeColor;
-        setTimeout(() => {
-          element.style.transition = "background-color 2s ease-in-out";
-          element.style.backgroundColor = theme.backgroundColor;
-        }, 1000);
-      }
-    };
+    activeColorRef.current = theme.activeColor;
+    backgroundColorRef.current = theme.backgroundColor;
+  }, [theme.activeColor, theme.backgroundColor]);
+
+  const scrollToElement = useCallback((commentId: string) => {
+    const element =
+      document.getElementById(`comment-${commentId}`) ||
+      (document.querySelector(
+        `[data-comment-id="${commentId}"]`
+      ) as HTMLElement) ||
+      null;
+
+    if (element) {
+      element.scrollIntoView({ behavior: "auto", block: "center" });
+      element.style.backgroundColor = activeColorRef.current;
+      setTimeout(() => {
+        element.style.backgroundColor = backgroundColorRef.current;
+      }, 2000);
+    }
+  }, []);
+
+  // 새 댓글 등록 시 마지막 댓글로 이동
+  useEffect(() => {
     if (newCommentId && getCommentsDone) {
       scrollToElement(newCommentId);
     }
-  }, [getCommentsDone, newCommentId, theme.activeColor, theme.backgroundColor]);
+  }, [getCommentsDone, newCommentId, scrollToElement]);
+
+  // URL 파라미터로 타겟 댓글로 이동
+  useEffect(() => {
+    const targetCommentId = params.get("commentId");
+    if (targetCommentId) {
+      scrollToElement(targetCommentId);
+    }
+  }, [params, scrollToElement, getCommentsDone]);
 
   useEffect(() => {
     dispatch({
@@ -286,6 +309,7 @@ const Comment = ({ post }: { post: PostType }) => {
             isTop3Comments={false}
             key={comment.id}
             id={`comment-${comment.id}`}
+            data-comment-id={comment.id}
           >
             <CommentHeader>
               <Author onClick={() => toggleShowAuthorMenu(comment.id)}>
@@ -398,8 +422,9 @@ export const CommentItem = styled.div<{ isTop3Comments: boolean }>`
   border-top: 1px solid silver;
   font-size: 15px;
   background-color: ${(props) =>
-    props.isTop3Comments ? props.theme.activeColor : "none"};
+    props.isTop3Comments ? props.theme.top3Color : "none"};
   transition: all 1s ease-in-out;
+  padding: 10px;
 `;
 
 export const CommentHeader = styled.div`
