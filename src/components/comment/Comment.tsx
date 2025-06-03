@@ -211,7 +211,7 @@ const Comment = ({ post }: { post: PostType }) => {
     const commentsPageParam = params.get("cPage");
     if (commentsPageParam) setCurrentCommentsPage(Number(commentsPageParam));
   }, [location.search, setCurrentCommentsPage]);
-
+//islint 방지용 ref
   const activeColorRef = useRef(theme.activeColor);
   const backgroundColorRef = useRef(theme.backgroundColor);
 
