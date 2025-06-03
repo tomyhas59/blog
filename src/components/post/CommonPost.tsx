@@ -409,6 +409,7 @@ const EditToggle = styled.div`
 const SlideImage = styled.img`
   width: 100%;
   height: 500px;
+  border-radius: 20px;
   object-fit: fill;
   cursor: pointer;
   @media (max-width: 768px) {
@@ -420,27 +421,22 @@ const StyledSlider = styled(Slider)`
   .slick-prev,
   .slick-next {
     z-index: 10;
-    width: 30px;
-    height: 30px;
-    background: rgba(0, 0, 0, 0.6);
-    border-radius: 50%;
-    display: flex !important;
-    align-items: center;
-    justify-content: center;
+    width: 50px;
+    height: 50px;
   }
 
-  .slick-prev:hover,
-  .slick-next:hover {
-    background: rgba(0, 0, 0, 0.8);
+  .slick-prev:before,
+  .slick-next::before {
+    font-size: 50px;
+    color: ${(props) => props.theme.mainColor};
+    transition: color 0.3s;
   }
 
-  .slick-prev {
-    left: 10px;
+  .slick-prev::before:hover,
+  .slick-next::before:hover {
+    color: ${(props) => props.theme.subColor};
   }
 
-  .slick-next {
-    right: 10px;
-  }
   @media (max-width: 768px) {
     .slick-prev,
     .slick-next {
@@ -450,15 +446,7 @@ const StyledSlider = styled(Slider)`
 
     .slick-prev:before,
     .slick-next:before {
-      font-size: 16px;
-    }
-
-    .slick-prev {
-      left: 5px;
-    }
-
-    .slick-next {
-      right: 5px;
+      font-size: 25px;
     }
   }
   margin-bottom: 40px;
