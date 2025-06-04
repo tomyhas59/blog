@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "./FollowButton";
 
 const UserPageButton = ({ userId }: { userId: number }) => {
-  console.log("----------", userId);
   const navigate = useNavigate();
 
   const handleGoToUserPage = (e: React.MouseEvent<HTMLButtonElement>) => {
