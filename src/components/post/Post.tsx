@@ -221,7 +221,6 @@ const AuthorMenu = styled.div`
 
 export const StyledButton = styled.button`
   background-color: ${(props) => props.theme.mainColor};
-  margin: 2px;
   font-size: 12px;
   color: #fff;
   padding: 6px;

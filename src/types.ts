@@ -8,6 +8,7 @@ export type UserType = {
   Followers: { id: number; nickname: string }[];
   Image: ImageType;
   Notifications: NotificationType[];
+  Posts: PostType[];
 };
 
 export type PostType = {
