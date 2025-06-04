@@ -34,6 +34,7 @@ import Like from "../ui/Like";
 import CommentPagination from "../pagination/CommentPagination";
 import { useLocation, useNavigate } from "react-router-dom";
 import Top3Comment from "./Top3Comment";
+import UserPageButton from "../ui/UserPageButton";
 
 const Comment = ({ post }: { post: PostType }) => {
   const dispatch = useDispatch();
@@ -211,7 +212,7 @@ const Comment = ({ post }: { post: PostType }) => {
     const commentsPageParam = params.get("cPage");
     if (commentsPageParam) setCurrentCommentsPage(Number(commentsPageParam));
   }, [location.search, setCurrentCommentsPage]);
-//islint 방지용 ref
+  //islint 방지용 ref
   const activeColorRef = useRef(theme.activeColor);
   const backgroundColorRef = useRef(theme.backgroundColor);
 
@@ -330,6 +331,7 @@ const Comment = ({ post }: { post: PostType }) => {
                   >
                     작성 글 보기
                   </BlueButton>
+                  <UserPageButton userId={comment.UserId} />
                   {id !== comment.User.id && (
                     <FollowButton
                       userId={comment.User.id}

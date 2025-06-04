@@ -54,7 +54,7 @@ const FollowButton: React.FC<FollowButtonProps> = ({
   );
 };
 
-const Button = styled.button`
+export const Button = styled.button`
   background-color: ${({ theme }) => theme.mainColor};
   font-size: 12px;
   color: #fff;
@@ -66,6 +66,7 @@ const Button = styled.button`
     transform: translateY(-2px);
     color: ${(props) => props.theme.charColor};
   }
+  z-index: 9999;
 `;
 
 export default FollowButton;

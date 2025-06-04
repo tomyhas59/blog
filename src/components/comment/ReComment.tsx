@@ -18,6 +18,7 @@ import FollowButton from "../ui/FollowButton";
 import { usePagination } from "../../hooks/PaginationProvider";
 import useSetParams from "../../hooks/useSetParams";
 import Like from "../ui/Like";
+import UserPageButton from "../ui/UserPageButton";
 
 const ReComment = ({
   post,
@@ -133,6 +134,7 @@ const ReComment = ({
                   >
                     작성 글 보기
                   </BlueButton>
+                  <UserPageButton userId={reComment.UserId} />
                   {id !== reComment.User.id && (
                     <FollowButton
                       userId={reComment.User.id}

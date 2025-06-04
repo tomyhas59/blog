@@ -9,6 +9,7 @@ import Login from "./pages/Login";
 import Chat from "./pages/Chat";
 import Sign from "./pages/Sign";
 import Info from "./pages/Info";
+import User from "./pages/User";
 import NotFound from "./pages/NotFound";
 import SearchPage from "./pages/SearchPage";
 import PostDetail from "./pages/PostDetail";
@@ -24,6 +25,7 @@ const routes = [
   { path: "/post/:postId", element: <PostDetail /> },
   { path: "/searchedPost/:postId", element: <SearchedPostDetail /> },
   { path: "*", element: <NotFound /> },
+  { path: "/user/:userId", element: <User /> },
 ];
 
 function App() {

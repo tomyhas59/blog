@@ -15,6 +15,7 @@ import moment from "moment";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faImage, faImages } from "@fortawesome/free-solid-svg-icons";
 import FollowButton from "../ui/FollowButton";
+import UserPageButton from "../ui/UserPageButton";
 
 const Post = ({
   post,
@@ -110,6 +111,7 @@ const Post = ({
         {showAuthorMenu && (
           <AuthorMenu ref={authorMenuRef}>
             <StyledButton onClick={searchByNickname}>작성 글 보기</StyledButton>
+            <UserPageButton userId={post.User.id} />
             {id !== post.User.id && (
               <FollowButton
                 userId={post.User.id}

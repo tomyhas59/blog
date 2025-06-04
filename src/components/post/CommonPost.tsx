@@ -35,6 +35,7 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import Slider from "react-slick";
 import PostEditForm from "./PostEditForm";
+import UserPageButton from "../ui/UserPageButton";
 
 const CommonPost = () => {
   const socket = useRef<Socket | null>(null);
@@ -205,6 +206,7 @@ const CommonPost = () => {
                 <StyledButton onClick={searchByNickname}>
                   작성 글 보기
                 </StyledButton>
+                <UserPageButton userId={post.User.id} />
                 {id !== post.User.id && (
                   <FollowButton
                     userId={post.User.id}
