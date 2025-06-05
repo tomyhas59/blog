@@ -1,14 +1,19 @@
 import axios from "axios";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import styled from "styled-components";
 import { UserType } from "../../types";
 import { baseURL } from "../../config";
 import { DEFAULT_PROFILE_IMAGE } from "../Info/MyInfo";
+import FollowButton from "../../components/ui/FollowButton";
+import { useSelector } from "react-redux";
+import { RootState } from "../../reducer";
+import UserPageButton from "../../components/ui/UserPageButton";
+import useScroll from "../../hooks/useScroll";
 
 const UserPage = () => {
   const { userId } = useParams();
-
+  const { me } = useSelector((state: RootState) => state.user);
   const [user, setUser] = useState<UserType | null>(null);
 
   useEffect(() => {
@@ -26,13 +31,18 @@ const UserPage = () => {
     getUserInfo();
   }, [userId]);
 
+  const scrollRefFollowings = useRef<HTMLDivElement>(null);
+  const scrollRefFollowers = useRef<HTMLDivElement>(null);
+
+  useScroll(scrollRefFollowings);
+  useScroll(scrollRefFollowers);
+
   if (!user) return null;
 
   console.log(user);
 
   return (
     <Container>
-      프로필 정보
       <ProfileHeader>
         <Avatar
           src={
@@ -49,21 +59,35 @@ const UserPage = () => {
             <Stats>{user.Followers.length} 팔로워</Stats>
           </FollowStats>
         </UserInfo>
+        {me?.id === user.id ? null : <FollowButton userId={user.id} />}
       </ProfileHeader>
-      {/* 팔로잉 & 팔로워 목록 */}
       <section>
         <SectionTitle>팔로잉</SectionTitle>
-        <FollowList>
-          {user.Followings.map((following) => (
-            <FollowBadge key={following.id}>{following.nickname}</FollowBadge>
-          ))}
+        <FollowList ref={scrollRefFollowings}>
+          {user.Followings.length > 0 ? (
+            user.Followings.map((following) => (
+              <UserPageButton
+                userId={following.id}
+                content={following.nickname}
+              />
+            ))
+          ) : (
+            <div>아직 팔로잉 중인 사람이 없습니다.</div>
+          )}
         </FollowList>
 
         <SectionTitle>팔로워</SectionTitle>
-        <FollowList>
-          {user.Followers.map((follower) => (
-            <FollowBadge key={follower.id}>{follower.nickname}</FollowBadge>
-          ))}
+        <FollowList ref={scrollRefFollowers}>
+          {user.Followers.length > 0 ? (
+            user.Followers.map((follower) => (
+              <UserPageButton
+                userId={follower.id}
+                content={follower.nickname}
+              />
+            ))
+          ) : (
+            <div>팔로워가 없습니다.</div>
+          )}
         </FollowList>
       </section>
       <section>
@@ -94,7 +118,7 @@ const Container = styled.section`
   background-color: ${(props) => props.theme.backgroundColor};
   color: ${(props) => props.theme.textColor};
   padding: 30px;
-  max-width: 400px;
+  max-width: 800px;
   margin: auto;
   border-radius: 10px;
   box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.15);
@@ -143,20 +167,16 @@ const SectionTitle = styled.h2`
 `;
 
 const FollowList = styled.div`
+  width: 100%;
+  overflow-x: auto;
   display: flex;
   gap: 5px;
-  flex-wrap: wrap;
-`;
-
-const FollowBadge = styled.span`
-  background-color: ${(props) => props.theme.subColor};
-  color: ${(props) => props.theme.textColor};
-  padding: 5px 10px;
-  border-radius: 20px;
-  font-size: 12px;
-  cursor: pointer;
-  &:hover {
-    background-color: ${(props) => props.theme.hoverSubColor};
+  ::-webkit-scrollbar {
+    height: 6px;
+    width: 6px;
+  }
+  ::-webkit-scrollbar-thumb {
+    background-color: ${(props) => props.theme.subColor};
   }
 `;
 

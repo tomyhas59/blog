@@ -4,6 +4,7 @@ import { RootState } from "../../reducer";
 import styled from "styled-components";
 import FollowButton from "../../components/ui/FollowButton";
 import { io, Socket } from "socket.io-client";
+import UserPageButton from "../../components/ui/UserPageButton";
 
 const MyFollow: React.FC = () => {
   const { me } = useSelector((state: RootState) => state.user);
@@ -43,7 +44,7 @@ const MyFollow: React.FC = () => {
               <FollowItem key={follower.id}>
                 <Nickname>{follower.nickname}</Nickname>
                 {isFollowing ? (
-                  <span>✔️</span>
+                  <UserPageButton userId={follower.id} />
                 ) : (
                   <FollowButton userId={follower.id} />
                 )}
@@ -117,13 +118,9 @@ const FollowItem = styled.div`
   align-items: center;
   padding: 12px;
   border-right: 1px solid #e0e0e0;
-  cursor: pointer;
   position: relative;
   transition: background-color 0.3s ease;
   gap: 20px;
-  &:hover {
-    background-color: #f0f0f0;
-  }
 
   @media (max-width: 768px) {
     width: 130px;
