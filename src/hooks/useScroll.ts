@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 
-export default function useScroll(ref: React.RefObject<HTMLElement>) {
+const useScroll = (ref: React.RefObject<HTMLElement>) => {
   useEffect(() => {
     if (!ref.current) return;
 
@@ -15,4 +15,6 @@ export default function useScroll(ref: React.RefObject<HTMLElement>) {
     el.addEventListener("wheel", handleWheel, { passive: false });
     return () => el.removeEventListener("wheel", handleWheel);
   }, [ref.current]);
-}
+};
+
+export default useScroll;
