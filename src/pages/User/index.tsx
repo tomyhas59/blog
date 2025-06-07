@@ -1,6 +1,6 @@
 import axios from "axios";
 import React, { useEffect, useRef, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import styled from "styled-components";
 import { UserType } from "../../types";
 import { baseURL } from "../../config";
@@ -15,6 +15,7 @@ const UserPage = () => {
   const { userId } = useParams();
   const { me } = useSelector((state: RootState) => state.user);
   const [user, setUser] = useState<UserType | null>(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const getUserInfo = async () => {
@@ -36,6 +37,10 @@ const UserPage = () => {
 
   useScroll(scrollRefFollowings);
   useScroll(scrollRefFollowers);
+
+  const goToUserPost = (postId: number) => {
+    navigate(`/post/${postId}?page=1&sortBy=recent&cPage=1`);
+  };
 
   if (!user) return null;
 
@@ -59,31 +64,54 @@ const UserPage = () => {
             <Stats>{user.Followers.length} 팔로워</Stats>
           </FollowStats>
         </UserInfo>
-        {me?.id === user.id ? null : <FollowButton userId={user.id} />}
+        {me?.id === user.id ? null : (
+          <>
+            <FollowButton userId={user.id} />
+          </>
+        )}
       </ProfileHeader>
       <section>
         <SectionTitle>팔로잉</SectionTitle>
         <FollowList ref={scrollRefFollowings}>
           {user.Followings.length > 0 ? (
             user.Followings.map((following) => (
-              <UserPageButton
-                userId={following.id}
-                content={following.nickname}
-              />
+              <AvatarWrapper key={following.id}>
+                <FollowAvatar
+                  src={
+                    following?.Image
+                      ? `${baseURL}/${following?.Image?.src}`
+                      : `${DEFAULT_PROFILE_IMAGE}`
+                  }
+                  alt={`${following.nickname} 프로필 이미지`}
+                />
+                <UserPageButton
+                  userId={following.id}
+                  content={following.nickname}
+                />
+              </AvatarWrapper>
             ))
           ) : (
             <div>아직 팔로잉 중인 사람이 없습니다.</div>
           )}
         </FollowList>
-
         <SectionTitle>팔로워</SectionTitle>
         <FollowList ref={scrollRefFollowers}>
           {user.Followers.length > 0 ? (
             user.Followers.map((follower) => (
-              <UserPageButton
-                userId={follower.id}
-                content={follower.nickname}
-              />
+              <AvatarWrapper key={follower.id}>
+                <FollowAvatar
+                  src={
+                    follower?.Image
+                      ? `${baseURL}/${follower?.Image?.src}`
+                      : `${DEFAULT_PROFILE_IMAGE}`
+                  }
+                  alt={`${follower.nickname} 프로필 이미지`}
+                />
+                <UserPageButton
+                  userId={follower.id}
+                  content={follower.nickname}
+                />
+              </AvatarWrapper>
             ))
           ) : (
             <div>팔로워가 없습니다.</div>
@@ -94,7 +122,7 @@ const UserPage = () => {
         <SectionTitle>게시글</SectionTitle>
         <PostGrid>
           {user.Posts?.map((post) => (
-            <PostCard key={post.id}>
+            <PostCard key={post.id} onClick={() => goToUserPost(post.id)}>
               {post.Images[0]?.src && (
                 <PostImage
                   src={`${baseURL}/${post.Images[0]?.src}`}
@@ -133,11 +161,24 @@ const ProfileHeader = styled.header`
   margin-bottom: 20px;
 `;
 
+const AvatarWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  button {
+    padding: 2px 5px;
+  }
+`;
+
 const Avatar = styled.img`
   width: 80px;
   height: 80px;
   border-radius: 50%;
   border: 3px solid ${(props) => props.theme.mainColor};
+`;
+
+const FollowAvatar = styled(Avatar)`
+  width: 50px;
+  height: 50px;
 `;
 
 const UserInfo = styled.div`
@@ -171,6 +212,7 @@ const FollowList = styled.div`
   overflow-x: auto;
   display: flex;
   gap: 5px;
+  margin-bottom: 20px;
   ::-webkit-scrollbar {
     height: 6px;
     width: 6px;
@@ -197,6 +239,10 @@ const PostCard = styled.article`
   border-radius: 12px;
   overflow: hidden;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  &:hover {
+    background-color: ${(props) => props.theme.hoverMainColor};
+  }
 `;
 
 const PostImage = styled.img`

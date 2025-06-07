@@ -4,8 +4,8 @@ export type UserType = {
   nickname: string;
   createdAt: string;
   updatedAt: string;
-  Followings: { id: number; nickname: string }[];
-  Followers: { id: number; nickname: string }[];
+  Followings: { id: number; nickname: string; Image?: ImageType }[];
+  Followers: { id: number; nickname: string; Image?: ImageType }[];
   Image: ImageType;
   Notifications: NotificationType[];
   Posts: PostType[];

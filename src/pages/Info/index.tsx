@@ -282,19 +282,6 @@ const SectionWrapper = styled.div`
     padding: 15px;
   }
 `;
-
-const NewFollowersCount = styled.div`
-  position: absolute;
-  top: 0;
-  right: -10px;
-  background-color: red;
-  color: #fff;
-  width: 20px;
-  border-radius: 50%;
-  text-align: center;
-  font-weight: bold;
-`;
-
 const blinkBackground = keyframes`
   0% {
     background-color: red;
@@ -308,6 +295,19 @@ const blinkBackground = keyframes`
     background-color: red;
     opacity:1
   }
+`;
+
+const NewFollowersCount = styled.div`
+  position: absolute;
+  top: -10px;
+  right: -20px;
+  background-color: red;
+  color: #fff;
+  width: 20px;
+  border-radius: 50%;
+  text-align: center;
+  font-weight: bold;
+  animation: ${blinkBackground} 1s infinite;
 `;
 
 const NotificationMessage = styled.div`
