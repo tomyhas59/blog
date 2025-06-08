@@ -116,6 +116,7 @@ const PostForm: React.FC<PostFormProps> = ({ titleRef, setTogglePostForm }) => {
       setContent("");
       setTitle("");
       navigator("/");
+      window.location.reload();
     },
 
     [title, content, selectedImages, dispatch, setTogglePostForm, navigator]

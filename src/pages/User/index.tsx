@@ -2,7 +2,7 @@ import axios from "axios";
 import React, { useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import styled from "styled-components";
-import { UserType } from "../../types";
+import { PostType, UserType } from "../../types";
 import { baseURL } from "../../config";
 import { DEFAULT_PROFILE_IMAGE } from "../Info/MyInfo";
 import FollowButton from "../../components/ui/FollowButton";
@@ -16,6 +16,10 @@ const UserPage = () => {
   const { me } = useSelector((state: RootState) => state.user);
   const [user, setUser] = useState<UserType | null>(null);
   const navigate = useNavigate();
+
+  //게시글 무한 스크롤
+
+  const [posts, setPosts] = useState<PostType[]>([]);
 
   useEffect(() => {
     const getUserInfo = async () => {
