@@ -91,7 +91,7 @@ const MyPosts: React.FC = () => {
         items={posts}
         onItemClick={(title, postId) => searchByTitle(title, postId)}
       />
-      <MoreButton onClick={fetchMorePosts}>더 보기</MoreButton>
+      {hasMore && <MoreButton onClick={fetchMorePosts}>더 보기</MoreButton>}
     </PostsContainer>
   );
 };
