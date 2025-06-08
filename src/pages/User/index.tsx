@@ -9,7 +9,8 @@ import FollowButton from "../../components/ui/FollowButton";
 import { useSelector } from "react-redux";
 import { RootState } from "../../reducer";
 import UserPageButton from "../../components/ui/UserPageButton";
-import useScroll from "../../hooks/useScroll";
+import useHorizontalScroll from "../../hooks/useHorizontalScroll";
+import InfiniteScroll from "react-infinite-scroll-component";
 
 const UserPage = () => {
   const { userId } = useParams();
@@ -18,16 +19,22 @@ const UserPage = () => {
   const navigate = useNavigate();
 
   //게시글 무한 스크롤
-
   const [posts, setPosts] = useState<PostType[]>([]);
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
 
   useEffect(() => {
     const getUserInfo = async () => {
       if (userId) {
         try {
           const response = await axios.get(`/user?userId=${userId}`);
-
           setUser(response.data);
+
+          // 게시글 1페이지 불러오기
+          const responsePosts = await axios.get(`/post?userId=${userId}`);
+          setPosts(responsePosts.data.posts);
+          setHasMore(responsePosts.data.hasMore);
+          setPage(2);
         } catch (error) {
           console.error(error);
         }
@@ -36,15 +43,29 @@ const UserPage = () => {
     getUserInfo();
   }, [userId]);
 
-  useEffect(() => {
-    const getUserPosts = async () => {};
-  });
+  // 다음 페이지 게시글 불러오기 함수
+  const fetchMorePosts = async () => {
+    if (!userId || !hasMore) return;
+
+    try {
+      const response = await axios.get(
+        `/post?userId=${userId}&page=${page}&limit=5`
+      );
+      const newPosts = response.data.posts;
+
+      setPosts((prev) => [...prev, ...newPosts]);
+      setHasMore(response.data.hasMore);
+      setPage((prev) => prev + 1);
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   const scrollRefFollowings = useRef<HTMLDivElement>(null);
   const scrollRefFollowers = useRef<HTMLDivElement>(null);
 
-  useScroll(scrollRefFollowings);
-  useScroll(scrollRefFollowers);
+  useHorizontalScroll(scrollRefFollowings);
+  useHorizontalScroll(scrollRefFollowers);
 
   const goToUserPost = (postId: number) => {
     navigate(`/post/${postId}?page=1&sortBy=recent&cPage=1`);
@@ -128,21 +149,32 @@ const UserPage = () => {
       </section>
       <section>
         <SectionTitle>게시글</SectionTitle>
-        <PostGrid>
-          {user.Posts?.map((post) => (
-            <PostCard key={post.id} onClick={() => goToUserPost(post.id)}>
-              {post.Images[0]?.src && (
-                <PostImage
-                  src={`${baseURL}/${post.Images[0]?.src}`}
-                  alt="게시글 이미지"
-                />
-              )}
-              <PostContent>
-                <PostTitle>{post.title}</PostTitle>
-              </PostContent>
-            </PostCard>
-          ))}
-        </PostGrid>
+        <InfiniteScroll
+          dataLength={posts.length}
+          next={fetchMorePosts}
+          hasMore={hasMore}
+          loader={<h4>불러오는 중...</h4>}
+          endMessage={
+            <p style={{ textAlign: "center" }}>모든 게시글을 불러왔습니다.</p>
+          }
+          style={{ overflow: "visible" }} // overflow hidden 문제 방지용
+        >
+          <PostGrid>
+            {posts.map((post) => (
+              <PostCard key={post.id} onClick={() => goToUserPost(post.id)}>
+                {Array.isArray(post.Images) && post.Images[0]?.src && (
+                  <PostImage
+                    src={`${baseURL}/${post.Images[0]?.src}`}
+                    alt="게시글 이미지"
+                  />
+                )}
+                <PostContent>
+                  <PostTitle>{post.title}</PostTitle>
+                </PostContent>
+              </PostCard>
+            ))}
+          </PostGrid>
+        </InfiniteScroll>
       </section>
     </Container>
   );

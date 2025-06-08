@@ -1,6 +1,5 @@
 import React, { useEffect } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-
 import AppLayout from "./pages/Layout/AppLayout";
 import GlobalStyle from "./style/global";
 import { PaginationProvider } from "./hooks/PaginationProvider";

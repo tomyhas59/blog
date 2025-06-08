@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 
-const useScroll = (ref: React.RefObject<HTMLElement>) => {
+const useHorizontalScroll = (ref: React.RefObject<HTMLElement>) => {
   useEffect(() => {
     if (!ref.current) return;
 
@@ -17,4 +17,4 @@ const useScroll = (ref: React.RefObject<HTMLElement>) => {
   }, [ref.current]);
 };
 
-export default useScroll;
+export default useHorizontalScroll;
