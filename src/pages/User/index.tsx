@@ -32,6 +32,10 @@ const UserPage = () => {
     getUserInfo();
   }, [userId]);
 
+  useEffect(() => {
+    const getUserPosts = async () => {};
+  });
+
   const scrollRefFollowings = useRef<HTMLDivElement>(null);
   const scrollRefFollowers = useRef<HTMLDivElement>(null);
 
