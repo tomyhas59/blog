@@ -1,0 +1,7 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "types": ["cypress", "node"] // Cypress 테스트 전용 타입만
+  },
+  "include": ["cypress/**/*"]
+}
