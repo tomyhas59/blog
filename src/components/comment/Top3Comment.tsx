@@ -20,7 +20,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
 const Top3Comment = () => {
-  //좋아요 3개 이상이 있을 때 Top3 표시
+  //좋아요 3개 이상 있을 때 Top3 표시
   const { top3Comments } = useSelector((state: RootState) => state.post);
 
   const theme = useTheme();
