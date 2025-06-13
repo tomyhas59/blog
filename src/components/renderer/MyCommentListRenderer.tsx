@@ -6,18 +6,20 @@ import moment from "moment";
 interface ListRendererProps {
   items: { id: number; content: string; createdAt: string; PostId: number }[];
   onItemClick: (id: number, content: string, PostId: number) => void;
+  type: "comment" | "reComment";
 }
 
 const MyCommentListRenderer: React.FC<ListRendererProps> = ({
   items,
   onItemClick,
+  type,
 }) => (
   <>
-    {items.length > 0 ? (
+    {items?.length > 0 ? (
       <List>
         {items.map((item) => (
           <ListItem
-            key={item.id}
+            key={`${type}-${item.id}`}
             onClick={() => onItemClick(item.id, item.content, item.PostId)}
           >
             <ContentRenderer content={item.content} />

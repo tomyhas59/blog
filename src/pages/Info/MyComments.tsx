@@ -9,10 +9,16 @@ import { useDispatch } from "react-redux";
 import { SEARCH_POSTS_REQUEST } from "../../reducer/post";
 import MyCommentListRenderer from "../../components/renderer/MyCommentListRenderer";
 import { usePagination } from "../../hooks/PaginationProvider";
+import { MoreButton } from "./MyPosts";
 
 const MyComments: React.FC = () => {
   const [comments, setComments] = useState<CommentType[]>([]);
   const [reComments, setReComments] = useState<ReCommentType[]>([]);
+  const [commentPage, setCommentPage] = useState(1);
+  const [reCommentPage, setReCommentPage] = useState(1);
+  const [hasMoreComments, setHasMoreComments] = useState(true);
+  const [hasMoreReComments, setHasMoreReComments] = useState(true);
+
   const { me } = useSelector((state: RootState) => state.user);
   const navigator = useNavigate();
   const dispatch = useDispatch();
@@ -25,22 +31,73 @@ const MyComments: React.FC = () => {
   const { divisor, setCurrentPage, setCurrentCommentsPage } = usePagination();
   const [category, setCategory] = useState<string>("");
 
+  const [isMyComments, setIsMyComments] = useState(true);
+
   useEffect(() => {
     if (!me) return;
 
-    const getUserComments = async () => {
+    const getUserCommentsByType = async () => {
       try {
-        const response = await axios.get(`/post/user/comment?userId=${me.id}`);
-        setComments(response.data.comments);
-        setReComments(response.data.reComments);
+        // 댓글 1페이지 불러오기
+        if (isMyComments) {
+          const response = await axios.get(
+            `/post/user/comment?userId=${me.id}&type=comment`
+          );
+          setComments(response.data.items);
+          setCommentPage(2);
+          setHasMoreComments(true);
+        } else {
+          const response = await axios.get(
+            `/post/user/comment?userId=${me.id}&type=reComment`
+          );
+          setReComments(response.data.items);
+          setReCommentPage(2);
+          setHasMoreReComments(true);
+        }
       } catch (error) {
         console.error(error);
       }
     };
 
-    getUserComments();
-  }, [me]);
+    getUserCommentsByType();
+  }, [isMyComments, me]);
 
+  // 다음 페이지 댓글 불러오기
+  const fetchUserCommentsByType = useCallback(
+    async (type: "comment" | "reComment") => {
+      if (!me) return;
+
+      const page = type === "comment" ? commentPage : reCommentPage;
+
+      try {
+        const response = await axios.get(
+          `/post/user/comment?userId=${me.id}&page=${page}&limit=5&type=${type}`
+        );
+
+        const newItems = response.data.items || [];
+        const hasMore = response.data.hasMore;
+
+        if (type === "comment") {
+          setComments((prev) =>
+            Array.isArray(prev) ? [...prev, ...newItems] : [...newItems]
+          );
+          setHasMoreComments(hasMore);
+          setCommentPage((prev) => prev + 1);
+        } else {
+          setReComments((prev) =>
+            Array.isArray(prev) ? [...prev, ...newItems] : [...newItems]
+          );
+          setHasMoreReComments(hasMore);
+          setReCommentPage((prev) => prev + 1);
+        }
+      } catch (error) {
+        console.error("댓글 불러오기 실패:", error);
+      }
+    },
+    [me, commentPage, reCommentPage]
+  );
+
+  //불러온 댓글 클릭 시 페이지 이동
   useEffect(() => {
     const fetchData = async () => {
       if (
@@ -103,8 +160,6 @@ const MyComments: React.FC = () => {
     [dispatch, searchOption]
   );
 
-  const [isMyComments, setIsMyComments] = useState(true);
-
   return (
     <CommentsContainer>
       <Heading>
@@ -128,7 +183,13 @@ const MyComments: React.FC = () => {
             onItemClick={(id, content, postId) =>
               searchByCommentType(id, "comment", content, postId)
             }
+            type="comment"
           />
+          {hasMoreComments && (
+            <MoreButton onClick={() => fetchUserCommentsByType("comment")}>
+              더 보기
+            </MoreButton>
+          )}
         </CommentList>
       ) : (
         <CommentList>
@@ -137,7 +198,13 @@ const MyComments: React.FC = () => {
             onItemClick={(id, content, postId) =>
               searchByCommentType(id, "reComment", content, postId)
             }
+            type="reComment"
           />
+          {hasMoreReComments && (
+            <MoreButton onClick={() => fetchUserCommentsByType("reComment")}>
+              더 보기
+            </MoreButton>
+          )}
         </CommentList>
       )}
     </CommentsContainer>

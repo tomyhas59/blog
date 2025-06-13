@@ -9,7 +9,6 @@ import { useDispatch } from "react-redux";
 import { SEARCH_POSTS_REQUEST } from "../../reducer/post";
 import MyPostListRenderer from "../../components/renderer/MyPostListRenderer";
 import { usePagination } from "../../hooks/PaginationProvider";
-import InfiniteScroll from "react-infinite-scroll-component";
 
 const MyPosts: React.FC = () => {
   const [posts, setPosts] = useState<PostType[]>([]);
@@ -26,6 +25,7 @@ const MyPosts: React.FC = () => {
   const { divisor, setCurrentPage } = usePagination();
 
   useEffect(() => {
+    if (!me) return;
     const getUserPosts = async () => {
       if (me?.id) {
         try {
@@ -42,7 +42,7 @@ const MyPosts: React.FC = () => {
     getUserPosts();
   }, [me]);
 
-  // 다음 페이지 게시글 불러오기 함수
+  // 다음 페이지 게시글 불러오기
   const fetchMorePosts = async () => {
     if (!me || !hasMore) return;
 
@@ -60,6 +60,7 @@ const MyPosts: React.FC = () => {
     }
   };
 
+  //불러온 게시글 클릭 시 페이지 이동
   useEffect(() => {
     if (postNum && postId !== null) {
       const searchedPostPage = Math.floor(Number(postNum) / divisor) + 1;
@@ -123,7 +124,7 @@ export const Heading = styled.h2`
   }
 `;
 
-const MoreButton = styled.button`
+export const MoreButton = styled.button`
   display: block;
   margin: 0 auto;
   padding: 12px 24px;

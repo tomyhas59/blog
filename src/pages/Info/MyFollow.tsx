@@ -4,12 +4,20 @@ import { RootState } from "../../reducer";
 import styled from "styled-components";
 import FollowButton from "../../components/ui/FollowButton";
 import { io, Socket } from "socket.io-client";
-import UserPageButton from "../../components/ui/UserPageButton";
+import { baseURL } from "../../config";
+import { DEFAULT_PROFILE_IMAGE } from "./MyInfo";
+import { useNavigate } from "react-router-dom";
+import { Avatar, AvatarWrapper } from "../User";
 
 const MyFollow: React.FC = () => {
   const { me } = useSelector((state: RootState) => state.user);
 
   const socket = useRef<Socket | null>(null);
+  const navigate = useNavigate();
+
+  const handleGoToUserPage = (userId: number) => {
+    navigate(`/user/${userId}`);
+  };
 
   useEffect(() => {
     socket.current =
@@ -42,12 +50,23 @@ const MyFollow: React.FC = () => {
 
             return (
               <FollowItem key={follower.id}>
-                <Nickname>{follower.nickname}</Nickname>
-                {isFollowing ? (
-                  <UserPageButton userId={follower.id} />
-                ) : (
-                  <FollowButton userId={follower.id} />
-                )}
+                <AvatarWrapper onClick={() => handleGoToUserPage(follower.id)}>
+                  <Avatar
+                    src={
+                      follower?.Image
+                        ? `${baseURL}/${follower?.Image?.src}`
+                        : `${DEFAULT_PROFILE_IMAGE}`
+                    }
+                    alt={`${follower.nickname} 프로필 이미지`}
+                  />
+                  <>
+                    {isFollowing ? (
+                      <Nickname>{follower.nickname}</Nickname>
+                    ) : (
+                      <FollowButton userId={follower.id} />
+                    )}
+                  </>
+                </AvatarWrapper>
               </FollowItem>
             );
           })}
@@ -58,8 +77,19 @@ const MyFollow: React.FC = () => {
         <FollowList>
           {me?.Followings.map((following) => (
             <FollowItem key={following.id}>
-              <Nickname>{following.nickname}</Nickname>
-              <FollowButton userId={following.id} />
+              <AvatarWrapper>
+                <Avatar
+                  src={
+                    following?.Image
+                      ? `${baseURL}/${following?.Image?.src}`
+                      : `${DEFAULT_PROFILE_IMAGE}`
+                  }
+                  alt={`${following.nickname} 프로필 이미지`}
+                />
+                <Nickname>
+                  {following.nickname} <FollowButton userId={following.id} />
+                </Nickname>
+              </AvatarWrapper>
             </FollowItem>
           ))}
         </FollowList>
@@ -112,7 +142,6 @@ const SectionHeading = styled.h2`
 `;
 
 const FollowItem = styled.div`
-  width: 200px;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -128,11 +157,8 @@ const FollowItem = styled.div`
   }
 `;
 
-const Nickname = styled.span`
-  width: 100px;
-  color: #333;
+const Nickname = styled.div`
   @media (max-width: 768px) {
-    width: 30px;
     font-size: 0.8em;
   }
 `;

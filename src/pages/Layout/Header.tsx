@@ -45,7 +45,7 @@ const Header = () => {
     };
   }, []);
 
-  //새로고침 로그인 유지
+  //새로고침 로그인 유지 및 헤더 클릭 유저 정보 반환
   useEffect(() => {
     const accessToken = sessionStorage.getItem("accessToken");
     const refreshToken = sessionStorage.getItem("refreshToken");

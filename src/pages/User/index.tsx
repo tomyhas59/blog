@@ -71,6 +71,10 @@ const UserPage = () => {
     navigate(`/post/${postId}?page=1&sortBy=recent&cPage=1`);
   };
 
+  const handleGoToUserPage = (userId: number) => {
+    navigate(`/user/${userId}`);
+  };
+
   if (!user) return null;
 
   console.log(user);
@@ -104,7 +108,10 @@ const UserPage = () => {
         <FollowList ref={scrollRefFollowings}>
           {user.Followings.length > 0 ? (
             user.Followings.map((following) => (
-              <AvatarWrapper key={following.id}>
+              <AvatarWrapper
+                key={following.id}
+                onClick={() => handleGoToUserPage(following.id)}
+              >
                 <FollowAvatar
                   src={
                     following?.Image
@@ -127,7 +134,10 @@ const UserPage = () => {
         <FollowList ref={scrollRefFollowers}>
           {user.Followers.length > 0 ? (
             user.Followers.map((follower) => (
-              <AvatarWrapper key={follower.id}>
+              <AvatarWrapper
+                key={follower.id}
+                onClick={() => handleGoToUserPage(follower.id)}
+              >
                 <FollowAvatar
                   src={
                     follower?.Image
@@ -201,19 +211,25 @@ const ProfileHeader = styled.header`
   margin-bottom: 20px;
 `;
 
-const AvatarWrapper = styled.div`
+export const AvatarWrapper = styled.div`
   display: flex;
   flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+
   button {
     padding: 2px 5px;
   }
 `;
 
-const Avatar = styled.img`
+export const Avatar = styled.img`
   width: 80px;
   height: 80px;
   border-radius: 50%;
   border: 3px solid ${(props) => props.theme.mainColor};
+  &:hover {
+    border-color: #bab5b5;
+  }
 `;
 
 const FollowAvatar = styled(Avatar)`

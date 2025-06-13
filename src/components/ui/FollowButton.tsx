@@ -37,6 +37,7 @@ const FollowButton: React.FC<FollowButtonProps> = ({
 
       resetInfoAndOption();
       alert(isFollowing ? "언팔로우 완료" : "팔로우 완료");
+      window.location.reload();
     },
     [dispatch, resetInfoAndOption, userId, me?.id]
   );

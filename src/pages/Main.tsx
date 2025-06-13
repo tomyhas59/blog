@@ -20,6 +20,7 @@ const Main = () => {
   const [viewedPosts, setViewedPosts] = useState<number[]>([]);
   const { currentPage, divisor, sortBy, setCurrentPage } = usePagination();
 
+  const { me } = useSelector((state: RootState) => state.user);
   useEffect(() => {
     const viewedPostsCookie = JSON.parse(
       localStorage.getItem("viewedPosts") || "[]"
@@ -47,6 +48,8 @@ const Main = () => {
       sortBy,
     });
   }, [currentPage, divisor, dispatch, sortBy, location.pathname]);
+
+  console.log(me);
 
   return (
     <MainContainer>
