@@ -9,10 +9,13 @@ import { useDispatch } from "react-redux";
 import { SEARCH_POSTS_REQUEST } from "../../reducer/post";
 import MyPostListRenderer from "../../components/renderer/MyPostListRenderer";
 import { usePagination } from "../../hooks/PaginationProvider";
-import { Heading } from "./MyPosts";
+import { Heading, MoreButton } from "./MyPosts";
 
 const MyLikes: React.FC = () => {
-  const [posts, setPosts] = useState<PostType[]>([]);
+  const [posts, setLikedPosts] = useState<PostType[]>([]);
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
+
   const { me } = useSelector((state: RootState) => state.user);
   const navigator = useNavigate();
   const dispatch = useDispatch();
@@ -26,15 +29,10 @@ const MyLikes: React.FC = () => {
       if (me?.id) {
         try {
           const response = await axios.get(`/post/likers?userId=${me.id}`);
-          const posts = response.data.map(
-            (item: { id: number; title: string; createdAt: string }) => ({
-              id: item.id,
-              title: item.title,
-              createdAt: item.createdAt,
-            })
-          );
-          console.log(response.data);
-          setPosts(posts);
+
+          setLikedPosts(response.data.likedPosts);
+          setHasMore(response.data.hasMore);
+          setPage(2);
         } catch (error) {
           console.error(error);
         }
@@ -43,6 +41,25 @@ const MyLikes: React.FC = () => {
     getUserLikes();
   }, [me]);
 
+  // 다음 페이지 게시글 불러오기
+  const fetchMoreLikePosts = async () => {
+    if (!me || !hasMore) return;
+
+    try {
+      const response = await axios.get(
+        `/post/likers?userId=${me.id}&page=${page}&limit=5`
+      );
+      const newLikePosts = response.data.likedPosts;
+
+      setLikedPosts((prev) => [...prev, ...newLikePosts]);
+      setHasMore(response.data.hasMore);
+      setPage((prev) => prev + 1);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  //불러온 게시글 클릭 시 페이지 이동
   useEffect(() => {
     if (postNum && postId !== null) {
       const searchedPostPage = Math.floor(Number(postNum) / divisor) + 1;
@@ -74,6 +91,7 @@ const MyLikes: React.FC = () => {
         items={posts}
         onItemClick={(title, postId) => searchByTitle(title, postId)}
       />
+      {hasMore && <MoreButton onClick={fetchMoreLikePosts}>더 보기</MoreButton>}
     </PostsContainer>
   );
 };
