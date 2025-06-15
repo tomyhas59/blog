@@ -36,6 +36,7 @@ import "slick-carousel/slick/slick-theme.css";
 import Slider from "react-slick";
 import PostEditForm from "./PostEditForm";
 import UserPageButton from "../ui/UserPageButton";
+import { formatDate } from "../../utils/date";
 
 const CommonPost = () => {
   const socket = useRef<Socket | null>(null);
@@ -218,7 +219,7 @@ const CommonPost = () => {
             <PostTitle>{post.title}</PostTitle>
           </PostHeaderLeftSection>
           <PostMetaInfo>
-            <Date>{moment(post.createdAt).format("l")}</Date>
+            <Date>{formatDate(post.createdAt)}</Date>
             <Like itemType="post" item={post} />
             <ViewCount>조회 수 {post.viewCount}</ViewCount>
           </PostMetaInfo>

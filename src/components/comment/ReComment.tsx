@@ -19,6 +19,7 @@ import { usePagination } from "../../hooks/PaginationProvider";
 import useSetParams from "../../hooks/useSetParams";
 import Like from "../ui/Like";
 import UserPageButton from "../ui/UserPageButton";
+import { formatDate } from "../../utils/date";
 
 const ReComment = ({
   post,
@@ -149,7 +150,7 @@ const ReComment = ({
                   )}
                 </AuthorMenu>
               ) : null}
-              <Date>{moment(reComment.createdAt).format("l")}</Date>
+              <Date>{formatDate(reComment.createdAt)}</Date>
               <Like
                 itemType="reComment"
                 item={reComment}

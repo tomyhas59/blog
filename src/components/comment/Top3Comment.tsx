@@ -18,6 +18,7 @@ import moment from "moment";
 import styled, { useTheme } from "styled-components";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { formatDate } from "../../utils/date";
 
 const Top3Comment = () => {
   //좋아요 3개 이상 있을 때 Top3 표시
@@ -73,7 +74,7 @@ const Top3Comment = () => {
                 />
                 <span>{comment.User.nickname.slice(0, 5)}</span>
               </Author>
-              <Date>{moment(comment.createdAt).format("l")}</Date>
+              <Date>{formatDate(comment.createdAt)}</Date>
               <Like itemType="comment" item={comment} isTop3Comments={true} />
             </CommentHeader>
             <ContentWrapper>

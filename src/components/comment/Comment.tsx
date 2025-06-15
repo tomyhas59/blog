@@ -35,6 +35,7 @@ import CommentPagination from "../pagination/CommentPagination";
 import { useLocation, useNavigate } from "react-router-dom";
 import Top3Comment from "./Top3Comment";
 import UserPageButton from "../ui/UserPageButton";
+import { formatDate } from "../../utils/date";
 
 const Comment = ({ post }: { post: PostType }) => {
   const dispatch = useDispatch();
@@ -346,7 +347,7 @@ const Comment = ({ post }: { post: PostType }) => {
                   )}
                 </AuthorMenu>
               ) : null}
-              <Date>{moment(comment.createdAt).format("l")}</Date>
+              <Date>{formatDate(comment.createdAt)}</Date>
               <Like itemType="comment" item={comment} />
             </CommentHeader>
             <ContentWrapper>

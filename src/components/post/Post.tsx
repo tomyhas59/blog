@@ -11,11 +11,11 @@ import { RootState } from "../../reducer";
 
 import { usePagination } from "../../hooks/PaginationProvider";
 import useSetParams from "../../hooks/useSetParams";
-import moment from "moment";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faImage, faImages } from "@fortawesome/free-solid-svg-icons";
 import FollowButton from "../ui/FollowButton";
 import UserPageButton from "../ui/UserPageButton";
+import { formatDate } from "../../utils/date";
 
 const Post = ({
   post,
@@ -135,7 +135,7 @@ const Post = ({
         </PostTitle>
       </PostHeaderLeftSection>
       <PostMetaInfo>
-        <Date>{moment(post.createdAt).format("l")}</Date>
+        <Date>{formatDate(post.createdAt)}</Date>
         <Liked>{post.Likers.length === 0 ? "" : post.Likers.length}</Liked>
         <ViewCount>{post.viewCount}</ViewCount>
       </PostMetaInfo>
