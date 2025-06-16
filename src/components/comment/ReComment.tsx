@@ -3,7 +3,6 @@ import { useState, useCallback } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { REMOVE_RECOMMENT_REQUEST } from "../../reducer/post";
 import styled from "styled-components";
-import moment from "moment";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleXmark, faComment } from "@fortawesome/free-solid-svg-icons";
 import { CommentType, PostType } from "../../types";

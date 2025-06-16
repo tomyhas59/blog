@@ -8,7 +8,6 @@ import { DEFAULT_PROFILE_IMAGE } from "../../pages/Info/MyInfo";
 import useOutsideClick from "../../hooks/useOutsideClick";
 import { useSelector } from "react-redux";
 import { RootState } from "../../reducer";
-
 import { usePagination } from "../../hooks/PaginationProvider";
 import useSetParams from "../../hooks/useSetParams";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";

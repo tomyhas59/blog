@@ -13,7 +13,6 @@ import {
   REMOVE_COMMENT_REQUEST,
   UPDATE_COMMENT_REQUEST,
 } from "../../reducer/post";
-import moment from "moment";
 import useInput from "../../hooks/useInput";
 import ReCommentForm from "./ReCommentForm";
 import ReComment from "./ReComment";
