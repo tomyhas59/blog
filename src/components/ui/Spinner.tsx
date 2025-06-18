@@ -5,7 +5,12 @@ import styled from "styled-components";
 const Spinner: React.FC = () => {
   return (
     <SpinnerContainer>
-      <ClipLoader size={50} color={"#3498db"} loading={true} />
+      <ClipLoader
+        size={50}
+        color={"#3498db"}
+        loading={true}
+        cssOverride={{ borderWidth: 6 }}
+      />
     </SpinnerContainer>
   );
 };
