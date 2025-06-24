@@ -14,7 +14,6 @@ import {
 import ContentRenderer from "../renderer/ContentRenderer";
 import { baseURL } from "../../config";
 import { DEFAULT_PROFILE_IMAGE } from "../../pages/Info/MyInfo";
-import moment from "moment";
 import styled, { useTheme } from "styled-components";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";

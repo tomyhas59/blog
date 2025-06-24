@@ -7,28 +7,26 @@ import React, {
 } from "react";
 import styled from "styled-components";
 import { useDispatch, useSelector } from "react-redux";
-import { ADD_RECOMMENT_REQUEST } from "../../reducer/post";
+import { ADD_REPLY_REQUEST } from "../../reducer/post";
 import useInput from "../../hooks/useInput";
-import { CommentType, PostType, ReCommentType } from "../../types";
+import { CommentType, PostType, ReplyType } from "../../types";
 import { RootState } from "../../reducer";
 
-const ReCommentForm = ({
+const ReplyForm = ({
   post,
   comment,
-  reComment,
-  setAddReComment,
+  reply,
+  setAddReply,
 }: {
   post: PostType;
   comment: CommentType;
-  reComment: ReCommentType | null;
-  setAddReComment: React.Dispatch<
-    React.SetStateAction<Record<number, boolean>>
-  >;
+  reply: ReplyType | null;
+  setAddReply: React.Dispatch<React.SetStateAction<Record<number, boolean>>>;
 }) => {
-  const { addReCommentDone } = useSelector((state: RootState) => state.post);
-  const editReCommentRef = useRef<HTMLTextAreaElement>(null);
+  const { addReplyDone } = useSelector((state: RootState) => state.post);
+  const editReplyRef = useRef<HTMLTextAreaElement>(null);
 
-  const [reCommentContent, , setContent] = useInput();
+  const [replyContent, , setContent] = useInput();
 
   const handleContentChange = useCallback(
     (e: ChangeEvent<HTMLTextAreaElement>) => {
@@ -41,64 +39,56 @@ const ReCommentForm = ({
   const id = useSelector((state: RootState) => state.user.me?.id);
 
   useEffect(() => {
-    if (addReCommentDone) {
+    if (addReplyDone) {
       setContent("");
     }
-    if (editReCommentRef) {
-      editReCommentRef.current!.focus();
+    if (editReplyRef) {
+      editReplyRef.current!.focus();
     }
-  }, [addReCommentDone, editReCommentRef, setContent]);
+  }, [addReplyDone, editReplyRef, setContent]);
 
-  const handleAddReComment = useCallback(
+  const handleAddReply = useCallback(
     (e: SyntheticEvent) => {
       e.preventDefault();
-      if (reCommentContent === "") {
+      if (replyContent === "") {
         alert("댓글을 입력하세요");
         return;
       }
 
-      const content = reComment
-        ? `@${reComment.User.nickname} ${reCommentContent}`
-        : reCommentContent;
+      const content = reply
+        ? `@${reply.User.nickname} ${replyContent}`
+        : replyContent;
 
       const contentWithBreaks = content.replace(/\n/g, "<br>");
       dispatch({
-        type: ADD_RECOMMENT_REQUEST,
+        type: ADD_REPLY_REQUEST,
         data: {
           content: contentWithBreaks,
           postId: post.id,
           commentId: comment.id,
-          reComment: reComment?.id,
+          reply: reply?.id,
           userId: id,
         },
       });
-      setAddReComment({ [comment.id]: false });
+      setAddReply({ [comment.id]: false });
     },
-    [
-      reCommentContent,
-      comment.id,
-      reComment,
-      dispatch,
-      post.id,
-      id,
-      setAddReComment,
-    ]
+    [replyContent, comment.id, reply, dispatch, post.id, id, setAddReply]
   );
 
   return (
-    <Form onSubmit={handleAddReComment}>
+    <Form onSubmit={handleAddReply}>
       <Textarea
         placeholder="내용을 입력해주세요"
-        value={reCommentContent}
+        value={replyContent}
         onChange={handleContentChange}
-        ref={editReCommentRef}
+        ref={editReplyRef}
       />
       <Button type="submit">등록</Button>
     </Form>
   );
 };
 
-export default ReCommentForm;
+export default ReplyForm;
 
 const Form = styled.form`
   width: 100%;

@@ -85,8 +85,8 @@ const Post = ({
     [post.User.nickname, setSearchedCurrentPage, setParams]
   );
 
-  const totalReCommentsCount = post.Comments.reduce(
-    (total, comment) => total + comment.ReComments.length,
+  const totalRepliesCount = post.Comments.reduce(
+    (total, comment) => total + comment.Replies?.length,
     0
   );
 
@@ -122,7 +122,7 @@ const Post = ({
         <PostTitle isViewed={viewedPosts?.includes(post.id) as boolean}>
           {post.title}
           <span style={{ fontSize: "12px" }}>
-            [{post.Comments.length + totalReCommentsCount}]
+            [{post.Comments.length + totalRepliesCount}]
           </span>
           <span>
             {post.Images.length > 0 && (

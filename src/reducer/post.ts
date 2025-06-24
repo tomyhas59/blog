@@ -69,17 +69,17 @@ const initialState = {
   updateCommentDone: false,
   updateCommentError: null,
 
-  addReCommentLoading: false,
-  addReCommentDone: false,
-  addReCommentError: null,
+  addReplyLoading: false,
+  addReplyDone: false,
+  addReplyError: null,
 
-  removeReCommentLoading: false,
-  removeReCommentDone: false,
-  removeReCommentError: null,
+  removeReplyLoading: false,
+  removeReplyDone: false,
+  removeReplyError: null,
 
-  updateReCommentLoading: false,
-  updateReCommentDone: false,
-  updateReCommentError: null,
+  updateReplyLoading: false,
+  updateReplyDone: false,
+  updateReplyError: null,
 
   likePostLoading: false,
   likePostDone: false,
@@ -97,13 +97,13 @@ const initialState = {
   unLikeCommentDone: false,
   unLikeCommentError: null,
 
-  likeReCommentLoading: false,
-  likeReCommentDone: false,
-  likeReCommentError: null,
+  likeReplyLoading: false,
+  likeReplyDone: false,
+  likeReplyError: null,
 
-  unLikeReCommentLoading: false,
-  unLikeReCommentDone: false,
-  unLikeReCommentError: null,
+  unLikeReplyLoading: false,
+  unLikeReplyDone: false,
+  unLikeReplyError: null,
 
   readChatLoading: false,
   readChatDone: false,
@@ -151,17 +151,17 @@ export const UPDATE_COMMENT_REQUEST = "UPDATE_COMMENT_REQUEST";
 export const UPDATE_COMMENT_SUCCESS = "UPDATE_COMMENT_SUCCESS";
 export const UPDATE_COMMENT_FAILURE = "UPDATE_COMMENT_FAILURE";
 
-export const ADD_RECOMMENT_REQUEST = "ADD_RECOMMENT_REQUEST";
-export const ADD_RECOMMENT_SUCCESS = "ADD_RECOMMENT_SUCCESS";
-export const ADD_RECOMMENT_FAILURE = "ADD_RECOMMENT_FAILURE";
+export const ADD_REPLY_REQUEST = "ADD_REPLY_REQUEST";
+export const ADD_REPLY_SUCCESS = "ADD_REPLY_SUCCESS";
+export const ADD_REPLY_FAILURE = "ADD_REPLY_FAILURE";
 
-export const REMOVE_RECOMMENT_REQUEST = "REMOVE_RECOMMENT_REQUEST";
-export const REMOVE_RECOMMENT_SUCCESS = "REMOVE_RECOMMENT_SUCCESS";
-export const REMOVE_RECOMMENT_FAILURE = "REMOVE_RECOMMENT_FAILURE";
+export const REMOVE_REPLY_REQUEST = "REMOVE_REPLY_REQUEST";
+export const REMOVE_REPLY_SUCCESS = "REMOVE_REPLY_SUCCESS";
+export const REMOVE_REPLY_FAILURE = "REMOVE_REPLY_FAILURE";
 
-export const UPDATE_RECOMMENT_REQUEST = "UPDATE_RECOMMENT_REQUEST";
-export const UPDATE_RECOMMENT_SUCCESS = "UPDATE_RECOMMENT_SUCCESS";
-export const UPDATE_RECOMMENT_FAILURE = "UPDATE_RECOMMENT_FAILURE";
+export const UPDATE_REPLY_REQUEST = "UPDATE_REPLY_REQUEST";
+export const UPDATE_REPLY_SUCCESS = "UPDATE_REPLY_SUCCESS";
+export const UPDATE_REPLY_FAILURE = "UPDATE_REPLY_FAILURE";
 
 export const LIKE_POST_REQUEST = "LIKE_POST_REQUEST";
 export const LIKE_POST_SUCCESS = "LIKE_POST_SUCCESS";
@@ -179,13 +179,13 @@ export const UNLIKE_COMMENT_REQUEST = "UNLIKE_COMMENT_REQUEST";
 export const UNLIKE_COMMENT_SUCCESS = "UNLIKE_COMMENT_SUCCESS";
 export const UNLIKE_COMMENT_FAILURE = "UNLIKE_COMMENT_FAILURE";
 
-export const LIKE_RECOMMENT_REQUEST = "LIKE_RECOMMENT_REQUEST";
-export const LIKE_RECOMMENT_SUCCESS = "LIKE_RECOMMENT_SUCCESS";
-export const LIKE_RECOMMENT_FAILURE = "LIKE_RECOMMENT_FAILURE";
+export const LIKE_REPLY_REQUEST = "LIKE_REPLY_REQUEST";
+export const LIKE_REPLY_SUCCESS = "LIKE_REPLY_SUCCESS";
+export const LIKE_REPLY_FAILURE = "LIKE_REPLY_FAILURE";
 
-export const UNLIKE_RECOMMENT_REQUEST = "UNLIKE_RECOMMENT_REQUEST";
-export const UNLIKE_RECOMMENT_SUCCESS = "UNLIKE_RECOMMENT_SUCCESS";
-export const UNLIKE_RECOMMENT_FAILURE = "UNLIKE_RECOMMENT_FAILURE";
+export const UNLIKE_REPLY_REQUEST = "UNLIKE_REPLY_REQUEST";
+export const UNLIKE_REPLY_SUCCESS = "UNLIKE_REPLY_SUCCESS";
+export const UNLIKE_REPLY_FAILURE = "UNLIKE_REPLY_FAILURE";
 
 export const SEARCH_POSTS_REQUEST = "SEARCH_POSTS_REQUEST";
 export const SEARCH_POSTS_SUCCESS = "SEARCH_POSTS_SUCCESS";
@@ -433,80 +433,78 @@ const post = (state = initialState, action: any) => {
         break;
       //-----------------------------------------------------
 
-      case ADD_RECOMMENT_REQUEST:
-        draft.addReCommentLoading = true;
-        draft.addReCommentDone = false;
-        draft.addReCommentError = null;
+      case ADD_REPLY_REQUEST:
+        draft.addReplyLoading = true;
+        draft.addReplyDone = false;
+        draft.addReplyError = null;
         break;
-      case ADD_RECOMMENT_SUCCESS: {
-        draft.addReCommentLoading = false;
-        draft.addReCommentDone = true;
+      case ADD_REPLY_SUCCESS: {
+        draft.addReplyLoading = false;
+        draft.addReplyDone = true;
 
         const commentIndex = draft.comments.findIndex(
           (post: { id: any }) => post.id === action.data.CommentId
         );
-        draft.comments[commentIndex].ReComments.push(action.data);
+        draft.comments[commentIndex].Replies.push(action.data);
         if (draft.totalComments) draft.totalComments++;
         break;
       }
-      case ADD_RECOMMENT_FAILURE:
-        draft.addReCommentLoading = false;
-        draft.addReCommentError = action.error;
+      case ADD_REPLY_FAILURE:
+        draft.addReplyLoading = false;
+        draft.addReplyError = action.error;
         break;
       //-----------------------------------------------------
 
-      case REMOVE_RECOMMENT_REQUEST:
-        draft.removeReCommentLoading = true;
-        draft.removeReCommentDone = false;
-        draft.removeReCommentError = null;
+      case REMOVE_REPLY_REQUEST:
+        draft.removeReplyLoading = true;
+        draft.removeReplyDone = false;
+        draft.removeReplyError = null;
         break;
-      case REMOVE_RECOMMENT_SUCCESS: {
-        draft.removeReCommentLoading = false;
-        draft.removeReCommentDone = true;
+      case REMOVE_REPLY_SUCCESS: {
+        draft.removeReplyLoading = false;
+        draft.removeReplyDone = true;
 
         const commentIndex = draft.comments.findIndex(
           (comment: { id: any }) => comment.id === action.data.CommentId
         );
-        draft.comments[commentIndex].ReComments = draft.comments[
+        draft.comments[commentIndex].Replies = draft.comments[
           commentIndex
-        ].ReComments.filter(
-          (post: { id: any }) => post.id !== action.data.ReCommentId
+        ].Replies.filter(
+          (post: { id: any }) => post.id !== action.data.ReplyId
         );
         if (draft.totalComments) draft.totalComments--;
         break;
       }
-      case REMOVE_RECOMMENT_FAILURE:
-        draft.removeReCommentLoading = false;
-        draft.removeReCommentError = action.error;
+      case REMOVE_REPLY_FAILURE:
+        draft.removeReplyLoading = false;
+        draft.removeReplyError = action.error;
         break;
       //---------------------------------------------------
 
-      case UPDATE_RECOMMENT_REQUEST:
-        draft.updateReCommentLoading = true;
-        draft.updateReCommentDone = false;
-        draft.updateReCommentError = null;
+      case UPDATE_REPLY_REQUEST:
+        draft.updateReplyLoading = true;
+        draft.updateReplyDone = false;
+        draft.updateReplyError = null;
         break;
-      case UPDATE_RECOMMENT_SUCCESS: {
-        draft.updateReCommentLoading = false;
-        draft.updateReCommentDone = true;
+      case UPDATE_REPLY_SUCCESS: {
+        draft.updateReplyLoading = false;
+        draft.updateReplyDone = true;
 
         const commentIndex = draft.comments.findIndex(
           (comment: { id: any }) => comment.id === action.data.CommentId
         );
-        const reCommentIndex = draft.comments[
-          commentIndex
-        ].ReComments.findIndex(
-          (reComment: { id: any }) => reComment.id === action.data.ReCommentId
+        const replyIndex = draft.comments[commentIndex].Replies.findIndex(
+          (reply: { id: any }) => reply.id === action.data.ReplyId
         );
-        draft.comments[commentIndex].ReComments[reCommentIndex].content =
+        draft.comments[commentIndex].Replies[replyIndex].content =
           action.data.content;
 
         break;
       }
 
-      case UPDATE_RECOMMENT_FAILURE:
-        draft.updateReCommentLoading = false;
-        draft.updateReCommentError = action.error;
+      case UPDATE_REPLY_FAILURE:
+        draft.updateReplyLoading = false;
+        draft.updateReplyError = action.error;
         break;
       //-------------------------------------------------------------------
 
@@ -639,76 +637,72 @@ const post = (state = initialState, action: any) => {
 
       //-------------------------------------------------------------------
 
-      case LIKE_RECOMMENT_REQUEST:
-        draft.likeReCommentLoading = true;
-        draft.likeReCommentDone = false;
-        draft.likeReCommentError = null;
+      case LIKE_REPLY_REQUEST:
+        draft.likeReplyLoading = true;
+        draft.likeReplyDone = false;
+        draft.likeReplyError = null;
         break;
-      case LIKE_RECOMMENT_SUCCESS: {
+      case LIKE_REPLY_SUCCESS: {
         const commentIndex = draft.comments.findIndex(
           (comment: { id: any }) => comment.id === action.data.CommentId
         );
 
         if (commentIndex === -1) return;
 
-        const reCommentIndex = draft.comments[
-          commentIndex
-        ].ReComments.findIndex(
-          (reComment: { id: any }) => reComment.id === action.data.ReCommentId
+        const replyIndex = draft.comments[commentIndex].Replies.findIndex(
+          (reply: { id: any }) => reply.id === action.data.ReplyId
         );
 
-        if (reCommentIndex === -1) return;
+        if (replyIndex === -1) return;
 
-        if (!draft.comments[commentIndex].ReComments[reCommentIndex].Likers) {
-          draft.comments[commentIndex].ReComments[reCommentIndex].Likers = [];
+        if (!draft.comments[commentIndex].Replies[replyIndex].Likers) {
+          draft.comments[commentIndex].Replies[replyIndex].Likers = [];
         }
 
-        draft.comments[commentIndex].ReComments[reCommentIndex].Likers.push({
+        draft.comments[commentIndex].Replies[replyIndex].Likers.push({
           id: action.data.UserId,
           nickname: action.data.nickname,
         });
 
-        draft.likeReCommentLoading = false;
-        draft.likeReCommentDone = true;
+        draft.likeReplyLoading = false;
+        draft.likeReplyDone = true;
         break;
       }
-      case LIKE_RECOMMENT_FAILURE:
-        draft.likeReCommentLoading = false;
-        draft.likeReCommentError = action.error;
+      case LIKE_REPLY_FAILURE:
+        draft.likeReplyLoading = false;
+        draft.likeReplyError = action.error;
         break;
       //-------------------------------------------------------------------
 
-      case UNLIKE_RECOMMENT_REQUEST:
-        draft.unLikeReCommentLoading = true;
-        draft.unLikeReCommentDone = false;
-        draft.unLikeReCommentError = null;
+      case UNLIKE_REPLY_REQUEST:
+        draft.unLikeReplyLoading = true;
+        draft.unLikeReplyDone = false;
+        draft.unLikeReplyError = null;
         break;
-      case UNLIKE_RECOMMENT_SUCCESS: {
+      case UNLIKE_REPLY_SUCCESS: {
         const commentIndex = draft.comments.findIndex(
           (comment: { id: any }) => comment.id === action.data.CommentId
         );
 
         if (commentIndex === -1) return;
 
-        const reCommentIndex = draft.comments[
-          commentIndex
-        ].ReComments.findIndex(
-          (reComment: { id: any }) => reComment.id === action.data.ReCommentId
+        const replyIndex = draft.comments[commentIndex].Replies.findIndex(
+          (reply: { id: any }) => reply.id === action.data.ReplyId
         );
 
-        if (reCommentIndex === -1) return;
-        draft.comments[commentIndex].ReComments[reCommentIndex].Likers =
-          draft.comments[commentIndex].ReComments[reCommentIndex].Likers.filter(
+        if (replyIndex === -1) return;
+        draft.comments[commentIndex].Replies[replyIndex].Likers =
+          draft.comments[commentIndex].Replies[replyIndex].Likers.filter(
             (liker: { id: any }) => liker.id !== action.data.UserId
           );
 
-        draft.unLikeReCommentLoading = false;
-        draft.unLikeReCommentDone = true;
+        draft.unLikeReplyLoading = false;
+        draft.unLikeReplyDone = true;
         break;
       }
-      case UNLIKE_RECOMMENT_FAILURE:
-        draft.unLikeReCommentLoading = false;
-        draft.unLikeReCommentError = action.error;
+      case UNLIKE_REPLY_FAILURE:
+        draft.unLikeReplyLoading = false;
+        draft.unLikeReplyError = action.error;
         break;
 
       //-------------------------------------------------------

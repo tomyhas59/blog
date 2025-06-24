@@ -63,8 +63,8 @@ const SearchedPost = ({
     window.scrollTo({ top: 0, behavior: "auto" });
   }, [searchTextParam, setParams]);
 
-  const totalReComments = post.Comments.reduce(
-    (total, comment) => total + comment.ReComments.length,
+  const totalReplies = post.Comments.reduce(
+    (total, comment) => total + comment.Replies.length,
     0
   );
 
@@ -98,7 +98,7 @@ const SearchedPost = ({
             <PostTitle isViewed={viewedPosts?.includes(post.id) as boolean}>
               {highlightText(post.title) || post.title}
               <span style={{ fontSize: "12px" }}>
-                [{post.Comments.length + totalReComments}]
+                [{post.Comments.length + totalReplies}]
               </span>
               <span>
                 {post.Images.length > 0 && (
@@ -129,15 +129,15 @@ const SearchedPost = ({
                     {highlightText(comment.content)}
                   </div>
                 )}
-                {comment.ReComments.map((reComment) => (
-                  <ReComment key={reComment.id}>
-                    {reComment.content.includes(searchTextParam) && (
+                {comment.Replies.map((reply) => (
+                  <Reply key={reply.id}>
+                    {reply.content.includes(searchTextParam) && (
                       <div>
-                        <Nickname>{reComment.User.nickname} : </Nickname>
-                        {highlightText(reComment.content)}
+                        <Nickname>{reply.User.nickname} : </Nickname>
+                        {highlightText(reply.content)}
                       </div>
                     )}
-                  </ReComment>
+                  </Reply>
                 ))}
               </Comment>
             ))}
@@ -187,7 +187,7 @@ const Content = styled.div`
 
 const Comment = styled.div``;
 
-const ReComment = styled.div`
+const Reply = styled.div`
   margin-top: 5px;
   padding-left: 20px;
   font-style: italic;

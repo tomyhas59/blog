@@ -2,7 +2,7 @@ import axios from "axios";
 import React, { useCallback, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "../../reducer";
-import { CommentType, ReCommentType } from "../../types";
+import { CommentType, ReplyType } from "../../types";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
@@ -13,11 +13,11 @@ import { MoreButton } from "./MyPosts";
 
 const MyComments: React.FC = () => {
   const [comments, setComments] = useState<CommentType[]>([]);
-  const [reComments, setReComments] = useState<ReCommentType[]>([]);
+  const [replies, setReplies] = useState<ReplyType[]>([]);
   const [commentPage, setCommentPage] = useState(1);
-  const [reCommentPage, setReCommentPage] = useState(1);
+  const [replyPage, setReplyPage] = useState(1);
   const [hasMoreComments, setHasMoreComments] = useState(true);
-  const [hasMoreReComments, setHasMoreReComments] = useState(true);
+  const [hasMoreReplies, setHasMoreReplies] = useState(true);
 
   const { me } = useSelector((state: RootState) => state.user);
   const navigator = useNavigate();
@@ -25,9 +25,7 @@ const MyComments: React.FC = () => {
   const searchOption = "comment";
   const { postNum, commentNum } = useSelector((state: RootState) => state.post);
   const [postId, setPostId] = useState<number | null>(null);
-  const [commentOrReCommentId, setCommentOrReCommentId] = useState<
-    number | null
-  >(null);
+  const [commentOrReplyId, setCommentOrReplyId] = useState<number | null>(null);
   const { divisor, setCurrentPage, setCurrentCommentsPage } = usePagination();
   const [category, setCategory] = useState<string>("");
 
@@ -48,11 +46,11 @@ const MyComments: React.FC = () => {
           setHasMoreComments(true);
         } else {
           const response = await axios.get(
-            `/post/user/comment?userId=${me.id}&type=reComment`
+            `/post/user/comment?userId=${me.id}&type=reply`
           );
-          setReComments(response.data.items);
-          setReCommentPage(2);
-          setHasMoreReComments(true);
+          setReplies(response.data.items);
+          setReplyPage(2);
+          setHasMoreReplies(true);
         }
       } catch (error) {
         console.error(error);
@@ -64,10 +62,10 @@ const MyComments: React.FC = () => {
 
   // 다음 페이지 댓글 불러오기
   const fetchUserCommentsByType = useCallback(
-    async (type: "comment" | "reComment") => {
+    async (type: "comment" | "reply") => {
       if (!me) return;
 
-      const page = type === "comment" ? commentPage : reCommentPage;
+      const page = type === "comment" ? commentPage : replyPage;
 
       try {
         const response = await axios.get(
@@ -84,17 +82,17 @@ const MyComments: React.FC = () => {
           setHasMoreComments(hasMore);
           setCommentPage((prev) => prev + 1);
         } else {
-          setReComments((prev) =>
+          setReplies((prev) =>
             Array.isArray(prev) ? [...prev, ...newItems] : [...newItems]
           );
-          setHasMoreReComments(hasMore);
-          setReCommentPage((prev) => prev + 1);
+          setHasMoreReplies(hasMore);
+          setReplyPage((prev) => prev + 1);
         }
       } catch (error) {
         console.error("댓글 불러오기 실패:", error);
       }
     },
-    [me, commentPage, reCommentPage]
+    [me, commentPage, replyPage]
   );
 
   //불러온 댓글 클릭 시 페이지 이동
@@ -104,7 +102,7 @@ const MyComments: React.FC = () => {
         postNum &&
         commentNum &&
         postId !== null &&
-        commentOrReCommentId !== null
+        commentOrReplyId !== null
       ) {
         const searchedPostPage = Math.floor(Number(postNum) / divisor) + 1;
         const searchedCommentPage =
@@ -115,8 +113,8 @@ const MyComments: React.FC = () => {
 
         const queryParam =
           category === "comment"
-            ? `commentId=comment-content-${commentOrReCommentId}`
-            : `reCommentId=reComment-content-${commentOrReCommentId}`;
+            ? `commentId=comment-content-${commentOrReplyId}`
+            : `replyId=reply-content-${commentOrReplyId}`;
 
         navigator(`/post/${postId}?${queryParam}`);
 
@@ -126,7 +124,7 @@ const MyComments: React.FC = () => {
 
     fetchData();
   }, [
-    commentOrReCommentId,
+    commentOrReplyId,
     category,
     dispatch,
     postNum,
@@ -141,16 +139,16 @@ const MyComments: React.FC = () => {
   const searchByCommentType = useCallback(
     (
       id: number,
-      category: "comment" | "reComment",
+      category: "comment" | "reply",
       content: string,
       postId: number
     ) => {
       setPostId(postId);
-      setCommentOrReCommentId(id);
+      setCommentOrReplyId(id);
       setCategory(category);
       dispatch({
         type: SEARCH_POSTS_REQUEST,
-        commentOrReCommentId: id,
+        commentOrReplyId: id,
         searchText: content,
         searchOption,
         postId,
@@ -169,12 +167,12 @@ const MyComments: React.FC = () => {
         >
           내가 쓴 댓글
         </MyCommentsTitle>
-        <MyReComments
+        <MyReplies
           isMyComments={isMyComments}
           onClick={() => setIsMyComments(false)}
         >
           내가 쓴 대댓글
-        </MyReComments>
+        </MyReplies>
       </Heading>
       {isMyComments ? (
         <CommentList>
@@ -194,14 +192,14 @@ const MyComments: React.FC = () => {
       ) : (
         <CommentList>
           <MyCommentListRenderer
-            items={reComments}
+            items={replies}
             onItemClick={(id, content, postId) =>
-              searchByCommentType(id, "reComment", content, postId)
+              searchByCommentType(id, "reply", content, postId)
             }
-            type="reComment"
+            type="reply"
           />
-          {hasMoreReComments && (
-            <MoreButton onClick={() => fetchUserCommentsByType("reComment")}>
+          {hasMoreReplies && (
+            <MoreButton onClick={() => fetchUserCommentsByType("reply")}>
               더 보기
             </MoreButton>
           )}
@@ -246,7 +244,7 @@ const MyCommentsTitle = styled.button<{ isMyComments: boolean }>`
     color: white;
   }
 `;
-const MyReComments = styled.button<{ isMyComments: boolean }>`
+const MyReplies = styled.button<{ isMyComments: boolean }>`
   padding: 8px;
   border-radius: 10px;
   background-color: ${(props) =>

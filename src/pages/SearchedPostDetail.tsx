@@ -78,8 +78,8 @@ const SearchedPostDetail = () => {
     unLikePostLoading,
     likeCommentLoading,
     unLikeCommentLoading,
-    likeReCommentLoading,
-    unLikeReCommentLoading,
+    likeReplyLoading,
+    unLikeReplyLoading,
   } = useSelector((state: RootState) => state.post);
 
   return (
@@ -91,8 +91,8 @@ const SearchedPostDetail = () => {
       likePostLoading ||
       likeCommentLoading ||
       unLikeCommentLoading ||
-      likeReCommentLoading ||
-      unLikeReCommentLoading ||
+      likeReplyLoading ||
+      unLikeReplyLoading ||
       unLikePostLoading ? (
         <Spinner />
       ) : null}

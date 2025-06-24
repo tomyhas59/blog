@@ -8,10 +8,10 @@ import { useDispatch } from "react-redux";
 import {
   LIKE_COMMENT_REQUEST,
   LIKE_POST_REQUEST,
-  LIKE_RECOMMENT_REQUEST,
+  LIKE_REPLY_REQUEST,
   UNLIKE_COMMENT_REQUEST,
   UNLIKE_POST_REQUEST,
-  UNLIKE_RECOMMENT_REQUEST,
+  UNLIKE_REPLY_REQUEST,
 } from "../../reducer/post";
 
 const Like = ({
@@ -61,12 +61,12 @@ const Like = ({
           data: item.id,
           isTop3Comments,
         });
-      } else if (itemType === "reComment")
+      } else if (itemType === "reply")
         dispatch({
-          type: LIKE_RECOMMENT_REQUEST,
+          type: LIKE_REPLY_REQUEST,
           data: {
             commentId,
-            reCommentId: item.id,
+            replyId: item.id,
           },
         });
       triggerHeartAnimation(false);
@@ -91,12 +91,12 @@ const Like = ({
           data: item.id,
           isTop3Comments,
         });
-      } else if (itemType === "reComment")
+      } else if (itemType === "reply")
         dispatch({
-          type: UNLIKE_RECOMMENT_REQUEST,
+          type: UNLIKE_REPLY_REQUEST,
           data: {
             commentId,
-            reCommentId: item.id,
+            replyId: item.id,
           },
         });
       triggerHeartAnimation(true);

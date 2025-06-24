@@ -73,7 +73,7 @@ const PostDetail = () => {
   useEffect(() => {
     const params = new URLSearchParams(location.search);
     const commentId = params.get("commentId");
-    const reCommentId = params.get("reCommentId");
+    const replyId = params.get("replyId");
 
     const scrollToElement = (id: string) => {
       const element = document.getElementById(id);
@@ -87,7 +87,7 @@ const PostDetail = () => {
     };
 
     if (commentId && getCommentsDone) scrollToElement(commentId);
-    if (reCommentId && getCommentsDone) scrollToElement(reCommentId);
+    if (replyId && getCommentsDone) scrollToElement(replyId);
   }, [getCommentsDone, location.search, theme.hoverMainColor]);
 
   const {
@@ -99,8 +99,8 @@ const PostDetail = () => {
     unLikePostLoading,
     likeCommentLoading,
     unLikeCommentLoading,
-    likeReCommentLoading,
-    unLikeReCommentLoading,
+    likeReplyLoading,
+    unLikeReplyLoading,
     getCommentsLoading,
   } = useSelector((state: RootState) => state.post);
 
@@ -113,8 +113,8 @@ const PostDetail = () => {
       likePostLoading ||
       likeCommentLoading ||
       unLikeCommentLoading ||
-      likeReCommentLoading ||
-      unLikeReCommentLoading ||
+      likeReplyLoading ||
+      unLikeReplyLoading ||
       getCommentsLoading ||
       unLikePostLoading ? (
         <Spinner />

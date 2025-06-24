@@ -7,9 +7,9 @@ import {
   ADD_POST_FAILURE,
   ADD_POST_REQUEST,
   ADD_POST_SUCCESS,
-  ADD_RECOMMENT_FAILURE,
-  ADD_RECOMMENT_REQUEST,
-  ADD_RECOMMENT_SUCCESS,
+  ADD_REPLY_FAILURE,
+  ADD_REPLY_REQUEST,
+  ADD_REPLY_SUCCESS,
   DELETE_ALL_CHAT_FAILURE,
   DELETE_ALL_CHAT_REQUEST,
   DELETE_ALL_CHAT_SUCCESS,
@@ -31,9 +31,9 @@ import {
   LIKE_POST_FAILURE,
   LIKE_POST_REQUEST,
   LIKE_POST_SUCCESS,
-  LIKE_RECOMMENT_FAILURE,
-  LIKE_RECOMMENT_REQUEST,
-  LIKE_RECOMMENT_SUCCESS,
+  LIKE_REPLY_FAILURE,
+  LIKE_REPLY_REQUEST,
+  LIKE_REPLY_SUCCESS,
   READ_CHAT_FAILURE,
   READ_CHAT_REQUEST,
   READ_CHAT_SUCCESS,
@@ -43,9 +43,9 @@ import {
   REMOVE_POST_FAILURE,
   REMOVE_POST_REQUEST,
   REMOVE_POST_SUCCESS,
-  REMOVE_RECOMMENT_FAILURE,
-  REMOVE_RECOMMENT_REQUEST,
-  REMOVE_RECOMMENT_SUCCESS,
+  REMOVE_REPLY_FAILURE,
+  REMOVE_REPLY_REQUEST,
+  REMOVE_REPLY_SUCCESS,
   SEARCH_POSTS_FAILURE,
   SEARCH_POSTS_REQUEST,
   SEARCH_POSTS_SUCCESS,
@@ -55,18 +55,18 @@ import {
   UNLIKE_POST_FAILURE,
   UNLIKE_POST_REQUEST,
   UNLIKE_POST_SUCCESS,
-  UNLIKE_RECOMMENT_FAILURE,
-  UNLIKE_RECOMMENT_REQUEST,
-  UNLIKE_RECOMMENT_SUCCESS,
+  UNLIKE_REPLY_FAILURE,
+  UNLIKE_REPLY_REQUEST,
+  UNLIKE_REPLY_SUCCESS,
   UPDATE_COMMENT_FAILURE,
   UPDATE_COMMENT_REQUEST,
   UPDATE_COMMENT_SUCCESS,
   UPDATE_POST_FAILURE,
   UPDATE_POST_REQUEST,
   UPDATE_POST_SUCCESS,
-  UPDATE_RECOMMENT_FAILURE,
-  UPDATE_RECOMMENT_REQUEST,
-  UPDATE_RECOMMENT_SUCCESS,
+  UPDATE_REPLY_FAILURE,
+  UPDATE_REPLY_REQUEST,
+  UPDATE_REPLY_SUCCESS,
 } from "../reducer/post";
 import { SagaIterator } from "redux-saga";
 //-----------------------------------------------------
@@ -163,13 +163,13 @@ function searchPostsApi(
   postId?: number,
   page?: number,
   limit?: number,
-  commentOrReCommentId?: number,
+  commentOrReplyId?: number,
   category?: string
 ) {
   return axios.get(
     `/post/search?searchText=${searchText}&searchOption=${searchOption}&postId=${postId}&page=${page}&limit=${limit}`,
     {
-      params: { commentOrReCommentId, category },
+      params: { commentOrReplyId, category },
     }
   );
 }
@@ -179,7 +179,7 @@ function* searchPosts(action: {
   postId?: number;
   page?: number;
   limit?: number;
-  commentOrReCommentId?: number;
+  commentOrReplyId?: number;
   category?: string;
 }): SagaIterator {
   try {
@@ -190,7 +190,7 @@ function* searchPosts(action: {
       action.postId,
       action.page,
       action.limit,
-      action.commentOrReCommentId,
+      action.commentOrReplyId,
       action.category
     );
     yield put({
@@ -388,93 +388,85 @@ function* watchUpdateComment() {
 
 //-----------------------------------------------------
 
-function addReCommentApi(data: { postId: any; commentId: any }) {
+function addReplyApi(data: { postId: any; commentId: any }) {
   return axios.post(
-    `/post/${data.postId}/comment/${data.commentId}/reComment`,
+    `/post/${data.postId}/comment/${data.commentId}/reply`,
     data
   );
 }
 
-function* addReComment(action: { data: any }): SagaIterator {
+function* addReply(action: { data: any }): SagaIterator {
   try {
-    const result = yield call(addReCommentApi, action.data);
+    const result = yield call(addReplyApi, action.data);
     console.log(result.data);
     yield put({
-      type: ADD_RECOMMENT_SUCCESS,
+      type: ADD_REPLY_SUCCESS,
       data: result.data,
     });
   } catch (err: any) {
     console.log(err);
     yield put({
-      type: ADD_RECOMMENT_FAILURE,
+      type: ADD_REPLY_FAILURE,
       error: err.response.data,
     });
   }
 }
-function* watchAddReComment() {
-  yield takeLatest<any>(ADD_RECOMMENT_REQUEST, addReComment);
+function* watchAddReply() {
+  yield takeLatest<any>(ADD_REPLY_REQUEST, addReply);
 }
 
 //-----------------------------------------------------
 
-function removeReCommentApi(data: {
-  postId: any;
-  commentId: any;
-  reCommentId: any;
-}) {
+function removeReplyApi(data: { postId: any; commentId: any; replyId: any }) {
   return axios.delete(
-    `/post/${data.postId}/comment/${data.commentId}/reComment/${data.reCommentId}`
+    `/post/${data.postId}/comment/${data.commentId}/reply/${data.replyId}`
   );
 }
-function* removeReComment(action: { data: any }): SagaIterator {
+function* removeReply(action: { data: any }): SagaIterator {
   try {
-    const result = yield call(removeReCommentApi, action.data);
+    const result = yield call(removeReplyApi, action.data);
     console.log(result.data);
     yield put({
-      type: REMOVE_RECOMMENT_SUCCESS,
+      type: REMOVE_REPLY_SUCCESS,
       data: result.data,
     });
   } catch (err: any) {
     console.log(err);
     yield put({
-      type: REMOVE_RECOMMENT_FAILURE,
+      type: REMOVE_REPLY_FAILURE,
       error: err.response.data,
     });
   }
 }
-function* watchRemoveReComment() {
-  yield takeLatest<any>(REMOVE_RECOMMENT_REQUEST, removeReComment);
+function* watchRemoveReply() {
+  yield takeLatest<any>(REMOVE_REPLY_REQUEST, removeReply);
 }
 //-----------------------------------------------------
 
-function updateReCommentApi(data: {
-  postId: any;
-  commentId: any;
-  reCommentId: any;
-}) {
+function updateReplyApi(data: { postId: any; commentId: any; replyId: any }) {
   return axios.put(
-    `/post/${data.postId}/comment/${data.commentId}/reComment/${data.reCommentId}`,
+    `/post/${data.postId}/comment/${data.commentId}/reply/${data.replyId}`,
     data
   );
 }
 
-function* updateReComment(action: { data: any }): SagaIterator {
+function* updateReply(action: { data: any }): SagaIterator {
   try {
-    const result = yield call(updateReCommentApi, action.data);
+    const result = yield call(updateReplyApi, action.data);
     yield put({
-      type: UPDATE_RECOMMENT_SUCCESS,
+      type: UPDATE_REPLY_SUCCESS,
       data: result.data,
     });
   } catch (err: any) {
     console.log(err);
     yield put({
-      type: UPDATE_RECOMMENT_FAILURE,
+      type: UPDATE_REPLY_FAILURE,
       error: err.response.data,
     });
   }
 }
-function* watchUpdateReComment() {
-  yield takeLatest<any>(UPDATE_RECOMMENT_REQUEST, updateReComment);
+function* watchUpdateReply() {
+  yield takeLatest<any>(UPDATE_REPLY_REQUEST, updateReply);
 }
 //-------------------------------------------------------------
 
@@ -592,57 +584,53 @@ function* watchUnLikeComment() {
 }
 //-------------------------------------------------------------
 
-function likeReCommentAPI(data: any) {
-  return axios.patch(
-    `/post/${data.commentId}/${data.reCommentId}/reCommentLike`
-  ); //patch 일부분 수정
+function likeReplyAPI(data: any) {
+  return axios.patch(`/post/${data.commentId}/${data.replyId}/replyLike`); //patch 일부분 수정
 }
 
-function* likeReComment(action: { data: any }): SagaIterator {
+function* likeReply(action: { data: any }): SagaIterator {
   try {
-    const result = yield call(likeReCommentAPI, action.data);
+    const result = yield call(likeReplyAPI, action.data);
     yield put({
-      type: LIKE_RECOMMENT_SUCCESS,
+      type: LIKE_REPLY_SUCCESS,
       data: result.data,
     });
   } catch (err: any) {
     console.error(err);
     yield put({
-      type: LIKE_RECOMMENT_FAILURE,
+      type: LIKE_REPLY_FAILURE,
       error: err.response.data,
     });
   }
 }
 
-function* watchLikeReComment() {
-  yield takeLatest<any>(LIKE_RECOMMENT_REQUEST, likeReComment);
+function* watchLikeReply() {
+  yield takeLatest<any>(LIKE_REPLY_REQUEST, likeReply);
 }
 //-------------------------------------------------------------
 
-function unLikeReCommentAPI(data: any) {
-  return axios.delete(
-    `/post/${data.commentId}/${data.reCommentId}/reCommentLike`
-  );
+function unLikeReplyAPI(data: any) {
+  return axios.delete(`/post/${data.commentId}/${data.replyId}/replyLike`);
 }
 
-function* unLikeReComment(action: { data: any }): SagaIterator {
+function* unLikeReply(action: { data: any }): SagaIterator {
   try {
-    const result = yield call(unLikeReCommentAPI, action.data);
+    const result = yield call(unLikeReplyAPI, action.data);
     yield put({
-      type: UNLIKE_RECOMMENT_SUCCESS,
+      type: UNLIKE_REPLY_SUCCESS,
       data: result.data,
     });
   } catch (err: any) {
     console.error(err);
     yield put({
-      type: UNLIKE_RECOMMENT_FAILURE,
+      type: UNLIKE_REPLY_FAILURE,
       error: err.response.data,
     });
   }
 }
 
-function* watchUnLikeReComment() {
-  yield takeLatest<any>(UNLIKE_RECOMMENT_REQUEST, unLikeReComment);
+function* watchUnLikeReply() {
+  yield takeLatest<any>(UNLIKE_REPLY_REQUEST, unLikeReply);
 }
 
 //-----------------------------------------------------
@@ -705,15 +693,15 @@ export default function* postSaga() {
     fork(watchAddComment),
     fork(watchRemoveComment),
     fork(watchUpdateComment),
-    fork(watchAddReComment),
-    fork(watchRemoveReComment),
-    fork(watchUpdateReComment),
+    fork(watchAddReply),
+    fork(watchRemoveReply),
+    fork(watchUpdateReply),
     fork(watchLikePost),
     fork(watchUnLikePost),
     fork(watchLikeComment),
     fork(watchUnLikeComment),
-    fork(watchLikeReComment),
-    fork(watchUnLikeReComment),
+    fork(watchLikeReply),
+    fork(watchUnLikeReply),
     fork(watchSearchPosts),
     fork(watchDeleteImages),
     fork(watchReadChat),

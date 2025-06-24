@@ -14,8 +14,8 @@ import {
   UPDATE_COMMENT_REQUEST,
 } from "../../reducer/post";
 import useInput from "../../hooks/useInput";
-import ReCommentForm from "./ReCommentForm";
-import ReComment from "./ReComment";
+import ReplyForm from "./ReplyForm";
+import Reply from "./Reply";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faComment, faPen, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { PostType } from "../../types";
@@ -43,7 +43,7 @@ const Comment = ({ post }: { post: PostType }) => {
   const {
     removeCommentLoading,
     updateCommentLoading,
-    addReCommentLoading,
+    addReplyLoading,
     comments,
     commentsCount,
     newCommentId,
@@ -168,16 +168,16 @@ const Comment = ({ post }: { post: PostType }) => {
   const prevContent = content.replace(/<br\s*\/?>/gi, "\n");
 
   //대댓글 쓰기 창,map 안에서 하나만 작동 및 폼 중복 방지 코드---------------------
-  const [addReComment, setAddReComment] = useState<Record<string, boolean>>({});
+  const [addReply, setAddReply] = useState<Record<string, boolean>>({});
 
-  const showReCommentForm = useCallback((commentId: number) => {
-    setAddReComment((prev) => {
-      const newReCommentState: Record<string, boolean> = {};
+  const showReplyForm = useCallback((commentId: number) => {
+    setAddReply((prev) => {
+      const newReplyState: Record<string, boolean> = {};
       Object.keys(prev).forEach((key) => {
-        newReCommentState[key] = false;
+        newReplyState[key] = false;
       });
-      newReCommentState[commentId] = !prev[commentId];
-      return newReCommentState;
+      newReplyState[commentId] = !prev[commentId];
+      return newReplyState;
     });
   }, []);
 
@@ -198,11 +198,11 @@ const Comment = ({ post }: { post: PostType }) => {
 
   //OutsideClick----------------------------------------------
   const authorMenuRef = useRef<HTMLDivElement>(null);
-  const reCommentFormRef = useRef<HTMLDivElement>(null);
+  const replyFormRef = useRef<HTMLDivElement>(null);
 
-  useOutsideClick([authorMenuRef, reCommentFormRef], () => {
+  useOutsideClick([authorMenuRef, replyFormRef], () => {
     setShowAuthorMenu({});
-    setAddReComment({});
+    setAddReply({});
   });
 
   const theme = useTheme();
@@ -299,9 +299,9 @@ const Comment = ({ post }: { post: PostType }) => {
 
   return (
     <CommentContainer ref={scrollTargetRef}>
-      {(removeCommentLoading ||
-        updateCommentLoading ||
-        addReCommentLoading) && <Spinner />}
+      {(removeCommentLoading || updateCommentLoading || addReplyLoading) && (
+        <Spinner />
+      )}
       <Top3Comment />
       {comments?.map((comment) => {
         const isEditing = editComment[comment.id];
@@ -371,7 +371,7 @@ const Comment = ({ post }: { post: PostType }) => {
               )}
               <CommentOptions>
                 {id && (
-                  <Button onClick={() => showReCommentForm(comment.id)}>
+                  <Button onClick={() => showReplyForm(comment.id)}>
                     <FontAwesomeIcon icon={faComment} />
                   </Button>
                 )}
@@ -391,17 +391,17 @@ const Comment = ({ post }: { post: PostType }) => {
                 ) : null}
               </CommentOptions>
             </ContentWrapper>
-            {addReComment[comment.id] && (
-              <div ref={reCommentFormRef}>
-                <ReCommentForm
+            {addReply[comment.id] && (
+              <div ref={replyFormRef}>
+                <ReplyForm
                   post={post}
                   comment={comment}
-                  reComment={null}
-                  setAddReComment={setAddReComment}
+                  reply={null}
+                  setAddReply={setAddReply}
                 />
               </div>
             )}
-            <ReComment post={post} comment={comment} />
+            <Reply post={post} comment={comment} />
           </CommentItem>
         );
       })}

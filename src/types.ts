@@ -23,7 +23,7 @@ export type PostType = {
   User: UserType;
   Images: ImageType[];
   Comments: CommentType[];
-  ReComments: ReCommentType[];
+  Replies: ReplyType[];
   Notifications: NotificationType[];
 };
 
@@ -39,12 +39,12 @@ export type CommentType = {
   updatedAt: string;
   UserId: number;
   PostId: number;
-  ReComments: ReCommentType[];
+  Replies: ReplyType[];
   User: UserType;
   Likers: LikeType[];
 };
 
-export type ReCommentType = {
+export type ReplyType = {
   id: number;
   content: string;
   createdAt: string;
@@ -70,7 +70,7 @@ export type DataType = {
   UserId: number;
   updatePost: PostType;
   CommentId: number;
-  ReCommentId: number;
+  ReplyId: number;
   content: string;
 };
 
