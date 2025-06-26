@@ -77,8 +77,6 @@ const UserPage = () => {
 
   if (!user) return null;
 
-  console.log(user);
-
   return (
     <Container>
       <ProfileHeader>
@@ -167,7 +165,7 @@ const UserPage = () => {
           endMessage={
             <p style={{ textAlign: "center" }}>모든 게시글을 불러왔습니다.</p>
           }
-          style={{ overflow: "visible" }} // overflow hidden 문제 방지용
+          style={{ overflow: "visible" }}
         >
           <PostGrid>
             {posts.map((post) => (
@@ -260,7 +258,7 @@ const Stats = styled.span`
 const SectionTitle = styled.h2`
   font-size: 16px;
   margin-bottom: 10px;
-  color: ${(props) => props.theme.mainColor};
+  color: ${(props) => props.theme.charColor};
 `;
 
 const FollowList = styled.div`

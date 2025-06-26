@@ -49,8 +49,6 @@ const Main = () => {
     });
   }, [currentPage, divisor, dispatch, sortBy, location.pathname]);
 
-  console.log(me);
-
   return (
     <MainContainer>
       <Banner>BANNER</Banner>
