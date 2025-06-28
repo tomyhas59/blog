@@ -9,7 +9,6 @@ import {
   SEARCH_POSTS_REQUEST,
   GET_POST_REQUEST,
 } from "../../reducer/post";
-import moment from "moment";
 import "moment/locale/ko";
 import { RootState } from "../../reducer";
 import { baseURL } from "../../config";
@@ -260,10 +259,15 @@ const CommonPost = () => {
                   </StyledSlider>
                 </>
               )}
-
               <ContentRenderer content={post.content} />
+              <HashtagsWrapper>
+                {post.Hashtags?.map((tag) => (
+                  <Hashtag key={tag.id}>#{tag.name}</Hashtag>
+                ))}
+              </HashtagsWrapper>
             </ContentWrapper>
           )}
+
           {id === post.User?.id || nickname === "admin" ? (
             <div>
               {!editPost && (
@@ -314,7 +318,7 @@ const PostHeader = styled.div`
   justify-content: space-between;
   position: relative;
   align-items: center;
-  border-bottom: 1px solid silver;
+  border-bottom: 3px solid silver;
   padding: 10px;
   @media (max-width: 768px) {
     flex-direction: column;
@@ -340,8 +344,33 @@ const PostContent = styled.div`
 `;
 
 const ContentWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
   position: relative;
   width: 97%;
+  min-height: 300px;
+`;
+
+const HashtagsWrapper = styled.div`
+  margin-top: auto; /*위쪽 마진을 자동으로 채워 아래쪽으로 붙게 함*/
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+`;
+
+const Hashtag = styled.div`
+  background-color: ${(props) => props.theme.subColor || "#f0f0f0"};
+  color: ${(props) => props.theme.textColor || "#333"};
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.3s, color 0.3s;
+
+  &:hover {
+    background-color: ${(props) => props.theme.mainColor || "#333"};
+    color: #fff;
+  }
 `;
 
 const CommentsCount = styled.span`
@@ -352,6 +381,7 @@ const CommentsCount = styled.span`
 `;
 
 const CommentContainer = styled.div`
+  border-top: 3px solid silver;
   padding: 10px;
 `;
 

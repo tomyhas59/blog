@@ -25,8 +25,13 @@ export type PostType = {
   Comments: CommentType[];
   Replies: ReplyType[];
   Notifications: NotificationType[];
+  Hashtags: HashtagType[];
 };
 
+export type HashtagType = {
+  id: number;
+  name: string;
+};
 export type LikeType = {
   id: number;
   nickname: string;
