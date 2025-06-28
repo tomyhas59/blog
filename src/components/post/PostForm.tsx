@@ -29,6 +29,7 @@ const PostForm: React.FC<PostFormProps> = ({ titleRef, setTogglePostForm }) => {
 
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
+  const [hashtags, setHashtags] = useState("");
 
   const [selectedImages, setSelectedImages] = useState<File[]>([]);
   const [previewImages, setPreviewImages] = useState<string[]>([]);
@@ -59,6 +60,13 @@ const PostForm: React.FC<PostFormProps> = ({ titleRef, setTogglePostForm }) => {
       setContent(e.target.value);
     },
     [setContent]
+  );
+
+  const handleHashtagsChange = useCallback(
+    (e: ChangeEvent<HTMLInputElement>) => {
+      setHashtags(e.target.value);
+    },
+    []
   );
 
   const handleClickFileUpload = useCallback(() => {
@@ -102,6 +110,7 @@ const PostForm: React.FC<PostFormProps> = ({ titleRef, setTogglePostForm }) => {
 
       formData.append("title", title); //req.body.title
       formData.append("content", contentWithBreaks); //req.body.content
+      formData.append("hashtags", hashtags);
 
       dispatch({
         type: ADD_POST_REQUEST,
@@ -115,11 +124,20 @@ const PostForm: React.FC<PostFormProps> = ({ titleRef, setTogglePostForm }) => {
       if (textareaRef.current) textareaRef.current.style.height = "auto";
       setContent("");
       setTitle("");
+      setHashtags("");
       navigator("/");
       window.location.reload();
     },
 
-    [title, content, selectedImages, dispatch, setTogglePostForm, navigator]
+    [
+      title,
+      content,
+      hashtags,
+      selectedImages,
+      dispatch,
+      setTogglePostForm,
+      navigator,
+    ]
   );
 
   useEffect(() => {
@@ -127,6 +145,19 @@ const PostForm: React.FC<PostFormProps> = ({ titleRef, setTogglePostForm }) => {
       previewImages.forEach((url) => URL.revokeObjectURL(url));
     };
   }, [previewImages]);
+
+  const handleHashtagKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === ",") {
+      e.preventDefault();
+      let val = hashtags.trim();
+
+      if (!val.endsWith("#")) {
+        val += " #";
+      }
+
+      setHashtags(val);
+    }
+  };
 
   return (
     <>
@@ -148,6 +179,12 @@ const PostForm: React.FC<PostFormProps> = ({ titleRef, setTogglePostForm }) => {
               onChange={handleContentChange}
               ref={textareaRef}
             ></TextArea>
+            <HashtagInput
+              value={hashtags}
+              placeholder="해시태그를 쉼표로 구분해 입력하세요 (예: 개발, 프론트엔드)"
+              onChange={handleHashtagsChange}
+              onKeyDown={handleHashtagKeyDown}
+            />
             <input
               type="file"
               name="image"
@@ -222,6 +259,7 @@ const Form = styled.form`
   grid-template-areas:
     "a a"
     "b b"
+    "f f"
     "c d"
     "e e";
   gap: 5px;
@@ -247,6 +285,16 @@ const TextArea = styled.textarea`
   border-radius: 8px;
   margin-bottom: 10px;
   grid-area: b;
+`;
+
+const HashtagInput = styled.input`
+  width: 100%;
+  padding: 5px;
+  border: 2px solid #ccc;
+  border-radius: 5px;
+  margin-bottom: 15px;
+  font-size: 14px;
+  grid-area: f;
 `;
 
 export const FileUploadButton = styled.button`
