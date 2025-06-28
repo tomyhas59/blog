@@ -146,19 +146,6 @@ const PostForm: React.FC<PostFormProps> = ({ titleRef, setTogglePostForm }) => {
     };
   }, [previewImages]);
 
-  const handleHashtagKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === ",") {
-      e.preventDefault();
-      let val = hashtags.trim();
-
-      if (!val.endsWith("#")) {
-        val += " #";
-      }
-
-      setHashtags(val);
-    }
-  };
-
   return (
     <>
       {addPostLoading ? <Spinner /> : null}
@@ -181,9 +168,8 @@ const PostForm: React.FC<PostFormProps> = ({ titleRef, setTogglePostForm }) => {
             ></TextArea>
             <HashtagInput
               value={hashtags}
-              placeholder="해시태그를 쉼표로 구분해 입력하세요 (예: 개발, 프론트엔드)"
+              placeholder="해시태그를 공백으로 구분(예: 딸기 바나나)"
               onChange={handleHashtagsChange}
-              onKeyDown={handleHashtagKeyDown}
             />
             <input
               type="file"
