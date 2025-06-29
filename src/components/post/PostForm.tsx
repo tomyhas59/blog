@@ -179,10 +179,8 @@ const PostForm: React.FC<PostFormProps> = ({ titleRef, setTogglePostForm }) => {
               ref={imageInputRef}
               onChange={handleImagesChange}
             />
-            <FileUploadButton type="button" onClick={handleClickFileUpload}>
-              파일 첨부
-            </FileUploadButton>
-            <ImageContainer>
+
+            <ImageWrapper>
               {active &&
                 previewImages.map((url, index) => (
                   <ImageItem key={index}>
@@ -195,8 +193,13 @@ const PostForm: React.FC<PostFormProps> = ({ titleRef, setTogglePostForm }) => {
                     </RemoveButton>
                   </ImageItem>
                 ))}
-            </ImageContainer>
-            <SubmitButton type="submit">등록</SubmitButton>
+            </ImageWrapper>
+            <ButtonWrapper>
+              <FileUploadButton type="button" onClick={handleClickFileUpload}>
+                파일 첨부
+              </FileUploadButton>
+              <SubmitButton type="submit">등록</SubmitButton>
+            </ButtonWrapper>
           </Form>
         </FormContainer>
       ) : null}
@@ -239,16 +242,11 @@ const Title = styled.h2`
   color: #333;
 `;
 
-const Form = styled.form`
+export const Form = styled.form`
   width: 100%;
-  display: grid;
-  grid-template-areas:
-    "a a"
-    "b b"
-    "f f"
-    "c d"
-    "e e";
-  gap: 5px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 `;
 
 export const TitleInput = styled.input`
@@ -259,7 +257,7 @@ export const TitleInput = styled.input`
   grid-area: a;
 `;
 
-const TextArea = styled.textarea`
+export const TextArea = styled.textarea`
   max-width: 100%;
   min-width: 100%;
   min-height: 250px;
@@ -273,14 +271,14 @@ const TextArea = styled.textarea`
   grid-area: b;
 `;
 
-const HashtagInput = styled.input`
+export const HashtagInput = styled.input`
   width: 100%;
   padding: 5px;
   border: 2px solid #ccc;
   border-radius: 5px;
   margin-bottom: 15px;
   font-size: 14px;
-  grid-area: f;
+  grid-area: c;
 `;
 
 export const FileUploadButton = styled.button`
@@ -292,7 +290,7 @@ export const FileUploadButton = styled.button`
   border-radius: 8px;
   cursor: pointer;
   font-weight: bold;
-  grid-area: c;
+  grid-area: e;
   transition: transform 0.3s ease, color 0.3s ease;
   &:hover {
     transform: translateY(-2px);
@@ -305,21 +303,21 @@ export const FileUploadButton = styled.button`
   }
 `;
 
-const ImageContainer = styled.div`
+export const ImageWrapper = styled.div`
   padding: 10px;
   max-height: 400px;
   overflow-y: auto;
   display: grid;
   grid-template-columns: repeat(6, 1fr);
   gap: 10px;
-  grid-area: e;
+  grid-area: d;
   @media (max-width: 768px) {
     grid-template-columns: repeat(2, 1fr);
     max-height: 200px;
   }
 `;
 
-const ImageItem = styled.div`
+export const ImageItem = styled.div`
   position: relative;
   display: inline-block;
   width: 100px;
@@ -330,13 +328,13 @@ const ImageItem = styled.div`
   }
 `;
 
-const Image = styled.img`
+export const Image = styled.img`
   width: 100%;
   height: 100%;
   border-radius: 8px;
 `;
 
-const RemoveButton = styled.button`
+export const RemoveButton = styled.button`
   position: absolute;
   top: 0;
   right: 0;
@@ -357,7 +355,7 @@ const RemoveButton = styled.button`
   }
 `;
 
-const SubmitButton = styled.button`
+export const SubmitButton = styled.button`
   padding: 10px;
   background-color: ${(props) => props.theme.mainColor};
   color: white;
@@ -366,10 +364,17 @@ const SubmitButton = styled.button`
   cursor: pointer;
   font-weight: bold;
   transition: transform 0.3s ease, color 0.3s ease;
-  grid-area: d;
+  grid-area: f;
   justify-self: end;
   &:hover {
     transform: translateY(-2px);
     color: ${(props) => props.theme.charColor};
   }
+`;
+
+export const ButtonWrapper = styled.div`
+  display: flex;
+  justify-content: space-around;
+  margin-top: 5px;
+  grid-area: e;
 `;

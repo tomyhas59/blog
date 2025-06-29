@@ -8,9 +8,18 @@ import React, {
   useRef,
   useState,
 } from "react";
-import styled from "styled-components";
 import { StyledButton } from "./Post";
-import { FileUploadButton, TitleInput } from "./PostForm";
+import {
+  ButtonWrapper,
+  Form,
+  ImageItem,
+  Image,
+  ImageWrapper,
+  RemoveButton,
+  TextArea,
+  TitleInput,
+  HashtagInput,
+} from "./PostForm";
 import { useDispatch } from "react-redux";
 import { DELETE_IMAGE_REQUEST, UPDATE_POST_REQUEST } from "../../reducer/post";
 
@@ -35,10 +44,12 @@ const PostEditForm = ({
 }: PostEditFormProps) => {
   const prevTitle = post?.title;
   const prevContent = post?.content.replace(/<br\s*\/?>/gi, "\n");
+  const prevHashtags = post?.Hashtags.map((tag) => tag.name).join(" ");
   const dispatch = useDispatch();
 
   const [title, setTitle] = useState(prevTitle);
   const [content, setContent] = useState(prevContent);
+  const [hashtags, setHashtags] = useState(prevHashtags);
 
   const imageInputRef = useRef<HTMLInputElement>(null);
   const handleClickFileUpload = useCallback(() => {
@@ -80,6 +91,12 @@ const PostEditForm = ({
     [setContent]
   );
 
+  const handleHashtagsChange = useCallback(
+    (e: ChangeEvent<HTMLInputElement>) => {
+      setHashtags(e.target.value);
+    },
+    []
+  );
   // 이미지 추가
   const handleImagesChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
@@ -182,23 +199,15 @@ const PostEditForm = ({
         value={content}
         onChange={handleContentChange}
       />
-      <>
-        <input
-          type="file"
-          name="image"
-          multiple
-          hidden
-          ref={imageInputRef}
-          onChange={handleImagesChange}
-        />
-        <FileUploadButton type="button" onClick={handleClickFileUpload}>
-          파일 첨부
-        </FileUploadButton>
-      </>
-      <ImageContainer>
+      <HashtagInput
+        value={hashtags}
+        placeholder="해시태그를 공백으로 구분(예: 딸기 바나나)"
+        onChange={handleHashtagsChange}
+      />
+      <ImageWrapper>
         {previewImages.map((image, index) => (
           <ImageItem key={index}>
-            <EditImage
+            <Image
               src={image.isNew ? image.src : `${baseURL}/${image.src}`}
               alt={`preview-${index}`}
             />
@@ -210,67 +219,28 @@ const PostEditForm = ({
             </RemoveButton>
           </ImageItem>
         ))}
-      </ImageContainer>
-
-      <StyledButton style={{ width: "47px" }} type="submit">
-        적용
-      </StyledButton>
-      <StyledButton style={{ width: "47px" }} onClick={toggleEditPostForm}>
-        취소
-      </StyledButton>
+      </ImageWrapper>
+      <ButtonWrapper>
+        <input
+          type="file"
+          name="image"
+          multiple
+          hidden
+          ref={imageInputRef}
+          onChange={handleImagesChange}
+        />
+        <StyledButton type="button" onClick={handleClickFileUpload}>
+          파일 첨부
+        </StyledButton>
+        <StyledButton style={{ width: "47px" }} type="submit">
+          적용
+        </StyledButton>
+        <StyledButton style={{ width: "47px" }} onClick={toggleEditPostForm}>
+          취소
+        </StyledButton>
+      </ButtonWrapper>
     </Form>
   );
 };
 
 export default PostEditForm;
-
-const TextArea = styled.textarea`
-  max-width: 100%;
-  min-width: 100%;
-  padding: 12px;
-  font-size: 16px;
-  border: 2px solid #ccc;
-  border-radius: 8px;
-  margin-bottom: 10px;
-`;
-
-const ImageContainer = styled.div`
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 20px;
-`;
-
-const ImageItem = styled.div`
-  position: relative;
-  display: inline-block;
-  width: 200px;
-  height: 200px;
-  margin: 2px;
-`;
-
-const EditImage = styled.img`
-  width: 100%;
-  height: 100%;
-  border-radius: 8px;
-`;
-
-const RemoveButton = styled.button`
-  position: absolute;
-  top: 0;
-  right: 0px;
-  padding: 5px 10px;
-  background-color: #e74c3c;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-
-  &:hover {
-    background-color: #c0392b;
-  }
-`;
-
-const Form = styled.form`
-  width: 100%;
-  text-align: center;
-`;
