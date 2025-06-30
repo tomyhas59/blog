@@ -93,10 +93,12 @@ const PostEditForm = ({
 
   const handleHashtagsChange = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
+      console.log("hashtags input changed:", e.target.value);
       setHashtags(e.target.value);
     },
-    []
+    [setHashtags]
   );
+
   // 이미지 추가
   const handleImagesChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
@@ -149,10 +151,12 @@ const PostEditForm = ({
           data: { postId: post.id, filename: src },
         });
       });
+
       const formData = new FormData();
       formData.append("title", title);
       formData.append("content", contentWithBreaks);
       formData.append("postId", String(post.id));
+      formData.append("hashtags", hashtags);
       // 새로 추가된 이미지 파일들
       selectedImages.forEach((file) => {
         formData.append("image", file);
@@ -173,6 +177,7 @@ const PostEditForm = ({
       title,
       selectedImages,
       removedOriginalImages,
+      hashtags,
     ]
   );
 
@@ -200,8 +205,8 @@ const PostEditForm = ({
         onChange={handleContentChange}
       />
       <HashtagInput
-        value={hashtags}
         placeholder="해시태그를 공백으로 구분(예: 딸기 바나나)"
+        value={hashtags}
         onChange={handleHashtagsChange}
       />
       <ImageWrapper>
