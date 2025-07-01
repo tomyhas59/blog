@@ -70,6 +70,7 @@ const ShowPostFormButton = styled.div`
   text-align: center;
   border-radius: 50%;
   background: ${(props) => props.theme.mainColor};
+  border: 4px solid ${(props) => props.theme.subColor};
   color: #fff;
   position: fixed;
   bottom: 15%;

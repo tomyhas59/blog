@@ -1,14 +1,16 @@
 import React from "react";
 import ClipLoader from "react-spinners/ClipLoader";
-import styled from "styled-components";
+import styled, { useTheme } from "styled-components";
 
 const Spinner: React.FC = () => {
+  const theme = useTheme();
+
   return (
     <SpinnerContainer>
       <ClipLoader
         size={50}
-        color={"#3498db"}
         loading={true}
+        color={theme.subColor}
         cssOverride={{ borderWidth: 6 }}
       />
     </SpinnerContainer>

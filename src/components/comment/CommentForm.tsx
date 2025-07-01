@@ -150,6 +150,7 @@ const Form = styled.form`
 const Textarea = styled.textarea`
   max-width: 90%;
   min-width: 90%;
+  background-color: ${(props) => props.theme.backgroundColor};
 `;
 
 const Button = styled.button`

@@ -36,14 +36,15 @@ const SortButton = () => {
     <SortButtons>
       {sortOptions.map(({ value, label }) => (
         <SortLabel key={value}>
-          <input
+          <HiddenRadio
             type="radio"
             name="sort"
             value={value}
             checked={sortBy === value}
             onChange={() => handleSortChange(value)}
           />
-          {label}
+          <CustomRadio checked={sortBy === value} />
+          <span>{label}</span>
         </SortLabel>
       ))}
     </SortButtons>
@@ -68,14 +69,49 @@ const SortLabel = styled.label`
   padding: 5px;
   transition: background-color 0.3s ease;
   border-radius: 5px;
+  position: relative;
+
   &:hover {
     background-color: ${(props) => props.theme.hoverMainColor};
   }
 
-  input {
-    margin-right: 4px;
+  span {
+    margin-left: 6px;
+    font-size: 0.7rem;
+    @media (max-width: 768px) {
+      font-size: 12px;
+    }
   }
-  @media (max-width: 768px) {
-    font-size: 12px;
+`;
+
+const HiddenRadio = styled.input`
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+`;
+
+const CustomRadio = styled.span<{ checked: boolean }>`
+  position: relative;
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border: 2px solid
+    ${(props) => (props.checked ? props.theme.mainColor : "#ccc")};
+  border-radius: 50%;
+  background-color: ${(props) =>
+    props.checked ? props.theme.mainColor : "transparent"};
+  transition: all 0.3s ease;
+
+  &::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    display: ${(props) => (props.checked ? "block" : "none")};
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background-color: white;
   }
 `;

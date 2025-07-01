@@ -223,7 +223,7 @@ const FormContainer = styled.div`
   background-color: #f5f5f5;
   z-index: 200;
   @media (max-width: 768px) {
-    width: 300px;
+    width: 100%;
   }
 `;
 

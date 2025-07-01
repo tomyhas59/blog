@@ -113,7 +113,7 @@ const FollowContainer = styled.div`
 `;
 
 const FollowSection = styled.div`
-  background-color: #fff;
+  background-color: ${(props) => props.theme.backgroundColor};
   height: 300px;
   border-radius: 10px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -125,7 +125,7 @@ const FollowList = styled.div`
   flex-wrap: wrap;
   padding: 15px;
   border-top: 1px solid #eee;
-  background-color: #fff;
+  background-color: ${(props) => props.theme.backgroundColor};
 `;
 
 const SectionHeading = styled.h2`
@@ -133,7 +133,8 @@ const SectionHeading = styled.h2`
   color: #000;
   margin: 0;
   padding: 15px;
-  border-bottom: 2px solid ${(props) => props.theme.mainColor};
+  color: ${(props) => props.theme.textColor};
+  border-bottom: 2px solid ${(props) => props.theme.textColor};
   text-align: center;
   font-weight: 600;
   @media (max-width: 768px) {
