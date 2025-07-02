@@ -8,6 +8,7 @@ import {
   REMOVE_POST_REQUEST,
   SEARCH_POSTS_REQUEST,
   GET_POST_REQUEST,
+  GET_HASHTAG_POSTS_REQUEST,
 } from "../../reducer/post";
 import "moment/locale/ko";
 import { RootState } from "../../reducer";
@@ -185,6 +186,17 @@ const CommonPost = () => {
     }, 500);
   }, []);
 
+  const getHashtagPosts = useCallback(
+    (hashtagName: string) => {
+      dispatch({
+        type: GET_HASHTAG_POSTS_REQUEST,
+        data: hashtagName,
+      });
+      navigator(`/hashtag/${hashtagName}`);
+    },
+    [navigator, dispatch]
+  );
+
   return (
     <PostContainer>
       <PostItem>
@@ -262,7 +274,12 @@ const CommonPost = () => {
               <ContentRenderer content={post.content} />
               <HashtagsWrapper>
                 {post.Hashtags?.map((tag) => (
-                  <Hashtag key={tag.id}>#{tag.name}</Hashtag>
+                  <Hashtag
+                    key={tag.id}
+                    onClick={() => getHashtagPosts(tag.name)}
+                  >
+                    #{tag.name}
+                  </Hashtag>
                 ))}
               </HashtagsWrapper>
             </ContentWrapper>

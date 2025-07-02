@@ -3,26 +3,29 @@ import { CommentType, MessageType, PostType } from "../types";
 
 //전역 상태 초기값
 const initialState = {
+  //post
   posts: [] as PostType[],
   totalPosts: null,
   post: {} as PostType,
-
+  //comment
   comments: [] as CommentType[],
   totalComments: null,
   commentsCount: null,
-
+  top3Comments: [] as CommentType[],
+  //searchedPosts
   searchedPosts: [] as PostType[],
   searchOption: "",
   totalSearchedPosts: null,
-
+  //hashtagPosts
+  hashtagPosts: [] as PostType[],
+  totalHashtagPosts: null,
   chatMessages: [] as MessageType[],
 
+  //id
   postNum: null,
   commentNum: null,
   newCommentId: null, //댓글 등록 후 해당 댓글 id
-
-  top3Comments: [] as CommentType[],
-
+  //darkMode
   isDarkMode: localStorage.getItem("darkMode") === "enabled",
 
   getPostsLoading: false,
@@ -108,6 +111,10 @@ const initialState = {
   readChatLoading: false,
   readChatDone: false,
   readChatError: null,
+
+  getHashtagPostsLoading: false,
+  getHashtagPostsDone: false,
+  getHashtagPostsError: null,
 };
 
 //action명
@@ -198,6 +205,10 @@ export const READ_CHAT_FAILURE = "READ_CHAT_FAILURE";
 export const DELETE_ALL_CHAT_REQUEST = "DELETE_ALL_CHAT_REQUEST";
 export const DELETE_ALL_CHAT_SUCCESS = "DELETE_ALL_CHAT_SUCCESS";
 export const DELETE_ALL_CHAT_FAILURE = "DELETE_ALL_CHAT_FAILURE";
+
+export const GET_HASHTAG_POSTS_REQUEST = "GET_HASHTAG_POSTS_REQUEST";
+export const GET_HASHTAG_POSTS_SUCCESS = "GET_HASHTAG_POSTS_SUCCESS";
+export const GET_HASHTAG_POSTS_FAILURE = "GET_HASHTAG_POSTS_FAILURE";
 
 const post = (state = initialState, action: any) => {
   return produce(state, (draft) => {
@@ -720,6 +731,22 @@ const post = (state = initialState, action: any) => {
       case READ_CHAT_FAILURE:
         draft.readChatLoading = false;
         draft.readChatError = action.error;
+        break;
+
+      //-------------------------------------------------------
+      case GET_HASHTAG_POSTS_REQUEST:
+        draft.getHashtagPostsLoading = true;
+        draft.getHashtagPostsDone = false;
+        draft.getHashtagPostsError = null;
+        break;
+      case GET_HASHTAG_POSTS_SUCCESS: {
+        draft.getHashtagPostsLoading = false;
+        draft.getHashtagPostsDone = true;
+        draft.hashtagPosts = action.data.hashtagPosts;
+      }
+      case GET_HASHTAG_POSTS_FAILURE:
+        draft.getHashtagPostsLoading = false;
+        draft.getHashtagPostsError = action.error;
         break;
 
       default:

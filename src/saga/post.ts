@@ -19,6 +19,8 @@ import {
   GET_COMMENTS_FAILURE,
   GET_COMMENTS_REQUEST,
   GET_COMMENTS_SUCCESS,
+  GET_HASHTAG_POSTS_REQUEST,
+  GET_HASHTAG_POSTS_SUCCESS,
   GET_POSTS_FAILURE,
   GET_POSTS_REQUEST,
   GET_POSTS_SUCCESS,
@@ -69,6 +71,7 @@ import {
   UPDATE_REPLY_SUCCESS,
 } from "../reducer/post";
 import { SagaIterator } from "redux-saga";
+import { GET_HASHTAG_POSTS_FAILURE } from "./../reducer/post";
 //-----------------------------------------------------
 
 function getPostsApi(page: number, limit: number, sortBy: string) {
@@ -683,6 +686,31 @@ function* watchDeleteAllChat() {
   yield takeLatest<any>(DELETE_ALL_CHAT_REQUEST, deleteAllChat);
 }
 
+//-----------------------------------------------------
+
+function getHashtagPostsApi(data: any) {
+  return axios.get(`/post/hashtag/${data}`);
+}
+
+function* getHashtagPosts(action: { data: any }): SagaIterator {
+  try {
+    const result = yield call(getHashtagPostsApi, action.data);
+    yield put({
+      type: GET_HASHTAG_POSTS_SUCCESS,
+      data: result.data,
+    });
+  } catch (err: any) {
+    console.log(err);
+    yield put({
+      type: GET_HASHTAG_POSTS_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+function* watchGetHashtagPosts() {
+  yield takeLatest<any>(GET_HASHTAG_POSTS_REQUEST, getHashtagPosts);
+}
+
 export default function* postSaga() {
   yield all([
     fork(watchGetPosts),
@@ -701,6 +729,7 @@ export default function* postSaga() {
     fork(watchLikeComment),
     fork(watchUnLikeComment),
     fork(watchLikeReply),
+    fork(watchGetHashtagPosts),
     fork(watchUnLikeReply),
     fork(watchSearchPosts),
     fork(watchDeleteImages),
