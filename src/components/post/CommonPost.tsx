@@ -192,7 +192,15 @@ const CommonPost = () => {
         type: GET_HASHTAG_POSTS_REQUEST,
         data: hashtagName,
       });
-      navigator(`/hashtag/${hashtagName}`);
+
+      const params = new URLSearchParams();
+      params.set("hashtagName", hashtagName);
+      params.set("page", "1");
+
+      navigator({
+        pathname: `/hashtag`,
+        search: params.toString(),
+      });
     },
     [navigator, dispatch]
   );

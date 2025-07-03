@@ -2,7 +2,7 @@ import { useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 
 interface ParamsType {
-  searchOption: string;
+  searchOption?: string;
   page: number;
   postId?: number;
 }
@@ -14,7 +14,7 @@ const useSetParams = ({ searchOption, page, postId }: ParamsType) => {
     ({ searchText }: { searchText: string }) => {
       const params = new URLSearchParams();
       if (searchText) params.set("searchText", searchText);
-      params.set("searchOption", searchOption);
+      if (searchOption) params.set("searchOption", searchOption);
       params.set("page", page.toString());
       params.set("cPage", "1");
       const pathname = postId ? `/searchedPost/${postId}` : `/search`;

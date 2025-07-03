@@ -26,7 +26,7 @@ const routes = [
   { path: "/searchedPost/:postId", element: <SearchedPostDetail /> },
   { path: "*", element: <NotFound /> },
   { path: "/user/:userId", element: <User /> },
-  { path: "/hashtag/:hashtagName", element: <HashtagPage /> },
+  { path: "/hashtag", element: <HashtagPage /> },
 ];
 
 function App() {

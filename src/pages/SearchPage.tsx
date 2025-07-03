@@ -57,7 +57,6 @@ const SearchPage = () => {
     setSearchedCurrentPage,
   ]);
 
-  console.log(searchedPosts);
   return (
     <SearchPageContainer>
       {searchedPostsLoading ? (

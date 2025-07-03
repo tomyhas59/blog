@@ -743,6 +743,7 @@ const post = (state = initialState, action: any) => {
         draft.getHashtagPostsLoading = false;
         draft.getHashtagPostsDone = true;
         draft.hashtagPosts = action.data.hashtagPosts;
+        break;
       }
       case GET_HASHTAG_POSTS_FAILURE:
         draft.getHashtagPostsLoading = false;

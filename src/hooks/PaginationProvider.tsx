@@ -5,12 +5,17 @@ const PaginationContext = createContext<any>({});
 
 export const PaginationProvider = ({ children }: any) => {
   const location = useLocation();
-
+  //main
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [currentCommentsPage, setCurrentCommentsPage] = useState<number>(1);
+  //search
   const [searchedCurrentPage, setSearchedCurrentPage] = useState<number>(1);
-  const [divisor] = useState<number>(10);
   const [searchedPostsPerPage] = useState<number>(10);
+  //hashtag
+  const [hashtagCurrentPage, setHashtagCurrentPage] = useState<number>(1);
+  const [hashtagPostsPerPage] = useState<number>(10);
+
+  const [divisor] = useState<number>(10);
   const [sortBy, setSortBy] = useState<string>("recent");
 
   useEffect(() => {
@@ -30,6 +35,9 @@ export const PaginationProvider = ({ children }: any) => {
         setSearchedCurrentPage,
         searchedCurrentPage,
         searchedPostsPerPage,
+        hashtagCurrentPage,
+        setHashtagCurrentPage,
+        hashtagPostsPerPage,
         sortBy,
         setSortBy,
       }}

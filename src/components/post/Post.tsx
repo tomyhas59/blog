@@ -156,7 +156,7 @@ const PostContainer = styled.div<{ isActive: boolean }>`
     props.isActive ? props.theme.activeColor : props.theme.backgroundColor};
   cursor: pointer;
   &:hover {
-    background-color: ${(props) => props.theme.activeColor};
+    background-color: ${(props) => props.theme.mainColor};
   }
   @media (max-width: 768px) {
     flex-direction: column;
@@ -185,9 +185,6 @@ export const PostTitle = styled.div<{ isViewed: boolean }>`
   align-items: center;
   gap: 2px;
   color: ${(props) => (props.isViewed ? "#b0b0b0" : props.theme.textColor)};
-  &:hover {
-    color: #007bff;
-  }
 `;
 
 export const NicknameButton = styled.button`
@@ -244,7 +241,6 @@ export const Nickname = styled.span`
 
 export const PostMetaInfo = styled.div`
   font-size: 12px;
-  color: silver;
   display: flex;
   justify-content: space-between;
   align-items: center;
