@@ -1,5 +1,5 @@
 import { useLocation } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import React, { useEffect, useState } from "react";
 import { RootState } from "../reducer";
 import styled from "styled-components";
@@ -7,14 +7,18 @@ import Spinner from "../components/ui/Spinner";
 import { PostType } from "../types";
 import Post from "../components/post/Post";
 import HashtagPagination from "../components/pagination/HashtagPagination";
+import { GET_HASHTAG_POSTS_REQUEST } from "../reducer/post";
+import { usePagination } from "../hooks/PaginationProvider";
 
 const HashtagPage = () => {
+  const dispatch = useDispatch();
   const location = useLocation();
-  const searchParams = new URLSearchParams(location.search);
-  const hashtagName = searchParams.get("hashtagName") || "";
+  const [hashtagName, setHashtagName] = useState<string>("");
 
   const { hashtagPosts, getHashtagPostsLoading, totalHashtagPosts } =
     useSelector((state: RootState) => state.post);
+
+  const { hashtagCurrentPage, setHashtagCurrentPage } = usePagination();
 
   const [viewedPosts, setViewedPosts] = useState<number[]>([]);
 
@@ -22,6 +26,26 @@ const HashtagPage = () => {
     const viewedPosts = JSON.parse(localStorage.getItem("viewedPosts") || "[]");
     setViewedPosts(viewedPosts);
   }, []);
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const hashtagNameParam = params.get("hashtagName");
+    const pageParam = params.get("page");
+
+    if (hashtagNameParam) setHashtagName(hashtagNameParam);
+    if (pageParam) setHashtagCurrentPage(Number(pageParam));
+  }, [location.search, setHashtagCurrentPage]);
+
+  useEffect(() => {
+    if (hashtagName) {
+      dispatch({
+        type: GET_HASHTAG_POSTS_REQUEST,
+        hashtagName,
+        page: hashtagCurrentPage,
+      });
+      setHashtagCurrentPage(hashtagCurrentPage);
+    }
+  }, [dispatch, hashtagCurrentPage, hashtagName, setHashtagCurrentPage]);
 
   return (
     <SearchPageContainer>
@@ -36,7 +60,11 @@ const HashtagPage = () => {
             <ResultContainer>
               {hashtagPosts.map((post: PostType) => (
                 <div key={post.id}>
-                  <Post post={post} viewedPosts={viewedPosts} />
+                  <Post
+                    post={post}
+                    viewedPosts={viewedPosts}
+                    hashtagName={hashtagName}
+                  />
                 </div>
               ))}
               <HashtagPagination

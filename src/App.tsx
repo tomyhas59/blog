@@ -14,6 +14,7 @@ import SearchPage from "./pages/SearchPage";
 import PostDetail from "./pages/PostDetail";
 import SearchedPostDetail from "./pages/SearchedPostDetail";
 import HashtagPage from "./pages/HashtagPage";
+import HashtagPostDetail from "./pages/HashtagPostDetail";
 
 const routes = [
   { path: "/", element: <Main /> },
@@ -27,6 +28,7 @@ const routes = [
   { path: "*", element: <NotFound /> },
   { path: "/user/:userId", element: <User /> },
   { path: "/hashtag", element: <HashtagPage /> },
+  { path: "/hashtagPost/:postId", element: <HashtagPostDetail /> },
 ];
 
 function App() {

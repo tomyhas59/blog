@@ -688,13 +688,20 @@ function* watchDeleteAllChat() {
 
 //-----------------------------------------------------
 
-function getHashtagPostsApi(data: any) {
-  return axios.get(`/post/hashtag/${data}`);
+function getHashtagPostsApi(hashtagName: string, page: number) {
+  return axios.get(`/post/hashtag?hashtagName=${hashtagName}&page=${page}`);
 }
 
-function* getHashtagPosts(action: { data: any }): SagaIterator {
+function* getHashtagPosts(action: {
+  hashtagName: string;
+  page: number;
+}): SagaIterator {
   try {
-    const result = yield call(getHashtagPostsApi, action.data);
+    const result = yield call(
+      getHashtagPostsApi,
+      action.hashtagName,
+      action.page
+    );
     yield put({
       type: GET_HASHTAG_POSTS_SUCCESS,
       data: result.data,

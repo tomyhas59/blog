@@ -69,9 +69,6 @@ const Comment = ({ post }: { post: PostType }) => {
     [location.search]
   );
 
-  const searchTextParam = params.get("searchText");
-  const searchOptionParam = params.get("searchOption");
-
   //---닉네임 클릭 정보 보기-------------------------------------
   const [showAuthorMenu, setShowAuthorMenu] = useState<Record<number, boolean>>(
     {}
@@ -265,16 +262,26 @@ const Comment = ({ post }: { post: PostType }) => {
 
   useEffect(() => {
     const setParams = (number: number) => {
-      const params = new URLSearchParams();
-      if (searchTextParam) params.set("searchText", searchTextParam);
-      if (searchOptionParam) params.set("searchOption", searchOptionParam);
-      params.set("page", currentPage.toString());
-      params.set("sortBy", sortBy);
-      params.set("cPage", number.toString());
+      const params = new URLSearchParams(location.search);
+      const hashtagNameParam = params.get("hashtagName");
+      const searchTextParam = params.get("searchText");
+      const searchOptionParam = params.get("searchOption");
+      let pathname;
 
-      const pathname = searchOptionParam
-        ? `/searchedPost/${post.id}`
-        : `/post/${post.id}`;
+      //hashtag 있으면 해시태그 페이지
+      if (hashtagNameParam) {
+        params.set("hashtagName", hashtagNameParam);
+        pathname = `/hashtagPost/${post.id}`;
+      } else {
+        if (searchTextParam) params.set("searchText", searchTextParam);
+        if (searchOptionParam) params.set("searchOption", searchOptionParam);
+        params.set("sortBy", sortBy);
+        pathname = searchOptionParam
+          ? `/searchedPost/${post.id}`
+          : `/post/${post.id}`;
+      }
+      params.set("page", currentPage.toString());
+      params.set("cPage", number.toString());
 
       navigator({
         pathname,
@@ -290,11 +297,10 @@ const Comment = ({ post }: { post: PostType }) => {
     currentPage,
     navigator,
     post.id,
-    searchOptionParam,
-    searchTextParam,
     setCurrentCommentsPage,
     sortBy,
     totalCommentPages,
+    location.search,
   ]);
 
   return (

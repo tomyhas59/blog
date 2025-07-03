@@ -8,7 +8,6 @@ import {
   REMOVE_POST_REQUEST,
   SEARCH_POSTS_REQUEST,
   GET_POST_REQUEST,
-  GET_HASHTAG_POSTS_REQUEST,
 } from "../../reducer/post";
 import "moment/locale/ko";
 import { RootState } from "../../reducer";
@@ -188,11 +187,6 @@ const CommonPost = () => {
 
   const getHashtagPosts = useCallback(
     (hashtagName: string) => {
-      dispatch({
-        type: GET_HASHTAG_POSTS_REQUEST,
-        data: hashtagName,
-      });
-
       const params = new URLSearchParams();
       params.set("hashtagName", hashtagName);
       params.set("page", "1");
@@ -202,7 +196,7 @@ const CommonPost = () => {
         search: params.toString(),
       });
     },
-    [navigator, dispatch]
+    [navigator]
   );
 
   return (

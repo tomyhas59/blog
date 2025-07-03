@@ -20,10 +20,12 @@ const Post = ({
   post,
   postId,
   viewedPosts,
+  hashtagName,
 }: {
   post: PostType;
   viewedPosts?: number[];
   postId?: number;
+  hashtagName?: string;
 }) => {
   const navigator = useNavigate();
   const me = useSelector((state: RootState) => state.user.me);
@@ -40,17 +42,27 @@ const Post = ({
   const goToPostDetail = useCallback(
     (postId: number) => {
       const params = new URLSearchParams();
+      if (hashtagName) {
+        params.set("hashtagName", hashtagName);
+      } else {
+        params.set("sortBy", sortBy.toString());
+      }
       params.set("page", currentPage.toString());
-      params.set("sortBy", sortBy.toString());
       params.set("cPage", "1");
+
+      //hashtag or post
+      const pathname = hashtagName
+        ? `/hashtagPost/${postId}`
+        : `/post/${postId}`;
+
       navigator({
-        pathname: `/post/${postId}`,
+        pathname,
         search: params.toString(),
       });
       window.scrollTo({ top: 0, behavior: "auto" });
       setCurrentCommentsPage(1);
     },
-    [currentPage, navigator, sortBy, setCurrentCommentsPage]
+    [currentPage, navigator, sortBy, setCurrentCommentsPage, hashtagName]
   );
 
   //---닉네임 클릭 정보 보기-------------------------------------
