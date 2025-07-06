@@ -48,14 +48,14 @@ const HashtagPage = () => {
   }, [dispatch, hashtagCurrentPage, hashtagName, setHashtagCurrentPage]);
 
   return (
-    <SearchPageContainer>
+    <HashtagPageContainer>
       {getHashtagPostsLoading ? (
         <Spinner />
       ) : (
         <div>
-          <SearchTitle>
-            <SearchResultText>#{hashtagName}</SearchResultText>
-          </SearchTitle>
+          <HashtagTitle>
+            <HashtagResultText>#{hashtagName}</HashtagResultText>
+          </HashtagTitle>
           {hashtagPosts.length > 0 ? (
             <ResultContainer>
               {hashtagPosts.map((post: PostType) => (
@@ -77,19 +77,19 @@ const HashtagPage = () => {
           )}
         </div>
       )}
-    </SearchPageContainer>
+    </HashtagPageContainer>
   );
 };
 
 export default HashtagPage;
 
-const SearchPageContainer = styled.div`
+const HashtagPageContainer = styled.div`
   max-width: 800px;
   padding: 5px 10px;
   margin: 0 auto;
 `;
 
-const SearchTitle = styled.div`
+const HashtagTitle = styled.div`
   font-size: 24px;
   font-weight: bold;
   margin-bottom: 20px;
@@ -98,6 +98,7 @@ const SearchTitle = styled.div`
 const ResultContainer = styled.div`
   display: flex;
   flex-direction: column;
+  gap: 10px;
 `;
 
 const NoResults = styled.div`
@@ -105,7 +106,7 @@ const NoResults = styled.div`
   color: #555;
 `;
 
-const SearchResultText = styled.span`
+const HashtagResultText = styled.span`
   font-size: 20px;
   font-weight: 600;
   margin-right: 10px;

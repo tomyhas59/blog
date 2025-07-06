@@ -74,11 +74,11 @@ const SearchedPost = ({
 
   if (searchTextParam) {
     return (
-      <SearchedPostContainer
-        onClick={goToSearchedPostDetail}
-        isActive={postId === post.id}
-      >
-        <PostContainer>
+      <>
+        <SearchedPostContainer
+          onClick={goToSearchedPostDetail}
+          isActive={postId === post.id}
+        >
           <PostHeaderLeftSection>
             <NicknameButton>
               <img
@@ -114,7 +114,7 @@ const SearchedPost = ({
             <Liked>{post.Likers.length === 0 ? "" : post.Likers.length}</Liked>
             <ViewCount>{post.viewCount}</ViewCount>
           </PostMetaInfo>
-        </PostContainer>
+        </SearchedPostContainer>
 
         <Content>
           {searchOptionParam === "all" && (
@@ -142,7 +142,7 @@ const SearchedPost = ({
               </Comment>
             ))}
         </Content>
-      </SearchedPostContainer>
+      </>
     );
   } else {
     return null;
@@ -152,25 +152,18 @@ const SearchedPost = ({
 export default SearchedPost;
 
 const SearchedPostContainer = styled.div<{ isActive: boolean }>`
+  display: flex;
+  justify-content: space-between;
   max-width: 800px;
   padding: 5px 10px;
-  margin: 0 auto;
   border: 1px solid #f4f4f4;
+  margin: 0 auto; //detail page 하단 목록 정렬
   background-color: ${(props) =>
     props.isActive ? props.theme.activeColor : props.theme.backgroundColor};
   cursor: pointer;
   &:hover {
     background-color: ${(props) => props.theme.activeColor};
   }
-`;
-
-const PostContainer = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  max-width: 800px;
-  padding: 5px 10px;
-  margin: 0 auto;
   @media (max-width: 768px) {
     flex-direction: column;
     align-items: start;

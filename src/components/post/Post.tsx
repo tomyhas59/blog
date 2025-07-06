@@ -159,11 +159,10 @@ export default Post;
 const PostContainer = styled.div<{ isActive: boolean }>`
   display: flex;
   justify-content: space-between;
-  align-items: center;
   max-width: 800px;
   padding: 5px 10px;
-  margin: 0 auto;
   border: 1px solid #f4f4f4;
+  margin: 0 auto; //detail page 하단 목록 정렬
   background-color: ${(props) =>
     props.isActive ? props.theme.activeColor : props.theme.backgroundColor};
   cursor: pointer;
