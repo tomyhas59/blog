@@ -93,7 +93,7 @@ function* getPosts(action: {
     yield put({
       type: GET_POSTS_SUCCESS,
       data: result.data.posts,
-      totalPosts: result.data.totalPosts,
+      totalPostsCount: result.data.totalPostsCount,
     });
   } catch (err: any) {
     console.log(err);
@@ -119,7 +119,7 @@ function* getComments(action: { page: number; postId: number }): SagaIterator {
     yield put({
       type: GET_COMMENTS_SUCCESS,
       data: result.data.comments,
-      totalComments: result.data.totalComments,
+      totalCommentsCount: result.data.totalCommentsCount,
       commentsCount: result.data.commentsCount,
       top3Comments: result.data.top3Comments,
     });
@@ -199,7 +199,7 @@ function* searchPosts(action: {
     yield put({
       type: SEARCH_POSTS_SUCCESS,
       searchedPosts: result.data.searchedPosts,
-      totalSearchedPosts: result.data.totalSearchedPosts,
+      totalSearchedPostsCount: result.data.totalSearchedPostsCount,
       searchOption: result.data.searchOption,
       postNum: result.data.postNum,
       commentNum: result.data.commentNum,

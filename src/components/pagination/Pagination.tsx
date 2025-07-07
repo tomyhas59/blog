@@ -3,12 +3,12 @@ import styled from "styled-components";
 import { usePagination } from "../../hooks/PaginationProvider";
 import { useNavigate } from "react-router-dom";
 
-const Pagination = ({ totalPosts }: { totalPosts: number }) => {
+const Pagination = ({ totalPostsCount }: { totalPostsCount: number }) => {
   const navigator = useNavigate();
   const { currentPage, divisor, setCurrentPage, sortBy, currentCommentsPage } =
     usePagination();
 
-  const totalPages = Math.ceil(totalPosts / divisor);
+  const totalPagesCount = Math.ceil(totalPostsCount / divisor);
 
   const setParams = (number: number) => {
     const params = new URLSearchParams();
@@ -29,7 +29,7 @@ const Pagination = ({ totalPosts }: { totalPosts: number }) => {
 
   return (
     <PaginationContainer>
-      {totalPages > 0 && totalPages !== 1 && (
+      {totalPagesCount > 0 && totalPagesCount !== 1 && (
         <ul>
           <li
             onClick={() => currentPage > 1 && handlePageChange(currentPage - 1)}
@@ -37,7 +37,7 @@ const Pagination = ({ totalPosts }: { totalPosts: number }) => {
             ◀
           </li>
 
-          {[...Array(totalPages)].map((_, index) => (
+          {[...Array(totalPagesCount)].map((_, index) => (
             <PageItem key={index} isActive={index + 1 === currentPage}>
               <PageButton onClick={() => handlePageChange(index + 1)}>
                 {index + 1}
@@ -47,7 +47,7 @@ const Pagination = ({ totalPosts }: { totalPosts: number }) => {
 
           <li
             onClick={() =>
-              currentPage < totalPages && handlePageChange(currentPage + 1)
+              currentPage < totalPagesCount && handlePageChange(currentPage + 1)
             }
           >
             ▶

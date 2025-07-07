@@ -14,7 +14,7 @@ import { SEARCH_POSTS_REQUEST } from "../reducer/post";
 const SearchPage = () => {
   const location = useLocation();
   const dispatch = useDispatch();
-  const { searchedPosts, totalSearchedPosts, searchedPostsLoading } =
+  const { searchedPosts, totalSearchedPostsCount, searchedPostsLoading } =
     useSelector((state: RootState) => state.post);
   const { searchedCurrentPage, setSearchedCurrentPage } = usePagination();
 
@@ -74,7 +74,7 @@ const SearchPage = () => {
                 </div>
               ))}
               <SearchedPagination
-                totalSearchedPosts={Number(totalSearchedPosts)}
+                totalSearchedPostsCount={Number(totalSearchedPostsCount)}
                 searchText={searchText}
                 searchOption={searchOption}
               />

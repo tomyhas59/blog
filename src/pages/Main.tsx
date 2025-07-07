@@ -14,7 +14,7 @@ import SortButton from "../components/ui/SortButton";
 const Main = () => {
   const dispatch = useDispatch();
   const location = useLocation();
-  const { posts, totalPosts, getPostsLoading } = useSelector(
+  const { posts, totalPostsCount, getPostsLoading } = useSelector(
     (state: RootState) => state.post
   );
   const [viewedPosts, setViewedPosts] = useState<number[]>([]);
@@ -62,7 +62,7 @@ const Main = () => {
                 <Post post={post} viewedPosts={viewedPosts} />
               </div>
             ))}
-            <Pagination totalPosts={Number(totalPosts)} />
+            <Pagination totalPostsCount={Number(totalPostsCount)} />
           </div>
         )
       )}

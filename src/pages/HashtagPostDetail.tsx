@@ -20,7 +20,7 @@ const HashtagPostDetail = () => {
   const [hashtagName, setHashtagName] = useState<string>("");
   const { postId } = useParams();
 
-  const { hashtagPosts, post, totalHashtagPosts } = useSelector(
+  const { hashtagPosts, post, totalHashtagPostsCount } = useSelector(
     (state: RootState) => state.post
   );
 
@@ -97,7 +97,7 @@ const HashtagPostDetail = () => {
             </div>
           ))}
           <HashtagPagination
-            totalHashtagPosts={Number(totalHashtagPosts)}
+            totalHashtagPostsCount={Number(totalHashtagPostsCount)}
             hashtagName={hashtagName}
           />
         </div>

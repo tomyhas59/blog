@@ -46,7 +46,9 @@ const CommonPost = () => {
 
   const { postId } = useParams();
 
-  const { post, totalComments } = useSelector((state: RootState) => state.post);
+  const { post, totalCommentsCount } = useSelector(
+    (state: RootState) => state.post
+  );
 
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
@@ -310,7 +312,9 @@ const CommonPost = () => {
       </PostItem>
       <CommentContainer>
         <CommentHeader>
-          <CommentsCount>댓글 {totalComments && totalComments}개</CommentsCount>
+          <CommentsCount>
+            댓글 {totalCommentsCount && totalCommentsCount}개
+          </CommentsCount>
         </CommentHeader>
         <Comment post={post} />
         <CommentForm post={post} />

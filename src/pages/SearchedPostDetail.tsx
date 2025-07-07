@@ -24,7 +24,7 @@ const SearchedPostDetail = () => {
   const [searchOption, setSearchOption] = useState<string>("");
   const { postId } = useParams();
 
-  const { searchedPosts, post, totalSearchedPosts } = useSelector(
+  const { searchedPosts, post, totalSearchedPostsCount } = useSelector(
     (state: RootState) => state.post
   );
 
@@ -109,7 +109,7 @@ const SearchedPostDetail = () => {
             </div>
           ))}
           <SearchedPagination
-            totalSearchedPosts={Number(totalSearchedPosts)}
+            totalSearchedPostsCount={Number(totalSearchedPostsCount)}
             searchText={searchText}
             searchOption={searchOption}
           />

@@ -15,7 +15,7 @@ const HashtagPage = () => {
   const location = useLocation();
   const [hashtagName, setHashtagName] = useState<string>("");
 
-  const { hashtagPosts, getHashtagPostsLoading, totalHashtagPosts } =
+  const { hashtagPosts, getHashtagPostsLoading, totalHashtagPostsCount } =
     useSelector((state: RootState) => state.post);
 
   const { hashtagCurrentPage, setHashtagCurrentPage } = usePagination();
@@ -68,7 +68,7 @@ const HashtagPage = () => {
                 </div>
               ))}
               <HashtagPagination
-                totalHashtagPosts={Number(totalHashtagPosts)}
+                totalHashtagPostsCount={Number(totalHashtagPostsCount)}
                 hashtagName={hashtagName}
               />
             </ResultContainer>

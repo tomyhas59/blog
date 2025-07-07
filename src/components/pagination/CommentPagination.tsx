@@ -6,13 +6,13 @@ import { useLocation, useNavigate } from "react-router-dom";
 
 interface propsType {
   post: PostType;
-  totalCommentPages: number;
+  totalCommentPagesCount: number;
   scrollTargetRef: React.RefObject<HTMLElement>;
 }
 
 const CommentPagination = ({
   post,
-  totalCommentPages,
+  totalCommentPagesCount,
   scrollTargetRef,
 }: propsType) => {
   const { currentPage, currentCommentsPage, setCurrentCommentsPage, sortBy } =
@@ -63,7 +63,7 @@ const CommentPagination = ({
 
   return (
     <PaginationContainer>
-      {totalCommentPages > 0 && totalCommentPages !== 1 && (
+      {totalCommentPagesCount > 0 && totalCommentPagesCount !== 1 && (
         <ul>
           <li
             onClick={() =>
@@ -73,7 +73,7 @@ const CommentPagination = ({
           >
             ◀
           </li>
-          {[...Array(totalCommentPages)].map((_, index) => (
+          {[...Array(totalCommentPagesCount)].map((_, index) => (
             <PageItem key={index} isActive={index + 1 === currentCommentsPage}>
               <PageButton onClick={() => handlePageChange(index + 1)}>
                 {index + 1}
@@ -82,7 +82,7 @@ const CommentPagination = ({
           ))}
           <li
             onClick={() =>
-              currentCommentsPage < totalCommentPages &&
+              currentCommentsPage < totalCommentPagesCount &&
               handlePageChange(currentCommentsPage + 1)
             }
           >

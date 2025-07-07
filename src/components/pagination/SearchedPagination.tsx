@@ -4,11 +4,11 @@ import { usePagination } from "../../hooks/PaginationProvider";
 import { useLocation, useNavigate } from "react-router-dom";
 
 const SearchedPagination = ({
-  totalSearchedPosts,
+  totalSearchedPostsCount,
   searchText,
   searchOption,
 }: {
-  totalSearchedPosts: number;
+  totalSearchedPostsCount: number;
   searchText: string;
   searchOption: string;
 }) => {
@@ -21,8 +21,8 @@ const SearchedPagination = ({
     currentCommentsPage,
   } = usePagination();
 
-  const searchedTotalPages = Math.ceil(
-    totalSearchedPosts / searchedPostsPerPage
+  const searchedTotalPagesCount = Math.ceil(
+    totalSearchedPostsCount / searchedPostsPerPage
   );
 
   const setParams = (number: number) => {
@@ -44,7 +44,7 @@ const SearchedPagination = ({
 
   return (
     <PaginationContainer>
-      {searchedTotalPages > 0 && searchedTotalPages !== 1 && (
+      {searchedTotalPagesCount > 0 && searchedTotalPagesCount !== 1 && (
         <ul>
           <li
             onClick={() =>
@@ -54,7 +54,7 @@ const SearchedPagination = ({
           >
             ◀
           </li>
-          {[...Array(searchedTotalPages)].map((_, index) => (
+          {[...Array(searchedTotalPagesCount)].map((_, index) => (
             <PageItem key={index} isActive={index + 1 === searchedCurrentPage}>
               <PageButton onClick={() => handlePageChange(index + 1)}>
                 {index + 1}
@@ -63,7 +63,7 @@ const SearchedPagination = ({
           ))}
           <li
             onClick={() =>
-              searchedCurrentPage < searchedTotalPages &&
+              searchedCurrentPage < searchedTotalPagesCount &&
               handlePageChange(searchedCurrentPage + 1)
             }
           >

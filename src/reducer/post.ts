@@ -5,20 +5,20 @@ import { CommentType, MessageType, PostType } from "../types";
 const initialState = {
   //post
   posts: [] as PostType[],
-  totalPosts: null,
+  totalPostsCount: null,
   post: {} as PostType,
   //comment
   comments: [] as CommentType[],
-  totalComments: null,
+  totalCommentsCount: null,
   commentsCount: null,
   top3Comments: [] as CommentType[],
   //searchedPosts
   searchedPosts: [] as PostType[],
   searchOption: "",
-  totalSearchedPosts: null,
+  totalSearchedPostsCount: null,
   //hashtagPosts
   hashtagPosts: [] as PostType[],
-  totalHashtagPosts: null,
+  totalHashtagPostsCount: null,
   chatMessages: [] as MessageType[],
 
   //id
@@ -243,7 +243,7 @@ const post = (state = initialState, action: any) => {
         draft.getPostsLoading = false;
         draft.getPostsDone = true;
         draft.posts = action.data;
-        draft.totalPosts = action.totalPosts;
+        draft.totalPostsCount = action.totalPostsCount;
         break;
       case GET_POSTS_FAILURE:
         draft.getPostsLoading = false;
@@ -259,7 +259,7 @@ const post = (state = initialState, action: any) => {
         draft.getCommentsLoading = false;
         draft.getCommentsDone = true;
         draft.comments = action.data;
-        draft.totalComments = action.totalComments;
+        draft.totalCommentsCount = action.totalCommentsCount;
         draft.commentsCount = action.commentsCount;
         draft.top3Comments = action.top3Comments;
         break;
@@ -294,7 +294,7 @@ const post = (state = initialState, action: any) => {
         draft.searchedPostsLoading = false;
         draft.searchedPostsDone = true;
         draft.searchedPosts = action.searchedPosts;
-        draft.totalSearchedPosts = action.totalSearchedPosts;
+        draft.totalSearchedPostsCount = action.totalSearchedPostsCount;
         draft.searchOption = action.searchOption;
         draft.postNum = action.postNum;
         draft.commentNum = action.commentNum;
@@ -393,7 +393,7 @@ const post = (state = initialState, action: any) => {
         draft.addCommentDone = true;
         draft.comments.push(action.data);
         draft.newCommentId = action.data.id;
-        if (draft.totalComments) draft.totalComments++;
+        if (draft.totalCommentsCount) draft.totalCommentsCount++;
 
         break;
       }
@@ -414,7 +414,7 @@ const post = (state = initialState, action: any) => {
         draft.comments = draft.comments.filter(
           (comment: { id: any }) => comment.id !== action.data.CommentId
         );
-        if (draft.totalComments) draft.totalComments--;
+        if (draft.totalCommentsCount) draft.totalCommentsCount--;
         break;
       }
       case REMOVE_COMMENT_FAILURE:
@@ -457,7 +457,7 @@ const post = (state = initialState, action: any) => {
           (post: { id: any }) => post.id === action.data.CommentId
         );
         draft.comments[commentIndex].Replies.push(action.data);
-        if (draft.totalComments) draft.totalComments++;
+        if (draft.totalCommentsCount) draft.totalCommentsCount++;
         break;
       }
       case ADD_REPLY_FAILURE:
@@ -483,7 +483,7 @@ const post = (state = initialState, action: any) => {
         ].Replies.filter(
           (post: { id: any }) => post.id !== action.data.ReplyId
         );
-        if (draft.totalComments) draft.totalComments--;
+        if (draft.totalCommentsCount) draft.totalCommentsCount--;
         break;
       }
       case REMOVE_REPLY_FAILURE:
@@ -743,7 +743,7 @@ const post = (state = initialState, action: any) => {
         draft.getHashtagPostsLoading = false;
         draft.getHashtagPostsDone = true;
         draft.hashtagPosts = action.data.hashtagPosts;
-        draft.totalHashtagPosts = action.data.totalHashtagPosts;
+        draft.totalHashtagPostsCount = action.data.totalHashtagPostsCount;
         break;
       }
       case GET_HASHTAG_POSTS_FAILURE:

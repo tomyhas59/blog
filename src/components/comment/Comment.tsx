@@ -258,7 +258,7 @@ const Comment = ({ post }: { post: PostType }) => {
     });
   }, [currentCommentsPage, dispatch, newCommentId, post.id]);
 
-  const totalCommentPages = Math.ceil(Number(commentsCount) / divisor);
+  const totalCommentPagesCount = Math.ceil(Number(commentsCount) / divisor);
 
   useEffect(() => {
     const setParams = (number: number) => {
@@ -288,9 +288,12 @@ const Comment = ({ post }: { post: PostType }) => {
         search: params.toString(),
       });
     };
-    if (totalCommentPages > 0 && totalCommentPages < currentCommentsPage) {
-      setCurrentCommentsPage(totalCommentPages);
-      setParams(totalCommentPages);
+    if (
+      totalCommentPagesCount > 0 &&
+      totalCommentPagesCount < currentCommentsPage
+    ) {
+      setCurrentCommentsPage(totalCommentPagesCount);
+      setParams(totalCommentPagesCount);
     }
   }, [
     currentCommentsPage,
@@ -299,7 +302,7 @@ const Comment = ({ post }: { post: PostType }) => {
     post.id,
     setCurrentCommentsPage,
     sortBy,
-    totalCommentPages,
+    totalCommentPagesCount,
     location.search,
   ]);
 
@@ -413,7 +416,7 @@ const Comment = ({ post }: { post: PostType }) => {
       })}
       <CommentPagination
         post={post}
-        totalCommentPages={totalCommentPages}
+        totalCommentPagesCount={totalCommentPagesCount}
         scrollTargetRef={scrollTargetRef}
       />
     </CommentContainer>

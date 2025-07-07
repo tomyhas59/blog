@@ -17,7 +17,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { usePagination } from "../../hooks/PaginationProvider";
 
 const CommentForm = ({ post }: { post: PostType }) => {
-  const { addCommentDone, totalComments } = useSelector(
+  const { addCommentDone, totalCommentsCount } = useSelector(
     (state: RootState) => state.post
   );
   const [content, , setContent] = useInput();
@@ -94,7 +94,7 @@ const CommentForm = ({ post }: { post: PostType }) => {
 
   useEffect(() => {
     if (addedComment) {
-      const totalCommentPages = Math.ceil(Number(totalComments) / divisor);
+      const totalCommentPages = Math.ceil(Number(totalCommentsCount) / divisor);
       setCurrentCommentsPage(totalCommentPages);
       setParams(totalCommentPages);
       setAddedComment(false);
@@ -104,7 +104,7 @@ const CommentForm = ({ post }: { post: PostType }) => {
     divisor,
     setCurrentCommentsPage,
     setParams,
-    totalComments,
+    totalCommentsCount,
     addedComment,
   ]);
 

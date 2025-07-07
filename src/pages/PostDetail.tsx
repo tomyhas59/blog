@@ -24,7 +24,7 @@ const PostDetail = () => {
 
   const { postId } = useParams();
 
-  const { posts, post, totalPosts, getCommentsDone } = useSelector(
+  const { posts, post, totalPostsCount, getCommentsDone } = useSelector(
     (state: RootState) => state.post
   );
   const [viewedPosts, setViewedPosts] = useState<number[]>([]);
@@ -132,7 +132,7 @@ const PostDetail = () => {
               />
             </div>
           ))}
-          <Pagination totalPosts={Number(totalPosts)} />
+          <Pagination totalPostsCount={Number(totalPostsCount)} />
         </div>
       )}
     </PostDetailContainer>

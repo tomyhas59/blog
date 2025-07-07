@@ -4,10 +4,10 @@ import { usePagination } from "../../hooks/PaginationProvider";
 import { useLocation, useNavigate } from "react-router-dom";
 
 const HashtagPagination = ({
-  totalHashtagPosts,
+  totalHashtagPostsCount,
   hashtagName,
 }: {
-  totalHashtagPosts: number;
+  totalHashtagPostsCount: number;
   hashtagName: string;
 }) => {
   const location = useLocation();
@@ -19,7 +19,9 @@ const HashtagPagination = ({
     currentCommentsPage,
   } = usePagination();
 
-  const hashtagTotalPages = Math.ceil(totalHashtagPosts / hashtagPostsPerPage);
+  const hashtagTotalPages = Math.ceil(
+    totalHashtagPostsCount / hashtagPostsPerPage
+  );
 
   const setParams = (number: number) => {
     const params = new URLSearchParams();
