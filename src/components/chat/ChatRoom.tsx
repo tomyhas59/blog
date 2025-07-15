@@ -14,6 +14,8 @@ import { useDispatch } from "react-redux";
 import { READ_CHAT_REQUEST } from "../../reducer/post";
 import styled from "styled-components";
 import { UserRoomList } from "../../pages/Chat";
+import MessageList from "./MessageList";
+import MessageForm from "./MessageForm";
 
 interface ChatRoomProps {
   me: UserType | null;
@@ -36,8 +38,7 @@ const ChatRoom = ({
   const currentRoomId = room?.id;
   const socket = useRef<Socket | null>(null);
   const messageListContainerRef = useRef<HTMLDivElement | null>(null);
-  const [inputValue, setInputValue] = useState<string>("");
-  const messageRef = useRef<HTMLInputElement>(null);
+
   const [chatDisable, setChatDisable] = useState<boolean>(false);
   const [selectedMessageId, setSelectedMessageId] = useState<number | null>(
     null
@@ -135,24 +136,6 @@ const ChatRoom = ({
     }
   }, [messages]);
 
-  const handleMessageSubmit = (e: SyntheticEvent) => {
-    e.preventDefault();
-    if (inputValue.trim() !== "") {
-      const messageData = {
-        content: inputValue,
-        roomId: currentRoomId,
-        userId: me?.id,
-      };
-      socket.current?.emit("sendMessage", messageData, selectedUserId);
-      setInputValue("");
-      messageRef.current?.focus();
-    }
-  };
-
-  const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setInputValue(e.target.value);
-  };
-
   const onExit = () => {
     if (window.confirm("정말 나가겠습니까?")) {
       socket.current?.emit("outRoom", currentRoomId, me);
@@ -186,81 +169,21 @@ const ChatRoom = ({
         <ChatPartnerName>{roomName} 님과의 채팅</ChatPartnerName>
         <ExitButton onClick={onExit}>나가기</ExitButton>
       </RoomHeader>
-      <MessageListContainer ref={messageListContainerRef}>
-        <MessageList>
-          {messages.length === 0 ? (
-            <EmptyMessage>메시지가 없습니다</EmptyMessage>
-          ) : (
-            messages.map((message, i) => {
-              const isSystemMessage = message.content.includes("systemMessage");
-              const isDeletedMessage =
-                message.content.includes("deletedMessage");
-              const messageContent = isSystemMessage
-                ? message.content.replace("systemMessage", "")
-                : isDeletedMessage
-                ? "삭제된 메시지입니다"
-                : message.content;
-
-              return (
-                <React.Fragment key={message.id}>
-                  {i === 0 ||
-                  moment(message.createdAt).isAfter(
-                    messages[i - 1].createdAt,
-                    "day"
-                  ) ? (
-                    <DateDivider>
-                      {moment(message.createdAt).format("YYYY-MM-DD")}
-                    </DateDivider>
-                  ) : null}
-                  <MessageItem
-                    isMe={message.User?.id === me?.id}
-                    isSystemMessage={isSystemMessage}
-                  >
-                    <SenderName isSystemMessage={isSystemMessage}>
-                      {message.User?.nickname.slice(0, 5)}
-                    </SenderName>
-                    <MessageContent
-                      isMe={message.User?.id === me?.id}
-                      isSystemMessage={isSystemMessage}
-                      onClick={() => toggleDeleteButton(message.id)}
-                    >
-                      {messageContent}
-                    </MessageContent>
-                    <MessageTimestamp isSystemMessage={isSystemMessage}>
-                      {moment(message.createdAt).format("HH:mm")}
-                    </MessageTimestamp>
-                    {message.UserId === me?.id &&
-                      selectedMessageId === message.id && (
-                        <DeleteMessageButton
-                          onClick={() =>
-                            handleDeleteMessage(message.id, message.content)
-                          }
-                        >
-                          삭제
-                        </DeleteMessageButton>
-                      )}
-                  </MessageItem>
-                </React.Fragment>
-              );
-            })
-          )}
-        </MessageList>
-      </MessageListContainer>
-      <MessageForm onSubmit={handleMessageSubmit}>
-        <MessageInput
-          type="text"
-          placeholder={
-            chatDisable ? "상대방이 나갔습니다" : "메시지를 입력해주세요"
-          }
-          value={inputValue}
-          ref={messageRef}
-          onChange={handleInputChange}
-          disabled={chatDisable}
-        />
-        <MessageButton type="submit" disabled={chatDisable}>
-          전송
-        </MessageButton>
-      </MessageForm>
+      <MessageList
+        messages={messages}
+        messageListContainerRef={messageListContainerRef}
+        me={me}
+        toggleDeleteButton={toggleDeleteButton}
+        handleDeleteMessage={handleDeleteMessage}
+        selectedMessageId={selectedMessageId}
+      />
+      <MessageForm
+        chatDisable={chatDisable}
+        socket={socket}
+        currentRoomId={currentRoomId}
+        me={me}
+        selectedUserId={selectedUserId}
+      />
     </ChatRoomContainer>
   );
 };
@@ -329,133 +252,4 @@ const ExitButton = styled.button`
     padding: 3px;
     font-size: 12px;
   }
-`;
-
-const MessageListContainer = styled.div`
-  overflow-y: auto;
-  height: 60vh;
-  position: relative;
-  @media (max-width: 768px) {
-    height: calc(100vh - 100px);
-  }
-`;
-
-const MessageList = styled.ul`
-  list-style-type: none;
-  padding: 0;
-`;
-
-interface MessageItemProps {
-  isMe: boolean;
-  isSystemMessage: boolean;
-}
-
-const MessageItem = styled.li<MessageItemProps>`
-  margin-bottom: 10px;
-  display: flex;
-  flex-direction: ${(props) => (props.isMe ? "row" : "row-reverse")};
-  justify-content: ${(props) =>
-    props.isSystemMessage ? "center" : "flex-start"};
-`;
-
-const SenderName = styled.span<Pick<MessageItemProps, "isSystemMessage">>`
-  display: ${(props) => (props.isSystemMessage ? "none" : "inline")};
-  font-weight: bold;
-  color: ${(props) => props.theme.mainColor};
-  line-height: 1.5;
-`;
-
-const MessageContent = styled.p<MessageItemProps>`
-  margin: 5px 0;
-  padding: 5px 10px;
-
-  background-color: ${(props) =>
-    props.isSystemMessage ? "transparent" : props.isMe ? "#d4f1f4" : "#f0f0f0"};
-  color: ${(props) => (props.isSystemMessage ? "red" : "#000")};
-  border-radius: 8px;
-  max-width: 70%;
-  word-break: keep-all;
-  cursor: pointer;
-
-  @media (max-width: 768px) {
-    font-size: 14px;
-  }
-`;
-
-const MessageTimestamp = styled.span<Pick<MessageItemProps, "isSystemMessage">>`
-  display: ${(props) => (props.isSystemMessage ? "none" : "inline")};
-  font-size: 12px;
-  color: #999;
-  align-self: flex-end;
-  margin-left: 5px;
-
-  @media (max-width: 768px) {
-    font-size: 10px;
-  }
-`;
-
-const MessageForm = styled.form`
-  display: flex;
-  height: 40px;
-`;
-
-const MessageInput = styled.input`
-  flex: 1;
-  padding: 10px;
-  font-size: 16px;
-  border: 1px solid #ccc;
-  border-radius: 4px 0 0 4px;
-  color: ${(props) => props.theme.mainColor};
-  @media (max-width: 768px) {
-    padding: 8px;
-    font-size: 14px;
-  }
-`;
-
-const MessageButton = styled.button`
-  padding: 10px 15px;
-  background-color: ${(props) => props.theme.mainColor};
-  color: #fff;
-  border: none;
-  border-radius: 0 4px 4px 0;
-  cursor: pointer;
-  transition: transform 0.3s ease, color 0.3s ease;
-
-  &:hover {
-    transform: translateY(-2px);
-    color: ${(props) => props.theme.charColor};
-  }
-
-  @media (max-width: 768px) {
-    font-size: 12px;
-    padding: 8px;
-  }
-`;
-
-const DeleteMessageButton = styled.button`
-  background: transparent;
-  border: none;
-  color: red;
-  cursor: pointer;
-`;
-
-const DateDivider = styled.div`
-  width: 100%;
-  font-size: 10px;
-  color: #ccc;
-  border-bottom: 1px solid #ccc;
-  margin: 10px 0;
-  text-align: center;
-
-  @media (max-width: 768px) {
-    font-size: 8px;
-    margin: 5px 0;
-  }
-`;
-
-const EmptyMessage = styled.div`
-  text-align: center;
-  color: #999;
-  font-size: 16px;
-  padding: 20px;
 `;
