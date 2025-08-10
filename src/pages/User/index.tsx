@@ -18,7 +18,6 @@ const UserPage = () => {
   const [user, setUser] = useState<UserType | null>(null);
   const navigate = useNavigate();
 
-  //게시글 무한 스크롤
   const [posts, setPosts] = useState<PostType[]>([]);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);

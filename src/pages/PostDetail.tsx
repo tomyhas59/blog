@@ -13,6 +13,7 @@ import { io, Socket } from "socket.io-client";
 import { usePagination } from "../hooks/PaginationProvider";
 import SortButton from "../components/ui/SortButton";
 import CommonPost from "../components/post/CommonPost";
+import PostInfo from "../components/ui/PostInfo";
 
 const PostDetail = () => {
   const socket = useRef<Socket | null>(null);
@@ -121,6 +122,7 @@ const PostDetail = () => {
       ) : null}
       <CommonPost />
       <SortButton />
+      <PostInfo />
       {posts.length > 0 && (
         <div>
           {posts.map((post: PostType) => (

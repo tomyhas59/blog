@@ -128,7 +128,7 @@ const Reply = ({ post, comment }: { post: PostType; comment: CommentType }) => {
                   >
                     작성 글 보기
                   </BlueButton>
-                  <UserPageButton userId={reply.UserId} />
+                  <UserPageButton userId={reply.User.id} />
                   {id !== reply.User.id && (
                     <FollowButton
                       userId={reply.User.id}

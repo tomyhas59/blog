@@ -11,6 +11,7 @@ import SearchedPagination from "../components/pagination/SearchedPagination";
 import SearchedPost from "../components/post/SearchedPost";
 import CommonPost from "../components/post/CommonPost";
 import styled from "styled-components";
+import PostInfo from "../components/ui/PostInfo";
 
 const SearchedPostDetail = () => {
   const dispatch = useDispatch();
@@ -97,6 +98,7 @@ const SearchedPostDetail = () => {
         <Spinner />
       ) : null}
       <CommonPost />
+      <PostInfo />
       {searchedPosts.length > 0 && (
         <div>
           {searchedPosts.map((post: PostType) => (
@@ -122,5 +124,6 @@ const SearchedPostDetail = () => {
 export default SearchedPostDetail;
 
 const SearchedPostDetailContainer = styled.div`
+  max-width: 800px;
   margin: 0 auto;
 `;

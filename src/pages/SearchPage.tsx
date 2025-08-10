@@ -10,6 +10,7 @@ import SearchedPost from "../components/post/SearchedPost";
 import styled from "styled-components";
 import { useDispatch } from "react-redux";
 import { SEARCH_POSTS_REQUEST } from "../reducer/post";
+import PostInfo from "../components/ui/PostInfo";
 
 const SearchPage = () => {
   const location = useLocation();
@@ -66,6 +67,7 @@ const SearchPage = () => {
           <SearchTitle>
             <SearchResultText>{searchText}</SearchResultText> 검색 결과
           </SearchTitle>
+          <PostInfo />
           {searchedPosts.length > 0 ? (
             <ResultContainer>
               {searchedPosts.map((post: PostType) => (

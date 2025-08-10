@@ -10,6 +10,7 @@ import Spinner from "../components/ui/Spinner";
 import { useLocation } from "react-router-dom";
 import styled from "styled-components";
 import SortButton from "../components/ui/SortButton";
+import PostInfo from "../components/ui/PostInfo";
 
 const Main = () => {
   const dispatch = useDispatch();
@@ -52,15 +53,14 @@ const Main = () => {
     <MainContainer>
       <Banner>BANNER</Banner>
       <SortButton />
+      <PostInfo />
       {getPostsLoading ? (
         <Spinner />
       ) : (
         posts.length > 0 && (
           <div>
             {posts.map((post: PostType) => (
-              <div key={post.id}>
-                <Post post={post} viewedPosts={viewedPosts} />
-              </div>
+              <Post key={post.id} post={post} viewedPosts={viewedPosts} />
             ))}
             <Pagination totalPostsCount={Number(totalPostsCount)} />
           </div>

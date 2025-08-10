@@ -1,13 +1,6 @@
-import React, {
-  useState,
-  useEffect,
-  SyntheticEvent,
-  ChangeEvent,
-  useRef,
-} from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useSelector } from "react-redux";
 import io, { Socket } from "socket.io-client";
-import moment from "moment";
 import { RootState } from "../../reducer";
 import { MessageType, UserType } from "../../types";
 import { useDispatch } from "react-redux";
