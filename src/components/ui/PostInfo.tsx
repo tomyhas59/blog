@@ -33,6 +33,7 @@ const PostMainInfo = styled.div`
   justify-content: flex-start;
   align-items: center;
   position: relative;
+  font-size: 12px;
   gap: 50px;
   * {
     color: ${(props) => props.theme.textColor};
