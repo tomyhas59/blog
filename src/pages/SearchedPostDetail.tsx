@@ -11,7 +11,7 @@ import SearchedPagination from "../components/pagination/SearchedPagination";
 import SearchedPost from "../components/post/SearchedPost";
 import CommonPost from "../components/post/CommonPost";
 import styled from "styled-components";
-import PostInfo from "../components/ui/PostInfo";
+import PostInfo from "../components/post/PostInfo";
 
 const SearchedPostDetail = () => {
   const dispatch = useDispatch();

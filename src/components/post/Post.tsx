@@ -160,8 +160,7 @@ const PostContainer = styled.div<{ isActive: boolean }>`
   display: flex;
   justify-content: space-between;
   max-width: 800px;
-  padding: 5px 10px;
-  border: 1px solid #f4f4f4;
+  padding: 10px;
   margin: 0 auto; //detail page 하단 목록 정렬
   background-color: ${(props) =>
     props.isActive ? props.theme.activeColor : props.theme.backgroundColor};
@@ -205,11 +204,12 @@ export const NicknameButton = styled.button`
   color: ${(props) => props.theme.mainColor};
   font-weight: bold;
   transition: transform 0.3s ease, color 0.3s ease;
+  gap: 4px;
   img {
     display: inline;
     border-radius: 50%;
-    width: 30px;
-    height: 30px;
+    width: 25px;
+    height: 25px;
   }
   &:hover {
     transform: translateY(-2px);

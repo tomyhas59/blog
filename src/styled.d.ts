@@ -12,5 +12,6 @@ declare module "styled-components" {
     activeColor: string;
     charColor: string;
     top3Color: string;
+    highlightColor: string;
   }
 }

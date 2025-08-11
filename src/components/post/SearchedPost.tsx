@@ -155,8 +155,7 @@ const SearchedPostContainer = styled.div<{ isActive: boolean }>`
   display: flex;
   justify-content: space-between;
   max-width: 800px;
-  padding: 5px 10px;
-  border: 1px solid #f4f4f4;
+  padding: 10px;
   margin: 0 auto; //detail page 하단 목록 정렬
   background-color: ${(props) =>
     props.isActive ? props.theme.activeColor : props.theme.backgroundColor};
@@ -188,6 +187,6 @@ const Reply = styled.div`
 `;
 
 const HighlightedText = styled.span`
-  background-color: ${(props) => props.theme.hoverMainColor};
+  background-color: ${(props) => props.theme.highlightColor};
   font-weight: bold;
 `;

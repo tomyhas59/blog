@@ -10,7 +10,7 @@ import Spinner from "../components/ui/Spinner";
 import { useLocation } from "react-router-dom";
 import styled from "styled-components";
 import SortButton from "../components/ui/SortButton";
-import PostInfo from "../components/ui/PostInfo";
+import PostInfo from "../components/post/PostInfo";
 
 const Main = () => {
   const dispatch = useDispatch();

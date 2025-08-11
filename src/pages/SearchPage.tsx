@@ -10,7 +10,7 @@ import SearchedPost from "../components/post/SearchedPost";
 import styled from "styled-components";
 import { useDispatch } from "react-redux";
 import { SEARCH_POSTS_REQUEST } from "../reducer/post";
-import PostInfo from "../components/ui/PostInfo";
+import PostInfo from "../components/post/PostInfo";
 
 const SearchPage = () => {
   const location = useLocation();

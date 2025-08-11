@@ -13,7 +13,7 @@ import { io, Socket } from "socket.io-client";
 import { usePagination } from "../hooks/PaginationProvider";
 import SortButton from "../components/ui/SortButton";
 import CommonPost from "../components/post/CommonPost";
-import PostInfo from "../components/ui/PostInfo";
+import PostInfo from "../components/post/PostInfo";
 
 const PostDetail = () => {
   const socket = useRef<Socket | null>(null);

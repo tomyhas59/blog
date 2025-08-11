@@ -23,8 +23,7 @@ const PostInfoWrapper = styled.div`
   display: flex;
   justify-content: space-between;
   max-width: 800px;
-  padding: 5px 10px;
-  border: 1px solid #f4f4f4;
+  padding: 10px;
 `;
 
 const PostMainInfo = styled.div`
@@ -34,7 +33,7 @@ const PostMainInfo = styled.div`
   align-items: center;
   position: relative;
   font-size: 12px;
-  gap: 50px;
+  gap: 60px;
   * {
     color: ${(props) => props.theme.textColor};
     font-weight: bold;

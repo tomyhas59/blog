@@ -9,6 +9,7 @@ export const lightTheme = {
   charColor: "#4a4541",
   activeColor: "#c4beb8",
   top3Color: "#faf9f8",
+  highlightColor: "#fff3b0",
 };
 
 export const darkTheme = {
@@ -22,4 +23,5 @@ export const darkTheme = {
   charColor: "#a09a92",
   activeColor: "#7a746d",
   top3Color: "#3e3936",
+  highlightColor: "#fff3b0",
 };
