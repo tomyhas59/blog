@@ -241,7 +241,6 @@ export default Header;
 
 export const HeaderContainer = styled.header`
   width: 100%;
-  height: 7vh;
   background-color: ${(props) => props.theme.subColor};
   display: flex;
   justify-content: center;
@@ -249,7 +248,6 @@ export const HeaderContainer = styled.header`
   gap: 10px;
   @media (max-width: 768px) {
     position: fixed;
-    height: 10vh;
     display: grid;
     grid-template-areas:
       "a b c"

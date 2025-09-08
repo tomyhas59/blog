@@ -48,17 +48,14 @@ const LayoutContainer = styled.div`
   position: relative;
   display: flex;
   flex-direction: column;
+  min-height: 100vh;
 `;
 
 const ContentWrapper = styled.main`
+  flex: 1;
   background-color: ${(props) => props.theme.backgroundColor};
   color: ${(props) => props.theme.textColor};
   padding: 5px;
-  min-height: 80vh;
-  @media (max-width: 768px) {
-    margin-top: 10vh;
-    min-height: 90vh;
-  }
 `;
 
 const ShowPostFormButton = styled.div`

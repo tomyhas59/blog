@@ -7,7 +7,7 @@ export const lightTheme = {
   textColor: "#5a5652",
   borderColor: "#d7d2cc",
   charColor: "#4a4541",
-  activeColor: "#c4beb8",
+  activeColor: "#e8dfd6ff",
   top3Color: "#faf9f8",
   highlightColor: "#fff3b0",
 };

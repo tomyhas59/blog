@@ -196,6 +196,7 @@ const InfoContainer = styled.div`
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 
   @media (max-width: 768px) {
+    margin-top: 10vh;
     flex-direction: column;
     width: 100%;
   }
@@ -308,16 +309,29 @@ const NewFollowersCount = styled.div`
   text-align: center;
   font-weight: bold;
   animation: ${blinkBackground} 1s infinite;
+  @media (max-width: 768px) {
+    font-size: 0.7rem;
+    width: 15px;
+    top: 0;
+    right: -10px;
+  }
 `;
 
 const NotificationMessage = styled.div`
   position: absolute;
-  top: 0;
+  top: -10px;
   right: -20px;
   background-color: red;
+  color: #fff;
+  width: 20px;
   border-radius: 50%;
-  padding: 2px;
   text-align: center;
   font-weight: bold;
   animation: ${blinkBackground} 1s infinite;
+  @media (max-width: 768px) {
+    font-size: 0.7rem;
+    width: 15px;
+    top: 0;
+    right: -10px;
+  }
 `;

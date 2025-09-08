@@ -43,7 +43,6 @@ export default Footer;
 
 export const FooterContainer = styled.footer`
   width: 100%;
-  height: 13vh;
   background-color: ${(props) => props.theme.subColor};
   padding: 14px 40px;
   display: flex;

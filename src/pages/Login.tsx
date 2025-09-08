@@ -104,6 +104,7 @@ const LoginContainer = styled.div`
   @media (max-width: 768px) {
     padding: 20px;
     transform: scale(0.9);
+    margin-top: 10vh;
   }
 `;
 

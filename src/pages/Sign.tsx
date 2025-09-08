@@ -127,9 +127,8 @@ export default Sign;
 const SignUpContainer = styled.form`
   display: flex;
   flex-direction: column;
-
   max-width: 400px;
-  width: 90%;
+  width: 100%;
   margin: 40px auto;
   padding: 20px;
   border: 1px solid #e0e0e0;
@@ -139,6 +138,7 @@ const SignUpContainer = styled.form`
   @media (max-width: 768px) {
     padding: 20px;
     transform: scale(0.9);
+    margin-top: 10vh;
   }
 `;
 

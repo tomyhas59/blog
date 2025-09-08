@@ -41,6 +41,14 @@ const MyInfo: React.FC = () => {
   const [modifyNickname, setModifyNickname] = useState<boolean>(false);
   const newNicknameRef = useRef<HTMLInputElement | null>(null);
 
+  const passwordRef = useRef<HTMLInputElement | null>(null);
+
+  useEffect(() => {
+    if (changePassword && passwordRef.current) {
+      passwordRef.current.focus();
+    }
+  }, [changePassword]);
+
   const handlePasswordConfirmChange = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
       setPasswordConfirm(e.target.value);
@@ -280,6 +288,7 @@ const MyInfo: React.FC = () => {
           <FormGroup>
             <Label>현재 비밀번호</Label>
             <Input
+              ref={passwordRef}
               type="password"
               value={prevPassword}
               onChange={handlePrevPasswordChange}

@@ -51,7 +51,6 @@ const Main = () => {
 
   return (
     <MainContainer>
-      <Banner>BANNER</Banner>
       <SortButton />
       <PostInfo />
       {getPostsLoading ? (
@@ -76,14 +75,4 @@ const MainContainer = styled.div`
   max-width: 800px;
   padding: 5px 10px;
   margin: 0 auto;
-`;
-
-const Banner = styled.div`
-  background-color: ${(props) => props.theme.subColor};
-  color: white;
-  text-align: center;
-  padding: 20px;
-  margin-bottom: 20px;
-  font-size: 24px;
-  font-weight: bold;
 `;
