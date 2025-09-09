@@ -12,6 +12,14 @@ const AppLayout = ({ children }: any) => {
   const titleRef = useRef<HTMLInputElement>(null);
   const [togglePostForm, setTogglePostForm] = useState<boolean>(false);
   const location = useLocation();
+  const headerRef = useRef<HTMLDivElement>(null);
+  const [headerHeight, setHeaderHeight] = useState(0);
+
+  useEffect(() => {
+    if (headerRef.current) {
+      setHeaderHeight(headerRef.current.clientHeight);
+    }
+  }, []);
 
   const showPostForm = useCallback(() => {
     setTogglePostForm(true);
@@ -31,8 +39,8 @@ const AppLayout = ({ children }: any) => {
           <PostForm titleRef={titleRef} setTogglePostForm={setTogglePostForm} />
         </>
       )}
-      <Header />
-      <ContentWrapper>{children}</ContentWrapper>
+      <Header ref={headerRef} />
+      <ContentWrapper headerHeight={headerHeight}>{children}</ContentWrapper>
       {me &&
         (location.pathname === "/" ||
           location.pathname.includes("post") ||
@@ -51,11 +59,14 @@ const LayoutContainer = styled.div`
   min-height: 100vh;
 `;
 
-const ContentWrapper = styled.main`
+const ContentWrapper = styled.main<{ headerHeight: number }>`
   flex: 1;
   background-color: ${(props) => props.theme.backgroundColor};
   color: ${(props) => props.theme.textColor};
   padding: 5px;
+  @media (max-width: 768px) {
+    margin-top: ${(props) => props.headerHeight}px;
+  }
 `;
 
 const ShowPostFormButton = styled.div`

@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { forwardRef, useRef, useState } from "react";
 import styled, { keyframes } from "styled-components";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
@@ -15,7 +15,11 @@ import { baseURL } from "../../config";
 import { DEFAULT_PROFILE_IMAGE } from "../Info/MyInfo";
 import { NotificationType, UserType } from "../../types";
 
-const Header = () => {
+interface HeaderProps {
+  ref: React.Ref<HTMLDivElement>;
+}
+
+const Header = forwardRef<HTMLDivElement, HeaderProps>((props, ref) => {
   const dispatch = useDispatch();
   const navigator = useNavigate();
   const { isLoggedIn, logOutDone, me, logInError } = useSelector(
@@ -193,7 +197,7 @@ const Header = () => {
   }, [dispatch]);
 
   return (
-    <HeaderContainer>
+    <HeaderContainer ref={ref}>
       <HeaderLogoBtn onClick={goToHome}>TMS</HeaderLogoBtn>
       <Search />
       {!isLoggedIn && (
@@ -236,7 +240,8 @@ const Header = () => {
       </DarkModeButton>
     </HeaderContainer>
   );
-};
+});
+
 export default Header;
 
 export const HeaderContainer = styled.header`
@@ -246,6 +251,7 @@ export const HeaderContainer = styled.header`
   justify-content: center;
   align-items: center;
   gap: 10px;
+  padding: 8px;
   @media (max-width: 768px) {
     position: fixed;
     display: grid;
@@ -254,7 +260,6 @@ export const HeaderContainer = styled.header`
       "d d d";
     top: 0;
     left: 0;
-    width: 100%;
     z-index: 1000;
     gap: 2px;
   }
