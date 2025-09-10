@@ -127,6 +127,7 @@ export const Heading = styled.h2`
 export const MoreButton = styled.button`
   display: block;
   margin: 0 auto;
+  margin-top: 20px;
   padding: 12px 24px;
   color: white;
   background-color: ${(props) => props.theme.mainColor};
