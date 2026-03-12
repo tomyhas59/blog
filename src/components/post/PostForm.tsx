@@ -52,21 +52,21 @@ const PostForm: React.FC<PostFormProps> = ({ titleRef, setTogglePostForm }) => {
     (e: ChangeEvent<HTMLInputElement>) => {
       setTitle(e.target.value);
     },
-    [setTitle]
+    [setTitle],
   );
 
   const handleContentChange = useCallback(
     (e: ChangeEvent<HTMLTextAreaElement>) => {
       setContent(e.target.value);
     },
-    [setContent]
+    [setContent],
   );
 
   const handleHashtagsChange = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
       setHashtags(e.target.value);
     },
-    []
+    [],
   );
 
   const handleClickFileUpload = useCallback(() => {
@@ -81,7 +81,7 @@ const PostForm: React.FC<PostFormProps> = ({ titleRef, setTogglePostForm }) => {
       setPreviewImages((prev) => [...prev, ...urls]);
       setActive(true);
     },
-    []
+    [],
   );
 
   const handleRemoveImage = useCallback((index: number) => {
@@ -126,7 +126,6 @@ const PostForm: React.FC<PostFormProps> = ({ titleRef, setTogglePostForm }) => {
       setTitle("");
       setHashtags("");
       navigator("/");
-      window.location.reload();
     },
 
     [
@@ -137,7 +136,7 @@ const PostForm: React.FC<PostFormProps> = ({ titleRef, setTogglePostForm }) => {
       dispatch,
       setTogglePostForm,
       navigator,
-    ]
+    ],
   );
 
   useEffect(() => {
@@ -291,7 +290,9 @@ export const FileUploadButton = styled.button`
   cursor: pointer;
   font-weight: bold;
   grid-area: e;
-  transition: transform 0.3s ease, color 0.3s ease;
+  transition:
+    transform 0.3s ease,
+    color 0.3s ease;
   &:hover {
     transform: translateY(-2px);
     color: ${(props) => props.theme.charColor};
@@ -363,7 +364,9 @@ export const SubmitButton = styled.button`
   border-radius: 8px;
   cursor: pointer;
   font-weight: bold;
-  transition: transform 0.3s ease, color 0.3s ease;
+  transition:
+    transform 0.3s ease,
+    color 0.3s ease;
   grid-area: f;
   justify-self: end;
   &:hover {

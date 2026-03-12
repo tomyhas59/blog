@@ -226,7 +226,7 @@ const post = (state = initialState, action: any) => {
         draft.isDarkMode = !draft.isDarkMode;
         localStorage.setItem(
           "darkMode",
-          draft.isDarkMode ? "enabled" : "disabled"
+          draft.isDarkMode ? "enabled" : "disabled",
         );
         break;
       case "SET_MODE":
@@ -314,7 +314,11 @@ const post = (state = initialState, action: any) => {
         draft.addPostLoading = false;
         draft.addPostDone = true;
         draft.posts.unshift(action.data);
+        draft.posts = draft.posts.slice(0, 10);
 
+        if (draft.totalPostsCount !== null) {
+          draft.totalPostsCount++;
+        }
         break;
       case ADD_POST_FAILURE:
         draft.addPostLoading = false;
@@ -330,7 +334,7 @@ const post = (state = initialState, action: any) => {
         draft.deleteImageLoading = false;
 
         draft.post.Images = draft.post.Images.filter(
-          (post) => post.src !== action.data.filename
+          (post) => post.src !== action.data.filename,
         );
 
         draft.deleteImageDone = true;
@@ -352,11 +356,11 @@ const post = (state = initialState, action: any) => {
         draft.removePostLoading = false;
         draft.removePostDone = true;
         draft.posts = draft.posts.filter(
-          (post) => post.id !== action.data.PostId
+          (post) => post.id !== action.data.PostId,
         );
         //search
         draft.searchedPosts = draft.searchedPosts.filter(
-          (post) => post.id !== action.data.PostId
+          (post) => post.id !== action.data.PostId,
         );
         break;
       }
@@ -412,7 +416,7 @@ const post = (state = initialState, action: any) => {
         draft.removeCommentLoading = false;
         draft.removeCommentDone = true;
         draft.comments = draft.comments.filter(
-          (comment: { id: any }) => comment.id !== action.data.CommentId
+          (comment: { id: any }) => comment.id !== action.data.CommentId,
         );
         if (draft.totalCommentsCount) draft.totalCommentsCount--;
         break;
@@ -432,7 +436,7 @@ const post = (state = initialState, action: any) => {
         draft.updateCommentLoading = false;
         draft.updateCommentDone = true;
         const commentIndex = draft.comments.findIndex(
-          (comment: { id: any }) => comment.id === action.data.CommentId
+          (comment: { id: any }) => comment.id === action.data.CommentId,
         );
         draft.comments[commentIndex].content = action.data.content;
         break;
@@ -454,7 +458,7 @@ const post = (state = initialState, action: any) => {
         draft.addReplyDone = true;
 
         const commentIndex = draft.comments.findIndex(
-          (post: { id: any }) => post.id === action.data.CommentId
+          (post: { id: any }) => post.id === action.data.CommentId,
         );
         draft.comments[commentIndex].Replies.push(action.data);
         if (draft.totalCommentsCount) draft.totalCommentsCount++;
@@ -476,12 +480,12 @@ const post = (state = initialState, action: any) => {
         draft.removeReplyDone = true;
 
         const commentIndex = draft.comments.findIndex(
-          (comment: { id: any }) => comment.id === action.data.CommentId
+          (comment: { id: any }) => comment.id === action.data.CommentId,
         );
         draft.comments[commentIndex].Replies = draft.comments[
           commentIndex
         ].Replies.filter(
-          (post: { id: any }) => post.id !== action.data.ReplyId
+          (post: { id: any }) => post.id !== action.data.ReplyId,
         );
         if (draft.totalCommentsCount) draft.totalCommentsCount--;
         break;
@@ -502,10 +506,10 @@ const post = (state = initialState, action: any) => {
         draft.updateReplyDone = true;
 
         const commentIndex = draft.comments.findIndex(
-          (comment: { id: any }) => comment.id === action.data.CommentId
+          (comment: { id: any }) => comment.id === action.data.CommentId,
         );
         const replyIndex = draft.comments[commentIndex].Replies.findIndex(
-          (reply: { id: any }) => reply.id === action.data.ReplyId
+          (reply: { id: any }) => reply.id === action.data.ReplyId,
         );
         draft.comments[commentIndex].Replies[replyIndex].content =
           action.data.content;
@@ -547,7 +551,7 @@ const post = (state = initialState, action: any) => {
         break;
       case UNLIKE_POST_SUCCESS: {
         draft.post.Likers = draft.post.Likers.filter(
-          (liker: { id: any }) => liker.id !== action.data.UserId
+          (liker: { id: any }) => liker.id !== action.data.UserId,
         );
         draft.unLikePostLoading = false;
         draft.unLikePostDone = true;
@@ -566,7 +570,7 @@ const post = (state = initialState, action: any) => {
         break;
       case LIKE_COMMENT_SUCCESS: {
         const commentIndex = draft.comments.findIndex(
-          (comment) => comment.id === action.data.CommentId
+          (comment) => comment.id === action.data.CommentId,
         );
 
         if (commentIndex === -1) {
@@ -585,7 +589,7 @@ const post = (state = initialState, action: any) => {
         //top3 Comments UI
         if (action.isTop3Comments) {
           const topCommentIndex = draft.top3Comments.findIndex(
-            (comment) => comment.id === action.data.CommentId
+            (comment) => comment.id === action.data.CommentId,
           );
           if (topCommentIndex === -1) {
             return;
@@ -612,7 +616,7 @@ const post = (state = initialState, action: any) => {
         break;
       case UNLIKE_COMMENT_SUCCESS: {
         const commentIndex = draft.comments.findIndex(
-          (comment) => comment.id === action.data.CommentId
+          (comment) => comment.id === action.data.CommentId,
         );
         if (commentIndex === -1) {
           return;
@@ -621,12 +625,12 @@ const post = (state = initialState, action: any) => {
         draft.comments[commentIndex].Likers = draft.comments[
           commentIndex
         ].Likers.filter(
-          (liker: { id: any }) => liker.id !== action.data.UserId
+          (liker: { id: any }) => liker.id !== action.data.UserId,
         );
         //top3 Comments UI
         if (action.isTop3Comments) {
           const topCommentIndex = draft.top3Comments.findIndex(
-            (comment) => comment.id === action.data.CommentId
+            (comment) => comment.id === action.data.CommentId,
           );
           if (topCommentIndex === -1) {
             return;
@@ -634,7 +638,7 @@ const post = (state = initialState, action: any) => {
           draft.top3Comments[topCommentIndex].Likers = draft.top3Comments[
             topCommentIndex
           ].Likers.filter(
-            (liker: { id: any }) => liker.id !== action.data.UserId
+            (liker: { id: any }) => liker.id !== action.data.UserId,
           );
         }
         draft.unLikeCommentLoading = false;
@@ -655,13 +659,13 @@ const post = (state = initialState, action: any) => {
         break;
       case LIKE_REPLY_SUCCESS: {
         const commentIndex = draft.comments.findIndex(
-          (comment: { id: any }) => comment.id === action.data.CommentId
+          (comment: { id: any }) => comment.id === action.data.CommentId,
         );
 
         if (commentIndex === -1) return;
 
         const replyIndex = draft.comments[commentIndex].Replies.findIndex(
-          (reply: { id: any }) => reply.id === action.data.ReplyId
+          (reply: { id: any }) => reply.id === action.data.ReplyId,
         );
 
         if (replyIndex === -1) return;
@@ -692,19 +696,19 @@ const post = (state = initialState, action: any) => {
         break;
       case UNLIKE_REPLY_SUCCESS: {
         const commentIndex = draft.comments.findIndex(
-          (comment: { id: any }) => comment.id === action.data.CommentId
+          (comment: { id: any }) => comment.id === action.data.CommentId,
         );
 
         if (commentIndex === -1) return;
 
         const replyIndex = draft.comments[commentIndex].Replies.findIndex(
-          (reply: { id: any }) => reply.id === action.data.ReplyId
+          (reply: { id: any }) => reply.id === action.data.ReplyId,
         );
 
         if (replyIndex === -1) return;
         draft.comments[commentIndex].Replies[replyIndex].Likers =
           draft.comments[commentIndex].Replies[replyIndex].Likers.filter(
-            (liker: { id: any }) => liker.id !== action.data.UserId
+            (liker: { id: any }) => liker.id !== action.data.UserId,
           );
 
         draft.unLikeReplyLoading = false;
