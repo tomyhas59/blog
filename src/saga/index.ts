@@ -8,6 +8,31 @@ axios.defaults.baseURL =
     ? "https://patient-marina-tomyhas59-8c3582f9.koyeb.app"
     : "http://localhost:3075";
 axios.defaults.withCredentials = true;
+
+axios.interceptors.response.use(
+  (response) => response,
+  async (error) => {
+    const originalRequest = error.config;
+
+    if (
+      error.response?.status === 401 &&
+      !originalRequest._retry &&
+      originalRequest.url !== "/user/refreshToken"
+    ) {
+      originalRequest._retry = true;
+
+      try {
+        await axios.post("/user/refreshToken");
+        return axios(originalRequest);
+      } catch {
+        return Promise.reject(error);
+      }
+    }
+
+    return Promise.reject(error);
+  },
+);
+
 //백에서 쿠키 받음,
 //app.use(
 //   cors({

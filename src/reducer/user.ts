@@ -19,10 +19,6 @@ export const initialState = {
   changePasswordDone: false,
   changePasswordError: null,
 
-  refreshTokenLoading: false,
-  refreshTokenDone: false,
-  refreshTokenError: null,
-
   followLoading: false,
   followDone: false,
   followError: null,
@@ -53,10 +49,6 @@ export const SIGN_UP_SUCCESS = "SIGN_UP_SUCCESS";
 export const CHANGE_PASSWORD_REQUEST = "CHANGE_PASSWORD_REQUEST";
 export const CHANGE_PASSWORD_SUCCESS = "CHANGE_PASSWORD_SUCCESS";
 export const CHANGE_PASSWORD_FAILURE = "CHANGE_PASSWORD_FAILURE";
-
-export const REFRESH_TOKEN_FAILURE = "REFRESH_TOKEN_FAILURE";
-export const REFRESH_TOKEN_REQUEST = "REFRESH_TOKEN_REQUEST";
-export const REFRESH_TOKEN_SUCCESS = "REFRESH_TOKEN_SUCCESS";
 
 export const FOLLOW_FAILURE = "FOLLOW_FAILURE";
 export const FOLLOW_REQUEST = "FOLLOW_REQUEST";
@@ -142,22 +134,7 @@ const user = (state = initialState, action: Action) => {
         draft.changePasswordLoading = false;
         draft.changePasswordError = action.error;
         break;
-      //--------------------------------------------
-      case REFRESH_TOKEN_REQUEST:
-        draft.refreshTokenError = null;
-        draft.refreshTokenLoading = true;
-        draft.refreshTokenDone = false;
-        break;
-      case REFRESH_TOKEN_SUCCESS:
-        draft.refreshTokenLoading = false;
-        draft.refreshTokenDone = true;
-        draft.me = action.data;
-        draft.isLoggedIn = true;
-        break;
-      case REFRESH_TOKEN_FAILURE:
-        draft.refreshTokenLoading = false;
-        draft.refreshTokenError = action.error;
-        break;
+
       //--------------------------------------------
       case FOLLOW_REQUEST:
         draft.followError = null;
@@ -188,7 +165,7 @@ const user = (state = initialState, action: Action) => {
         draft.unFollowDone = true;
         if (draft.me?.Followings) {
           draft.me.Followings = draft.me.Followings.filter(
-            (v) => v.id !== action.data.UserId
+            (v) => v.id !== action.data.UserId,
           );
         }
         break;

@@ -5,8 +5,6 @@ import {
   FOLLOW_FAILURE,
   FOLLOW_REQUEST,
   FOLLOW_SUCCESS,
-  REFRESH_TOKEN_FAILURE,
-  REFRESH_TOKEN_REQUEST,
   UNFOLLOW_FAILURE,
   UNFOLLOW_REQUEST,
   UNFOLLOW_SUCCESS,
@@ -18,7 +16,6 @@ import {
   LOG_OUT_FAILURE,
   LOG_OUT_REQUEST,
   LOG_OUT_SUCCESS,
-  REFRESH_TOKEN_SUCCESS,
   SIGN_UP_FAILURE,
   SIGN_UP_REQUEST,
   SIGN_UP_SUCCESS,
@@ -63,8 +60,6 @@ function logInAPI(data: any) {
 function* logIn(action: { data: any }): SagaIterator {
   try {
     const result = yield call(logInAPI, action.data);
-    sessionStorage.setItem("accessToken", result.data.accessToken);
-    sessionStorage.setItem("refreshToken", result.data.refreshToken);
     yield put({
       type: LOG_IN_SUCCESS,
       data: result.data,
@@ -105,42 +100,12 @@ function* watchChangePassword() {
 }
 
 //--------------------------------------------------------
-
-function refreshTokenAPI() {
-  const refreshToken = sessionStorage.getItem("refreshToken");
-  return axios.post("/user/refreshToken", { refreshToken });
-}
-
-function* refreshToken(): SagaIterator {
-  try {
-    const result = yield call(refreshTokenAPI);
-
-    localStorage.setItem("accessToken", result.data.accessToken);
-    yield put({
-      type: REFRESH_TOKEN_SUCCESS,
-      data: result.data,
-    });
-  } catch (err: any) {
-    yield put({
-      type: REFRESH_TOKEN_FAILURE,
-      error: err.response.data,
-    });
-  }
-}
-
-function* watchRefreshToken() {
-  yield takeEvery<any>(REFRESH_TOKEN_REQUEST, refreshToken);
-}
-
-//--------------------------------------------------------
 function logOutAPI() {
   return axios.post("/user/logout");
 }
 function* logOut() {
   try {
     yield call(logOutAPI);
-    sessionStorage.removeItem("accessToken");
-    sessionStorage.removeItem("refreshToken");
     yield put({
       type: LOG_OUT_SUCCESS,
     });
@@ -212,7 +177,6 @@ export default function* userSaga() {
     fork(watchLogin),
     fork(watchLogOut),
     fork(watchSignUp),
-    fork(watchRefreshToken),
     fork(watchFollow),
     fork(watchUnFollow),
     fork(watchChangePassword),

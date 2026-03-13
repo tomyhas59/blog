@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { useCallback, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { LOG_OUT_REQUEST, REFRESH_TOKEN_REQUEST } from "../../reducer/user";
+import { LOG_OUT_REQUEST } from "../../reducer/user";
 import Search from "../../components/search/Search";
 import { usePagination } from "../../hooks/PaginationProvider";
 import { RootState } from "../../reducer";
@@ -23,7 +23,7 @@ const Header = forwardRef<HTMLDivElement, HeaderProps>((props, ref) => {
   const dispatch = useDispatch();
   const navigator = useNavigate();
   const { isLoggedIn, logOutDone, me, logInError } = useSelector(
-    (state: RootState) => state.user
+    (state: RootState) => state.user,
   );
 
   const { isDarkMode } = useSelector((state: RootState) => state.post);
@@ -51,38 +51,28 @@ const Header = forwardRef<HTMLDivElement, HeaderProps>((props, ref) => {
 
   //새로고침 로그인 유지 및 헤더 클릭 유저 정보 반환
   useEffect(() => {
-    const accessToken = sessionStorage.getItem("accessToken");
-    const refreshToken = sessionStorage.getItem("refreshToken");
-
     const getUserData = async () => {
       try {
-        const response = await axios.get("/user/setUser", {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        });
-        const userData = response.data;
+        const response = await axios.get("/user/setUser");
         dispatch({
           type: "SET_USER",
-          data: userData,
+          data: response.data,
         });
-      } catch (error) {
-        console.error(error);
+      } catch (error: any) {
+        if (error.response?.status !== 401) {
+          console.error(error);
+        }
       }
     };
-    if (accessToken) {
-      getUserData();
-    }
-    if (!accessToken && refreshToken) {
-      dispatch({ type: REFRESH_TOKEN_REQUEST });
-    }
+
+    getUserData();
   }, [dispatch]);
 
   useEffect(() => {
     const fetchNewFollowersCount = async () => {
       try {
         const response = await axios.get(
-          `/user/getNewFollowersCount?userId=${me?.id}`
+          `/user/getNewFollowersCount?userId=${me?.id}`,
         );
 
         const hasNewFollowers = response.data > 0;
@@ -101,7 +91,7 @@ const Header = forwardRef<HTMLDivElement, HeaderProps>((props, ref) => {
   useEffect(() => {
     const notRead =
       me?.Notifications?.some(
-        (Notification: NotificationType) => Notification.isRead === false
+        (Notification: NotificationType) => Notification.isRead === false,
       ) || false;
     setCommentNotification(notRead);
   }, [me?.Notifications]);
@@ -149,7 +139,7 @@ const Header = forwardRef<HTMLDivElement, HeaderProps>((props, ref) => {
         const hasUnRead = response.data.some(
           (room: UserRoomList) =>
             room.UnReadMessages.filter((message) => message.UserId !== me?.id)
-              .length > 0
+              .length > 0,
         );
 
         setChatNotification(hasUnRead);
@@ -172,7 +162,7 @@ const Header = forwardRef<HTMLDivElement, HeaderProps>((props, ref) => {
     const notRead = (user: UserType, type: string) => {
       return (
         user?.Notifications?.filter(
-          (notification) => (notification.type = type)
+          (notification) => notification.type === type,
         ).some((notification) => notification.isRead === false) || false
       );
     };
@@ -273,7 +263,9 @@ export const HeaderLogoBtn = styled.button`
   border-radius: 8px;
   border: 1px solid;
   padding: 5px 15px;
-  transition: transform 0.3s ease, color 0.3s ease;
+  transition:
+    transform 0.3s ease,
+    color 0.3s ease;
   &:hover {
     transform: translateY(-2px);
     color: ${(props) => props.theme.charColor};
@@ -308,7 +300,9 @@ const ListItem = styled.li`
   cursor: pointer;
   font-size: 1rem;
   font-weight: bold;
-  transition: transform 0.3s ease, color 0.3s ease;
+  transition:
+    transform 0.3s ease,
+    color 0.3s ease;
   &:hover {
     transform: translateY(-2px);
     background-color: ${(props) => props.theme.hoverMainColor};
@@ -367,7 +361,9 @@ const ProfileImage = styled.img`
   border-radius: 50%;
   border: 2px solid #cccccc;
   cursor: pointer;
-  transition: transform 0.3s ease, border-color 0.3s ease;
+  transition:
+    transform 0.3s ease,
+    border-color 0.3s ease;
   &:hover {
     transform: scale(1.1);
     border-color: gray;
@@ -382,7 +378,9 @@ const ProfileImage = styled.img`
 
 const DarkModeButton = styled.button`
   font-size: 20px;
-  transition: transform 0.3s ease, border-color 0.3s ease;
+  transition:
+    transform 0.3s ease,
+    border-color 0.3s ease;
   &:hover {
     transform: scale(1.3);
   }
