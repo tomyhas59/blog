@@ -15,9 +15,8 @@ import useOutsideClick from "../../../../hooks/useOutsideClick";
 import { formatDate } from "../../../../utils/date";
 
 import * as S from "./PostDetailStyles";
-import * as CS from "../../PostCommonStyles";
 import ContentRenderer from "../../../renderer/ContentRenderer";
-import PostEditForm from "../../Forms/PostEditForm"; // 이전 단계에서 만든 폼
+import PostEditForm from "../../Forms/PostEditForm";
 import Like from "../../../ui/Like";
 import Comment from "../../../comment/Comment";
 import CommentForm from "../../../comment/CommentForm";
@@ -39,7 +38,6 @@ const PostDetail = () => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [editPost, setEditPost] = useState(false);
   const [showAuthorMenu, setShowAuthorMenu] = useState<boolean | {}>(false);
-
   const [showOptions, setShowOptions] = useState(false);
 
   const authorMenuRef = useRef<HTMLDivElement>(null);
@@ -118,27 +116,28 @@ const PostDetail = () => {
 
   return (
     <S.DetailContainer>
+      {/* 헤더 */}
       <S.DetailHeader>
-        <CS.PostHeaderLeftSection>
-          <div style={{ position: "relative" }}>
-            <CS.NicknameButton
-              onClick={() => setShowAuthorMenu(!showAuthorMenu)}
-            >
-              <img
+        <S.AuthorInfo>
+          <S.AuthorWrapper>
+            <S.AuthorButton onClick={() => setShowAuthorMenu(!showAuthorMenu)}>
+              <S.ProfileImage
                 src={
                   post.User?.Image
                     ? `${baseURL}/${post.User.Image.src}`
                     : DEFAULT_PROFILE_IMAGE
                 }
-                alt="프로필"
+                alt={post.User?.nickname}
               />
-              <CS.Nickname>{post.User?.nickname}</CS.Nickname>
-            </CS.NicknameButton>
+              <S.AuthorName>{post.User?.nickname}</S.AuthorName>
+            </S.AuthorButton>
+
             {showAuthorMenu && (
-              <CS.AuthorMenu ref={authorMenuRef} style={{ top: "45px" }}>
-                <CS.StyledButton onClick={searchByNickname}>
-                  작성 글 보기
-                </CS.StyledButton>
+              <S.AuthorMenu ref={authorMenuRef}>
+                <S.MenuButton onClick={searchByNickname}>
+                  <i className="fas fa-search"></i>
+                  <span>작성 글 보기</span>
+                </S.MenuButton>
                 <UserPageButton userId={post.User.id} />
                 {me?.id !== post.User.id && (
                   <FollowButton
@@ -146,39 +145,47 @@ const PostDetail = () => {
                     setShowAuthorMenu={setShowAuthorMenu}
                   />
                 )}
-              </CS.AuthorMenu>
+              </S.AuthorMenu>
             )}
-          </div>
-          <S.DetailTitle>{post.title}</S.DetailTitle>
-        </CS.PostHeaderLeftSection>
+          </S.AuthorWrapper>
 
-        <CS.PostMetaInfo>
-          <CS.Date>{formatDate(post.createdAt)}</CS.Date>
+          <S.PostDate>{formatDate(post.createdAt)}</S.PostDate>
+        </S.AuthorInfo>
+
+        <S.HeaderActions>
           <Like itemType="post" item={post} />
-          <CS.ViewCount>조회 {post.viewCount}</CS.ViewCount>
+          <S.ViewCount>
+            <i className="far fa-eye"></i>
+            <span>{post.viewCount}</span>
+          </S.ViewCount>
           {(me?.id === post.User?.id || me?.nickname === "admin") &&
             !editPost && (
-              <S.OptionToggle onClick={() => setShowOptions(!showOptions)}>
-                ⋮
+              <S.OptionButton onClick={() => setShowOptions(!showOptions)}>
+                <i className="fas fa-ellipsis-v"></i>
                 {showOptions && (
-                  <CS.AuthorMenu
-                    ref={postOptionsRef}
-                    style={{ right: 0, left: "auto" }}
-                  >
-                    <CS.StyledButton onClick={toggleEditPostForm}>
-                      수정
-                    </CS.StyledButton>
-                    <CS.StyledButton onClick={handleRemovePost}>
-                      삭제
-                    </CS.StyledButton>
-                  </CS.AuthorMenu>
+                  <S.OptionsMenu ref={postOptionsRef}>
+                    <S.MenuButton onClick={toggleEditPostForm}>
+                      <i className="fas fa-edit"></i>
+                      <span>수정</span>
+                    </S.MenuButton>
+                    <S.MenuButton onClick={handleRemovePost} className="danger">
+                      <i className="fas fa-trash"></i>
+                      <span>삭제</span>
+                    </S.MenuButton>
+                  </S.OptionsMenu>
                 )}
-              </S.OptionToggle>
+              </S.OptionButton>
             )}
-        </CS.PostMetaInfo>
+        </S.HeaderActions>
       </S.DetailHeader>
 
-      <S.DetailContentArea>
+      {/* 제목 */}
+      <S.TitleSection>
+        <S.Title>{post.title}</S.Title>
+      </S.TitleSection>
+
+      {/* 본문 */}
+      <S.ContentArea>
         {editPost ? (
           <PostEditForm
             post={post}
@@ -190,40 +197,50 @@ const PostDetail = () => {
             {post.Images?.length > 0 && (
               <S.ImageSection>
                 {post.Images.length > 1 && (
-                  <S.ImageCountBadge>
+                  <S.ImageCounter>
                     {currentImageIndex + 1} / {post.Images.length}
-                  </S.ImageCountBadge>
+                  </S.ImageCounter>
                 )}
                 <S.StyledSlider {...sliderSettings}>
                   {post.Images.map((img) => (
                     <div key={img.id}>
-                      <S.FullImage src={`${baseURL}/${img.src}`} alt="post" />
+                      <S.PostImage
+                        src={`${baseURL}/${img.src}`}
+                        alt="게시물 이미지"
+                      />
                     </div>
                   ))}
                 </S.StyledSlider>
               </S.ImageSection>
             )}
-            <ContentRenderer content={post.content} />
-            <S.HashtagGroup>
-              {post.Hashtags?.map((tag) => (
-                <S.HashtagBadge
-                  key={tag.id}
-                  onClick={() => getHashtagPosts(tag.name)}
-                >
-                  #{tag.name}
-                </S.HashtagBadge>
-              ))}
-            </S.HashtagGroup>
+
+            <S.TextContent>
+              <ContentRenderer content={post.content} />
+            </S.TextContent>
+
+            {post.Hashtags?.length > 0 && (
+              <S.HashtagSection>
+                {post.Hashtags.map((tag) => (
+                  <S.Hashtag
+                    key={tag.id}
+                    onClick={() => getHashtagPosts(tag.name)}
+                  >
+                    #{tag.name}
+                  </S.Hashtag>
+                ))}
+              </S.HashtagSection>
+            )}
           </>
         )}
-      </S.DetailContentArea>
+      </S.ContentArea>
 
+      {/* 댓글 */}
       <S.CommentSection>
-        <div
-          style={{ marginBottom: "20px", fontWeight: 800, fontSize: "18px" }}
-        >
-          댓글 {totalCommentsCount}
-        </div>
+        <S.CommentHeader>
+          <i className="fas fa-comments"></i>
+          <span>댓글</span>
+          <S.CommentCount>{totalCommentsCount}</S.CommentCount>
+        </S.CommentHeader>
         <Comment post={post} />
         <CommentForm post={post} />
       </S.CommentSection>

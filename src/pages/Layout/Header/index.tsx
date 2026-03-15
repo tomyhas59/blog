@@ -5,7 +5,7 @@ import React, {
   useCallback,
   useEffect,
 } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import io, { Socket } from "socket.io-client";
 import axios from "axios";
@@ -42,6 +42,9 @@ const Header = forwardRef<HTMLDivElement, HeaderProps>((props, ref) => {
   const [followNotification, setFollowNotification] = useState<boolean>(false);
   const [commentNotification, setCommentNotification] =
     useState<boolean>(false);
+
+  // 모바일 메뉴 상태
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
 
   const { setCurrentPage } = usePagination();
 
@@ -174,50 +177,197 @@ const Header = forwardRef<HTMLDivElement, HeaderProps>((props, ref) => {
     dispatch({ type: "TOGGLE_DARK_MODE" });
   }, [dispatch]);
 
+  const toggleMobileMenu = useCallback(() => {
+    setIsMobileMenuOpen((prev) => !prev);
+  }, []);
+
+  const closeMobileMenu = useCallback(() => {
+    setIsMobileMenuOpen(false);
+  }, []);
+
   return (
     <S.HeaderContainer ref={ref}>
-      <S.HeaderLogoBtn onClick={goToHome}>TMS</S.HeaderLogoBtn>
-      <Search />
+      <S.HeaderInner>
+        {/* 왼쪽: 로고 */}
+        <S.LeftSection>
+          <S.Logo onClick={goToHome}>
+            <S.LogoIcon>
+              <i className="fas fa-comment-dots"></i>
+            </S.LogoIcon>
+            <S.LogoText>TMS</S.LogoText>
+          </S.Logo>
+        </S.LeftSection>
 
-      {!isLoggedIn && (
-        <S.SignList>
-          <S.ListItem>
-            <Link to="/signup">회원가입</Link>
-          </S.ListItem>
-          <S.ListItem>
-            <Link to="/login">로그인</Link>
-          </S.ListItem>
-        </S.SignList>
-      )}
+        {/* 중앙: 검색 (데스크톱) */}
+        <S.CenterSection>
+          <Search />
+        </S.CenterSection>
 
-      {isLoggedIn && (
-        <S.SignList>
-          <S.ListItem onClick={goToChat}>
-            <span>채팅</span>
-            {chatNotification && <S.Notification>🔔</S.Notification>}
-          </S.ListItem>
-          <S.ListItem>
-            <button onClick={handleLogout}>로그아웃</button>
-          </S.ListItem>
-          <S.ProfileImageWrapper>
-            <S.ProfileImage
-              onClick={() => navigator("/info")}
-              src={
-                me?.Image
-                  ? `${baseURL}/${me?.Image?.src}`
-                  : `${DEFAULT_PROFILE_IMAGE}`
-              }
-            />
-            {(followNotification || commentNotification) && (
-              <S.Notification>🔔</S.Notification>
+        {/* 오른쪽: 네비게이션 (데스크톱) */}
+        <S.RightSection>
+          {!isLoggedIn ? (
+            <>
+              <S.NavList className="desktop-only">
+                <S.NavItem>
+                  <S.NavLink to="/signup">
+                    <i className="fas fa-user-plus"></i>
+                    <span>회원가입</span>
+                  </S.NavLink>
+                </S.NavItem>
+                <S.NavItem>
+                  <S.NavLink to="/login">
+                    <i className="fas fa-sign-in-alt"></i>
+                    <span>로그인</span>
+                  </S.NavLink>
+                </S.NavItem>
+              </S.NavList>
+            </>
+          ) : (
+            <>
+              <S.NavList className="desktop-only">
+                {/* 채팅 */}
+                <S.NavItem onClick={goToChat}>
+                  <S.IconButton>
+                    <i className="fas fa-comments"></i>
+                    {chatNotification && <S.NotificationBadge />}
+                  </S.IconButton>
+                </S.NavItem>
+
+                {/* 로그아웃 */}
+                <S.NavItem>
+                  <S.TextButton onClick={handleLogout}>로그아웃</S.TextButton>
+                </S.NavItem>
+
+                {/* 프로필 */}
+                <S.NavItem>
+                  <S.ProfileWrapper onClick={() => navigator("/info")}>
+                    <S.ProfileImage
+                      src={
+                        me?.Image
+                          ? `${baseURL}/${me?.Image?.src}`
+                          : DEFAULT_PROFILE_IMAGE
+                      }
+                      alt="프로필"
+                    />
+                    {(followNotification || commentNotification) && (
+                      <S.NotificationBadge />
+                    )}
+                  </S.ProfileWrapper>
+                </S.NavItem>
+              </S.NavList>
+            </>
+          )}
+
+          {/* 다크모드 토글 */}
+          <S.DarkModeToggle onClick={toggleDarkMode}>
+            {isDarkMode ? (
+              <i className="fas fa-moon"></i>
+            ) : (
+              <i className="fas fa-sun"></i>
             )}
-          </S.ProfileImageWrapper>
-        </S.SignList>
-      )}
+          </S.DarkModeToggle>
 
-      <S.DarkModeButton onClick={toggleDarkMode}>
-        {isDarkMode ? "🌙" : "☀️"}
-      </S.DarkModeButton>
+          {/* 모바일 메뉴 버튼 */}
+          <S.MobileMenuButton
+            onClick={toggleMobileMenu}
+            isOpen={isMobileMenuOpen}
+          >
+            <span></span>
+            <span></span>
+            <span></span>
+          </S.MobileMenuButton>
+        </S.RightSection>
+      </S.HeaderInner>
+
+      {/* 모바일 메뉴 */}
+      <S.MobileMenu isOpen={isMobileMenuOpen}>
+        <S.MobileMenuOverlay onClick={closeMobileMenu} />
+        <S.MobileMenuContent>
+          {/* 모바일 검색 */}
+          <S.MobileSearchWrapper>
+            <Search />
+          </S.MobileSearchWrapper>
+
+          {!isLoggedIn ? (
+            <S.MobileNavList>
+              <S.MobileNavItem>
+                <S.MobileNavLink to="/signup" onClick={closeMobileMenu}>
+                  <i className="fas fa-user-plus"></i>
+                  <span>회원가입</span>
+                </S.MobileNavLink>
+              </S.MobileNavItem>
+              <S.MobileNavItem>
+                <S.MobileNavLink to="/login" onClick={closeMobileMenu}>
+                  <i className="fas fa-sign-in-alt"></i>
+                  <span>로그인</span>
+                </S.MobileNavLink>
+              </S.MobileNavItem>
+            </S.MobileNavList>
+          ) : (
+            <S.MobileNavList>
+              {/* 프로필 */}
+              <S.MobileNavItem>
+                <S.MobileNavButton
+                  onClick={() => {
+                    navigator("/info");
+                    closeMobileMenu();
+                  }}
+                >
+                  <S.MobileProfileSection>
+                    <S.ProfileImage
+                      src={
+                        me?.Image
+                          ? `${baseURL}/${me?.Image?.src}`
+                          : DEFAULT_PROFILE_IMAGE
+                      }
+                      alt="프로필"
+                    />
+                    <div>
+                      <S.MobileProfileName>{me?.nickname}</S.MobileProfileName>
+                      <S.MobileProfileEmail>{me?.email}</S.MobileProfileEmail>
+                    </div>
+                  </S.MobileProfileSection>
+                  {(followNotification || commentNotification) && (
+                    <S.NotificationBadge />
+                  )}
+                </S.MobileNavButton>
+              </S.MobileNavItem>
+
+              <S.MobileDivider />
+
+              {/* 채팅 */}
+              <S.MobileNavItem>
+                <S.MobileNavButton
+                  onClick={() => {
+                    goToChat();
+                    closeMobileMenu();
+                  }}
+                >
+                  <i className="fas fa-comments"></i>
+                  <span>채팅</span>
+                  {chatNotification && <S.NotificationBadge />}
+                </S.MobileNavButton>
+              </S.MobileNavItem>
+
+              <S.MobileDivider />
+
+              {/* 로그아웃 */}
+              <S.MobileNavItem>
+                <S.MobileNavButton
+                  onClick={() => {
+                    handleLogout();
+                    closeMobileMenu();
+                  }}
+                  className="logout"
+                >
+                  <i className="fas fa-sign-out-alt"></i>
+                  <span>로그아웃</span>
+                </S.MobileNavButton>
+              </S.MobileNavItem>
+            </S.MobileNavList>
+          )}
+        </S.MobileMenuContent>
+      </S.MobileMenu>
     </S.HeaderContainer>
   );
 });

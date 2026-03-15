@@ -15,7 +15,7 @@ import { formatDate } from "../../../../utils/date";
 
 // 공통 스타일 및 전용 스타일 import
 import * as S from "./PostItemStyles";
-import * as CS from "../../PostCommonStyles"; // 처음에 만든 공통 스타일
+import * as CS from "../../PostCommonStyles";
 import FollowButton from "../../../ui/FollowButton";
 import UserPageButton from "../../../ui/UserPageButton";
 
@@ -98,54 +98,72 @@ const PostItem = ({
       onClick={() => goToPostDetail(post.id)}
       isActive={postId === post.id}
     >
-      <CS.PostHeaderLeftSection>
-        <S.NicknameButton onClick={toggleShowAuthorMenu}>
-          <img
-            src={
-              post.User.Image
-                ? `${baseURL}/${post.User.Image.src}`
-                : DEFAULT_PROFILE_IMAGE
-            }
-            alt="유저"
-          />
-          <S.Nickname>{post.User.nickname.slice(0, 5)}</S.Nickname>
-        </S.NicknameButton>
+      <S.PostMain>
+        {/* 작성자 */}
+        <S.AuthorSection>
+          <S.NicknameButton onClick={toggleShowAuthorMenu}>
+            <S.ProfileImage
+              src={
+                post.User.Image
+                  ? `${baseURL}/${post.User.Image.src}`
+                  : DEFAULT_PROFILE_IMAGE
+              }
+              alt={post.User.nickname}
+            />
+            <S.Nickname>{post.User.nickname.slice(0, 5)}</S.Nickname>
+          </S.NicknameButton>
 
-        {showAuthorMenu && (
-          <S.AuthorMenu ref={authorMenuRef}>
-            <CS.StyledButton onClick={searchByNickname}>
-              작성 글 보기
-            </CS.StyledButton>
-            <UserPageButton userId={post.User.id} />
-            {id !== post.User.id && (
-              <FollowButton
-                userId={post.User.id}
-                setShowAuthorMenu={setShowAuthorMenu}
-              />
-            )}
-          </S.AuthorMenu>
-        )}
-
-        <S.PostTitle isViewed={viewedPosts?.includes(post.id) as boolean}>
-          {post.title}
-          <span className="comment-count">
-            [{post.Comments.length + totalRepliesCount}]
-          </span>
-          {post.Images.length > 0 && (
-            <span className="icon-preview">
-              <FontAwesomeIcon
-                icon={post.Images.length === 1 ? faImage : faImages}
-              />
-            </span>
+          {showAuthorMenu && (
+            <S.AuthorMenu ref={authorMenuRef}>
+              <S.MenuButton onClick={searchByNickname}>
+                <i className="fas fa-search"></i>
+                <span>작성 글 보기</span>
+              </S.MenuButton>
+              <UserPageButton userId={post.User.id} />
+              {id !== post.User.id && (
+                <FollowButton
+                  userId={post.User.id}
+                  setShowAuthorMenu={setShowAuthorMenu}
+                />
+              )}
+            </S.AuthorMenu>
           )}
-        </S.PostTitle>
-      </CS.PostHeaderLeftSection>
+        </S.AuthorSection>
 
-      <CS.PostMetaInfo>
-        <CS.Date>{formatDate(post.createdAt)}</CS.Date>
-        <S.Liked>{post.Likers.length || ""}</S.Liked>
-        <CS.ViewCount>{post.viewCount}</CS.ViewCount>
-      </CS.PostMetaInfo>
+        {/* 제목 */}
+        <S.TitleSection>
+          <S.PostTitle isViewed={viewedPosts?.includes(post.id) as boolean}>
+            {post.title}
+            {post.Comments.length + totalRepliesCount > 0 && (
+              <S.CommentCount>
+                [{post.Comments.length + totalRepliesCount}]
+              </S.CommentCount>
+            )}
+            {post.Images.length > 0 && (
+              <S.ImageIcon>
+                <FontAwesomeIcon
+                  icon={post.Images.length === 1 ? faImage : faImages}
+                />
+              </S.ImageIcon>
+            )}
+          </S.PostTitle>
+        </S.TitleSection>
+      </S.PostMain>
+
+      <S.PostMeta>
+        <S.MetaDate>
+          <i className="far fa-calendar"></i>
+          <span>{formatDate(post.createdAt)}</span>
+        </S.MetaDate>
+        <S.MetaLike hasLikes={post.Likers.length > 0}>
+          <i className="far fa-heart"></i>
+          <span>{post.Likers.length || ""}</span>
+        </S.MetaLike>
+        <S.MetaView>
+          <i className="far fa-eye"></i>
+          <span>{post.viewCount}</span>
+        </S.MetaView>
+      </S.PostMeta>
     </S.PostContainer>
   );
 };

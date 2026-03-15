@@ -10,12 +10,11 @@ import { PostType } from "../../types";
 import Post from "../../components/post/Items/PostItem";
 import Pagination from "../../components/pagination/Pagination";
 import Spinner from "../../components/ui/Spinner";
-
 import PostInfo from "../../components/post/Items/PostInfo";
+import SortButton from "../../components/post/Items/SortButton";
 
 // 스타일
-import * as S from "./styles";
-import SortButton from "../../components/post/Items/SortButton";
+import * as S from "./MainStyles";
 
 const Main = () => {
   const dispatch = useDispatch();
@@ -59,20 +58,44 @@ const Main = () => {
 
   return (
     <S.MainContainer>
-      <SortButton />
-      <PostInfo />
-      {getPostsLoading ? (
-        <Spinner />
-      ) : (
-        posts.length > 0 && (
-          <div>
-            {posts.map((post: PostType) => (
-              <Post key={post.id} post={post} viewedPosts={viewedPosts} />
-            ))}
-            <Pagination totalPostsCount={Number(totalPostsCount)} />
-          </div>
-        )
-      )}
+      <S.MainHeader>
+        <S.SortButtonWrapper>
+          <SortButton />
+        </S.SortButtonWrapper>
+      </S.MainHeader>
+
+      <S.PostInfoWrapper>
+        <PostInfo />
+      </S.PostInfoWrapper>
+
+      <S.PostsSection>
+        {getPostsLoading ? (
+          <S.LoadingWrapper>
+            <Spinner />
+          </S.LoadingWrapper>
+        ) : posts.length > 0 ? (
+          <>
+            <S.PostsList>
+              {posts.map((post: PostType) => (
+                <Post key={post.id} post={post} viewedPosts={viewedPosts} />
+              ))}
+            </S.PostsList>
+            <S.PaginationWrapper>
+              <Pagination totalPostsCount={Number(totalPostsCount)} />
+            </S.PaginationWrapper>
+          </>
+        ) : (
+          <S.EmptyState>
+            <S.EmptyIcon>
+              <i className="fas fa-inbox"></i>
+            </S.EmptyIcon>
+            <S.EmptyTitle>게시글이 없습니다</S.EmptyTitle>
+            <S.EmptyDescription>
+              첫 번째 게시글을 작성해보세요!
+            </S.EmptyDescription>
+          </S.EmptyState>
+        )}
+      </S.PostsSection>
     </S.MainContainer>
   );
 };

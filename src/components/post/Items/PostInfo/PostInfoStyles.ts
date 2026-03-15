@@ -1,64 +1,132 @@
 import styled from "styled-components";
 
+// ===== PostInfo 래퍼 =====
 export const PostInfoWrapper = styled.div`
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  max-width: 800px;
-  margin: 0 auto;
-  padding: 12px 20px;
-  background-color: #f9fafb; /* 연한 그레이 배경 */
-  border-bottom: 2px solid #e5e7eb;
-  border-top-left-radius: 8px;
-  border-top-right-radius: 8px;
+  justify-content: space-between;
+  padding: 12px 16px;
+  background-color: ${(props) => props.theme.activeColor};
+  border-radius: 8px;
+  border: 1px solid ${(props) => props.theme.borderColor};
+  gap: 12px;
 
   @media (max-width: 768px) {
-    display: none; /* 모바일에서는 리스트가 세로로 나열되므로 헤더를 숨기는 것이 깔끔합니다 */
+    padding: 10px 12px;
+    gap: 8px;
+  }
+
+  @media (max-width: 480px) {
+    flex-direction: column;
+    align-items: stretch;
+    padding: 12px;
   }
 `;
 
+// ===== 메인 정보 (작성자, 제목) =====
 export const PostMainInfo = styled.div`
   display: flex;
   align-items: center;
+  gap: 24px;
   flex: 1;
-  gap: 16px; /* PostItem의 NicknameButton + gap과 일치 */
 
-  span.label-author {
-    width: 88px; /* PostItem의 이미지(28) + 닉네임(약 52) + gap(8) 합산값 */
-    text-align: center;
-    color: #6b7280;
-    font-weight: 700;
-    font-size: 13px;
+  @media (max-width: 768px) {
+    gap: 16px;
   }
 
-  strong.label-title {
-    color: #6b7280;
-    font-weight: 700;
-    font-size: 13px;
-    margin-left: 6px;
+  @media (max-width: 480px) {
+    gap: 12px;
   }
 `;
 
+export const InfoLabel = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  color: ${(props) => props.theme.textColor};
+
+  i {
+    font-size: 12px;
+    color: ${(props) => props.theme.mainColor};
+  }
+
+  &.label-author {
+    min-width: 60px;
+
+    @media (max-width: 768px) {
+      min-width: 50px;
+    }
+  }
+
+  &.label-title {
+    flex: 1;
+  }
+
+  @media (max-width: 480px) {
+    font-size: 12px;
+
+    &.label-author {
+      min-width: auto;
+    }
+  }
+`;
+
+// ===== 메타 정보 (작성일, 추천, 조회) =====
 export const PostMetaInfo = styled.div`
   display: flex;
   align-items: center;
-  gap: 12px;
-  color: #6b7280;
-  font-weight: 700;
-  font-size: 13px;
+  gap: 16px;
 
-  .meta-date {
-    width: 80px; /* 날짜 포맷 길이에 맞춤 */
-    text-align: center;
+  @media (max-width: 768px) {
+    gap: 12px;
   }
 
-  .meta-like {
-    width: 30px;
-    text-align: center;
+  @media (max-width: 480px) {
+    justify-content: flex-end;
+    gap: 16px;
+  }
+`;
+
+export const MetaLabel = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  font-weight: 600;
+  color: ${(props) => props.theme.textColor};
+  opacity: 0.8;
+
+  i {
+    font-size: 11px;
+    color: ${(props) => props.theme.mainColor};
   }
 
-  .meta-view {
-    width: 40px;
-    text-align: center;
+  span {
+    @media (max-width: 640px) {
+      display: none;
+    }
+  }
+
+  &.meta-date {
+    min-width: 50px;
+
+    @media (max-width: 640px) {
+      min-width: auto;
+    }
+  }
+
+  &.meta-like,
+  &.meta-view {
+    min-width: 40px;
+
+    @media (max-width: 640px) {
+      min-width: auto;
+    }
+  }
+
+  @media (max-width: 480px) {
+    font-size: 11px;
   }
 `;

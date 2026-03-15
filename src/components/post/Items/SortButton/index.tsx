@@ -26,29 +26,32 @@ const SortButton = () => {
   };
 
   const sortOptions = [
-    { value: "recent", label: "최신순" },
-    { value: "view", label: "조회순" },
-    { value: "popular", label: "인기순" },
-    { value: "comment", label: "댓글순" },
+    { value: "recent", label: "최신순", icon: "fa-clock" },
+    { value: "view", label: "조회순", icon: "fa-eye" },
+    { value: "popular", label: "인기순", icon: "fa-fire" },
+    { value: "comment", label: "댓글순", icon: "fa-comments" },
   ];
 
   return (
     <S.SortContainer>
-      {sortOptions.map(({ value, label }, index) => (
-        <React.Fragment key={value}>
-          <S.SortOption checked={sortBy === value}>
-            <S.HiddenRadio
-              type="radio"
-              name="sort"
-              value={value}
-              checked={sortBy === value}
-              onChange={() => handleSortChange(value)}
-            />
+      {sortOptions.map(({ value, label, icon }) => (
+        <S.SortOption
+          key={value}
+          checked={sortBy === value}
+          onClick={() => handleSortChange(value)}
+        >
+          <S.HiddenRadio
+            type="radio"
+            name="sort"
+            value={value}
+            checked={sortBy === value}
+            onChange={() => handleSortChange(value)}
+          />
+          <S.SortLabel>
+            <i className={`fas ${icon}`}></i>
             <span>{label}</span>
-          </S.SortOption>
-          {/* 마지막 아이템 뒤에는 구분선을 넣지 않음 */}
-          {index < sortOptions.length - 1 && <S.Divider />}
-        </React.Fragment>
+          </S.SortLabel>
+        </S.SortOption>
       ))}
     </S.SortContainer>
   );
