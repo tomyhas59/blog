@@ -4,17 +4,17 @@ import AppLayout from "./pages/Layout/AppLayout";
 import GlobalStyle from "./style/global";
 import { PaginationProvider } from "./hooks/PaginationProvider";
 import Main from "./pages/Main";
-import Login from "./pages/Login";
+import Login from "./pages/Auth/Login";
 import Chat from "./pages/Chat";
-import Sign from "./pages/Sign";
+import Sign from "./pages/Auth/Sign";
 import Info from "./pages/Info";
 import User from "./pages/User";
 import NotFound from "./pages/NotFound";
-import SearchPage from "./pages/SearchPage";
-import PostDetail from "./pages/PostDetail";
-import SearchedPostDetail from "./pages/SearchedPostDetail";
-import HashtagPage from "./pages/HashtagPage";
-import HashtagPostDetail from "./pages/HashtagPostDetail";
+import SearchPage from "./pages/Search/SearchPage";
+import PostDetail from "./pages/Post/PostDetail";
+import SearchedPostDetail from "./pages/Post/SearchedDetail";
+import HashtagPage from "./pages/Search/HashtagPage";
+import HashtagPostDetail from "./pages/Post/HashtagDetail";
 
 const routes = [
   { path: "/", element: <Main /> },

@@ -3,13 +3,14 @@ import styled from "styled-components";
 import { FOLLOW_REQUEST, UNFOLLOW_REQUEST } from "../../reducer/user";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../reducer";
+import { StyledButton } from "../post/PostCommonStyles";
 
 interface FollowButtonProps {
   userId: number;
   setShowAuthorMenu?: React.Dispatch<
     React.SetStateAction<boolean | Record<number, boolean>>
   >;
-  setActiveUserOption?: React.Dispatch<React.SetStateAction<string | null>>;
+  setActiveUserOption?: (nickname: string | null) => void;
 }
 
 const FollowButton: React.FC<FollowButtonProps> = ({
@@ -37,38 +38,38 @@ const FollowButton: React.FC<FollowButtonProps> = ({
 
       resetInfoAndOption();
       alert(isFollowing ? "언팔로우 완료" : "팔로우 완료");
-      window.location.reload();
+      // window.location.reload(); // 리덕스 상태가 업데이트되면 자동으로 리렌더링되므로 보통은 생략 가능합니다.
     },
-    [dispatch, resetInfoAndOption, userId, me?.id]
+    [dispatch, resetInfoAndOption, userId, me?.id],
   );
 
-  if (!me) return null;
+  if (!me || me.id === userId) return null;
 
   const isFollowing = me.Followings.some(
-    (following) => following.id === userId
+    (following) => following.id === userId,
   );
 
   return (
-    <Button onClick={handleFollow(isFollowing)}>
+    <ActionButton isFollowing={isFollowing} onClick={handleFollow(isFollowing)}>
       {isFollowing ? "언팔로우" : "팔로우"}
-    </Button>
+    </ActionButton>
   );
 };
 
-export const Button = styled.button`
-  background-color: ${({ theme }) => theme.mainColor};
-  font-size: 12px;
-  min-width: 40px;
-  color: #fff;
-  padding: 6px;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: transform 0.3s ease, color 0.3s ease;
+// 기존 StyledButton을 확장해서 디자인만 살짝 변경
+const ActionButton = styled(StyledButton)<{ isFollowing: boolean }>`
+  background-color: ${(props) =>
+    props.isFollowing ? "#f3f4f6" : props.theme.mainColor};
+  color: ${(props) =>
+    props.isFollowing ? "#ef4444" : "#fff"}; /* 언팔로우는 빨간색 포인트 */
+  font-weight: 700;
+  text-align: center; /* 메뉴 안에서 가운데 정렬 */
+
   &:hover {
-    transform: translateY(-2px);
-    color: ${(props) => props.theme.charColor};
+    background-color: ${(props) =>
+      props.isFollowing ? "#fee2e2" : props.theme.subColor};
+    color: ${(props) => (props.isFollowing ? "#dc2626" : "#fff")};
   }
-  z-index: 9999;
 `;
 
 export default FollowButton;

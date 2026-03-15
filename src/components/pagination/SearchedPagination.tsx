@@ -1,17 +1,13 @@
 import React from "react";
-import styled from "styled-components";
-import { usePagination } from "../../hooks/PaginationProvider";
 import { useLocation, useNavigate } from "react-router-dom";
+import { usePagination } from "../../hooks/PaginationProvider";
+import * as S from "./PaginationStyles";
 
 const SearchedPagination = ({
   totalSearchedPostsCount,
   searchText,
   searchOption,
-}: {
-  totalSearchedPostsCount: number;
-  searchText: string;
-  searchOption: string;
-}) => {
+}: any) => {
   const location = useLocation();
   const navigator = useNavigate();
   const {
@@ -20,103 +16,49 @@ const SearchedPagination = ({
     setSearchedCurrentPage,
     currentCommentsPage,
   } = usePagination();
-
   const searchedTotalPagesCount = Math.ceil(
-    totalSearchedPostsCount / searchedPostsPerPage
+    totalSearchedPostsCount / searchedPostsPerPage,
   );
 
-  const setParams = (number: number) => {
+  if (searchedTotalPagesCount <= 1) return null;
+
+  const handlePageChange = (number: number) => {
+    setSearchedCurrentPage(number);
     const params = new URLSearchParams();
     params.set("searchText", searchText);
     params.set("searchOption", searchOption);
     params.set("page", number.toString());
-    params.set("cPage", currentCommentsPage);
-    navigator({
-      pathname: location.pathname,
-      search: params.toString(),
-    });
-  };
-
-  const handlePageChange = (number: number) => {
-    setSearchedCurrentPage(number);
-    setParams(number);
+    params.set("cPage", currentCommentsPage.toString());
+    navigator({ pathname: location.pathname, search: params.toString() });
   };
 
   return (
-    <PaginationContainer>
-      {searchedTotalPagesCount > 0 && searchedTotalPagesCount !== 1 && (
-        <ul>
-          <li
-            onClick={() =>
-              searchedCurrentPage > 1 &&
-              handlePageChange(searchedCurrentPage - 1)
-            }
-          >
-            ◀
-          </li>
-          {[...Array(searchedTotalPagesCount)].map((_, index) => (
-            <PageItem key={index} isActive={index + 1 === searchedCurrentPage}>
-              <PageButton onClick={() => handlePageChange(index + 1)}>
-                {index + 1}
-              </PageButton>
-            </PageItem>
-          ))}
-          <li
-            onClick={() =>
-              searchedCurrentPage < searchedTotalPagesCount &&
-              handlePageChange(searchedCurrentPage + 1)
-            }
-          >
-            ▶
-          </li>
-        </ul>
-      )}
-    </PaginationContainer>
+    <S.PaginationNav>
+      <ul>
+        <S.PageStepButton
+          disabled={searchedCurrentPage <= 1}
+          onClick={() =>
+            searchedCurrentPage > 1 && handlePageChange(searchedCurrentPage - 1)
+          }
+        >
+          ◀
+        </S.PageStepButton>
+        {[...Array(searchedTotalPagesCount)].map((_, i) => (
+          <S.PageNumberItem key={i} isActive={i + 1 === searchedCurrentPage}>
+            <button onClick={() => handlePageChange(i + 1)}>{i + 1}</button>
+          </S.PageNumberItem>
+        ))}
+        <S.PageStepButton
+          disabled={searchedCurrentPage >= searchedTotalPagesCount}
+          onClick={() =>
+            searchedCurrentPage < searchedTotalPagesCount &&
+            handlePageChange(searchedCurrentPage + 1)
+          }
+        >
+          ▶
+        </S.PageStepButton>
+      </ul>
+    </S.PaginationNav>
   );
 };
-
 export default SearchedPagination;
-
-const PaginationContainer = styled.nav`
-  display: flex;
-  justify-content: center;
-  margin-top: 5px;
-
-  ul {
-    list-style: none;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 5px;
-  }
-  li {
-    cursor: pointer;
-    &:hover {
-      color: ${(props) => props.theme.mainColor};
-    }
-  }
-`;
-
-type PageItemProps = {
-  isActive: boolean;
-};
-
-const PageItem = styled.li<PageItemProps>`
-  button {
-    padding: 5px 10px;
-    border: 1px solid #ccc;
-    background-color: ${(props) =>
-      props.isActive ? props.theme.mainColor : "#fff"};
-    color: ${(props) => (props.isActive ? "#fff" : "#333")};
-    cursor: pointer;
-    &:hover {
-      background-color: ${(props) => !props.isActive && "#D3D3D3"};
-    }
-  }
-`;
-
-const PageButton = styled.button`
-  background: none;
-  border: none;
-  cursor: pointer;
-`;
