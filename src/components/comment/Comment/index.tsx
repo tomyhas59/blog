@@ -118,11 +118,11 @@ const Comment = ({ post }: { post: PostType }) => {
 
   useTextareaAutoHeight(editCommentTextAreaRef, editComment);
 
-  const handleCancelEdit = () => {
+  const handleCancelEdit = useCallback(() => {
     setEditComment({});
     setCurrentCommentId(null);
     setContent("");
-  };
+  }, [setContent]);
 
   const handleEditComment = useCallback(
     (commentId: number) => {
