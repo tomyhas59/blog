@@ -19,13 +19,12 @@ const Info = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const socket = useRef<Socket | null>(null);
-  const menuListRef = useRef<HTMLUListElement | null>(null);
 
   const [newFollowersCount, setNewFollowersCount] = useState<number>();
   const params = new URLSearchParams(location.search);
   const categoryParam = params.get("category");
 
-  // Socket 및 초기 데이터 로직 (기존 로직 보존)
+  // Socket 및 초기 데이터 로직
   useEffect(() => {
     socket.current =
       process.env.NODE_ENV === "production"
@@ -74,11 +73,33 @@ const Info = () => {
   );
 
   const sections = [
-    { menu: "myInfo", label: "내 정보" },
-    { menu: "myPosts", label: "내가 쓴 글", badge: notRead ? "🔔" : null },
-    { menu: "myComments", label: "내가 쓴 댓글" },
-    { menu: "myLikes", label: "좋아요 글" },
-    { menu: "myFollow", label: "팔로우", badge: newFollowersCount },
+    {
+      menu: "myInfo",
+      label: "내 정보",
+      icon: "fas fa-user-circle",
+    },
+    {
+      menu: "myPosts",
+      label: "내가 쓴 글",
+      badge: notRead ? "🔔" : null,
+      icon: "fas fa-edit",
+    },
+    {
+      menu: "myComments",
+      label: "댓글",
+      icon: "fas fa-comments",
+    },
+    {
+      menu: "myLikes",
+      label: "좋아요",
+      icon: "fas fa-heart",
+    },
+    {
+      menu: "myFollow",
+      label: "팔로우",
+      badge: newFollowersCount,
+      icon: "fas fa-user-friends",
+    },
   ];
 
   const handleSetActiveSection = (category: string) => {
@@ -111,24 +132,28 @@ const Info = () => {
   };
 
   return (
-    <S.InfoContainer>
-      <S.MenuSideBar>
-        <S.MenuList ref={menuListRef}>
-          {sections.map(({ menu, label, badge }) => (
-            <li key={menu}>
+    <S.Container>
+      <S.Sidebar>
+        <S.MenuList>
+          {sections.map(({ menu, label, badge, icon }) => (
+            <S.MenuItem key={menu}>
               <S.MenuButton
                 onClick={() => handleSetActiveSection(menu)}
                 active={activeSection === menu}
               >
-                {label}
+                <S.MenuIcon>
+                  <i className={icon}></i>
+                </S.MenuIcon>
+                <S.MenuLabel>{label}</S.MenuLabel>
                 {badge && <S.Badge>{badge}</S.Badge>}
               </S.MenuButton>
-            </li>
+            </S.MenuItem>
           ))}
         </S.MenuList>
-      </S.MenuSideBar>
-      <S.ContentWrapper>{renderSection()}</S.ContentWrapper>
-    </S.InfoContainer>
+      </S.Sidebar>
+
+      <S.Content>{renderSection()}</S.Content>
+    </S.Container>
   );
 };
 

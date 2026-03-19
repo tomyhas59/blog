@@ -1,90 +1,221 @@
 import styled from "styled-components";
 
-// 전체 컨테이너
-export const FollowContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 40px;
-  max-width: 900px;
+// ===== 컨테이너 =====
+export const Container = styled.div`
+  max-width: 935px;
   margin: 0 auto;
-  padding: 20px;
+  padding: 24px 20px;
+
+  @media (max-width: 768px) {
+    padding: 20px 16px;
+  }
 `;
 
-// 섹션 (팔로워 / 팔로잉 영역)
-export const FollowSection = styled.section`
+// ===== 섹션 =====
+export const Section = styled.section`
+  margin-bottom: 48px;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+
+  @media (max-width: 768px) {
+    margin-bottom: 40px;
+  }
+`;
+
+export const SectionHeader = styled.div`
   display: flex;
-  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+  padding-bottom: 16px;
+  border-bottom: 2px solid ${(props) => props.theme.borderColor};
+
+  @media (max-width: 768px) {
+    margin-bottom: 20px;
+    padding-bottom: 14px;
+  }
 `;
 
-export const SectionHeader = styled.h2`
-  font-size: 20px;
-  font-weight: 800;
+export const SectionTitle = styled.h2`
+  font-size: 24px;
+  font-weight: 700;
   color: ${(props) => props.theme.charColor};
-  margin-bottom: 20px;
+  margin: 0;
   display: flex;
   align-items: center;
   gap: 10px;
 
-  span {
+  i {
+    font-size: 26px;
     color: ${(props) => props.theme.mainColor};
-    font-size: 18px;
+  }
+
+  @media (max-width: 768px) {
+    font-size: 20px;
+
+    i {
+      font-size: 22px;
+    }
   }
 `;
 
-// 그리드 레이아웃
-export const FollowGrid = styled.div`
+export const Count = styled.span`
+  font-size: 18px;
+  font-weight: 700;
+  color: ${(props) => props.theme.mainColor};
+  padding: 6px 14px;
+  background-color: ${(props) => props.theme.activeColor};
+  border-radius: 20px;
+
+  @media (max-width: 768px) {
+    font-size: 16px;
+    padding: 5px 12px;
+  }
+`;
+
+// ===== 유저 그리드 =====
+export const UserGrid = styled.div`
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-  gap: 15px;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 16px;
 
-  @media (max-width: 600px) {
-    grid-template-columns: 1fr;
+  @media (max-width: 768px) {
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 12px;
+  }
+
+  @media (max-width: 480px) {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
   }
 `;
 
-// 유저 카드
 export const UserCard = styled.div`
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: space-between;
-  padding: 15px;
-  background-color: ${(props) => props.theme.top3Color || "#fff"};
+  gap: 12px;
+  padding: 20px;
+  background-color: ${(props) => props.theme.backgroundColor};
   border: 1px solid ${(props) => props.theme.borderColor};
   border-radius: 12px;
-  transition:
-    transform 0.2s,
-    box-shadow 0.2s;
+  transition: all 0.2s ease;
 
   &:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+    border-color: ${(props) => props.theme.mainColor};
+    transform: translateY(-4px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+  }
+
+  @media (max-width: 768px) {
+    padding: 16px;
+    gap: 10px;
   }
 `;
 
-// 유저 정보 영역 (클릭 시 이동)
 export const UserInfo = styled.div`
   display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 12px;
+  gap: 8px;
   cursor: pointer;
-  flex: 1;
+  width: 100%;
 `;
 
-// [중요] User에서 가져오지 않고 새로 만든 Avatar 스타일
-export const InternalAvatar = styled.img`
-  width: 50px;
-  height: 50px;
+export const Avatar = styled.img`
+  width: 80px;
+  height: 80px;
   border-radius: 50%;
   object-fit: cover;
-  border: 2px solid ${(props) => props.theme.mainColor};
+  border: 3px solid ${(props) => props.theme.borderColor};
+  transition: all 0.2s ease;
+
+  ${UserCard}:hover & {
+    border-color: ${(props) => props.theme.mainColor};
+  }
+
+  @media (max-width: 768px) {
+    width: 70px;
+    height: 70px;
+    border-width: 2px;
+  }
 `;
 
 export const Nickname = styled.span`
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 600;
-  color: ${(props) => props.theme.charColor};
+  color: ${(props) => props.theme.textColor};
+  text-align: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  width: 100%;
+  max-width: 140px;
 
-  &:hover {
-    color: ${(props) => props.theme.mainColor};
+  @media (max-width: 768px) {
+    font-size: 14px;
+    max-width: 120px;
+  }
+`;
+
+export const ButtonWrapper = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: center;
+`;
+
+// ===== 빈 상태 =====
+export const EmptyState = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 80px 20px;
+
+  @media (max-width: 768px) {
+    padding: 60px 20px;
+  }
+`;
+
+export const EmptyIcon = styled.div`
+  width: 100px;
+  height: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(
+    135deg,
+    ${(props) => props.theme.activeColor},
+    ${(props) => props.theme.borderColor}
+  );
+  border-radius: 50%;
+  margin-bottom: 20px;
+
+  i {
+    font-size: 44px;
+    color: ${(props) => props.theme.textColor};
+    opacity: 0.4;
+  }
+
+  @media (max-width: 768px) {
+    width: 80px;
+    height: 80px;
+
+    i {
+      font-size: 36px;
+    }
+  }
+`;
+
+export const EmptyText = styled.p`
+  font-size: 15px;
+  color: ${(props) => props.theme.textColor};
+  opacity: 0.7;
+  margin: 0;
+
+  @media (max-width: 768px) {
+    font-size: 14px;
   }
 `;

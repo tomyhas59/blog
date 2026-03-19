@@ -73,22 +73,28 @@ const PostDetail = () => {
     };
   }, [me]);
 
-  // 댓글/답글 스크롤 이동
+  // 댓글/답글 스크롤 이동 (쿼리가 있을 때만)
   useEffect(() => {
     const params = new URLSearchParams(location.search);
     const commentId = params.get("commentId");
     const replyId = params.get("replyId");
 
-    const scrollToElement = (id: string) => {
-      const element = document.getElementById(id);
-      if (element) {
-        element.scrollIntoView({ behavior: "auto", block: "center" });
-        element.style.backgroundColor = theme.hoverMainColor;
-      }
-    };
+    // commentId나 replyId가 있을 때만 스크롤
+    if ((commentId || replyId) && getCommentsDone) {
+      const scrollToElement = (id: string) => {
+        const element = document.getElementById(id);
+        if (element) {
+          element.scrollIntoView({ behavior: "auto", block: "center" });
+          element.style.backgroundColor = theme.hoverMainColor;
+        }
+      };
 
-    if (commentId && getCommentsDone) scrollToElement(commentId);
-    if (replyId && getCommentsDone) scrollToElement(replyId);
+      if (commentId) scrollToElement(commentId);
+      else if (replyId) scrollToElement(replyId);
+    } else {
+      // 쿼리가 없으면 맨 위로 스크롤
+      window.scrollTo({ top: 0, behavior: "auto" });
+    }
   }, [getCommentsDone, location.search, theme.hoverMainColor]);
 
   return (

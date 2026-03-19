@@ -8,8 +8,7 @@ import { CommentType, ReplyType } from "../../../types";
 import { SEARCH_POSTS_REQUEST } from "../../../reducer/post";
 import MyCommentListRenderer from "../../../components/renderer/MyCommentListRenderer";
 import { usePagination } from "../../../hooks/PaginationProvider";
-import * as S from "../InfoStyles";
-import * as CS from "./MyCommentsStyles";
+import * as S from "./MyCommentsStyles";
 
 const MyComments: React.FC = () => {
   const [comments, setComments] = useState<CommentType[]>([]);
@@ -55,7 +54,7 @@ const MyComments: React.FC = () => {
     getUserCommentsByType();
   }, [isMyComments, me]);
 
-  // 다음 페이지 불러오기 (더 보기) 로직
+  // 다음 페이지 불러오기
   const fetchUserCommentsByType = useCallback(
     async (type: "comment" | "reply") => {
       if (!me) return;
@@ -83,7 +82,7 @@ const MyComments: React.FC = () => {
     [me, commentPage, replyPage],
   );
 
-  // 클릭 시 해당 게시글 및 댓글 위치로 이동하는 로직
+  // 클릭 시 해당 게시글 및 댓글 위치로 이동
   useEffect(() => {
     if (postNum && commentNum && postId !== null && commentOrReplyId !== null) {
       const searchedPostPage = Math.floor(Number(postNum) / divisor) + 1;
@@ -136,65 +135,69 @@ const MyComments: React.FC = () => {
     [dispatch],
   );
 
+  const currentItems = isMyComments ? comments : replies;
+  const hasMore = isMyComments ? hasMoreComments : hasMoreReplies;
+
   return (
-    <S.InfoContainer
-      style={{ border: "none", boxShadow: "none", width: "100%", margin: 0 }}
-    >
-      <CS.TabHeader>
-        <CS.TabButton
+    <S.Container>
+      <S.TabHeader>
+        <S.TabButton
           active={isMyComments}
           onClick={() => setIsMyComments(true)}
         >
-          내가 쓴 댓글
-        </CS.TabButton>
-        <CS.TabButton
+          <i className="fas fa-comment"></i>
+          <span>댓글</span>
+          <S.TabCount>{comments.length}</S.TabCount>
+        </S.TabButton>
+        <S.TabButton
           active={!isMyComments}
           onClick={() => setIsMyComments(false)}
         >
-          내가 쓴 대댓글
-        </CS.TabButton>
-      </CS.TabHeader>
+          <i className="fas fa-comments"></i>
+          <span>대댓글</span>
+          <S.TabCount>{replies.length}</S.TabCount>
+        </S.TabButton>
+      </S.TabHeader>
 
-      <CS.CommentListWrapper>
-        {isMyComments ? (
-          <>
-            <MyCommentListRenderer
-              items={comments}
-              onItemClick={(id, content, postId) =>
-                searchByCommentType(id, "comment", content, postId)
+      {currentItems.length === 0 ? (
+        <S.EmptyState>
+          <S.EmptyIcon>
+            <i className="far fa-comment-dots"></i>
+          </S.EmptyIcon>
+          <S.EmptyText>
+            {isMyComments
+              ? "작성한 댓글이 없습니다"
+              : "작성한 대댓글이 없습니다"}
+          </S.EmptyText>
+        </S.EmptyState>
+      ) : (
+        <>
+          <MyCommentListRenderer
+            items={currentItems}
+            onItemClick={(id, content, postId) =>
+              searchByCommentType(
+                id,
+                isMyComments ? "comment" : "reply",
+                content,
+                postId,
+              )
+            }
+            type={isMyComments ? "comment" : "reply"}
+          />
+
+          {hasMore && (
+            <S.LoadMoreButton
+              onClick={() =>
+                fetchUserCommentsByType(isMyComments ? "comment" : "reply")
               }
-              type="comment"
-            />
-            {hasMoreComments && (
-              <S.ActionButton
-                style={{ width: "100%", marginTop: "20px" }}
-                onClick={() => fetchUserCommentsByType("comment")}
-              >
-                댓글 더 보기
-              </S.ActionButton>
-            )}
-          </>
-        ) : (
-          <>
-            <MyCommentListRenderer
-              items={replies}
-              onItemClick={(id, content, postId) =>
-                searchByCommentType(id, "reply", content, postId)
-              }
-              type="reply"
-            />
-            {hasMoreReplies && (
-              <S.ActionButton
-                style={{ width: "100%", marginTop: "20px" }}
-                onClick={() => fetchUserCommentsByType("reply")}
-              >
-                대댓글 더 보기
-              </S.ActionButton>
-            )}
-          </>
-        )}
-      </CS.CommentListWrapper>
-    </S.InfoContainer>
+            >
+              <i className="fas fa-plus-circle"></i>
+              {isMyComments ? "댓글" : "대댓글"} 더 보기
+            </S.LoadMoreButton>
+          )}
+        </>
+      )}
+    </S.Container>
   );
 };
 

@@ -9,7 +9,6 @@ import { SEARCH_POSTS_REQUEST } from "../../../reducer/post";
 import MyPostListRenderer from "../../../components/renderer/MyPostListRenderer";
 import { usePagination } from "../../../hooks/PaginationProvider";
 
-// 전용 스타일 임포트
 import * as S from "./MyPostsStyles";
 
 const MyPosts: React.FC = () => {
@@ -44,7 +43,7 @@ const MyPosts: React.FC = () => {
     getUserPosts();
   }, [me]);
 
-  // 다음 페이지 게시글 불러오기 (무한 스크롤 또는 더 보기 전용)
+  // 다음 페이지 게시글 불러오기
   const fetchMorePosts = async () => {
     if (!me || !hasMore) return;
 
@@ -88,18 +87,38 @@ const MyPosts: React.FC = () => {
   );
 
   return (
-    <S.PostsWrapper>
-      <S.PostsHeading>내가 쓴 글</S.PostsHeading>
+    <S.Container>
+      <S.Header>
+        <S.Title>
+          <i className="fas fa-edit"></i>
+          내가 쓴 글
+        </S.Title>
+        <S.Count>{posts.length}</S.Count>
+      </S.Header>
 
-      <MyPostListRenderer
-        items={posts}
-        onItemClick={(title, id) => searchByTitle(title, id)}
-      />
+      {posts.length === 0 ? (
+        <S.EmptyState>
+          <S.EmptyIcon>
+            <i className="far fa-file-alt"></i>
+          </S.EmptyIcon>
+          <S.EmptyText>작성한 글이 없습니다</S.EmptyText>
+        </S.EmptyState>
+      ) : (
+        <>
+          <MyPostListRenderer
+            items={posts}
+            onItemClick={(title, id) => searchByTitle(title, id)}
+          />
 
-      {hasMore && (
-        <S.LoadMoreBtn onClick={fetchMorePosts}>게시글 더 보기</S.LoadMoreBtn>
+          {hasMore && (
+            <S.LoadMoreButton onClick={fetchMorePosts}>
+              <i className="fas fa-plus-circle"></i>
+              게시글 더 보기
+            </S.LoadMoreButton>
+          )}
+        </>
       )}
-    </S.PostsWrapper>
+    </S.Container>
   );
 };
 

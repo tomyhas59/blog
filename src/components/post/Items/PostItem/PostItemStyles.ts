@@ -13,12 +13,10 @@ export const PostContainer = styled.div<{ isActive?: boolean }>`
       props.isActive ? props.theme.mainColor : props.theme.borderColor};
   border-radius: 12px;
   cursor: pointer;
-  transition: all 0.2s ease;
 
   &:hover {
     border-color: ${(props) => props.theme.mainColor};
     background-color: ${(props) => props.theme.activeColor};
-    transform: translateY(-1px);
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
   }
 

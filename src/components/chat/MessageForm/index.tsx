@@ -38,9 +38,7 @@ const MessageForm = ({
         userId: me?.id,
       };
 
-      // 원본 로직 유지: 소켓 메시지 전송
       socket.current.emit("sendMessage", messageData, selectedUserId);
-
       setInputValue("");
       inputRef.current?.focus();
     }
@@ -52,21 +50,26 @@ const MessageForm = ({
 
   return (
     <S.FormContainer onSubmit={handleMessageSubmit}>
-      <S.InputField
-        type="text"
-        placeholder={
-          chatDisable
-            ? "상대방이 채팅방을 나갔습니다"
-            : "메시지를 입력해주세요..."
-        }
-        value={inputValue}
-        ref={inputRef}
-        onChange={handleInputChange}
-        disabled={chatDisable}
-      />
-      <S.SubmitBtn type="submit" disabled={chatDisable || !inputValue.trim()}>
-        전송
-      </S.SubmitBtn>
+      <S.InputWrapper>
+        <S.Input
+          type="text"
+          placeholder={
+            chatDisable
+              ? "상대방이 채팅방을 나갔습니다"
+              : "메시지를 입력하세요..."
+          }
+          value={inputValue}
+          ref={inputRef}
+          onChange={handleInputChange}
+          disabled={chatDisable}
+        />
+        <S.SendButton
+          type="submit"
+          disabled={chatDisable || !inputValue.trim()}
+        >
+          <i className="fas fa-paper-plane"></i>
+        </S.SendButton>
+      </S.InputWrapper>
     </S.FormContainer>
   );
 };

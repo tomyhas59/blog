@@ -433,11 +433,6 @@ export const MobileMenuContent = styled.div`
   transform: translateX(0);
 `;
 
-export const MobileSearchWrapper = styled.div`
-  padding: 16px;
-  border-bottom: 1px solid ${(props) => props.theme.borderColor};
-`;
-
 export const MobileNavList = styled.ul`
   list-style: none;
   margin: 0;

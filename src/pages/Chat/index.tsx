@@ -7,7 +7,7 @@ import { RootState } from "../../reducer";
 import { MessageType } from "../../types";
 import useOutsideClick from "../../hooks/useOutsideClick";
 import ChatRoom from "../../components/chat/ChatRoom";
-import * as S from "./styles";
+import * as S from "./ChatStyles";
 import FriendList from "./FriendList";
 import RoomList from "./RoomList";
 
@@ -27,6 +27,7 @@ const Chat = () => {
   const [activeUserOption, setActiveUserOption] = useState<string | null>(null);
   const [userRoomList, setUserRoomList] = useState<UserRoomList[]>([]);
   const [room, setRoom] = useState<UserRoomList | null>(null);
+  const [activeTab, setActiveTab] = useState<"friends" | "rooms">("rooms");
   const socket = useRef<Socket | null>(null);
   const userOptionRef = useRef<HTMLDivElement>(null);
 
@@ -125,12 +126,16 @@ const Chat = () => {
       );
     }
     return (
-      <S.ChatPlaceholder>
-        <div>
-          1:1 채팅방을{" "}
-          {userRoomList.length < 1 ? " 만들어 보세요" : " 선택하세요"}
-        </div>
-      </S.ChatPlaceholder>
+      <S.EmptyState>
+        <S.EmptyIcon>
+          <i className="far fa-comments"></i>
+        </S.EmptyIcon>
+        <S.EmptyText>
+          {userRoomList.length < 1
+            ? "친구와 채팅을 시작해보세요"
+            : "채팅방을 선택하세요"}
+        </S.EmptyText>
+      </S.EmptyState>
     );
   };
 
@@ -140,27 +145,56 @@ const Chat = () => {
 
   return (
     <S.ChatContainer>
-      <S.ListWrapper>
-        <FriendList
-          meId={me?.id}
-          mutualUsers={mutualUsers}
-          activeUserOption={activeUserOption}
-          handleUserOptionClick={(nick) =>
-            setActiveUserOption((prev) => (prev === nick ? null : nick))
-          }
-          handleChatStart={handleChatStart}
-          userOptionRef={userOptionRef}
-          setActiveUserOption={setActiveUserOption}
-        />
-        <RoomList
-          meId={me?.id}
-          userRoomList={userRoomList}
-          setRoom={setRoom}
-          setActiveRoom={setActiveRoom}
-          setSelectedUserId={setSelectedUserId}
-        />
-      </S.ListWrapper>
-      <S.ContentWrapper>{renderRoom()}</S.ContentWrapper>
+      <S.Sidebar>
+        <S.TabButtons>
+          <S.TabButton
+            active={activeTab === "rooms"}
+            onClick={() => setActiveTab("rooms")}
+          >
+            <i className="fas fa-comments"></i>
+            <span>채팅</span>
+            {userRoomList.length > 0 && (
+              <S.TabBadge>{userRoomList.length}</S.TabBadge>
+            )}
+          </S.TabButton>
+          <S.TabButton
+            active={activeTab === "friends"}
+            onClick={() => setActiveTab("friends")}
+          >
+            <i className="fas fa-user-friends"></i>
+            <span>친구</span>
+            {mutualUsers.length > 0 && (
+              <S.TabBadge>{mutualUsers.length}</S.TabBadge>
+            )}
+          </S.TabButton>
+        </S.TabButtons>
+
+        <S.TabContent>
+          {activeTab === "rooms" ? (
+            <RoomList
+              meId={me?.id}
+              userRoomList={userRoomList}
+              setRoom={setRoom}
+              setActiveRoom={setActiveRoom}
+              setSelectedUserId={setSelectedUserId}
+            />
+          ) : (
+            <FriendList
+              meId={me?.id}
+              mutualUsers={mutualUsers}
+              activeUserOption={activeUserOption}
+              handleUserOptionClick={(nick) =>
+                setActiveUserOption((prev) => (prev === nick ? null : nick))
+              }
+              handleChatStart={handleChatStart}
+              userOptionRef={userOptionRef}
+              setActiveUserOption={setActiveUserOption}
+            />
+          )}
+        </S.TabContent>
+      </S.Sidebar>
+
+      <S.ChatContent>{renderRoom()}</S.ChatContent>
     </S.ChatContainer>
   );
 };

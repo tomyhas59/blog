@@ -283,11 +283,6 @@ const Header = forwardRef<HTMLDivElement, HeaderProps>((props, ref) => {
       <S.MobileMenu isOpen={isMobileMenuOpen}>
         <S.MobileMenuOverlay onClick={closeMobileMenu} />
         <S.MobileMenuContent>
-          {/* 모바일 검색 */}
-          <S.MobileSearchWrapper>
-            <Search />
-          </S.MobileSearchWrapper>
-
           {!isLoggedIn ? (
             <S.MobileNavList>
               <S.MobileNavItem>

@@ -1,66 +1,103 @@
 import styled from "styled-components";
 
+// ===== 폼 컨테이너 =====
 export const FormContainer = styled.form`
-  display: flex;
-  gap: 8px;
-  height: 48px;
-  margin-top: 15px;
-  padding: 5px;
-  background: #fff;
+  padding: 16px 20px;
+  border-top: 1px solid ${(props) => props.theme.borderColor};
+  background-color: ${(props) => props.theme.backgroundColor};
 
   @media (max-width: 768px) {
-    height: 42px;
+    padding: 14px 16px;
   }
 `;
 
-export const InputField = styled.input`
-  flex: 1;
-  padding: 0 15px;
-  font-size: 1rem;
-  border: 1px solid #e1e1e1;
-  border-radius: 8px;
-  outline: none;
-  color: ${(props) => props.theme.textColor};
-  transition: border-color 0.2s;
+// ===== 입력 래퍼 =====
+export const InputWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background-color: ${(props) => props.theme.activeColor};
+  border: 1px solid ${(props) => props.theme.borderColor};
+  border-radius: 24px;
+  padding: 4px 4px 4px 16px;
+  transition: all 0.2s ease;
 
-  &:focus {
+  &:focus-within {
     border-color: ${(props) => props.theme.mainColor};
+    box-shadow: 0 0 0 3px ${(props) => props.theme.mainColor}15;
+  }
+
+  @media (max-width: 768px) {
+    padding: 3px 3px 3px 14px;
+  }
+`;
+
+// ===== 입력 필드 =====
+export const Input = styled.input`
+  flex: 1;
+  border: none;
+  background: transparent;
+  font-size: 14px;
+  color: ${(props) => props.theme.textColor};
+  outline: none;
+  padding: 8px 0;
+
+  &::placeholder {
+    color: ${(props) => props.theme.textColor};
+    opacity: 0.5;
   }
 
   &:disabled {
-    background-color: #f5f5f5;
     cursor: not-allowed;
-    &::placeholder {
-      color: #bbb;
-    }
+    opacity: 0.6;
   }
 
   @media (max-width: 768px) {
-    padding: 0 10px;
-    font-size: 0.9rem;
+    font-size: 13px;
+    padding: 7px 0;
   }
 `;
 
-export const SubmitBtn = styled.button`
-  padding: 0 20px;
-  background-color: ${(props) => props.theme.mainColor};
-  color: #fff;
-  font-weight: 600;
-  border-radius: 8px;
-  transition: all 0.3s ease;
+// ===== 전송 버튼 =====
+export const SendButton = styled.button`
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(
+    135deg,
+    ${(props) => props.theme.mainColor},
+    ${(props) => props.theme.subColor}
+  );
+  border: none;
+  border-radius: 50%;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
 
   &:hover:not(:disabled) {
-    transform: translateY(-2px);
-    filter: brightness(1.1);
+    transform: scale(1.05);
+  }
+
+  &:active:not(:disabled) {
+    transform: scale(0.95);
   }
 
   &:disabled {
-    background-color: #ccc;
+    opacity: 0.5;
     cursor: not-allowed;
   }
 
+  i {
+    margin-left: 2px;
+  }
+
   @media (max-width: 768px) {
-    padding: 0 15px;
-    font-size: 0.85rem;
+    width: 36px;
+    height: 36px;
+    font-size: 14px;
   }
 `;

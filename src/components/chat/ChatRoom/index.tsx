@@ -8,7 +8,7 @@ import { UserRoomList } from "../../../pages/Chat";
 
 import MessageList from "../MessageList";
 import MessageForm from "../MessageForm";
-import * as S from "./ChatStyles";
+import * as S from "./ChatRoomStyles";
 
 interface ChatRoomProps {
   me: UserType | null;
@@ -55,7 +55,7 @@ const ChatRoom = ({
     };
   }, [currentRoomId, me]);
 
-  // 2. 초기 데이터 로드 (기존 리듀서 연동)
+  // 2. 초기 데이터 로드
   useEffect(() => {
     if (currentRoomId) {
       dispatch({ type: READ_CHAT_REQUEST, data: currentRoomId });
@@ -67,7 +67,7 @@ const ChatRoom = ({
     if (!room?.User1Join || !room.User2Join) setChatDisable(true);
   }, [room]);
 
-  // 4. 소켓 이벤트 리스너 통합 관리
+  // 4. 소켓 이벤트 리스너
   useEffect(() => {
     const s = socket.current;
     s?.emit("joinRoom", currentRoomId, me);
@@ -149,12 +149,21 @@ const ChatRoom = ({
 
   return (
     <S.RoomContainer>
-      <S.CloseHandle onClick={() => setActiveRoom(null)} title="닫기" />
-
-      <S.Header>
-        <S.PartnerInfo>{partnerNickname} 님과의 채팅</S.PartnerInfo>
-        <S.ExitActionBtn onClick={onExit}>방 나가기</S.ExitActionBtn>
-      </S.Header>
+      <S.RoomHeader>
+        <S.BackButton onClick={() => setActiveRoom(null)}>
+          <i className="fas fa-arrow-left"></i>
+        </S.BackButton>
+        <S.PartnerInfo>
+          <S.PartnerAvatar>
+            {partnerNickname?.charAt(0).toUpperCase()}
+          </S.PartnerAvatar>
+          <S.PartnerName>{partnerNickname}</S.PartnerName>
+        </S.PartnerInfo>
+        <S.ExitButton onClick={onExit}>
+          <i className="fas fa-sign-out-alt"></i>
+          <span>나가기</span>
+        </S.ExitButton>
+      </S.RoomHeader>
 
       <MessageList
         messages={messages}

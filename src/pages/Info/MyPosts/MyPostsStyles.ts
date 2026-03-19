@@ -1,61 +1,163 @@
 import styled from "styled-components";
 
-export const PostsWrapper = styled.div`
-  max-width: 800px;
+// ===== 컨테이너 =====
+export const Container = styled.div`
+  max-width: 680px;
   margin: 0 auto;
-  padding: 20px;
-  /* 스크롤바 디자인이 필요한 경우 여기서 커스텀 가능 */
-  overflow-y: auto;
+  padding: 24px 20px;
 
   @media (max-width: 768px) {
-    padding: 10px;
-    width: 100%;
+    padding: 20px 16px;
   }
 `;
 
-export const PostsHeading = styled.h2`
+// ===== 헤더 =====
+export const Header = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+  padding-bottom: 16px;
+  border-bottom: 2px solid ${(props) => props.theme.borderColor};
+
+  @media (max-width: 768px) {
+    margin-bottom: 20px;
+    padding-bottom: 14px;
+  }
+`;
+
+export const Title = styled.h1`
   font-size: 24px;
-  color: white;
-  margin-bottom: 20px;
-  padding: 10px 20px;
-  border-radius: 12px;
-  background-color: ${(props) => props.theme.mainColor};
-  width: fit-content;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  font-weight: 700;
+  color: ${(props) => props.theme.charColor};
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  i {
+    font-size: 26px;
+    color: ${(props) => props.theme.mainColor};
+  }
 
   @media (max-width: 768px) {
-    font-size: 18px;
-    margin-bottom: 12px;
-    padding: 8px 16px;
+    font-size: 20px;
+
+    i {
+      font-size: 22px;
+    }
   }
 `;
 
-export const LoadMoreBtn = styled.button`
-  display: block;
-  margin: 30px auto 0;
-  padding: 12px 30px;
-  color: white;
-  background-color: ${(props) => props.theme.mainColor};
-  border: none;
-  border-radius: 50px;
-  font-weight: 600;
+export const Count = styled.span`
+  font-size: 18px;
+  font-weight: 700;
+  color: ${(props) => props.theme.mainColor};
+  padding: 6px 14px;
+  background-color: ${(props) => props.theme.activeColor};
+  border-radius: 20px;
+
+  @media (max-width: 768px) {
+    font-size: 16px;
+    padding: 5px 12px;
+  }
+`;
+
+// ===== 빈 상태 =====
+export const EmptyState = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 80px 20px;
+
+  @media (max-width: 768px) {
+    padding: 60px 20px;
+  }
+`;
+
+export const EmptyIcon = styled.div`
+  width: 100px;
+  height: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(
+    135deg,
+    ${(props) => props.theme.activeColor},
+    ${(props) => props.theme.borderColor}
+  );
+  border-radius: 50%;
+  margin-bottom: 20px;
+
+  i {
+    font-size: 44px;
+    color: ${(props) => props.theme.textColor};
+    opacity: 0.4;
+  }
+
+  @media (max-width: 768px) {
+    width: 80px;
+    height: 80px;
+
+    i {
+      font-size: 36px;
+    }
+  }
+`;
+
+export const EmptyText = styled.p`
   font-size: 15px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  color: ${(props) => props.theme.textColor};
+  opacity: 0.7;
+  margin: 0;
+
+  @media (max-width: 768px) {
+    font-size: 14px;
+  }
+`;
+
+// ===== 더 보기 버튼 =====
+export const LoadMoreButton = styled.button`
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 14px 24px;
+  margin-top: 24px;
+  background-color: ${(props) => props.theme.backgroundColor};
+  border: 2px solid ${(props) => props.theme.borderColor};
+  border-radius: 12px;
+  font-size: 15px;
+  font-weight: 600;
+  color: ${(props) => props.theme.textColor};
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.2s ease;
+
+  i {
+    font-size: 16px;
+    color: ${(props) => props.theme.mainColor};
+  }
 
   &:hover {
-    background-color: ${(props) => props.theme.hoverMainColor};
-    transform: translateY(-3px);
-    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+    background-color: ${(props) => props.theme.mainColor};
+    border-color: ${(props) => props.theme.mainColor};
+    color: white;
+    transform: translateY(-2px);
+
+    i {
+      color: white;
+    }
   }
 
   &:active {
-    transform: translateY(-1px);
+    transform: translateY(0);
   }
 
-  &:disabled {
-    background-color: ${(props) => props.theme.borderColor};
-    cursor: not-allowed;
+  @media (max-width: 768px) {
+    padding: 12px 20px;
+    font-size: 14px;
+    margin-top: 20px;
   }
 `;

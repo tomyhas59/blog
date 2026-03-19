@@ -11,10 +11,8 @@ import FollowButton from "../../components/ui/FollowButton";
 import UserPageButton from "../../components/ui/UserPageButton";
 import useHorizontalScroll from "../../hooks/useHorizontalScroll";
 
-// 새롭게 만든 전용 스타일 임포트
 import * as S from "./UserPageStyles";
 
-// 기본 프로필 이미지 내부 정의 (Info 도메인 의존성 제거)
 const DEFAULT_AVATAR =
   "https://cdn.pixabay.com/photo/2023/04/12/01/47/cartoon-7918608_1280.png";
 
@@ -41,7 +39,6 @@ const UserPage = () => {
           const response = await axios.get(`/user?userId=${userId}`);
           setUser(response.data);
 
-          // 게시글 첫 페이지 로드
           const responsePosts = await axios.get(`/post?userId=${userId}`);
           setPosts(responsePosts.data.posts);
           setHasMore(responsePosts.data.hasMore);
@@ -83,35 +80,62 @@ const UserPage = () => {
 
   return (
     <S.PageContainer>
-      <S.ProfileSection>
-        <S.MainAvatar
-          src={user?.Image ? `${baseURL}/${user?.Image?.src}` : DEFAULT_AVATAR}
-          alt="Profile"
-        />
-        <S.UserDetail>
-          <S.NicknameTitle>{user.nickname}</S.NicknameTitle>
-          <S.CountRow>
-            <p>
-              팔로잉 <span>{user.Followings.length}</span>
-            </p>
-            <p>
-              팔로워 <span>{user.Followers.length}</span>
-            </p>
-          </S.CountRow>
-        </S.UserDetail>
-        {me?.id !== user.id && <FollowButton userId={user.id} />}
-      </S.ProfileSection>
+      {/* 프로필 헤더 */}
+      <S.ProfileHeader>
+        <S.AvatarSection>
+          <S.Avatar
+            src={
+              user?.Image ? `${baseURL}/${user?.Image?.src}` : DEFAULT_AVATAR
+            }
+            alt="Profile"
+          />
+        </S.AvatarSection>
 
-      <section>
-        <S.SectionLabel>팔로잉</S.SectionLabel>
-        <S.HorizontalList ref={scrollRefFollowings}>
+        <S.ProfileInfo>
+          <S.ProfileTop>
+            <S.Nickname>{user.nickname}</S.Nickname>
+            {me?.id !== user.id && (
+              <S.FollowButtonWrapper>
+                <FollowButton userId={user.id} />
+              </S.FollowButtonWrapper>
+            )}
+          </S.ProfileTop>
+
+          <S.StatsRow>
+            <S.Stat>
+              <S.StatNumber>{posts.length}</S.StatNumber>
+              <S.StatLabel>게시물</S.StatLabel>
+            </S.Stat>
+            <S.Stat>
+              <S.StatNumber>{user.Followers.length}</S.StatNumber>
+              <S.StatLabel>팔로워</S.StatLabel>
+            </S.Stat>
+            <S.Stat>
+              <S.StatNumber>{user.Followings.length}</S.StatNumber>
+              <S.StatLabel>팔로잉</S.StatLabel>
+            </S.Stat>
+          </S.StatsRow>
+        </S.ProfileInfo>
+      </S.ProfileHeader>
+
+      {/* 팔로잉 섹션 */}
+      <S.Section>
+        <S.SectionHeader>
+          <S.SectionTitle>
+            <i className="fas fa-user-friends"></i>
+            팔로잉
+          </S.SectionTitle>
+          <S.SectionCount>{user.Followings.length}</S.SectionCount>
+        </S.SectionHeader>
+
+        <S.ScrollContainer ref={scrollRefFollowings}>
           {user.Followings.length > 0 ? (
             user.Followings.map((following) => (
-              <S.FollowItem
+              <S.UserCard
                 key={following.id}
                 onClick={() => handleGoToUserPage(following.id)}
               >
-                <img
+                <S.UserAvatar
                   src={
                     following?.Image
                       ? `${baseURL}/${following?.Image?.src}`
@@ -119,28 +143,33 @@ const UserPage = () => {
                   }
                   alt={following.nickname}
                 />
-                <UserPageButton
-                  userId={following.id}
-                  content={following.nickname}
-                />
-              </S.FollowItem>
+                <S.UserName>{following.nickname.slice(0, 8)}</S.UserName>
+              </S.UserCard>
             ))
           ) : (
-            <div style={{ padding: "10px", fontSize: "14px", opacity: 0.6 }}>
-              팔로잉 중인 유저가 없습니다.
-            </div>
+            <S.EmptyMessage>팔로잉 중인 유저가 없습니다</S.EmptyMessage>
           )}
-        </S.HorizontalList>
+        </S.ScrollContainer>
+      </S.Section>
 
-        <S.SectionLabel>팔로워</S.SectionLabel>
-        <S.HorizontalList ref={scrollRefFollowers}>
+      {/* 팔로워 섹션 */}
+      <S.Section>
+        <S.SectionHeader>
+          <S.SectionTitle>
+            <i className="fas fa-users"></i>
+            팔로워
+          </S.SectionTitle>
+          <S.SectionCount>{user.Followers.length}</S.SectionCount>
+        </S.SectionHeader>
+
+        <S.ScrollContainer ref={scrollRefFollowers}>
           {user.Followers.length > 0 ? (
             user.Followers.map((follower) => (
-              <S.FollowItem
+              <S.UserCard
                 key={follower.id}
                 onClick={() => handleGoToUserPage(follower.id)}
               >
-                <img
+                <S.UserAvatar
                   src={
                     follower?.Image
                       ? `${baseURL}/${follower?.Image?.src}`
@@ -148,58 +177,78 @@ const UserPage = () => {
                   }
                   alt={follower.nickname}
                 />
-                <UserPageButton
-                  userId={follower.id}
-                  content={follower.nickname}
-                />
-              </S.FollowItem>
+                <S.UserName>{follower.nickname.slice(0, 8)}</S.UserName>
+              </S.UserCard>
             ))
           ) : (
-            <div style={{ padding: "10px", fontSize: "14px", opacity: 0.6 }}>
-              팔로워가 없습니다.
-            </div>
+            <S.EmptyMessage>팔로워가 없습니다</S.EmptyMessage>
           )}
-        </S.HorizontalList>
-      </section>
+        </S.ScrollContainer>
+      </S.Section>
 
-      <section>
-        <S.SectionLabel>작성한 게시글</S.SectionLabel>
+      {/* 게시글 섹션 */}
+      <S.Section>
+        <S.SectionHeader>
+          <S.SectionTitle>
+            <i className="fas fa-th"></i>
+            게시물
+          </S.SectionTitle>
+          <S.SectionCount>{posts.length}</S.SectionCount>
+        </S.SectionHeader>
+
         <InfiniteScroll
           dataLength={posts.length}
           next={fetchMorePosts}
           hasMore={hasMore}
           loader={
-            <h4 style={{ textAlign: "center", margin: "20px 0" }}>
+            <S.LoadingMessage>
+              <i className="fas fa-spinner fa-spin"></i>
               불러오는 중...
-            </h4>
+            </S.LoadingMessage>
           }
           endMessage={
-            <p style={{ textAlign: "center", padding: "20px", opacity: 0.5 }}>
-              모든 게시글을 확인했습니다.
-            </p>
+            <S.EndMessage>
+              <i className="fas fa-check-circle"></i>
+              모든 게시물을 확인했습니다
+            </S.EndMessage>
           }
           style={{ overflow: "visible" }}
         >
-          <S.GridContainer>
-            {posts.map((post) => (
-              <S.PostItemCard
-                key={post.id}
-                onClick={() => goToUserPost(post.id)}
-              >
-                {Array.isArray(post.Images) && post.Images[0]?.src && (
-                  <S.CardImg
-                    src={`${baseURL}/${post.Images[0]?.src}`}
-                    alt="Post"
-                  />
-                )}
-                <S.CardBody>
-                  <S.CardTitle>{post.title}</S.CardTitle>
-                </S.CardBody>
-              </S.PostItemCard>
-            ))}
-          </S.GridContainer>
+          {posts.length > 0 ? (
+            <S.PostGrid>
+              {posts.map((post) => (
+                <S.PostCard key={post.id} onClick={() => goToUserPost(post.id)}>
+                  {Array.isArray(post.Images) && post.Images[0]?.src ? (
+                    <S.PostImage
+                      src={`${baseURL}/${post.Images[0]?.src}`}
+                      alt="Post"
+                    />
+                  ) : (
+                    <S.NoImagePlaceholder>
+                      <i className="far fa-image"></i>
+                    </S.NoImagePlaceholder>
+                  )}
+                  <S.PostOverlay>
+                    <S.PostTitle>{post.title}</S.PostTitle>
+                    <S.PostStats>
+                      <span>
+                        <i className="far fa-heart"></i>
+                        {post.Likers?.length || 0}
+                      </span>
+                      <span>
+                        <i className="far fa-comment"></i>
+                        {post.Comments?.length || 0}
+                      </span>
+                    </S.PostStats>
+                  </S.PostOverlay>
+                </S.PostCard>
+              ))}
+            </S.PostGrid>
+          ) : (
+            <S.EmptyMessage>작성한 게시물이 없습니다</S.EmptyMessage>
+          )}
         </InfiniteScroll>
-      </section>
+      </S.Section>
     </S.PageContainer>
   );
 };

@@ -8,7 +8,6 @@ import { SEARCH_POSTS_REQUEST } from "../../../reducer/post";
 import MyPostListRenderer from "../../../components/renderer/MyPostListRenderer";
 import { usePagination } from "../../../hooks/PaginationProvider";
 
-// 새롭게 만든 전용 스타일 임포트
 import * as S from "./MyLikesStyles";
 
 const MyLikes: React.FC = () => {
@@ -42,7 +41,7 @@ const MyLikes: React.FC = () => {
     getUserLikes();
   }, [me]);
 
-  // 추가 페이지 로드 (더 보기)
+  // 추가 페이지 로드
   const fetchMoreLikePosts = async () => {
     if (!me || !hasMore) return;
 
@@ -86,22 +85,38 @@ const MyLikes: React.FC = () => {
   );
 
   return (
-    <S.LikesWrapper>
-      <S.LikesHeader>좋아요 한 글</S.LikesHeader>
+    <S.Container>
+      <S.Header>
+        <S.Title>
+          <i className="fas fa-heart"></i>
+          좋아요 한 글
+        </S.Title>
+        <S.Count>{posts.length}</S.Count>
+      </S.Header>
 
-      <S.ListSection>
-        <MyPostListRenderer
-          items={posts}
-          onItemClick={(title, id) => searchByTitle(title, id)}
-        />
-      </S.ListSection>
+      {posts.length === 0 ? (
+        <S.EmptyState>
+          <S.EmptyIcon>
+            <i className="far fa-heart"></i>
+          </S.EmptyIcon>
+          <S.EmptyText>좋아요 한 글이 없습니다</S.EmptyText>
+        </S.EmptyState>
+      ) : (
+        <>
+          <MyPostListRenderer
+            items={posts}
+            onItemClick={(title, id) => searchByTitle(title, id)}
+          />
 
-      {hasMore && (
-        <S.FetchButton onClick={fetchMoreLikePosts}>
-          좋아요 한 글 더 보기
-        </S.FetchButton>
+          {hasMore && (
+            <S.LoadMoreButton onClick={fetchMoreLikePosts}>
+              <i className="fas fa-plus-circle"></i>
+              좋아요 한 글 더 보기
+            </S.LoadMoreButton>
+          )}
+        </>
       )}
-    </S.LikesWrapper>
+    </S.Container>
   );
 };
 
