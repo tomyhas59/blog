@@ -8,7 +8,6 @@ import { PostType, UserType } from "../../types";
 import { baseURL } from "../../config";
 import { RootState } from "../../reducer";
 import FollowButton from "../../components/ui/FollowButton";
-import UserPageButton from "../../components/ui/UserPageButton";
 import useHorizontalScroll from "../../hooks/useHorizontalScroll";
 
 import * as S from "./UserPageStyles";

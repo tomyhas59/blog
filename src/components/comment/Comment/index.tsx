@@ -136,7 +136,7 @@ const Comment = ({ post }: { post: PostType }) => {
       });
       handleCancelEdit();
     },
-    [content, dispatch, post.id],
+    [content, dispatch, post.id, handleCancelEdit],
   );
 
   const prevContent = content.replace(/<br\s*\/?>/gi, "\n");
@@ -189,7 +189,7 @@ const Comment = ({ post }: { post: PostType }) => {
   useEffect(() => {
     const cPageParam = params.get("cPage");
     if (cPageParam) setCurrentCommentsPage(Number(cPageParam));
-  }, [location.search, setCurrentCommentsPage]);
+  }, [location.search, setCurrentCommentsPage, params]);
 
   useEffect(() => {
     if (newCommentId && getCommentsDone) scrollToElement(newCommentId);

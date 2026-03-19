@@ -15,7 +15,6 @@ import { formatDate } from "../../../../utils/date";
 
 // 공통 스타일 및 전용 스타일 import
 import * as S from "./PostItemStyles";
-import * as CS from "../../PostCommonStyles";
 import FollowButton from "../../../ui/FollowButton";
 import UserPageButton from "../../../ui/UserPageButton";
 
