@@ -1,15 +1,14 @@
-// src/pages/Chat/index.tsx
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { useSelector } from "react-redux";
 import io, { Socket } from "socket.io-client";
 import axios from "axios";
+
 import { RootState } from "../../reducer";
 import { MessageType } from "../../types";
-import useOutsideClick from "../../hooks/useOutsideClick";
 import ChatRoom from "../../components/chat/ChatRoom";
-import * as S from "./ChatStyles";
 import FriendList from "./FriendList";
 import RoomList from "./RoomList";
+import * as S from "./ChatStyles";
 
 export interface UserRoomList {
   id: number;
@@ -22,16 +21,18 @@ export interface UserRoomList {
 
 const Chat = () => {
   const { me } = useSelector((state: RootState) => state.user);
+
   const [selectedUserId, setSelectedUserId] = useState<number | null>(null);
   const [activeRoom, setActiveRoom] = useState<UserRoomList | null>(null);
+  const [room, setRoom] = useState<UserRoomList | null>(null);
   const [activeUserOption, setActiveUserOption] = useState<string | null>(null);
   const [userRoomList, setUserRoomList] = useState<UserRoomList[]>([]);
-  const [room, setRoom] = useState<UserRoomList | null>(null);
   const [activeTab, setActiveTab] = useState<"friends" | "rooms">("rooms");
+
   const socket = useRef<Socket | null>(null);
   const userOptionRef = useRef<HTMLDivElement>(null);
 
-  // Socket 초기화
+  // 1. 소켓 초기화
   useEffect(() => {
     socket.current =
       process.env.NODE_ENV === "production"
@@ -46,7 +47,7 @@ const Chat = () => {
     };
   }, [me]);
 
-  // 데이터 페칭 로직
+  // 2. 채팅방 데이터 로드
   const fetchUserChatRooms = useCallback(async () => {
     if (!me) return;
     try {
@@ -65,13 +66,14 @@ const Chat = () => {
     };
   }, [fetchUserChatRooms]);
 
-  // 소켓 이벤트 리스너
+  // 3. 소켓 이벤트 리스너
   useEffect(() => {
     socket.current?.on("newRoom", (newRoom: UserRoomList) => {
       setUserRoomList((prev) =>
         prev.find((r) => r.id === newRoom.id) ? prev : [...prev, newRoom],
       );
     });
+
     socket.current?.on("unReadMessages", ({ unReadMessages, roomId }) => {
       if (roomId !== undefined) {
         setUserRoomList((prev) =>
@@ -81,12 +83,14 @@ const Chat = () => {
         );
       }
     });
+
     return () => {
       socket.current?.off("newRoom");
       socket.current?.off("unReadMessages");
     };
   }, []);
 
+  // 4. 채팅 시작 및 닫기 로직
   const handleChatStart = useCallback(
     async (user: { id: number; nickname: string }) => {
       if (!me || user.id === me.id) return;
@@ -111,10 +115,9 @@ const Chat = () => {
     [me, userRoomList],
   );
 
-  useOutsideClick([userOptionRef], () => setActiveUserOption(null));
-
+  // 5. 렌더링 함수
   const renderRoom = () => {
-    if (activeRoom === room && room?.id) {
+    if (activeRoom && room?.id) {
       return (
         <ChatRoom
           me={me}
@@ -128,7 +131,7 @@ const Chat = () => {
     return (
       <S.EmptyState>
         <S.EmptyIcon>
-          <i className="far fa-comments"></i>
+          <i className="far fa-comments" />
         </S.EmptyIcon>
         <S.EmptyText>
           {userRoomList.length < 1
@@ -145,26 +148,33 @@ const Chat = () => {
 
   return (
     <S.ChatContainer>
-      <S.Sidebar>
+      {/* Sidebar: 모바일에서 채팅창이 열리면 display: none 처리됨 */}
+      <S.Sidebar isChatOpen={!!activeRoom}>
         <S.TabButtons>
           <S.TabButton
             active={activeTab === "rooms"}
             onClick={() => setActiveTab("rooms")}
           >
-            <i className="fas fa-comments"></i>
+            <i className="fas fa-comments" />
             <span>채팅</span>
             {userRoomList.length > 0 && (
-              <S.TabBadge>{userRoomList.length}</S.TabBadge>
+              /* active 프롭을 전달하여 활성화 시 색상이 변하게 함 */
+              <S.TabBadge active={activeTab === "rooms"}>
+                {userRoomList.length}
+              </S.TabBadge>
             )}
           </S.TabButton>
+
           <S.TabButton
             active={activeTab === "friends"}
             onClick={() => setActiveTab("friends")}
           >
-            <i className="fas fa-user-friends"></i>
+            <i className="fas fa-user-friends" />
             <span>친구</span>
             {mutualUsers.length > 0 && (
-              <S.TabBadge>{mutualUsers.length}</S.TabBadge>
+              <S.TabBadge active={activeTab === "friends"}>
+                {mutualUsers.length}
+              </S.TabBadge>
             )}
           </S.TabButton>
         </S.TabButtons>
@@ -194,7 +204,8 @@ const Chat = () => {
         </S.TabContent>
       </S.Sidebar>
 
-      <S.ChatContent>{renderRoom()}</S.ChatContent>
+      {/* ChatContent: 모바일에서 isOpen 시 fixed 포지션으로 목록을 덮음 */}
+      <S.ChatContent isOpen={!!activeRoom}>{renderRoom()}</S.ChatContent>
     </S.ChatContainer>
   );
 };

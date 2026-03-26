@@ -10,7 +10,7 @@ import { useDispatch, useSelector } from "react-redux";
 import io, { Socket } from "socket.io-client";
 import axios from "axios";
 
-import Search from "../../../components/search/Search";
+import Search from "../../../components/search";
 import { usePagination } from "../../../hooks/PaginationProvider";
 import { RootState } from "../../../reducer";
 import { LOG_OUT_REQUEST } from "../../../reducer/user";

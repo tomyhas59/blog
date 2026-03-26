@@ -111,8 +111,7 @@ export const ContentWrapper = styled.main<{ headerHeight: number }>`
   animation: ${fadeIn} 0.3s ease;
 
   @media (max-width: 768px) {
-    margin-top: ${(props) => props.headerHeight}px;
-    padding: 12px;
+    padding: 0;
   }
 `;
 
